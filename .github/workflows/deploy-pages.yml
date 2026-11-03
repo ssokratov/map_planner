@@ -42,7 +42,7 @@ jobs:
       - name: Export for the web
         run: |
           mkdir -p build/web
-          ./Godot_v4.7.2-stable_linux.x86_64 --headless --path project --export-release "Web" build/web/index.html
+          ./Godot_v4.7.2-stable_linux.x86_64 --headless --path project --export-release "Web" "$GITHUB_WORKSPACE/build/web/index.html"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
