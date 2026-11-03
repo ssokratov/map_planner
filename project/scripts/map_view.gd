@@ -136,9 +136,12 @@ func _draw_object(key: Vector2i, center: Vector2, type: String, text: String) ->
 			_draw_dashed_outline(key, CUSTOM_COLOR)
 			if _font != null:
 				var w: float = _cell_width()
-				_draw_centered_text("?", center - Vector2(0.0, 10.0), w, 18, CUSTOM_COLOR)
-				if text != "":
-					_draw_centered_text(text, center + Vector2(0.0, 4.0), w, 13, CUSTOM_COLOR)
+				# "?" is only an empty-state placeholder: once a meaning is
+				# set, the meaning alone is drawn (centered), no "?" kept.
+				if text == "":
+					_draw_centered_text("?", center, w, 18, CUSTOM_COLOR)
+				else:
+					_draw_centered_text(text, center, w, 13, CUSTOM_COLOR)
 
 func _draw_notes(rect: Rect2) -> void:
 	if _font == null:
@@ -153,7 +156,8 @@ func _draw_notes(rect: Rect2) -> void:
 		var bg: Rect2 = Rect2(center - size / 2.0 - Vector2(4.0, 2.0), size + Vector2(8.0, 4.0))
 		draw_rect(bg, NOTE_BG)
 		draw_rect(bg, NOTE_FG, false, 1.0)
-		draw_string(_font, Vector2(center.x - size.x / 2.0, center.y - size.y / 2.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, NOTE_FG)
+		var baseline: float = center.y + (_font.get_ascent(15) - _font.get_descent(15)) / 2.0
+		draw_string(_font, Vector2(center.x - size.x / 2.0, baseline), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, NOTE_FG)
 
 func _draw_cell_outline(key: Vector2i, color: Color, width: float) -> void:
 	var corners: PackedVector2Array = model.cell_corners(key)
@@ -187,7 +191,10 @@ func _draw_dashed_line(a: Vector2, b: Vector2, color: Color) -> void:
 		d += seg + 4.0
 
 func _draw_centered_text(text: String, center: Vector2, width: float, font_size: int, color: Color) -> void:
-	draw_string(_font, Vector2(center.x - width / 2.0, center.y - font_size * 0.5), text, HORIZONTAL_ALIGNMENT_CENTER, width, font_size, color)
+	# draw_string positions by the BASELINE, not the top: center the text's
+	# full extent (baseline - ascent .. baseline + descent) on center.y.
+	var baseline: float = center.y + (_font.get_ascent(font_size) - _font.get_descent(font_size)) / 2.0
+	draw_string(_font, Vector2(center.x - width / 2.0, baseline), text, HORIZONTAL_ALIGNMENT_CENTER, width, font_size, color)
 
 func _cell_width() -> float:
 	if model != null and model.grid_type == GridMapData.GridType.HEX:
@@ -286,6 +293,13 @@ func _paint_cell(key: Vector2i) -> void:
 			changed = model.add_object(key, "custom", "")
 		"copy":
 			changed = model.stamp_stack(key, copy_buffer)
+		"eraser":
+			# Left-drag with the eraser tool mirrors right-drag: top object
+			# off the cell, Shift clears the whole cell.
+			if Input.is_key_pressed(KEY_SHIFT):
+				changed = model.clear_cell(key)
+			else:
+				changed = model.remove_top(key)
 	if changed:
 		queue_redraw()
 
