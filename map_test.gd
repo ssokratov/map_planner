@@ -35,7 +35,7 @@ func _process(_delta: float) -> bool:
 			_check(_model.cell_key_from_world(_model.cell_center(Vector2i(-3, 4))) == Vector2i(-3, 4), "hex roundtrip (-3,4)")
 			_check(_model.cell_corners(Vector2i(0, 0)).size() == 6, "hex corners")
 		3:
-			# Stacking: several objects in one cell, idempotent repaint, eraser.
+			# Stacking: several objects in one cell, idempotent repaint, removal.
 			_model.grid_type = 0
 			var key: Vector2i = Vector2i(3, 3)
 			_check(_model.add_object(key, "wall") == true, "add wall")
@@ -164,6 +164,47 @@ func _process(_delta: float) -> bool:
 			var m3 = load("res://scripts/grid_map.gd").new()
 			_check(m3.from_json_string("{\"grid\":\"square\",\"cells\":{},\"notes\":{}}") == true, "json without merge parses")
 			_check(m3.merge_adjacent == true, "json without merge defaults on")
+		11:
+			# Custom tile colors: default, set, JSON roundtrip, stamp, merge split.
+			var S = load("res://scripts/grid_map.gd")
+			var m = S.new()
+			m.grid_type = 0
+			var k1: Vector2i = Vector2i(0, 0)
+			_check(m.add_object(k1, "custom", "") == true, "color default add")
+			_check(str(m.stack_of(k1)[0].get("color", "")) == S.DEFAULT_CUSTOM_COLOR, "color default value")
+			_check(m.add_object(k1, "custom", "ЯМА", "#c0392b") == true, "color set")
+			_check(str(m.stack_of(k1)[0].get("color", "")) == "#c0392b", "color stored")
+			_check(str(m.stack_of(k1)[0].get("text", "")) == "ЯМА", "color set keeps text")
+			_check(m.add_object(k1, "custom", "ЯМА", "#c0392b") == false, "color idempotent")
+			var s: String = m.to_json_string()
+			var m2 = S.new()
+			_check(m2.from_json_string(s) == true, "color json parse")
+			_check(str(m2.stack_of(k1)[0].get("color", "")) == "#c0392b", "color json roundtrip")
+			var m3 = S.new()
+			_check(m3.from_json_string("{\"grid\":\"square\",\"cells\":{\"0,0\":[{\"type\":\"custom\",\"text\":\"ЯМА\"}]},\"notes\":{}}") == true, "json without color parses")
+			_check(str(m3.stack_of(Vector2i(0, 0))[0].get("color", "")) == S.DEFAULT_CUSTOM_COLOR, "json without color defaults")
+			var dst: Vector2i = Vector2i(5, 5)
+			_check(m.stamp_stack(dst, m.stack_copy(k1)) == true, "stamp color changed")
+			_check(str(m.stack_of(dst)[0].get("color", "")) == "#c0392b", "stamp color carried")
+			var g = S.new()
+			g.grid_type = 0
+			g.add_object(Vector2i(0, 0), "custom", "ЯМА", "#c0392b")
+			g.add_object(Vector2i(1, 0), "custom", "ЯМА", "#c0392b")
+			g.add_object(Vector2i(2, 0), "custom", "ЯМА", "#1e8449")
+			_check(g.custom_components().size() == 2, "same text different color splits")
+			var sizes: Array = []
+			var cols: Array = []
+			for c in g.custom_components():
+				sizes.append((c["cells"] as Array).size())
+				cols.append(str(c["color"]))
+			sizes.sort()
+			_check(sizes == [1, 2], "color split sizes")
+			_check(cols.has("#c0392b") and cols.has("#1e8449"), "component colors")
+			var h2 = S.new()
+			h2.grid_type = 0
+			h2.add_object(Vector2i(0, 0), "custom", "ЯМА", "#c0392b")
+			h2.add_object(Vector2i(1, 0), "custom", "ЯМА", "#c0392b")
+			_check(h2.custom_components().size() == 1, "same text same color merges")
 			if not _failed:
 				print("ALL CHECKS PASSED")
 			quit()

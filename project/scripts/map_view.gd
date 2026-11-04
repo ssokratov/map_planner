@@ -28,7 +28,7 @@ var camera: Camera2D = null
 var tool: String = "wall"
 # Export suppresses overlays (bounds rect, hover) so the plan stays clean.
 var show_overlays: bool = true
-# Copy tool buffer: a deep-copied cell stack (Alt+click grabs, click/drag stamps).
+# Keyboard copy buffer: a deep-copied cell stack (Ctrl+C grabs, Ctrl+V stamps).
 var copy_buffer: Array = []
 
 var hover_key: Vector2i = Vector2i.ZERO
@@ -105,7 +105,7 @@ func _draw_cells(rect: Rect2) -> void:
 			# Merged customs draw as components below, not per cell.
 			if t == "custom" and model.merge_adjacent:
 				continue
-			_draw_object(key, center, t, str(obj.get("text", "")))
+			_draw_object(key, center, t, str(obj.get("text", "")), str(obj.get("color", "")))
 	if model.merge_adjacent:
 		_draw_merged_custom(rect)
 
@@ -127,12 +127,13 @@ func _draw_merged_custom(rect: Rect2) -> void:
 		var cell_set: Dictionary = {}
 		for c in comp_cells:
 			cell_set[c] = true
+		var col: Color = _color_from_hex(str(comp.get("color", "")))
 		for c in comp_cells:
 			var corners: PackedVector2Array = model.cell_corners(c)
 			var n: int = corners.size()
 			for i in n:
 				if not cell_set.has(model.cell_edge_neighbor(c, i)):
-					_draw_dashed_line(corners[i], corners[(i + 1) % n], CUSTOM_COLOR)
+					_draw_dashed_line(corners[i], corners[(i + 1) % n], col)
 		var text: String = str(comp["text"])
 		if text == "" or _font == null:
 			continue
@@ -153,9 +154,9 @@ func _draw_merged_custom(rect: Rect2) -> void:
 		var tw: float = _font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, size).x
 		if tw > w:
 			size = int(max(8.0, floor(13.0 * w / tw)))
-		_draw_centered_text(text, center, w, size, CUSTOM_COLOR)
+		_draw_centered_text(text, center, w, size, col)
 
-func _draw_object(key: Vector2i, center: Vector2, type: String, text: String) -> void:
+func _draw_object(key: Vector2i, center: Vector2, type: String, text: String, color_hex: String = "") -> void:
 	var corners: PackedVector2Array = model.cell_corners(key)
 	match type:
 		"wall":
@@ -185,15 +186,16 @@ func _draw_object(key: Vector2i, center: Vector2, type: String, text: String) ->
 			draw_rect(r, WINDOW_COLOR)
 			draw_rect(r, WINDOW_EDGE, false, 1.0)
 		"custom":
-			_draw_dashed_outline(key, CUSTOM_COLOR)
+			var col: Color = _color_from_hex(color_hex)
+			_draw_dashed_outline(key, col)
 			if _font != null:
 				var w: float = _cell_width()
 				# "?" is only an empty-state placeholder: once a meaning is
 				# set, the meaning alone is drawn (centered), no "?" kept.
 				if text == "":
-					_draw_centered_text("?", center, w, 18, CUSTOM_COLOR)
+					_draw_centered_text("?", center, w, 18, col)
 				else:
-					_draw_centered_text(text, center, w, 13, CUSTOM_COLOR)
+					_draw_centered_text(text, center, w, 13, col)
 
 func _draw_notes(rect: Rect2) -> void:
 	if _font == null:
@@ -210,6 +212,13 @@ func _draw_notes(rect: Rect2) -> void:
 		draw_rect(bg, NOTE_FG, false, 1.0)
 		var baseline: float = center.y + (_font.get_ascent(15) - _font.get_descent(15)) / 2.0
 		draw_string(_font, Vector2(center.x - size.x / 2.0, baseline), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, NOTE_FG)
+
+# Palette hexes are always #rrggbb; anything else falls back to the
+# pre-color purple so old or hand-edited saves never break rendering.
+func _color_from_hex(s: String) -> Color:
+	if s.begins_with("#") and s.length() == 7:
+		return Color(s)
+	return CUSTOM_COLOR
 
 func _draw_cell_outline(key: Vector2i, color: Color, width: float) -> void:
 	var corners: PackedVector2Array = model.cell_corners(key)
@@ -336,13 +345,6 @@ func _paint_cell(key: Vector2i) -> void:
 			changed = model.add_object(key, tool)
 		"custom":
 			changed = model.add_object(key, "custom", "")
-		"eraser":
-			# Left-drag with the eraser tool mirrors right-drag: top object
-			# off the cell, Shift clears the whole cell.
-			if Input.is_key_pressed(KEY_SHIFT):
-				changed = model.clear_cell(key)
-			else:
-				changed = model.remove_top(key)
 	if changed:
 		queue_redraw()
 

@@ -17,6 +17,16 @@ const TYPE_NAMES: Dictionary = {
 	"custom": "Свой тайл",
 }
 
+# Custom tile colors, as #rrggbb strings. Index 0 is the default: it matches
+# the purple the view used before colors existed, so old maps render
+# exactly as before. All eight are dark enough to read as text on the
+# light parchment background.
+const DEFAULT_CUSTOM_COLOR: String = "#8c4db3"
+const CUSTOM_COLORS: Array[String] = [
+	DEFAULT_CUSTOM_COLOR, "#c0392b", "#d35400", "#b7950b",
+	"#1e8449", "#148f77", "#2471a3", "#795548",
+]
+
 var grid_type: int = GridType.SQUARE
 # Vector2i cell key -> Array of {"type": String, "text": String}
 var cells: Dictionary = {}
@@ -133,16 +143,27 @@ func stack_of(key: Vector2i) -> Array:
 	return []
 
 # Adds an object; same type twice in one cell is idempotent (no duplicates).
-# For a custom tile, re-adding with new non-empty text updates its meaning.
-func add_object(key: Vector2i, type: String, text: String = "") -> bool:
+# For a custom tile, re-adding with new non-empty text updates its meaning
+# and with a new color updates its color. New custom tiles get the
+# default color unless one is passed (the creation dialog passes it).
+func add_object(key: Vector2i, type: String, text: String = "", color: String = "") -> bool:
 	var stack: Array = stack_of(key)
 	for obj in stack:
 		if obj["type"] == type:
-			if type == "custom" and text != "" and obj["text"] != text:
-				obj["text"] = text
-				return true
+			if type == "custom":
+				var changed: bool = false
+				if text != "" and obj["text"] != text:
+					obj["text"] = text
+					changed = true
+				if color != "" and str(obj.get("color", "")) != color:
+					obj["color"] = color
+					changed = true
+				return changed
 			return false
-	stack.append({"type": type, "text": text})
+	if type == "custom":
+		stack.append({"type": type, "text": text, "color": color if color != "" else DEFAULT_CUSTOM_COLOR})
+	else:
+		stack.append({"type": type, "text": text})
 	cells[key] = stack
 	return true
 
@@ -188,11 +209,11 @@ func stack_copy(key: Vector2i) -> Array:
 	return out
 
 # Merges a copied stack into a cell: missing types are added, existing ones
-# stay (a custom tile's meaning updates). Returns true if anything changed.
+# stay (a custom tile's meaning and color update). Returns true if anything changed.
 func stamp_stack(key: Vector2i, stack: Array) -> bool:
 	var changed: bool = false
 	for obj in stack:
-		if add_object(key, str(obj["type"]), str(obj.get("text", ""))):
+		if add_object(key, str(obj["type"]), str(obj.get("text", "")), str(obj.get("color", ""))):
 			changed = true
 	return changed
 
@@ -208,8 +229,17 @@ func _has_custom(key: Vector2i) -> bool:
 			return true
 	return false
 
-# Connected components of custom tiles, grouped by identical meaning text.
-# (Color joins the key when custom colors land.) Each entry: {"text": String, "cells": Array[Vector2i]}.
+# The color of a cell's custom tile (default when unset, e.g. old saves).
+func custom_color(key: Vector2i) -> String:
+	for obj in stack_of(key):
+		if obj["type"] == "custom":
+			var c: String = str(obj.get("color", ""))
+			return c if c != "" else DEFAULT_CUSTOM_COLOR
+	return DEFAULT_CUSTOM_COLOR
+
+# Connected components of custom tiles, grouped by identical meaning text
+# AND color: same text in different colors renders as separate polygons.
+# Each entry: {"text": String, "color": String, "cells": Array[Vector2i]}.
 # Pure data for the view's display merge; the model itself stays per-cell,
 # so painting, erasing, undo and copy keep working cell by cell.
 func custom_components() -> Array:
@@ -219,6 +249,7 @@ func custom_components() -> Array:
 		if seen.has(key) or not _has_custom(key):
 			continue
 		var text: String = _custom_text(key)
+		var color: String = custom_color(key)
 		var comp: Array[Vector2i] = []
 		var stack: Array[Vector2i] = [key]
 		seen[key] = true
@@ -228,11 +259,11 @@ func custom_components() -> Array:
 			for nb in cell_neighbors(cur):
 				if seen.has(nb) or not _has_custom(nb):
 					continue
-				if _custom_text(nb) != text:
+				if _custom_text(nb) != text or custom_color(nb) != color:
 					continue
 				seen[nb] = true
 				stack.append(nb)
-		out.append({"text": text, "cells": comp})
+		out.append({"text": text, "color": color, "cells": comp})
 	return out
 
 func bounds() -> Rect2:
@@ -290,7 +321,11 @@ func from_json_string(s: String) -> bool:
 			if raw_stack is Array:
 				for obj in raw_stack:
 					if obj is Dictionary and obj.has("type"):
-						stack.append({"type": str(obj["type"]), "text": str(obj.get("text", ""))})
+						if str(obj["type"]) == "custom":
+							var c: String = str(obj.get("color", ""))
+							stack.append({"type": "custom", "text": str(obj.get("text", "")), "color": c if c != "" else DEFAULT_CUSTOM_COLOR})
+						else:
+							stack.append({"type": str(obj["type"]), "text": str(obj.get("text", ""))})
 			new_cells[key_from_string(str(k))] = stack
 	var new_notes: Dictionary = {}
 	var raw_notes: Variant = parsed.get("notes", {})

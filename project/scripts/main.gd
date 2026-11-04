@@ -16,8 +16,7 @@ const TOOLS: Array = [
 	{"id": "pit", "label": "Яма (4)"},
 	{"id": "custom", "label": "Свой тайл (5)"},
 	{"id": "text", "label": "Текст (6)"},
-	{"id": "eraser", "label": "Ластик (7)"},
-	{"id": "bounds", "label": "Границы (8)"},
+	{"id": "bounds", "label": "Границы (7)"},
 ]
 
 @onready var map_view: Node2D = $MapView
@@ -40,6 +39,10 @@ var _popup_label: Label = null
 var _popup_edit: LineEdit = null
 var _popup_cell: Vector2i = Vector2i.ZERO
 var _popup_kind: String = ""
+var _popup_colors: HBoxContainer = null
+var _popup_swatches: Array[Button] = []
+var _popup_color: String = ""
+var _last_custom_color: String = ""
 var _merge_check: CheckBox = null
 var _gemini_dialog: Panel = null
 var _gemini_edit: TextEdit = null
@@ -183,9 +186,9 @@ func _build_ui() -> void:
 	_popup.anchor_right = 0.5
 	_popup.anchor_bottom = 0.5
 	_popup.offset_left = -260.0
-	_popup.offset_top = -70.0
+	_popup.offset_top = -95.0
 	_popup.offset_right = 260.0
-	_popup.offset_bottom = 70.0
+	_popup.offset_bottom = 95.0
 	_popup.visible = false
 	_ui_layer.add_child(_popup)
 	var pop_box: VBoxContainer = VBoxContainer.new()
@@ -197,6 +200,25 @@ func _build_ui() -> void:
 	_popup_edit = LineEdit.new()
 	_popup_edit.text_submitted.connect(_on_popup_ok)
 	pop_box.add_child(_popup_edit)
+	# Color palette for custom tiles: one row of swatches, shown only for
+	# the custom-tile dialog (hidden for text notes). The selected swatch
+	# gets a white border; the same StyleBoxFlat serves normal/hover/
+	# pressed so the swatch never flashes theme gray.
+	_popup_colors = HBoxContainer.new()
+	_popup_colors.add_theme_constant_override("separation", 8)
+	pop_box.add_child(_popup_colors)
+	for hex in GridMapData.CUSTOM_COLORS:
+		var sw: Button = Button.new()
+		sw.custom_minimum_size = Vector2(32.0, 32.0)
+		sw.text = ""
+		var sb: StyleBoxFlat = StyleBoxFlat.new()
+		sb.bg_color = Color(hex)
+		sw.add_theme_stylebox_override("normal", sb)
+		sw.add_theme_stylebox_override("hover", sb)
+		sw.add_theme_stylebox_override("pressed", sb)
+		sw.pressed.connect(_on_color_pick.bind(hex))
+		_popup_colors.add_child(sw)
+		_popup_swatches.append(sw)
 	var pop_btns: HBoxContainer = HBoxContainer.new()
 	pop_box.add_child(pop_btns)
 	var ok_btn: Button = Button.new()
@@ -326,13 +348,20 @@ func _on_text_requested(cell: Vector2i, kind: String) -> void:
 	if kind == "custom":
 		_popup_label.text = "Что значит этот тайл?"
 		_popup_edit.text = ""
+		_popup_color = _last_custom_color if _last_custom_color != "" else GridMapData.DEFAULT_CUSTOM_COLOR
 		for obj in model.stack_of(cell):
 			if obj["type"] == "custom":
 				_popup_edit.text = str(obj["text"])
+				var c: String = str(obj.get("color", ""))
+				if c != "":
+					_popup_color = c
 				break
+		_popup_colors.visible = true
+		_refresh_swatches()
 	else:
 		_popup_label.text = "Подпись на клетке:"
 		_popup_edit.text = str(model.notes.get(cell, ""))
+		_popup_colors.visible = false
 	_popup.visible = true
 	_popup_edit.grab_focus()
 	_popup_edit.select_all()
@@ -344,7 +373,8 @@ func _on_popup_ok(_text: String = "") -> void:
 	_push_undo()
 	var text: String = _popup_edit.text
 	if _popup_kind == "custom":
-		model.add_object(_popup_cell, "custom", text)
+		model.add_object(_popup_cell, "custom", text, _popup_color)
+		_last_custom_color = _popup_color
 	else:
 		model.set_note(_popup_cell, text)
 	_save()
@@ -352,6 +382,24 @@ func _on_popup_ok(_text: String = "") -> void:
 
 func _on_popup_cancel() -> void:
 	_popup.visible = false
+
+func _on_color_pick(hex: String) -> void:
+	_popup_color = hex
+	_refresh_swatches()
+
+func _refresh_swatches() -> void:
+	for i in _popup_swatches.size():
+		var sw: Button = _popup_swatches[i]
+		var sb: StyleBoxFlat = sw.get_theme_stylebox("normal") as StyleBoxFlat
+		if sb == null:
+			continue
+		var selected: bool = GridMapData.CUSTOM_COLORS[i] == _popup_color
+		var w: int = 3 if selected else 1
+		sb.border_width_left = w
+		sb.border_width_top = w
+		sb.border_width_right = w
+		sb.border_width_bottom = w
+		sb.border_color = Color.WHITE if selected else Color(0.25, 0.25, 0.25)
 
 func _fit_view() -> void:
 	var rect: Rect2 = model.bounds()
@@ -660,8 +708,6 @@ func _input(event: InputEvent) -> void:
 		elif k.physical_keycode == KEY_6:
 			_select_tool("text")
 		elif k.physical_keycode == KEY_7:
-			_select_tool("eraser")
-		elif k.physical_keycode == KEY_8:
 			_select_tool("bounds")
 		elif k.physical_keycode == KEY_DELETE or k.physical_keycode == KEY_BACKSPACE:
 			# Delete the hovered cell's top object (Shift = whole cell).
