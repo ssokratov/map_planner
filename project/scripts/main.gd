@@ -1,9 +1,13 @@
 extends Node
-## Wires the toolbox UI, text popups, autosave, undo and PNG export.
+## Wires the toolbox UI, text popups, autosave, undo, PNG export and the
+## "В Gemini" handoff (image to clipboard + Gemini tab + editable prompt).
 ## All UI is built in code so the prototype stays in three scripts.
 
 const SAVE_PATH: String = "user://map.json"
 const EXPORT_NAME: String = "map_plan.png"
+const GEMINI_PROMPT_PATH: String = "user://gemini_prompt.txt"
+const GEMINI_URL: String = "https://gemini.google.com/"
+const GEMINI_PROMPT_DEFAULT: String = """Преврати этот схематичный план карты подземелья в красивую карту для D&D, вид строго сверху. Сохрани точную геометрию: все стены, двери, окна и ямы должны остаться ровно на тех же местах — ничего не двигай, не добавляй и не убирай. Тонкие линии сетки — вспомогательные, в итоговой карте сетку не рисуй. Текст и подписи не рисуй. Стиль: рисованная от руки фэнтезийная карта на пергаменте, тёплые цвета, чёткие контуры."""
 
 const TOOLS: Array = [
 	{"id": "wall", "label": "Стена (1)"},
@@ -37,6 +41,8 @@ var _popup_label: Label = null
 var _popup_edit: LineEdit = null
 var _popup_cell: Vector2i = Vector2i.ZERO
 var _popup_kind: String = ""
+var _gemini_dialog: Panel = null
+var _gemini_edit: TextEdit = null
 var _last_status: String = ""
 
 func _ready() -> void:
@@ -126,6 +132,10 @@ func _build_ui() -> void:
 	copy_btn.text = "Копировать в буфер"
 	copy_btn.pressed.connect(_copy_to_clipboard)
 	box.add_child(copy_btn)
+	var gemini_btn: Button = Button.new()
+	gemini_btn.text = "В Gemini"
+	gemini_btn.pressed.connect(_on_gemini_pressed)
+	box.add_child(gemini_btn)
 	var fit_bounds_btn: Button = Button.new()
 	fit_bounds_btn.text = "Границы по содержимому"
 	fit_bounds_btn.pressed.connect(_fit_bounds_to_content)
@@ -188,6 +198,40 @@ func _build_ui() -> void:
 	cancel_btn.text = "Отмена"
 	cancel_btn.pressed.connect(_on_popup_cancel)
 	pop_btns.add_child(cancel_btn)
+
+	_gemini_dialog = Panel.new()
+	_gemini_dialog.anchor_left = 0.5
+	_gemini_dialog.anchor_top = 0.5
+	_gemini_dialog.anchor_right = 0.5
+	_gemini_dialog.anchor_bottom = 0.5
+	_gemini_dialog.offset_left = -300.0
+	_gemini_dialog.offset_top = -190.0
+	_gemini_dialog.offset_right = 300.0
+	_gemini_dialog.offset_bottom = 190.0
+	_gemini_dialog.visible = false
+	_ui_layer.add_child(_gemini_dialog)
+	var gem_box: VBoxContainer = VBoxContainer.new()
+	gem_box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	gem_box.add_theme_constant_override("separation", 6)
+	_gemini_dialog.add_child(gem_box)
+	var gem_hint: Label = Label.new()
+	gem_hint.text = "Картинка копируется в буфер обмена (статус — внизу слева).\nВставь её (Ctrl+V) и промпт в чат Gemini. Если вкладка\nне открылась (блокировщик всплывающих окон), открой\nвручную gemini.google.com. Текст промпта сохраняется\nи подставится в следующий раз."
+	gem_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	gem_box.add_child(gem_hint)
+	_gemini_edit = TextEdit.new()
+	_gemini_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	_gemini_edit.custom_minimum_size = Vector2(560.0, 220.0)
+	gem_box.add_child(_gemini_edit)
+	var gem_btns: HBoxContainer = HBoxContainer.new()
+	gem_box.add_child(gem_btns)
+	var gem_copy_btn: Button = Button.new()
+	gem_copy_btn.text = "Скопировать промпт"
+	gem_copy_btn.pressed.connect(_copy_gemini_prompt)
+	gem_btns.add_child(gem_copy_btn)
+	var gem_close_btn: Button = Button.new()
+	gem_close_btn.text = "Закрыть"
+	gem_close_btn.pressed.connect(_close_gemini_dialog)
+	gem_btns.add_child(gem_close_btn)
 
 func _select_tool(id: String) -> void:
 	current_tool = id
@@ -425,40 +469,93 @@ func _copy_to_clipboard() -> void:
 	if OS.has_feature("web"):
 		_copy_to_clipboard_web(img)
 		return
+	var hint: String = _copy_image_desktop(img)
+	if _save_label != null:
+		if hint == "":
+			_save_label.text = "Скопировано в буфер обмена"
+		elif hint == "save":
+			_save_label.text = "Не удалось сохранить PNG"
+		else:
+			_save_label.text = "Буфер не удался (" + hint + ") — PNG: " + OS.get_user_data_dir() + "/map_clipboard.png"
+
+# Desktop image clipboard (shared by "Копировать в буфер" and "В Gemini").
+# Returns "" on success, "save" if the PNG could not be written, otherwise
+# a short hint why the OS tool failed. The PNG file is always the fallback.
+func _copy_image_desktop(img: Image) -> String:
 	var path: String = OS.get_user_data_dir() + "/map_clipboard.png"
 	if img.save_png(path) != OK:
-		if _save_label != null:
-			_save_label.text = "Не удалось сохранить PNG"
-		return
+		return "save"
 	var os_name: String = OS.get_name()
-	var ok: bool = false
-	var hint: String = ""
 	if os_name == "Linux":
 		if _run_clipboard("xclip", ["-selection", "clipboard", "-t", "image/png", "-i", path]):
-			ok = true
-		elif _run_clipboard("sh", ["-c", "wl-copy --type image/png < '" + path.replace("'", "'\\''") + "'"]):
-			ok = true
-		else:
-			hint = "нужны xclip или wl-copy"
-	elif os_name == "Windows":
+			return ""
+		if _run_clipboard("sh", ["-c", "wl-copy --type image/png < '" + path.replace("'", "'\\''") + "'"]):
+			return ""
+		return "нужны xclip или wl-copy"
+	if os_name == "Windows":
 		var ps: String = "Add-Type -AssemblyName System.Windows.Forms; [Windows.Forms.Clipboard]::SetImage([System.Drawing.Image]::FromFile('" + path.replace("'", "''") + "'))"
 		if _run_clipboard("powershell", ["-NoProfile", "-Command", ps]):
-			ok = true
-		else:
-			hint = "не сработал PowerShell"
-	elif os_name == "macOS":
+			return ""
+		return "не сработал PowerShell"
+	if os_name == "macOS":
 		var sc: String = "set the clipboard to (read (POSIX file \"" + path + "\") as «class PNGf»)"
 		if _run_clipboard("osascript", ["-e", sc]):
-			ok = true
-		else:
-			hint = "не сработал osascript"
+			return ""
+		return "не сработал osascript"
+	return "неизвестная ОС"
+
+# "В Gemini" handoff: image to the clipboard, Gemini in a new tab, and an
+# editable prompt dialog. The tab opens FIRST, synchronously in the click:
+# after the render await the browser may no longer count as a user gesture
+# and a popup blocker could eat window.open.
+func _on_gemini_pressed() -> void:
+	if DisplayServer.get_name() == "headless":
+		if _save_label != null:
+			_save_label.text = "Gemini недоступна без окна"
+		return
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.open('" + GEMINI_URL + "','_blank');")
 	else:
-		hint = "неизвестная ОС"
+		OS.shell_open(GEMINI_URL)
+	var img: Image = await _render_bounds_image()
+	if OS.has_feature("web"):
+		_copy_to_clipboard_web(img)
+	else:
+		_copy_image_desktop(img)
+	_show_gemini_dialog()
+
+func _show_gemini_dialog() -> void:
+	if FileAccess.file_exists(GEMINI_PROMPT_PATH):
+		_gemini_edit.text = FileAccess.get_file_as_string(GEMINI_PROMPT_PATH)
+	else:
+		_gemini_edit.text = GEMINI_PROMPT_DEFAULT
+	_gemini_dialog.visible = true
+	_gemini_edit.grab_focus()
+
+func _close_gemini_dialog() -> void:
+	var f: FileAccess = FileAccess.open(GEMINI_PROMPT_PATH, FileAccess.WRITE)
+	if f != null:
+		f.store_string(_gemini_edit.text)
+		f.close()
+	_gemini_dialog.visible = false
+
+func _copy_gemini_prompt() -> void:
+	var text: String = _gemini_edit.text
+	if OS.has_feature("web"):
+		var b64: String = Marshalls.utf8_to_base64(text)
+		JavaScriptBridge.eval("window.__mbText='pending';navigator.clipboard.writeText(new TextDecoder().decode(Uint8Array.from(atob('" + b64 + "'),function(c){return c.charCodeAt(0);}))).then(function(){window.__mbText='ok';}).catch(function(){window.__mbText='err';});")
+		var result: String = "pending"
+		for _i in range(10):
+			await get_tree().create_timer(0.2).timeout
+			result = str(JavaScriptBridge.eval("window.__mbText"))
+			if result != "pending":
+				break
+		if _save_label != null:
+			_save_label.text = "Промпт скопирован" if result == "ok" else "Промпт не скопировался — выдели текст вручную"
+		return
+	DisplayServer.clipboard_set(text)
 	if _save_label != null:
-		if ok:
-			_save_label.text = "Скопировано в буфер обмена"
-		else:
-			_save_label.text = "Буфер не удался (" + hint + ") — PNG: " + path
+		_save_label.text = "Промпт скопирован"
 
 func _run_clipboard(cmd: String, args: Array) -> bool:
 	return OS.execute(cmd, args) == 0
@@ -500,8 +597,12 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_cancel"):
 			_on_popup_cancel()
 		return
+	if _gemini_dialog != null and _gemini_dialog.visible:
+		if event.is_action_pressed("ui_cancel"):
+			_close_gemini_dialog()
+		return
 	var focus: Control = get_viewport().gui_get_focus_owner()
-	if focus is LineEdit:
+	if focus is LineEdit or focus is TextEdit:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var k: InputEventKey = event
