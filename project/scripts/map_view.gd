@@ -267,13 +267,6 @@ func _unhandled_input(event: InputEvent) -> void:
 					_bounds_drag_start = get_global_mouse_position()
 					stroke_started.emit()
 					return
-				if tool == "copy":
-					if mb.alt_pressed:
-						copy_buffer = model.stack_copy(key)
-						queue_redraw()
-						return
-					if copy_buffer.is_empty():
-						return
 				if tool == "text":
 					text_requested.emit(key, "note")
 					return
@@ -343,8 +336,6 @@ func _paint_cell(key: Vector2i) -> void:
 			changed = model.add_object(key, tool)
 		"custom":
 			changed = model.add_object(key, "custom", "")
-		"copy":
-			changed = model.stamp_stack(key, copy_buffer)
 		"eraser":
 			# Left-drag with the eraser tool mirrors right-drag: top object
 			# off the cell, Shift clears the whole cell.

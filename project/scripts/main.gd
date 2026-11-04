@@ -18,7 +18,6 @@ const TOOLS: Array = [
 	{"id": "text", "label": "Текст (6)"},
 	{"id": "eraser", "label": "Ластик (7)"},
 	{"id": "bounds", "label": "Границы (8)"},
-	{"id": "copy", "label": "Копия (9)"},
 ]
 
 @onready var map_view: Node2D = $MapView
@@ -609,12 +608,7 @@ func _process(_delta: float) -> void:
 			text += "  |  Подпись: " + note
 	var buf: String = model.describe_stack(map_view.copy_buffer)
 	if buf != "":
-		if current_tool == "copy":
-			text += "  |  Копия: " + buf + " — клик/ведение ставит, Alt+клик берёт новый"
-		else:
-			text += "  |  Копия: " + buf + " — Ctrl+V ставит"
-	elif current_tool == "copy":
-		text += "  |  Копия: буфер пуст — Alt+клик по клетке взять образец"
+		text += "  |  Копия: " + buf + " — Ctrl+V ставит"
 	if text != _last_status:
 		_last_status = text
 		_status_label.text = text
@@ -633,16 +627,18 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var k: InputEventKey = event
-		if k.ctrl_pressed and k.keycode == KEY_Z:
+		if k.ctrl_pressed and k.physical_keycode == KEY_Z:
 			_undo()
-		elif (k.ctrl_pressed or k.meta_pressed) and k.keycode == KEY_C:
-			# Copy the hovered cell's stack into the shared copy buffer
-			# (same buffer the "Копия" tool uses). Text-field focus is
-			# guarded above, so typing is never hijacked.
+		elif (k.ctrl_pressed or k.meta_pressed) and k.physical_keycode == KEY_C:
+			# Copy the hovered cell's stack into the copy buffer.
+			# physical_keycode (not keycode): in a Russian layout the
+			# logical keycode of the C/V/Z keys is Cyrillic, so keycode
+			# matching silently breaks all letter shortcuts.
+			# Text-field focus is guarded above, so typing is never hijacked.
 			if map_view.has_hover:
 				map_view.copy_buffer = model.stack_copy(map_view.hover_key)
 				map_view.refresh()
-		elif (k.ctrl_pressed or k.meta_pressed) and k.keycode == KEY_V:
+		elif (k.ctrl_pressed or k.meta_pressed) and k.physical_keycode == KEY_V:
 			if map_view.has_hover and not map_view.copy_buffer.is_empty():
 				var before: String = model.to_json_string()
 				if model.stamp_stack(map_view.hover_key, map_view.copy_buffer):
@@ -651,25 +647,23 @@ func _input(event: InputEvent) -> void:
 						undo_stack.pop_front()
 					_save()
 					map_view.refresh()
-		elif k.keycode == KEY_1:
+		elif k.physical_keycode == KEY_1:
 			_select_tool("wall")
-		elif k.keycode == KEY_2:
+		elif k.physical_keycode == KEY_2:
 			_select_tool("door")
-		elif k.keycode == KEY_3:
+		elif k.physical_keycode == KEY_3:
 			_select_tool("window")
-		elif k.keycode == KEY_4:
+		elif k.physical_keycode == KEY_4:
 			_select_tool("pit")
-		elif k.keycode == KEY_5:
+		elif k.physical_keycode == KEY_5:
 			_select_tool("custom")
-		elif k.keycode == KEY_6:
+		elif k.physical_keycode == KEY_6:
 			_select_tool("text")
-		elif k.keycode == KEY_7:
+		elif k.physical_keycode == KEY_7:
 			_select_tool("eraser")
-		elif k.keycode == KEY_8:
+		elif k.physical_keycode == KEY_8:
 			_select_tool("bounds")
-		elif k.keycode == KEY_9:
-			_select_tool("copy")
-		elif k.keycode == KEY_DELETE or k.keycode == KEY_BACKSPACE:
+		elif k.physical_keycode == KEY_DELETE or k.physical_keycode == KEY_BACKSPACE:
 			# Delete the hovered cell's top object (Shift = whole cell).
 			# LineEdit focus is guarded above, so typing is never affected.
 			if map_view.has_hover:
@@ -681,7 +675,7 @@ func _input(event: InputEvent) -> void:
 					model.remove_top(key)
 				_save()
 				map_view.refresh()
-		elif k.keycode == KEY_G:
+		elif k.physical_keycode == KEY_G:
 			_select_grid(1 if model.grid_type == 0 else 0)
-		elif k.keycode == KEY_F:
+		elif k.physical_keycode == KEY_F:
 			_fit_view()
