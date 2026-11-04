@@ -6,6 +6,7 @@ extends Node2D
 signal stroke_started
 signal stroke_ended
 signal text_requested(cell: Vector2i, kind: String)
+signal legend_edit_requested(row: Dictionary)
 
 const GRID_COLOR: Color = Color(0.82, 0.82, 0.82)
 const BG_COLOR: Color = Color(0.96, 0.94, 0.87)
@@ -18,6 +19,14 @@ const DOOR_EDGE: Color = Color(0.3, 0.2, 0.1)
 const WINDOW_COLOR: Color = Color(0.62, 0.76, 0.92)
 const WINDOW_EDGE: Color = Color(0.35, 0.5, 0.65)
 const CUSTOM_COLOR: Color = Color(0.55, 0.3, 0.7)
+const LEGEND_BG: Color = Color(1.0, 0.97, 0.88, 0.95)
+const LEGEND_BORDER: Color = Color(0.45, 0.35, 0.22)
+const LEGEND_FG: Color = Color(0.2, 0.15, 0.08)
+const LEGEND_PAD: float = 10.0
+const LEGEND_HEADER_H: float = 30.0
+const LEGEND_ROW_H: float = 30.0
+const LEGEND_SWATCH: float = 20.0
+const LEGEND_GAP: float = 8.0
 const NOTE_BG: Color = Color(1.0, 0.95, 0.8, 0.88)
 const NOTE_FG: Color = Color(0.3, 0.15, 0.05)
 const BOUNDS_COLOR: Color = Color(0.85, 0.65, 0.15)
@@ -33,10 +42,17 @@ var copy_buffer: Array = []
 
 var hover_key: Vector2i = Vector2i.ZERO
 var has_hover: bool = false
+# True while the mouse is over the legend block (for the status hint).
+var legend_hover: bool = false
 
 var _painting: bool = false
 var _erasing: bool = false
 var _panning: bool = false
+var _legend_drag: bool = false
+var _legend_drag_start_world: Vector2 = Vector2.ZERO
+var _legend_drag_start_pos: Vector2 = Vector2.ZERO
+var _legend_drag_moved: bool = false
+var _legend_press_row: Dictionary = {}
 var _last_screen: Vector2 = Vector2.ZERO
 var _stroke_cells: Dictionary = {}
 var _bounds_drag_start: Variant = null
@@ -56,6 +72,7 @@ func _draw() -> void:
 	_draw_grid(rect)
 	_draw_cells(rect)
 	_draw_notes(rect)
+	_draw_legend()
 	if show_overlays:
 		if model.has_export_bounds:
 			_draw_dashed_rect(model.export_bounds, BOUNDS_COLOR)
@@ -197,6 +214,81 @@ func _draw_object(key: Vector2i, center: Vector2, type: String, text: String, co
 				else:
 					_draw_centered_text(text, center, w, 13, col)
 
+# The legend block rect in world coords, or an empty rect when there are
+# no rows. Position: saved drag position, else auto-placed right of the
+# content, aligned to its top. Measured with the fallback font, so it
+# always fits its longest label. Content, not an overlay: it renders in
+# exports too (show_overlays does not gate it).
+func legend_rect() -> Rect2:
+	if model == null or _font == null:
+		return Rect2()
+	var rows: Array = model.legend_rows()
+	if rows.is_empty():
+		return Rect2()
+	var content_w: float = _font.get_string_size("Легенда", HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	for row in rows:
+		var lw: float = _font.get_string_size(str(row["label"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		content_w = max(content_w, LEGEND_SWATCH + LEGEND_GAP + lw)
+	var w: float = content_w + LEGEND_PAD * 2.0
+	var h: float = LEGEND_PAD * 2.0 + LEGEND_HEADER_H + LEGEND_ROW_H * float(rows.size())
+	var pos: Vector2 = model.legend_pos if model.has_legend_pos else legend_default_pos()
+	return Rect2(pos, Vector2(w, h))
+
+func legend_default_pos() -> Vector2:
+	var b: Rect2 = model.bounds()
+	return Vector2(b.end.x + 24.0, b.position.y)
+
+# Row dict under a world point, {"header": true} for the header area,
+# {} outside the block.
+func legend_row_at(p: Vector2) -> Dictionary:
+	var r: Rect2 = legend_rect()
+	if r.size == Vector2.ZERO or not r.has_point(p):
+		return {}
+	var y: float = p.y - r.position.y
+	if y < LEGEND_PAD + LEGEND_HEADER_H:
+		return {"header": true}
+	var idx: int = int((y - LEGEND_PAD - LEGEND_HEADER_H) / LEGEND_ROW_H)
+	var rows: Array = model.legend_rows()
+	if idx < 0 or idx >= rows.size():
+		return {}
+	return rows[idx]
+
+func _draw_legend() -> void:
+	if model == null or _font == null:
+		return
+	var rows: Array = model.legend_rows()
+	if rows.is_empty():
+		return
+	var r: Rect2 = legend_rect()
+	draw_rect(r, LEGEND_BG)
+	draw_rect(r, LEGEND_BORDER, false, 1.5)
+	var header_cy: float = r.position.y + LEGEND_PAD + LEGEND_HEADER_H / 2.0
+	_draw_centered_text("Легенда", Vector2(r.position.x + r.size.x / 2.0, header_cy), r.size.x - LEGEND_PAD * 2.0, 16, LEGEND_FG)
+	for i in rows.size():
+		var row: Dictionary = rows[i]
+		var cy: float = r.position.y + LEGEND_PAD + LEGEND_HEADER_H + LEGEND_ROW_H * float(i) + LEGEND_ROW_H / 2.0
+		var sx: float = r.position.x + LEGEND_PAD
+		var sw_col: Color = LEGEND_FG
+		if str(row["kind"]) == "custom":
+			sw_col = _color_from_hex(str(row["color"]))
+		else:
+			match str(row["type"]):
+				"wall":
+					sw_col = WALL_COLOR
+				"door":
+					sw_col = DOOR_COLOR
+				"window":
+					sw_col = WINDOW_COLOR
+				"pit":
+					sw_col = PIT_COLOR
+		var sw_rect: Rect2 = Rect2(Vector2(sx, cy - LEGEND_SWATCH / 2.0), Vector2(LEGEND_SWATCH, LEGEND_SWATCH))
+		draw_rect(sw_rect, sw_col)
+		draw_rect(sw_rect, LEGEND_BORDER, false, 1.0)
+		var label: String = str(row["label"])
+		if label != "":
+			var baseline: float = cy + (_font.get_ascent(14) - _font.get_descent(14)) / 2.0
+			draw_string(_font, Vector2(sx + LEGEND_SWATCH + LEGEND_GAP, baseline), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, LEGEND_FG)
+
 func _draw_notes(rect: Rect2) -> void:
 	if _font == null:
 		return
@@ -272,6 +364,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key: Vector2i = model.cell_key_from_world(get_global_mouse_position())
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.pressed:
+				# The legend block sits above the map: pressing inside it
+				# starts a legend drag (a click without moving edits the
+				# row on release), never a paint stroke.
+				var lr: Dictionary = legend_row_at(get_global_mouse_position())
+				if not lr.is_empty():
+					_legend_drag = true
+					_legend_drag_start_world = get_global_mouse_position()
+					_legend_drag_start_pos = legend_rect().position
+					_legend_drag_moved = false
+					_legend_press_row = lr
+					stroke_started.emit()
+					return
 				if tool == "bounds":
 					_bounds_drag_start = get_global_mouse_position()
 					stroke_started.emit()
@@ -292,6 +396,13 @@ func _unhandled_input(event: InputEvent) -> void:
 					stroke_ended.emit()
 					queue_redraw()
 					return
+				if _legend_drag:
+					_legend_drag = false
+					stroke_ended.emit()
+					if not _legend_drag_moved and _legend_press_row.has("key"):
+						legend_edit_requested.emit(_legend_press_row)
+					_legend_press_row = {}
+					return
 				if _painting:
 					_painting = false
 					# Single-click with the custom tool opens the meaning editor.
@@ -300,6 +411,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					stroke_ended.emit()
 		elif mb.button_index == MOUSE_BUTTON_RIGHT:
 			if mb.pressed:
+				# The legend floats above cells: right-clicks on it must not
+				# erase the map underneath.
+				if not legend_row_at(get_global_mouse_position()).is_empty():
+					return
 				stroke_started.emit()
 				_erasing = true
 				_erase_cell(key)
@@ -319,6 +434,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			_zoom_at_cursor(0.9)
 	elif event is InputEventMouseMotion:
 		var mm: InputEventMouseMotion = event
+		if _legend_drag:
+			var delta: Vector2 = get_global_mouse_position() - _legend_drag_start_world
+			if delta.length() > 5.0:
+				_legend_drag_moved = true
+			if _legend_drag_moved:
+				model.legend_pos = _legend_drag_start_pos + delta
+				model.has_legend_pos = true
+				queue_redraw()
+			return
 		if _panning and camera != null:
 			camera.position -= (mm.position - _last_screen) / camera.zoom
 			_last_screen = mm.position
@@ -332,6 +456,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			hover_key = key
 			has_hover = true
 			queue_redraw()
+		legend_hover = not legend_row_at(get_global_mouse_position()).is_empty()
 		if _painting:
 			_paint_cell(key)
 		elif _erasing:

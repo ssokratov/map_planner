@@ -40,6 +40,12 @@ var has_export_bounds: bool = false
 # polygon with one centered label. Persisted with the map so the export
 # always matches what the user sees.
 var merge_adjacent: bool = true
+# Legend: rows are derived from the map (never stored as rows), but label
+# overrides and the block position persist. Overrides survive a row
+# temporarily leaving the map; clear_all() resets them with the map.
+var legend_labels: Dictionary = {}
+var legend_pos: Vector2 = Vector2.ZERO
+var has_legend_pos: bool = false
 
 func effective_bounds() -> Rect2:
 	if has_export_bounds:
@@ -185,6 +191,8 @@ func clear_cell(key: Vector2i) -> bool:
 func clear_all() -> void:
 	cells.clear()
 	notes.clear()
+	legend_labels.clear()
+	has_legend_pos = false
 
 func set_note(key: Vector2i, text: String) -> void:
 	if text.strip_edges() == "":
@@ -266,6 +274,53 @@ func custom_components() -> Array:
 		out.append({"text": text, "color": color, "cells": comp})
 	return out
 
+# Legend rows, derived from the current map: one per used built-in type
+# (toolbox order), then one per used custom-tile color (palette order,
+# unknown hexes last, sorted). Notes are never rows. Each row:
+# {"key": String, "kind": "type"|"custom", "type": String, "color": String,
+#  "default": String, "label": String} where label is the override if set.
+func legend_rows() -> Array:
+	var used_types: Dictionary = {}
+	var used_colors: Dictionary = {}
+	for key in cells.keys():
+		for obj in cells[key]:
+			var t: String = str(obj["type"])
+			if t == "custom":
+				var c: String = custom_color(key)
+				if not used_colors.has(c):
+					used_colors[c] = str(obj.get("text", ""))
+			elif TYPE_NAMES.has(t):
+				used_types[t] = true
+	var rows: Array = []
+	for t in ["wall", "door", "window", "pit"]:
+		if used_types.has(t):
+			rows.append(_legend_row("type:" + t, "type", t, "", str(TYPE_NAMES[t])))
+	for c in CUSTOM_COLORS:
+		if used_colors.has(c):
+			rows.append(_legend_row("custom:" + c, "custom", "", str(c), str(used_colors[c])))
+	var others: Array = []
+	for c in used_colors.keys():
+		if not CUSTOM_COLORS.has(c):
+			others.append(c)
+	others.sort()
+	for c in others:
+		rows.append(_legend_row("custom:" + c, "custom", "", str(c), str(used_colors[c])))
+	return rows
+
+func _legend_row(key: String, kind: String, type: String, color: String, default_label: String) -> Dictionary:
+	var label: String = default_label
+	if legend_labels.has(key):
+		label = str(legend_labels[key])
+	return {"key": key, "kind": kind, "type": type, "color": color, "default": default_label, "label": label}
+
+# Stores a label override, or erases it when the text equals the row's
+# default (so future meaning changes flow through again).
+func set_legend_label(key: String, text: String, default_label: String) -> void:
+	if text == default_label:
+		legend_labels.erase(key)
+	else:
+		legend_labels[key] = text
+
 func bounds() -> Rect2:
 	if cells.is_empty():
 		return Rect2(-480.0, -360.0, 960.0, 720.0)
@@ -298,12 +353,17 @@ func to_json_string() -> String:
 	var bounds_data: Variant = null
 	if has_export_bounds:
 		bounds_data = [export_bounds.position.x, export_bounds.position.y, export_bounds.size.x, export_bounds.size.y]
+	var legend_pos_data: Variant = null
+	if has_legend_pos:
+		legend_pos_data = [legend_pos.x, legend_pos.y]
 	var data: Dictionary = {
 		"grid": "hex" if grid_type == GridType.HEX else "square",
 		"cells": cell_data,
 		"notes": note_data,
 		"bounds": bounds_data,
 		"merge": merge_adjacent,
+		"legend_labels": legend_labels,
+		"legend_pos": legend_pos_data,
 	}
 	return JSON.stringify(data)
 
@@ -338,10 +398,24 @@ func from_json_string(s: String) -> bool:
 	if raw_bounds is Array and raw_bounds.size() == 4:
 		new_bounds = Rect2(float(raw_bounds[0]), float(raw_bounds[1]), float(raw_bounds[2]), float(raw_bounds[3]))
 		new_has_bounds = true
+	var new_legend_labels: Dictionary = {}
+	var raw_labels: Variant = parsed.get("legend_labels", {})
+	if raw_labels is Dictionary:
+		for k in raw_labels.keys():
+			new_legend_labels[str(k)] = str(raw_labels[k])
+	var new_legend_pos: Vector2 = Vector2.ZERO
+	var new_has_legend_pos: bool = false
+	var raw_lpos: Variant = parsed.get("legend_pos", null)
+	if raw_lpos is Array and raw_lpos.size() == 2:
+		new_legend_pos = Vector2(float(raw_lpos[0]), float(raw_lpos[1]))
+		new_has_legend_pos = true
 	grid_type = GridType.HEX if str(parsed.get("grid", "square")) == "hex" else GridType.SQUARE
 	merge_adjacent = bool(parsed.get("merge", true))
 	cells = new_cells
 	notes = new_notes
 	export_bounds = new_bounds
 	has_export_bounds = new_has_bounds
+	legend_labels = new_legend_labels
+	legend_pos = new_legend_pos
+	has_legend_pos = new_has_legend_pos
 	return true

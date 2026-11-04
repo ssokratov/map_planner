@@ -43,6 +43,8 @@ var _popup_colors: HBoxContainer = null
 var _popup_swatches: Array[Button] = []
 var _popup_color: String = ""
 var _last_custom_color: String = ""
+var _popup_legend_key: String = ""
+var _popup_legend_default: String = ""
 var _merge_check: CheckBox = null
 var _gemini_dialog: Panel = null
 var _gemini_edit: TextEdit = null
@@ -57,6 +59,7 @@ func _ready() -> void:
 	map_view.stroke_started.connect(_on_stroke_started)
 	map_view.stroke_ended.connect(_on_stroke_ended)
 	map_view.text_requested.connect(_on_text_requested)
+	map_view.legend_edit_requested.connect(_on_legend_edit_requested)
 	_build_ui()
 	_select_tool("wall")
 	_grid_buttons[model.grid_type].button_pressed = true
@@ -366,6 +369,17 @@ func _on_text_requested(cell: Vector2i, kind: String) -> void:
 	_popup_edit.grab_focus()
 	_popup_edit.select_all()
 
+func _on_legend_edit_requested(row: Dictionary) -> void:
+	_popup_legend_key = str(row["key"])
+	_popup_legend_default = str(row["default"])
+	_popup_kind = "legend"
+	_popup_label.text = "Подпись легенды:"
+	_popup_edit.text = str(row["label"])
+	_popup_colors.visible = false
+	_popup.visible = true
+	_popup_edit.grab_focus()
+	_popup_edit.select_all()
+
 func _on_popup_ok(_text: String = "") -> void:
 	if not _popup.visible:
 		return
@@ -375,6 +389,8 @@ func _on_popup_ok(_text: String = "") -> void:
 	if _popup_kind == "custom":
 		model.add_object(_popup_cell, "custom", text, _popup_color)
 		_last_custom_color = _popup_color
+	elif _popup_kind == "legend":
+		model.set_legend_label(_popup_legend_key, text, _popup_legend_default)
 	else:
 		model.set_note(_popup_cell, text)
 	_save()
@@ -412,7 +428,11 @@ func _fit_view() -> void:
 
 func _fit_bounds_to_content() -> void:
 	_push_undo()
-	model.set_export_bounds(model.bounds().grow(48.0))
+	var r: Rect2 = model.bounds().grow(48.0)
+	var lr: Rect2 = map_view.legend_rect()
+	if lr.size != Vector2.ZERO:
+		r = r.merge(lr)
+	model.set_export_bounds(r)
 	_save()
 	map_view.refresh()
 
@@ -427,6 +447,9 @@ func _clear_bounds() -> void:
 # letterbox. Overlays (bounds outline, hover) are suppressed for the shot.
 func _render_bounds_image() -> Image:
 	var rect: Rect2 = model.effective_bounds()
+	var lr: Rect2 = map_view.legend_rect()
+	if lr.size != Vector2.ZERO:
+		rect = rect.merge(lr)
 	var vp: Vector2 = get_viewport().get_visible_rect().size
 	var old_pos: Vector2 = camera.position
 	var old_zoom: Vector2 = camera.zoom
@@ -654,6 +677,8 @@ func _process(_delta: float) -> void:
 		var note: String = str(model.notes.get(key, ""))
 		if note != "":
 			text += "  |  Подпись: " + note
+	if map_view.legend_hover:
+		text += "  |  Легенда: тяни за блок, клик по строке — править подпись"
 	var buf: String = model.describe_stack(map_view.copy_buffer)
 	if buf != "":
 		text += "  |  Копия: " + buf + " — Ctrl+V ставит"
