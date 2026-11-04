@@ -121,6 +121,49 @@ func _process(_delta: float) -> bool:
 			_check(m.stamp_stack(mix, buf) == true, "stamp onto occupied changed")
 			_check(m.stack_names(mix) == "Яма, Стена, Дверь, Свой тайл", "stamp merges")
 			_check(m.stamp_stack(dst, []) == false, "stamp empty unchanged")
+		10:
+			# Display merge: custom-tile components + edge neighbors + flag.
+			var m = load("res://scripts/grid_map.gd").new()
+			_check(m.merge_adjacent == true, "merge default on")
+			m.grid_type = 0
+			m.add_object(Vector2i(0, 0), "custom", "ЯМА")
+			m.add_object(Vector2i(1, 0), "custom", "ЯМА")
+			m.add_object(Vector2i(0, 1), "custom", "ЯМА")
+			m.add_object(Vector2i(1, 1), "custom", "ЯМА")
+			m.add_object(Vector2i(3, 0), "custom", "ЯМА")
+			m.add_object(Vector2i(0, 2), "custom", "Алтарь")
+			m.add_object(Vector2i(1, 1), "wall")
+			var comps = m.custom_components()
+			_check(comps.size() == 3, "three components")
+			var big_found: bool = false
+			for c in comps:
+				if str(c["text"]) == "ЯМА" and (c["cells"] as Array).size() == 4:
+					big_found = true
+			_check(big_found, "2x2 block is one component")
+			_check(m.cell_edge_neighbor(Vector2i(0, 0), 0) == Vector2i(0, -1), "square edge 0 top")
+			_check(m.cell_edge_neighbor(Vector2i(0, 0), 1) == Vector2i(1, 0), "square edge 1 right")
+			_check(m.cell_edge_neighbor(Vector2i(0, 0), 2) == Vector2i(0, 1), "square edge 2 bottom")
+			_check(m.cell_edge_neighbor(Vector2i(0, 0), 3) == Vector2i(-1, 0), "square edge 3 left")
+			var d = load("res://scripts/grid_map.gd").new()
+			d.add_object(Vector2i(0, 0), "custom", "ЯМА")
+			d.add_object(Vector2i(1, 1), "custom", "ЯМА")
+			_check(d.custom_components().size() == 2, "diagonal does not merge")
+			var h = load("res://scripts/grid_map.gd").new()
+			h.grid_type = 1
+			h.add_object(Vector2i(0, 0), "custom", "ЯМА")
+			h.add_object(Vector2i(0, 1), "custom", "ЯМА")
+			h.add_object(Vector2i(1, 0), "custom", "ЯМА")
+			_check(h.custom_components().size() == 1, "hex neighbors merge")
+			_check(h.cell_edge_neighbor(Vector2i(0, 0), 0) == Vector2i(0, 1), "hex edge 0")
+			_check(h.cell_edge_neighbor(Vector2i(0, 0), 5) == Vector2i(1, 0), "hex edge 5")
+			m.merge_adjacent = false
+			var s: String = m.to_json_string()
+			var m2 = load("res://scripts/grid_map.gd").new()
+			_check(m2.from_json_string(s) == true, "merge json parse")
+			_check(m2.merge_adjacent == false, "merge flag roundtrip")
+			var m3 = load("res://scripts/grid_map.gd").new()
+			_check(m3.from_json_string("{\"grid\":\"square\",\"cells\":{},\"notes\":{}}") == true, "json without merge parses")
+			_check(m3.merge_adjacent == true, "json without merge defaults on")
 			if not _failed:
 				print("ALL CHECKS PASSED")
 			quit()

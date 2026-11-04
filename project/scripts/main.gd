@@ -41,6 +41,7 @@ var _popup_label: Label = null
 var _popup_edit: LineEdit = null
 var _popup_cell: Vector2i = Vector2i.ZERO
 var _popup_kind: String = ""
+var _merge_check: CheckBox = null
 var _gemini_dialog: Panel = null
 var _gemini_edit: TextEdit = null
 var _last_status: String = ""
@@ -94,6 +95,15 @@ func _build_ui() -> void:
 		b.pressed.connect(_on_tool_button_pressed.bind(t["id"]))
 		box.add_child(b)
 		_tool_buttons[t["id"]] = b
+
+	var copy_hint: Label = Label.new()
+	copy_hint.text = "Копия клетки: Ctrl+C взять, Ctrl+V поставить"
+	box.add_child(copy_hint)
+	_merge_check = CheckBox.new()
+	_merge_check.text = "Объединять соседние"
+	_merge_check.button_pressed = model.merge_adjacent
+	_merge_check.toggled.connect(_on_merge_toggled)
+	box.add_child(_merge_check)
 
 	box.add_child(HSeparator.new())
 	var grid_label: Label = Label.new()
@@ -246,6 +256,11 @@ func _select_tool(id: String) -> void:
 func _on_tool_button_pressed(id: String) -> void:
 	_select_tool(id)
 
+func _on_merge_toggled(pressed: bool) -> void:
+	model.merge_adjacent = pressed
+	_save()
+	map_view.refresh()
+
 func _select_grid(type: int) -> void:
 	if model.grid_type == type:
 		_grid_buttons[type].button_pressed = true
@@ -278,6 +293,8 @@ func _undo() -> void:
 	var s: String = undo_stack.pop_back()
 	if model.from_json_string(s):
 		_grid_buttons[model.grid_type].button_pressed = true
+		if _merge_check != null:
+			_merge_check.button_pressed = model.merge_adjacent
 		_save()
 		map_view.refresh()
 
@@ -590,12 +607,14 @@ func _process(_delta: float) -> void:
 		var note: String = str(model.notes.get(key, ""))
 		if note != "":
 			text += "  |  Подпись: " + note
-	if current_tool == "copy":
-		var buf: String = model.describe_stack(map_view.copy_buffer)
-		if buf == "":
-			text += "  |  Копия: буфер пуст — Alt+клик по клетке взять образец"
-		else:
+	var buf: String = model.describe_stack(map_view.copy_buffer)
+	if buf != "":
+		if current_tool == "copy":
 			text += "  |  Копия: " + buf + " — клик/ведение ставит, Alt+клик берёт новый"
+		else:
+			text += "  |  Копия: " + buf + " — Ctrl+V ставит"
+	elif current_tool == "copy":
+		text += "  |  Копия: буфер пуст — Alt+клик по клетке взять образец"
 	if text != _last_status:
 		_last_status = text
 		_status_label.text = text
@@ -616,6 +635,22 @@ func _input(event: InputEvent) -> void:
 		var k: InputEventKey = event
 		if k.ctrl_pressed and k.keycode == KEY_Z:
 			_undo()
+		elif (k.ctrl_pressed or k.meta_pressed) and k.keycode == KEY_C:
+			# Copy the hovered cell's stack into the shared copy buffer
+			# (same buffer the "Копия" tool uses). Text-field focus is
+			# guarded above, so typing is never hijacked.
+			if map_view.has_hover:
+				map_view.copy_buffer = model.stack_copy(map_view.hover_key)
+				map_view.refresh()
+		elif (k.ctrl_pressed or k.meta_pressed) and k.keycode == KEY_V:
+			if map_view.has_hover and not map_view.copy_buffer.is_empty():
+				var before: String = model.to_json_string()
+				if model.stamp_stack(map_view.hover_key, map_view.copy_buffer):
+					undo_stack.push_back(before)
+					if undo_stack.size() > 100:
+						undo_stack.pop_front()
+					_save()
+					map_view.refresh()
 		elif k.keycode == KEY_1:
 			_select_tool("wall")
 		elif k.keycode == KEY_2:

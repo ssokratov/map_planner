@@ -26,6 +26,10 @@ var notes: Dictionary = {}
 # painted content with a margin — so there is room for a legend if needed.
 var export_bounds: Rect2 = Rect2()
 var has_export_bounds: bool = false
+# Display merge: adjacent custom tiles with identical meaning render as one
+# polygon with one centered label. Persisted with the map so the export
+# always matches what the user sees.
+var merge_adjacent: bool = true
 
 func effective_bounds() -> Rect2:
 	if has_export_bounds:
@@ -97,6 +101,23 @@ func cell_corners(key: Vector2i) -> PackedVector2Array:
 		Vector2(x0, y0), Vector2(x0 + CELL_SIZE, y0),
 		Vector2(x0 + CELL_SIZE, y0 + CELL_SIZE), Vector2(x0, y0 + CELL_SIZE),
 	])
+
+# Neighbors sharing an edge (square: 4 sides, hex: 6 axial directions).
+func cell_neighbors(key: Vector2i) -> Array[Vector2i]:
+	if grid_type == GridType.HEX:
+		return [key + Vector2i(1, 0), key + Vector2i(0, 1), key + Vector2i(-1, 1), key + Vector2i(-1, 0), key + Vector2i(0, -1), key + Vector2i(1, -1)]
+	return [key + Vector2i(1, 0), key + Vector2i(0, 1), key + Vector2i(-1, 0), key + Vector2i(0, -1)]
+
+# The neighbor across one cell edge: edge i runs corner i -> corner i+1
+# (see cell_corners). Square corners are TL, TR, BR, BL; hex corners sit
+# at 30 + 60*k degrees, so each hex edge's outward normal points at the
+# matching axial neighbor.
+func cell_edge_neighbor(key: Vector2i, edge: int) -> Vector2i:
+	if grid_type == GridType.HEX:
+		var dirs: Array[Vector2i] = [Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, -1), Vector2i(1, 0)]
+		return key + dirs[edge % 6]
+	var dirs: Array[Vector2i] = [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]
+	return key + dirs[edge % 4]
 
 # Conservative q/r range covering a world rect (used for hex grid drawing).
 func hex_range(rect: Rect2) -> Dictionary:
@@ -175,6 +196,45 @@ func stamp_stack(key: Vector2i, stack: Array) -> bool:
 			changed = true
 	return changed
 
+func _custom_text(key: Vector2i) -> String:
+	for obj in stack_of(key):
+		if obj["type"] == "custom":
+			return str(obj.get("text", ""))
+	return ""
+
+func _has_custom(key: Vector2i) -> bool:
+	for obj in stack_of(key):
+		if obj["type"] == "custom":
+			return true
+	return false
+
+# Connected components of custom tiles, grouped by identical meaning text.
+# (Color joins the key when custom colors land.) Each entry: {"text": String, "cells": Array[Vector2i]}.
+# Pure data for the view's display merge; the model itself stays per-cell,
+# so painting, erasing, undo and copy keep working cell by cell.
+func custom_components() -> Array:
+	var seen: Dictionary = {}
+	var out: Array = []
+	for key in cells.keys():
+		if seen.has(key) or not _has_custom(key):
+			continue
+		var text: String = _custom_text(key)
+		var comp: Array[Vector2i] = []
+		var stack: Array[Vector2i] = [key]
+		seen[key] = true
+		while not stack.is_empty():
+			var cur: Vector2i = stack.pop_back()
+			comp.append(cur)
+			for nb in cell_neighbors(cur):
+				if seen.has(nb) or not _has_custom(nb):
+					continue
+				if _custom_text(nb) != text:
+					continue
+				seen[nb] = true
+				stack.append(nb)
+		out.append({"text": text, "cells": comp})
+	return out
+
 func bounds() -> Rect2:
 	if cells.is_empty():
 		return Rect2(-480.0, -360.0, 960.0, 720.0)
@@ -212,6 +272,7 @@ func to_json_string() -> String:
 		"cells": cell_data,
 		"notes": note_data,
 		"bounds": bounds_data,
+		"merge": merge_adjacent,
 	}
 	return JSON.stringify(data)
 
@@ -243,6 +304,7 @@ func from_json_string(s: String) -> bool:
 		new_bounds = Rect2(float(raw_bounds[0]), float(raw_bounds[1]), float(raw_bounds[2]), float(raw_bounds[3]))
 		new_has_bounds = true
 	grid_type = GridType.HEX if str(parsed.get("grid", "square")) == "hex" else GridType.SQUARE
+	merge_adjacent = bool(parsed.get("merge", true))
 	cells = new_cells
 	notes = new_notes
 	export_bounds = new_bounds

@@ -101,7 +101,59 @@ func _draw_cells(rect: Rect2) -> void:
 		if not grow.has_point(center):
 			continue
 		for obj in model.cells[key]:
-			_draw_object(key, center, str(obj["type"]), str(obj.get("text", "")))
+			var t: String = str(obj["type"])
+			# Merged customs draw as components below, not per cell.
+			if t == "custom" and model.merge_adjacent:
+				continue
+			_draw_object(key, center, t, str(obj.get("text", "")))
+	if model.merge_adjacent:
+		_draw_merged_custom(rect)
+
+# Display merge: each connected component of same-text custom tiles gets
+# one dashed union outline (only edges whose neighbor is outside the
+# component) and one label at the cells' centroid, fitted to the
+# component's width. Single cells render exactly as before.
+func _draw_merged_custom(rect: Rect2) -> void:
+	var grow: Rect2 = rect.grow(100.0)
+	for comp in model.custom_components():
+		var comp_cells: Array = comp["cells"]
+		var in_view: bool = false
+		for c in comp_cells:
+			if grow.has_point(model.cell_center(c)):
+				in_view = true
+				break
+		if not in_view:
+			continue
+		var cell_set: Dictionary = {}
+		for c in comp_cells:
+			cell_set[c] = true
+		for c in comp_cells:
+			var corners: PackedVector2Array = model.cell_corners(c)
+			var n: int = corners.size()
+			for i in n:
+				if not cell_set.has(model.cell_edge_neighbor(c, i)):
+					_draw_dashed_line(corners[i], corners[(i + 1) % n], CUSTOM_COLOR)
+		var text: String = str(comp["text"])
+		if text == "" or _font == null:
+			continue
+		var center: Vector2 = Vector2.ZERO
+		for c in comp_cells:
+			center += model.cell_center(c)
+		center /= float(comp_cells.size())
+		var w: float = _cell_width()
+		if comp_cells.size() > 1:
+			var min_x: float = INF
+			var max_x: float = -INF
+			for c in comp_cells:
+				for pt in model.cell_corners(c):
+					min_x = min(min_x, pt.x)
+					max_x = max(max_x, pt.x)
+			w = max_x - min_x
+		var size: int = 13
+		var tw: float = _font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, size).x
+		if tw > w:
+			size = int(max(8.0, floor(13.0 * w / tw)))
+		_draw_centered_text(text, center, w, size, CUSTOM_COLOR)
 
 func _draw_object(key: Vector2i, center: Vector2, type: String, text: String) -> void:
 	var corners: PackedVector2Array = model.cell_corners(key)
