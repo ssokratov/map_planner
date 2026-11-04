@@ -215,7 +215,7 @@ func _build_ui() -> void:
 	gem_box.add_theme_constant_override("separation", 6)
 	_gemini_dialog.add_child(gem_box)
 	var gem_hint: Label = Label.new()
-	gem_hint.text = "Картинка копируется в буфер обмена (статус — внизу слева).\nВставь её (Ctrl+V) и промпт в чат Gemini. Если вкладка\nне открылась (блокировщик всплывающих окон), открой\nвручную gemini.google.com. Текст промпта сохраняется\nи подставится в следующий раз."
+	gem_hint.text = "Картинка копируется в буфер обмена (статус — внизу слева).\nНажми «Открыть Gemini» и вставь картинку в чат (Ctrl+V).\nПотом вернись сюда, нажми «Скопировать промпт» и вставь\nего в чат. Текст промпта сохраняется и подставится\nв следующий раз."
 	gem_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	gem_box.add_child(gem_hint)
 	_gemini_edit = TextEdit.new()
@@ -224,6 +224,10 @@ func _build_ui() -> void:
 	gem_box.add_child(_gemini_edit)
 	var gem_btns: HBoxContainer = HBoxContainer.new()
 	gem_box.add_child(gem_btns)
+	var gem_open_btn: Button = Button.new()
+	gem_open_btn.text = "Открыть Gemini"
+	gem_open_btn.pressed.connect(_open_gemini)
+	gem_btns.add_child(gem_open_btn)
 	var gem_copy_btn: Button = Button.new()
 	gem_copy_btn.text = "Скопировать промпт"
 	gem_copy_btn.pressed.connect(_copy_gemini_prompt)
@@ -504,25 +508,29 @@ func _copy_image_desktop(img: Image) -> String:
 		return "не сработал osascript"
 	return "неизвестная ОС"
 
-# "В Gemini" handoff: image to the clipboard, Gemini in a new tab, and an
-# editable prompt dialog. The tab opens FIRST, synchronously in the click:
-# after the render await the browser may no longer count as a user gesture
-# and a popup blocker could eat window.open.
+# "В Gemini" handoff: image to the clipboard, then an editable prompt
+# dialog with an "Открыть Gemini" button. The tab deliberately opens from
+# the dialog button, not from the toolbox button: opening a tab first
+# steals the page focus and the browser then refuses the clipboard write
+# (observed in QA: "Браузер не разрешил копирование"), while a click on
+# the dialog button is a fresh user gesture, so no popup blocker either.
 func _on_gemini_pressed() -> void:
 	if DisplayServer.get_name() == "headless":
 		if _save_label != null:
 			_save_label.text = "Gemini недоступна без окна"
 		return
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.open('" + GEMINI_URL + "','_blank');")
-	else:
-		OS.shell_open(GEMINI_URL)
 	var img: Image = await _render_bounds_image()
 	if OS.has_feature("web"):
 		_copy_to_clipboard_web(img)
 	else:
 		_copy_image_desktop(img)
 	_show_gemini_dialog()
+
+func _open_gemini() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.open('" + GEMINI_URL + "','_blank');")
+	else:
+		OS.shell_open(GEMINI_URL)
 
 func _show_gemini_dialog() -> void:
 	if FileAccess.file_exists(GEMINI_PROMPT_PATH):
