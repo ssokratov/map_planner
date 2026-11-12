@@ -230,5 +230,9 @@
   "cb_already": {
     "ru": "Уже выбран",
     "en": "Already chosen"
+  },
+  "del_mount_confirm": {
+    "ru": "Удалить маунт «{M}» вместе со всем оружием на нём?",
+    "en": "Delete the «{M}» mount with all weapons on it?"
   }
 }
