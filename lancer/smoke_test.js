@@ -72,7 +72,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'dispVal:dispVal,dispField:dispField,mountCap:mountCap,STR:STR,L:L,'
   + 'frameMatches:frameMatches,showFrameResults:showFrameResults,pickFrame:pickFrame,'
   + 'frameLabel:frameLabel,'
-  + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,closeDesc:closeDesc,renderDescBoxes:renderDescBoxes,'
+  + 'descBox:descBox,editDesc:editDesc,openDesc:openDesc,closeDesc:closeDesc,renderDescBoxes:renderDescBoxes,'
   + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter,'
   + 'TRIGGERS:TRIGGERS,findTrigger:findTrigger,trigDisp:trigDisp,triggerMatches:triggerMatches,'
   + 'showTriggerResults:showTriggerResults,addTriggerByName:addTriggerByName};';
@@ -490,16 +490,16 @@ XP.setLang('en');
 if (XP.dispField('mech.coreSystem') !== DBP.frames['Blackbeard'].c) throw new Error('P: dispField coreSystem must be EN in EN mode');
 if (XP.dispField('mech.traits') !== DBP.frames['Blackbeard'].t) throw new Error('P: dispField traits must be EN in EN mode');
 XP.setLang('ru');
-// компонент описания: <details> вместо textarea, правка по кнопке
+// компонент описания: текст абзацем вместо textarea, правка по кнопке
 XP.addWeaponByIndex(0, DBP.weapons.findIndex(w=>w.n==='Assault Rifle'));
 const mountsHtmlP = elP['mounts'].innerHTML;
-if (!mountsHtmlP.includes('<details class="desc"')) throw new Error('P: weapon rows must render the description as <details>');
+if (!mountsHtmlP.includes('<div class="desc-text">')) throw new Error('P: weapon rows must render the description as a paragraph');
 if (!mountsHtmlP.includes('Штурмовая винтовка')) throw new Error('P: weapon rows must keep the RU weapon name');
 if (!mountsHtmlP.includes('1d6 кинетический')) throw new Error('P: weapon rows must keep the RU damage text');
 const sysHtmlP = elP['systems'].innerHTML;
-if (!sysHtmlP.includes('<details class="desc"')) throw new Error('P: system rows must render the description as <details>');
+if (!sysHtmlP.includes('<div class="desc-text">')) throw new Error('P: system rows must render the description as a paragraph');
 if (!sysHtmlP.includes('2 SP')) throw new Error('P: system rows must keep the SP text in the meta line');
-if (!elP['coreDescBox'].innerHTML.includes('<details class="desc"')) throw new Error('P: coreDesc must render as <details>');
+if (!elP['coreDescBox'].innerHTML.includes('<div class="desc-text">')) throw new Error('P: coreDesc must render as a paragraph');
 if (!elP['coreDescBox'].innerHTML.includes('Штурмовая гарпунная система')) throw new Error('P: coreDesc box must show the RU core description');
 if (!elP['traitsBox'].innerHTML.includes('Гарпунный трос')) throw new Error('P: traits box must show the RU traits');
 XP.editDesc('coreDesc');
@@ -534,10 +534,11 @@ XQ.addTriggerByName('Spot');
 if (SQ.triggers.length !== nTrigBefore + 1) throw new Error('Q: addTriggerByName must add a trigger');
 if (SQ.triggers[SQ.triggers.length-1].name !== 'Spot' || SQ.triggers[SQ.triggers.length-1].bonus !== 2) throw new Error('Q: added trigger must store the EN name with +2');
 if (!elQ['triggers'].innerHTML.includes('Замечать')) throw new Error('Q: added trigger must display in RU');
-// CSS: превью описания не должно раздувать карточку (v18, баг с телефона)
-if (!staticHtml.includes('.desc-preview { color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1 1 auto; }')) throw new Error('Q: desc preview must have min-width:0 to shrink');
+// CSS: описание не должно раздувать карточку на телефоне (v18, баг с телефона;
+// с v31 описание — переносимый абзац, а не nowrap-превью, так что переполнения нет по построению)
 if (!staticHtml.includes('.core-grid > * { min-width:0; }')) throw new Error('Q: core-grid children must have min-width:0');
-if (!staticHtml.includes('details.desc { border:1px solid var(--line); border-radius:6px; padding:8px 10px; background:var(--panel2); min-width:0; }')) throw new Error('Q: details.desc must have min-width:0');
+if (!staticHtml.includes('.desc-text { white-space:pre-line;')) throw new Error('Q: descriptions must wrap (pre-line), not overflow');
+if (!staticHtml.includes('overflow-wrap:break-word;')) throw new Error('Q: descriptions must break long words instead of overflowing');
 
 // PHASE R: v20 — фрейм переехал на вкладку пилота, на вкладке меха — только текст
 const mechIdx = staticHtml.indexOf('id="tab-mech"');
@@ -575,7 +576,7 @@ if (!sysHtmlS.includes('Заряды HEX образца Б')) throw new Error('S
 if (!sysHtmlS.includes('Развёртываемое')) throw new Error('S: system rows must show the system type (meta info)');
 if (!sysHtmlS.includes('GMS · LL0 · 2 SP')) throw new Error('S: system rows must show the corporation/license/SP (meta info)');
 if (!sysHtmlS.includes('2 SP')) throw new Error('S: system rows must show the SP in the meta line');
-if (!sysHtmlS.includes('<details class="desc"')) throw new Error('S: system rows must render the description as <details>');
+if (!sysHtmlS.includes('<div class="desc-text">')) throw new Error('S: system rows must render the description as a paragraph');
 if (sysHtmlS.includes('✎')) throw new Error('S: system descriptions must not offer editing');
 // в карточках оружия нет input'ов — урон, дальность и теги только текстом
 XS.addWeaponByIndex(0, DBS.weapons.findIndex(w=>w.n==='Assault Rifle'));
@@ -586,7 +587,7 @@ if (!mountsHtmlS.includes('1d6 кинетический')) throw new Error('S: w
 if (!mountsHtmlS.includes('Дальность 10')) throw new Error('S: weapon rows must show the range as text');
 if (!mountsHtmlS.includes('GMS · LL0 · Main')) throw new Error('S: weapon rows must show the corporation/license (meta info)');
 if (!mountsHtmlS.includes('Надёжное 2')) throw new Error('S: weapon rows must keep the tag chips');
-if (!mountsHtmlS.includes('<details class="desc"')) throw new Error('S: weapon rows must render the description as <details>');
+if (!mountsHtmlS.includes('<div class="desc-text">')) throw new Error('S: weapon rows must render the description as a paragraph');
 if (mountsHtmlS.includes('✎')) throw new Error('S: weapon descriptions must not offer editing');
 // модалка кастомного оружия
 XS.openCustomWeaponDlg(0);
@@ -847,26 +848,34 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 30')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 31')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
 if (!shortHtml.includes('Короткое описание в одно предложение.')) throw new Error('AA: a short description must show in full');
-// descBox: длинное описание — превью + «подробнее», внутри — «свернуть»
-const longText = 'Длинное описание. '.repeat(20);
+// descBox: длинное описание — абзац + «подробнее» в конце; хвост текста скрыт до раскрытия
+const longText = 'Длинное описание. '.repeat(15) + 'ХВОСТ-ОПИСАНИЯ';
 const longHtml = XAA.descBox('t-long', '', longText, '', '', false);
-if (!longHtml.includes('<details')) throw new Error('AA: a long description must collapse into <details>');
+if (longHtml.includes('<details')) throw new Error('AA: a long description must not use <details> anymore');
 if (!longHtml.includes('подробнее')) throw new Error('AA: a long description must offer «подробнее»');
-if (!longHtml.includes('свернуть')) throw new Error('AA: a long description must offer «свернуть» when open');
-if (!longHtml.includes('Длинное описание.')) throw new Error('AA: the long description preview must show the start of the text');
-// closeDesc: раскрытое описание системы сворачивается обратно
+if (longHtml.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: the truncated paragraph must not show the tail of the text');
+if (!longHtml.includes('Длинное описание.')) throw new Error('AA: the truncated paragraph must show the start of the text');
+XAA.openDesc('t-long');
+const longOpenHtml = XAA.descBox('t-long', '', longText, '', '', false);
+if (!longOpenHtml.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: an open description must show the full text');
+if (!longOpenHtml.includes('свернуть')) throw new Error('AA: an open description must offer «свернуть»');
+XAA.closeDesc('t-long');
+if (XAA.descBox('t-long', '', longText, '', '', false).includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: closeDesc must collapse the description back to the paragraph');
+// closeDesc: раскрытое описание системы сворачивается обратно в абзац
 SAA.systems[0].desc = longText; XAA.renderLists();
 let sysHtmlAA = elAA['systems'].innerHTML;
 if (!sysHtmlAA.includes('подробнее')) throw new Error('AA: the long system description must offer «подробнее»');
-XAA.toggleDesc('s-0', true); XAA.renderLists();
-if (!elAA['systems'].innerHTML.includes('<details class="desc" open')) throw new Error('AA: toggleDesc(true) must open the description');
+if (sysHtmlAA.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: the system paragraph must not show the tail before opening');
+XAA.openDesc('s-0');
+if (!elAA['systems'].innerHTML.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: openDesc must expand the system description');
+if (!elAA['systems'].innerHTML.includes('свернуть')) throw new Error('AA: the open system description must offer «свернуть»');
 XAA.closeDesc('s-0');
-if (elAA['systems'].innerHTML.includes('<details class="desc" open')) throw new Error('AA: closeDesc must collapse the description');
+if (elAA['systems'].innerHTML.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AA: closeDesc must collapse the system description');
 // системы: «SP N» справа из шапки убрано, в мета-строке SP остался
 sysHtmlAA = elAA['systems'].innerHTML;
 if (sysHtmlAA.includes('<span class="dim" style="flex:0 0 auto">SP ')) throw new Error('AA: the system row header must not carry a separate SP label');
@@ -915,4 +924,4 @@ XAB.applyFrame('Blackbeard');
 if (gAB.confirmCalls.some(m => /встроенное оружие фрейма/.test(m))) throw new Error('AB: the apply confirm must not mention an integrated weapon for Blackbeard');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones with подробнее/свернуть, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm');
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm');

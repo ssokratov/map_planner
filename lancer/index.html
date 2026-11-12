@@ -91,15 +91,8 @@
   .hint { color:var(--dim); font-size:13px; padding:0 16px 16px; }
   .card .hint { padding:8px 0 0; }
   .saved { color:var(--good); font-size:13px; }
-  details.desc { border:1px solid var(--line); border-radius:6px; padding:8px 10px; background:var(--panel2); min-width:0; }
-  details.desc summary { cursor:pointer; list-style:none; display:flex; gap:8px; align-items:baseline; min-width:0; }
-  details.desc summary::-webkit-details-marker { display:none; }
-  details.desc summary::before { content:'▸'; color:var(--dim); flex:0 0 auto; }
-  details.desc[open] summary::before { content:'▾'; }
-  .desc-label { font-weight:600; flex:0 0 auto; }
-  .desc-preview { color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1 1 auto; }
-  .desc-more { color:var(--accent2); flex:0 0 auto; }
-  details.desc[open ] .desc-more { display:none; }
+  .desc-label { font-weight:600; }
+  .desc-more { color:var(--accent2); background:none; border:none; padding:0; font:inherit; cursor:pointer; }
   .desc-text { white-space:pre-line; font-size:14px; line-height:1.55; margin:8px 0 4px; overflow-wrap:break-word; }
   .core-grid > * { min-width:0; }
   .frame-ro { font-size:16px; font-weight:600; padding:9px 0; }
@@ -453,7 +446,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 30</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 31</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
@@ -1048,8 +1041,8 @@ function pickFrame(key){
   // отклонённый диалог оставлял бы новое имя при старых маунтах/статах.
   applyFrame(key);
 }
-// Описание: короткое — целиком без сворачивания; длинное — превью +
-// «подробнее» / «свернуть» (v29, для телефона)
+// Описание: до абзаца (~240 знаков) — целиком; длиннее — абзац +
+// «подробнее» в конце, разворачивается в полный текст (v29–v31, для телефона)
 function descBox(key, label, text, ph, saveExpr, editable){
   const t = text || '';
   if (editingDesc === key && editable !== false){
@@ -1059,21 +1052,25 @@ function descBox(key, label, text, ph, saveExpr, editable){
     return editable === false ? '' : `<textarea placeholder="${esc(ph||'')}" onchange="${saveExpr};renderLists()">${esc(t)}</textarea>`;
   }
   const editBtn = editable === false ? '' : `<button class="btn" style="margin-top:6px" onclick="editDesc('${key}')">${esc(L('edit_desc'))}</button>`;
-  if (t.length <= 160){
-    return `${label ? `<div class="desc-label">${esc(label)}</div>` : ''}<div class="desc-text">${esc(t)}</div>
+  const head = label ? `<div class="desc-label">${esc(label)}</div>` : '';
+  const CUT = 240;
+  if (t.length <= CUT){
+    return `${head}<div class="desc-text">${esc(t)}</div>
     ${editBtn}`;
   }
-  const first = t.split('\n')[0];
-  const preview = first.length > 80 ? first.slice(0, 80) + '…' : first;
-  return `<details class="desc" ${openDescs.has(key)?'open':''} ontoggle="toggleDesc('${key}', this.open)">
-    <summary>${label ? `<span class="desc-label">${esc(label)}</span> ` : ''}<span class="desc-preview">${esc(preview)}</span> <span class="desc-more">${esc(L('desc_more'))}</span></summary>
-    <div class="desc-text">${esc(t)}</div>
+  if (openDescs.has(key)){
+    return `${head}<div class="desc-text">${esc(t)}</div>
     <button class="btn" style="margin-top:6px" onclick="closeDesc('${key}')">${esc(L('desc_less'))}</button>
-    ${editBtn}
-  </details>`;
+    ${editBtn}`;
+  }
+  let c = t.slice(0, CUT);
+  const sp = c.lastIndexOf(' ');
+  if (sp > 120) c = c.slice(0, sp);
+  return `${head}<div class="desc-text">${esc(c)}… <button class="desc-more" onclick="openDesc('${key}')">${esc(L('desc_more'))}</button></div>
+    ${editBtn}`;
 }
+function openDesc(key){ openDescs.add(key); renderLists(); }
 function closeDesc(key){ openDescs.delete(key); renderLists(); }
-function toggleDesc(key, open){ if (open) openDescs.add(key); else openDescs.delete(key); }
 function editDesc(key){ editingDesc = key; renderLists(); const el = document.getElementById('editingDesc'); if (el && el.focus) el.focus(); }
 function renderDescBoxes(){
   const cb = document.getElementById('coreDescBox');
