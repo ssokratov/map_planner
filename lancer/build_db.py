@@ -2,13 +2,13 @@
 """Build the embedded Lancer weapons/systems DB for lancer/index.html.
 
 Source: Massif Press open data (lancer-data, the same data COMP/CON uses):
-  https://github.com/massif-press/lancer-data (lib/weapons.json, lib/systems.json, lib/tags.json)
+  https://github.com/massif-press/lancer-data (lib/weapons.json, lib/systems.json, lib/tags.json, lib/talents.json)
 Output: compact DB literal injected into index.html between // __DB_START__ / // __DB_END__.
 
 Usage:
   python3 build_db.py            # downloads JSON from GitHub, rebuilds DB in index.html
   python3 build_db.py --local /tmp   # use local *.json files (lancer-weapons.json etc.)
-DB holds weapons, systems and the frame -> mounts map (29 frames).
+DB holds weapons, systems, talents, the tag dictionary and the frame -> mounts map (29 frames).
 """
 import argparse, html, json, re, sys, urllib.request
 from pathlib import Path
@@ -57,6 +57,18 @@ def limited_val(tags):
             # у Prototype Weapon в val лежит дайс урона, а не число зарядов — трекер не применим
             return v if isinstance(v, int) else 0
     return 0
+
+def clean_list(text):
+    """Clean HTML that is mostly <ul>/<li> lists into plain text with bullets."""
+    if not text:
+        return ""
+    text = re.sub(r"<li\s*>", "\n• ", text)
+    text = re.sub(r"</li\s*>", "", text)
+    text = re.sub(r"<br\s*/?>", "\n", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text)
+    text = re.sub(r"\n\s*\n+", "\n", text)
+    return text.strip()
 
 def fmt_tags(tags, tagmap):
     out = []
@@ -166,14 +178,18 @@ def build(local_dir):
     systems = fetch("systems.json", local_dir)
     tags = fetch("tags.json", local_dir)
     frames = fetch("frames.json", local_dir)
+    talents = fetch("talents.json", local_dir)
     tagmap = {t["id"]: t for t in tags}
+    tags_db = {t["id"]: {"n": t["name"], "d": clean(t.get("description") or "")} for t in tags}
 
     db_w, warns = [], []
     for x in weapons:
         tags_txt = fmt_tags(x.get("tags"), tagmap)
+        # structured tags for the clickable tag chips; the formatted string
+        # stays in "g" for the search results, but is NOT part of the
+        # description anymore (the chips show the tags in the weapon row)
+        tags_struct = [[tg["id"], tg.get("val")] for tg in (x.get("tags") or [])]
         parts = []
-        if tags_txt:
-            parts.append(tags_txt)
         if x.get("effect"):
             parts.append(clean(x["effect"]))
         trig = fmt_triggered(x)
@@ -214,7 +230,7 @@ def build(local_dir):
                     break
         db_w.append({
             "n": x["name"], "m": mount, "t": x.get("type") or "",
-            "d": dmg, "r": rng, "g": tags_txt,
+            "d": dmg, "r": rng, "g": tags_txt, "tg": tags_struct,
             "lab": " · ".join(p for p in [lab, mount] if p),
             "sf": srcf if srcf != src else "",
             "lic": x.get("license") or "",
@@ -271,7 +287,12 @@ def build(local_dir):
             "lic": x["name"] if x["name"] != "Everest" else "GMS",
             "ll": x.get("license_level") if x.get("license_level") is not None else 2,
         }
-    db = {"weapons": db_w, "systems": db_s, "frames": frames_db}
+    db = {"weapons": db_w, "systems": db_s, "frames": frames_db,
+          "talents": [{"n": x["name"], "t": clean(x.get("terse") or ""),
+                       "r": [r["name"] for r in (x.get("ranks") or [])],
+                       "d": [clean_list(r.get("description") or "") for r in (x.get("ranks") or [])]}
+                      for x in talents],
+          "tags": tags_db}
     for w_ in warns:
         print("WARN:", w_, file=sys.stderr)
     return db
@@ -282,7 +303,7 @@ def main():
     args = ap.parse_args()
     db = build(args.local)
     lit = json.dumps(db, ensure_ascii=False, separators=(",", ":"))
-    print(f"weapons: {len(db['weapons'])}, systems: {len(db['systems'])}, DB bytes: {len(lit.encode('utf-8'))}")
+    print(f"weapons: {len(db['weapons'])}, systems: {len(db['systems'])}, talents: {len(db['talents'])}, tags: {len(db['tags'])}, DB bytes: {len(lit.encode('utf-8'))}")
     html_src = INDEX.read_text(encoding="utf-8")
     block = "// __DB_START__\nconst DB = " + lit + ";\n// __DB_END__"
     if "// __DB_START__" in html_src:
