@@ -442,7 +442,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 33</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 34</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
@@ -781,7 +781,7 @@ function renderLists(){
     <button class="btn danger" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>` : `
     <div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim">${t.bonus>=0?'+':''}${t.bonus}</span></div>`).join('');
   document.getElementById('talents').innerHTML = S.talents.map((t,i)=>{
-    const rd = talentRankDesc(t);
+    const rds = talentRankDesc(t);
     const dtn = findTalent(t.name);
     const tDisp = dtn ? td(dtn).n : t.name;
     const rankRoman = ['I','II','III'][t.rank-1] || '';
@@ -791,7 +791,7 @@ function renderLists(){
       <select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
       <button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
-      ${rd ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px"><b>${esc(rd.n)}:</b> ${esc(rd.d)}</div>` : ''}
+      ${rds.length ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px">${rds.map((r, k) => `<b>${['I','II','III'][k]}. ${esc(r.n)}:</b> ${esc(r.d)}`).join('\n\n')}</div>` : ''}
     </div>`;
   }).join('');
   document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>{
@@ -1222,12 +1222,15 @@ function showTag(id, encVal){
   document.getElementById('tagDlgDesc').textContent = (t.d || '').replace(/\{VAL\}/g, val === null ? '' : String(val));
   document.getElementById('tagDialog').showModal();
 }
+// Фичи таланта аддитивные: на ранге III видны фичи I, II и III (а не только III)
 function talentRankDesc(t){
   const d = findTalent(t.name);
-  if (!d || !d.r.length) return null;
+  if (!d || !d.r.length) return [];
   const dd = td(d);
-  const i = Math.min(Math.max((+t.rank || 1) - 1, 0), dd.r.length - 1);
-  return { n: dd.r[i], d: dd.d[i] };
+  const upto = Math.min(Math.max(+t.rank || 1, 1), dd.r.length);
+  const out = [];
+  for (let k = 0; k < upto; k++) out.push({ n: dd.r[k], d: dd.d[k] });
+  return out;
 }
 function talentMatches(t, q){
   const toks = (q || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
