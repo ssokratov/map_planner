@@ -66,6 +66,7 @@
   .mount-head { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .mount-head select { flex:0 0 132px; }
   .mount-cap { color:var(--dim); font-size:12px; flex:1; }
+  .mount-badge { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:28px; padding:0 8px; border-radius:8px; border:1px solid; font-size:14px; line-height:1; flex:0 0 auto; }
   .dbrow { display:flex; gap:8px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
   .dbinfo { flex:1; min-width:0; }
   .dbinfo b { display:block; font-size:14px; }
@@ -453,6 +454,18 @@ const OC_COSTS = ['1','1d3','1d6','1d6+4'];
 const MOUNT_TYPES = ['Aux','Main','Heavy','Superheavy','Flex','Main/Aux','Aux/Aux','Integrated'];
 const MOUNT_CAP = { Aux:'1 Aux', Main:'1 Main', Heavy:'1 Heavy · Superheavy занимает ещё один маунт', Superheavy:'1 Superheavy', Flex:'1 Main или 2 Aux', 'Main/Aux':'1 Main + 1 Aux или 2 Aux', 'Aux/Aux':'2 Aux', Integrated:'встроенное оружие фрейма' };
 const MOUNT_ALLOWED = { Aux:['Aux'], Main:['Main','Aux'], Heavy:['Heavy','Superheavy','Aux'], Superheavy:['Superheavy'], Flex:['Main','Aux'], 'Main/Aux':['Main','Aux'], 'Aux/Aux':['Aux'], Integrated:['Aux','Main','Heavy','Superheavy'] };
+// значок и цвет маунта для быстрого поиска глазами: размер оружия растёт
+// от Aux к Superheavy, Flex — «в любую сторону», составные — два значка
+const MOUNT_STYLE = {
+  Aux:        { icon: '▸', color: '#7FB069' },
+  Main:       { icon: '▶', color: '#5B9BD5' },
+  Heavy:      { icon: '■', color: '#ED7D31' },
+  Superheavy: { icon: '⬢', color: '#C0392B' },
+  Flex:       { icon: '⇄', color: '#9B59B6' },
+  'Main/Aux': { icon: '<span style="color:#5B9BD5">▶</span><span style="color:#7FB069">▸</span>', color: '#5B9BD5' },
+  'Aux/Aux':  { icon: '▸▸', color: '#7FB069' },
+  Integrated: { icon: '⚙', color: '#8D9BA5' },
+};
 const MOUNT_MAP_OLD = {Aux:'Aux', Main:'Main', Heavy:'Heavy', Superheavy:'Superheavy', Flex:'Flex', Integrated:'Integrated'};
 const DEFAULTS = {
   pilot: { name:'', callsign:'', ll:0, grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:'', gear:'' },
@@ -592,6 +605,7 @@ function renderLists(){
   }).join('');
   document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>{
     const allowed = MOUNT_ALLOWED[mt.type] || MOUNT_ALLOWED['Main'];
+    const ms = MOUNT_STYLE[mt.type] || MOUNT_STYLE['Main'];
     const opts = DB.weapons.filter(w=>allowed.includes(w.m) && itemAvailable(w))
       .map(w=>`<option value="${esc(w.n)}" label="${esc(weaponLabel(w))}">`).join('');
     const rows = mt.weapons.map((w,wi)=>{
@@ -610,9 +624,9 @@ function renderLists(){
     </div>`;
     }).join('');
     return `<div class="mount">
-      <div class="mount-head"><select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
+      <div class="mount-head"><span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22">${ms.icon}</span><select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
         ${MOUNT_TYPES.map(t=>`<option ${mt.type===t?'selected':''}>${t}</option>`).join('')}</select>
-        <span class="mount-cap">${MOUNT_CAP[mt.type]||''}</span>
+        <span class="mount-cap" style="color:${ms.color}">${MOUNT_CAP[mt.type]||''}</span>
         <button class="btn danger" style="flex:0 0 auto" onclick="delMount(${mi})">✕</button></div>
       <datalist id="mountDb-${mi}">${opts}</datalist>
       ${rows}
