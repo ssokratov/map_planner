@@ -681,8 +681,8 @@ if (!elU['talents'].innerHTML.includes('<input')) throw new Error('U: talent inp
 
 // PHASE V: v24 — тоггл редактирования в остальных блоках
 const { X: XV, S: SV, DB: DBV, elements: elV, g: gV } = runEval({});
-['systems','licenses','mech','pilot','hase','core'].forEach(b=>{ if (!XV.editOn(b)) throw new Error('V: editing must be ON by default for ' + b); });
-if (elV['mechCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['haseCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
+['systems','licenses','mech','pilot','core'].forEach(b=>{ if (!XV.editOn(b)) throw new Error('V: editing must be ON by default for ' + b); });
+if (elV['statsCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
 // системы: выключить — поиск, добавление и ✕ исчезают, карточки остаются
 XV.toggleEdit('systems');
 if (elV['systemsHint'].style.display !== 'none' || elV['systemAddRow'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
@@ -698,16 +698,16 @@ if (licHtmlV.includes('<input') || licHtmlV.includes('<select') || licHtmlV.incl
 if (!licHtmlV.includes('Чёрная Борода II')) throw new Error('V: license rows must show the name and rank as one text in view mode');
 if (licHtmlV.includes('<span class="dim">II</span>')) throw new Error('V: the license rank must not hang in a separate column in view mode');
 // статичные карточки: выключить — класс view, поля как текст
-XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
-if (!elV['mechCard'].classList.contains('view')) throw new Error('V: the Mech card must get the view class when mech editing is OFF');
+XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('core');
+if (!elV['statsCard'].classList.contains('view')) throw new Error('V: the Stats card must get the view class when mech editing is OFF');
 if (!elV['pilotCard'].classList.contains('view')) throw new Error('V: the Pilot card must get the view class when pilot editing is OFF');
-if (!elV['haseCard'].classList.contains('view')) throw new Error('V: the HASE card must get the view class when hase editing is OFF');
+
 if (!elV['coreCard'].classList.contains('view')) throw new Error('V: the Core System card must get the view class when core editing is OFF');
 if (elV['editToggleMech'].classList.contains('on')) throw new Error('V: the mech toggle must switch OFF');
 if (elV['coreDescBox'].innerHTML.includes('✎') || elV['traitsBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit buttons must hide when core editing is OFF');
 // включить обратно — всё возвращается
-XV.toggleEdit('systems'); XV.toggleEdit('licenses'); XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
-if (elV['mechCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: the view class must be removed when editing is back ON');
+XV.toggleEdit('systems'); XV.toggleEdit('licenses'); XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('core');
+if (elV['statsCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: the view class must be removed when editing is back ON');
 if (!elV['systems'].innerHTML.includes('delRow')) throw new Error('V: system delete buttons must return when systems editing is ON');
 if (!elV['coreDescBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit button must return when core editing is ON');
 
@@ -723,11 +723,11 @@ if (staticHtml.includes('id="searchDlg"') === false) throw new Error('W: the sea
 if (!staticHtml.includes("openSearch('system'") || !staticHtml.includes("openSearch('talent'") || !staticHtml.includes("openSearch('trigger'") || !staticHtml.includes("openSearch('license'") || !staticHtml.includes("openSearch('frame'")) throw new Error('W: every static block must have a search icon opening the modal');
 if (!elW['mounts'].innerHTML.includes("openSearch('weapon'")) throw new Error('W: the mounts must have a search icon opening the modal');
 // строки: удалённые ключи ушли, новые динамические — на месте
-if (XW.STR.u009 || XW.STR.u157 || XW.STR.u069) throw new Error('W: removed strings u009/u157/u069 must not be in STR');
+if (XW.STR.u009 || XW.STR.u157 || XW.STR.u069 || XW.STR.u005 || XW.STR.u059) throw new Error('W: removed strings u009/u157/u069/u005/u059 must not be in STR');
 if (!XW.STR.edit_toggle || !XW.STR.search_ph_license) throw new Error('W: the new dynamic strings must be in STR');
 if (!XW.STR.p002 || !XW.STR.p003 || !XW.STR.p009 || !XW.STR.p010) throw new Error('W: the moved search placeholders must stay in STR');
 // тогглы — кнопки-слайдеры без текста (в статике — button.toggle.on, без чекбокса и слова)
-['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleHase','editToggleCore','editToggleCoreBonuses'].forEach(id=>{
+['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleCore','editToggleCoreBonuses'].forEach(id=>{
   if (!staticHtml.includes('<button type="button" class="toggle on" id="' + id + '"')) throw new Error('W: toggle ' + id + ' must be a slider button in the static HTML');
   if (!elW[id].classList.contains('on')) throw new Error('W: toggle ' + id + ' must be ON by default');
 });
@@ -806,7 +806,7 @@ XX.toggleEdit('systems');
 
 // PHASE Y: v27 — гаечный ключ на бегунке слайдера
 const knobCount = (staticHtml.match(/<span class="knob">🔧<\/span>/g) || []).length;
-if (knobCount !== 10) throw new Error('Y: all 10 toggle knobs must carry the wrench icon (found ' + knobCount + ')');
+if (knobCount !== 9) throw new Error('Y: all 9 toggle knobs must carry the wrench icon (found ' + knobCount + ')');
 if (!staticHtml.includes('.toggle .knob') || !staticHtml.includes('display:flex')) throw new Error('Y: the knob must be a flex container centering the icon');
 
 
@@ -849,7 +849,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 46')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 47')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -966,16 +966,18 @@ XAD.toggleEdit('systems');
 if (elAD['spCapRow'].style.display !== 'none') throw new Error('AD: the SP capacity field must hide when systems editing is OFF');
 if (elAD['spCounterRow'].style.display !== 'none') throw new Error('AD: the SP counter must hide together with the SP field in view mode');
 XAD.toggleEdit('systems');
-// подсказка HASE видна только при редактировании HASE
+// подсказка HASE видна только при редактировании Статов (тоггл mech)
 if (!staticHtml.includes('id="haseHint"')) throw new Error('AD: the HASE explanation must have an id to hide in view mode');
 if (elAD['haseHint'].style.display === 'none') throw new Error('AD: the HASE explanation must show when HASE editing is ON');
-XAD.toggleEdit('hase');
-if (elAD['haseHint'].style.display !== 'none') throw new Error('AD: the HASE explanation must hide when HASE editing is OFF');
-XAD.toggleEdit('hase');
+XAD.toggleEdit('mech');
+if (elAD['haseHint'].style.display !== 'none') throw new Error('AD: the HASE explanation must hide when Stats editing is OFF');
+XAD.toggleEdit('mech');
 // в сетке HASE осталось 9 полей (3×3 на телефоне), без System Points
-const haseHtml = staticHtml.split('id="haseCard"')[1].split('u062')[0];
-if ((haseHtml.match(/<input/g) || []).length !== 9) throw new Error('AD: the HASE grid must have 9 fields after SP moved out');
-if (haseHtml.includes('mech.sp')) throw new Error('AD: the HASE card must not reference mech.sp anymore');
+const statsHtmlAD = staticHtml.split('id="statsCard"')[1].split('u062')[0];
+if ((statsHtmlAD.match(/<input/g) || []).length !== 12) throw new Error('AD: the Stats card must have 12 inputs (3 identity + 9 stats), found ' + ((statsHtmlAD.match(/<input/g) || []).length));
+const grid5Html = statsHtmlAD.split('class="grid5"')[1].split('</div>')[0];
+if ((statsHtmlAD.split('class="grid5"')[1].match(/<input/g) || []).length !== 9) throw new Error('AD: the stats grid (grid5) must have 9 fields after SP moved out');
+if (statsHtmlAD.includes('data-f="mech.sp"')) throw new Error('AD: the Stats card must not reference mech.sp anymore');
 
 
 // PHASE AE: v34 — фичи таланта аддитивные: на ранге III видны фичи I, II и III
@@ -1265,4 +1267,25 @@ if (!staticHtml.includes('.row select.lic-rank')) throw new Error('AR: the lic-r
 // опции ранга — римские цифры I/II/III
 if (!html.includes("['I','II','III']")) throw new Error('AR: the license rank options must be Roman numerals');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals');
+// PHASE AS: v47 — «МЕХ» и HASE объединены в одну карточку «Статы» (вторая после ресурсов); иконки; компактный просмотр
+const { X: XAS } = runEval({});
+if (XAS.STR.u005 || XAS.STR.u059) throw new Error('AS: the removed u005/u059 strings must not be in STR');
+if (XAS.STR.u165.ru !== 'Статы' || XAS.STR.u165.en !== 'Stats') throw new Error('AS: u165 must be "Статы"/"Stats"');
+if (staticHtml.includes('id="mechCard"') || staticHtml.includes('id="haseCard"') || staticHtml.includes('id="editToggleHase"')) throw new Error('AS: the old Mech/HASE cards and the HASE toggle must be gone');
+if (!staticHtml.includes('id="statsCard"')) throw new Error('AS: the merged Stats card must exist');
+// порядок: ресурсы — первые, Статы — вторые (до Талантов)
+const resPos = staticHtml.indexOf('u011');
+const statsPos = staticHtml.indexOf('id="statsCard"');
+const talPos = staticHtml.indexOf('u062');
+if (!(resPos < statsPos && statsPos < talPos)) throw new Error('AS: Resources must come first, Stats second, Talents after');
+// в карточке Статов: поля меха (имя/фрейм/размер/скорость) + 9 статов
+const statsHtml = staticHtml.split('id="statsCard"')[1].split('u062')[0];
+if (!statsHtml.includes('mech.name') || !statsHtml.includes('mechFrameName') || !statsHtml.includes('mech.size') || !statsHtml.includes('mech.speed')) throw new Error('AS: the Stats card must hold the mech identity fields');
+['pilot.hull','pilot.agility','pilot.systems','pilot.engineering','mech.armor','mech.evasion','mech.edef','mech.sensors','mech.tech'].forEach(f=>{ if (!statsHtml.includes(f)) throw new Error('AS: the Stats card must hold ' + f); });
+// иконки на всех статах и на фрейме/размере/скорости/броне
+['❤️','💨','💻','⚙️','🛡️','🌀','📡','🔭','🎯','🤖','📏','🏃'].forEach(ic=>{ if (!statsHtml.includes(ic) && !html.includes(ic)) throw new Error('AS: icon ' + ic + ' must be present'); });
+// компактный просмотр: подпись и значение в одну строку
+if (!staticHtml.includes('#statsCard.view')) throw new Error('AS: the compact view-mode CSS for the Stats card must exist');
+if (!staticHtml.includes('#statsCard.view .grid5 input[type="number"]')) throw new Error('AS: the compact number width must be set in view mode');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode');

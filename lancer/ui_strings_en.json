@@ -38,20 +38,16 @@
       "en": "Rules",
       "tag": "button"
     },
-    "u005": {
-      "en": "Mech",
-      "tag": "h2"
-    },
     "u006": {
       "en": "Mech Name",
       "tag": "label"
     },
     "u007": {
-      "en": "Size",
+      "en": "<span class=\"ico\">📏</span>Size",
       "tag": "label"
     },
     "u008": {
-      "en": "Speed",
+      "en": "<span class=\"ico\">🏃</span>Speed",
       "tag": "label"
     },
     "u011": {
@@ -218,12 +214,8 @@
       "en": "Core Power restored; all repairs and Limited weapon/system charges restored; heat cleared; overcharge counter reset.",
       "tag": "li"
     },
-    "u059": {
-      "en": "Defenses, Sensors & Mech Skills — HASE",
-      "tag": "h2"
-    },
     "u060": {
-      "en": "Armor (max 4)",
+      "en": "<span class=\"ico\">🛡️</span>Armor (max 4)",
       "tag": "label"
     },
     "u061": {
@@ -555,7 +547,7 @@
       "tag": "span"
     },
     "u147": {
-      "en": "Frame",
+      "en": "<span class=\"ico\">🤖</span>Frame",
       "tag": "label"
     },
     "u149": {
@@ -601,6 +593,10 @@
     "u164": {
       "tag": "h3",
       "en": "Pick a Core Bonus"
+    },
+    "u165": {
+      "en": "Stats",
+      "tag": "h2"
     }
   }
 }
