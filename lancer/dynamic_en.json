@@ -168,8 +168,8 @@
   "en": "✎ Edit"
  },
  "p004": {
-  "ru": "Трейты фрейма — заполняются кнопкой «Применить фрейм»",
-  "en": "Frame traits — filled in by the \"Apply Frame\" button"
+  "ru": "Трейты фрейма — заполняются выбором фрейма в поиске",
+  "en": "Frame traits — filled in when you pick a frame in search"
  },
  "custom_name_needed": {
   "ru": "Введите название",
