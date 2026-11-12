@@ -638,11 +638,15 @@ function renderLists(){
   document.getElementById('systems').innerHTML = S.systems.map((s,i)=>{
     const lim = sysLim(s);
     const left = sysLeft(s);
+    const sp = sysSp(s);
+    const inDb = DB.systems.some(x=>x.n===s.name);
     return `
     <div class="card" style="background:var(--panel2);margin-bottom:8px">
       <div class="row"><input type="text" placeholder="Система" list="systemDb" value="${esc(s.name)}" onchange="fillSystemFromDb(${i},this.value)">
-      <span class="dim" title="System Points — стоимость системы" style="flex:0 0 auto">SP</span>
-      <input class="narrow" type="number" title="SP" value="${s.sp}" onchange="S.systems[${i}].sp=+this.value;save();updateSpCounter()">
+      ${inDb
+        ? `<span class="dim" title="System Points — стоимость системы (по книге, не меняется)" style="flex:0 0 auto">SP ${sp}</span>`
+        : `<span class="dim" title="System Points — стоимость системы" style="flex:0 0 auto">SP</span>
+      <input class="narrow" type="number" title="SP" value="${sp}" onchange="S.systems[${i}].sp=+this.value;save();updateSpCounter()">`}
       <button class="btn danger" style="flex:0 0 auto" onclick="delRow('systems',${i})">✕</button></div>
       ${lim ? `<div class="row"><span class="dim">Limited ${lim}: заряды</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepSysCharges(${i},-1)">−</button><div class="val">${left} <small>/ ${lim}</small></div><button onclick="stepSysCharges(${i},1)">+</button></div></div>` : ''}
       <textarea placeholder="Описание системы…" onchange="S.systems[${i}].desc=this.value;save()">${esc(s.desc)}</textarea>
@@ -875,7 +879,7 @@ function fillSystemFromDb(i, name){
 function updateSpCounter(){
   const spEl = document.getElementById('spCounter');
   if (!spEl) return;
-  const used = S.systems.reduce((a,s)=>a+(+s.sp||0),0);
+  const used = S.systems.reduce((a,s)=>a+sysSp(s),0);
   const total = +get('mech.sp')||0;
   const free = total - used;
   spEl.textContent = 'SP: использовано ' + used + ' из ' + total + ' · свободно ' + free;
@@ -883,6 +887,7 @@ function updateSpCounter(){
 }
 function sysLim(s){ if (typeof s.lim === 'number') return s.lim; const d = DB.systems.find(x=>x.n===s.name); return d ? (d.lim||0) : 0; }
 function sysLeft(s){ const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
+function sysSp(s){ const d = DB.systems.find(x=>x.n===s.name); return d ? (d.p||0) : (+s.sp||0); }
 function weapLim(w){ if (typeof w.lim === 'number') return w.lim; const d = DB.weapons.find(x=>x.n===w.name); return d ? (d.lim||0) : 0; }
 function weapLeft(w){ const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = DB.weapons.find(x=>x.n===w.name); return d ? (d.tg||[]) : []; }
