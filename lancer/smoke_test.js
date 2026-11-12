@@ -75,7 +75,8 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'descBox:descBox,editDesc:editDesc,openDesc:openDesc,closeDesc:closeDesc,renderDescBoxes:renderDescBoxes,'
   + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter,'
   + 'TRIGGERS:TRIGGERS,findTrigger:findTrigger,trigDisp:trigDisp,triggerMatches:triggerMatches,'
-  + 'showTriggerResults:showTriggerResults,addTriggerByName:addTriggerByName};';
+  + 'showTriggerResults:showTriggerResults,addTriggerByName:addTriggerByName,'
+  + 'CORE_BONUSES:CORE_BONUSES,CORP_NAMES:CORP_NAMES,findCoreBonus:findCoreBonus,corpRanks:corpRanks,coreBonusSlots:coreBonusSlots,coreBonusAllowed:coreBonusAllowed,addCoreBonusByIdx:addCoreBonusByIdx,removeCoreBonus:removeCoreBonus,renderCoreBonuses:renderCoreBonuses,openCoreBonusPicker:openCoreBonusPicker};';
 function runEval(store){
   const stub = makeStub(store);
   Object.assign(global, stub.g);
@@ -726,7 +727,7 @@ if (XW.STR.u009 || XW.STR.u157 || XW.STR.u069) throw new Error('W: removed strin
 if (!XW.STR.edit_toggle || !XW.STR.search_ph_license) throw new Error('W: the new dynamic strings must be in STR');
 if (!XW.STR.p002 || !XW.STR.p003 || !XW.STR.p009 || !XW.STR.p010) throw new Error('W: the moved search placeholders must stay in STR');
 // тогглы — кнопки-слайдеры без текста (в статике — button.toggle.on, без чекбокса и слова)
-['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleHase','editToggleCore'].forEach(id=>{
+['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleHase','editToggleCore','editToggleCoreBonuses'].forEach(id=>{
   if (!staticHtml.includes('<button type="button" class="toggle on" id="' + id + '"')) throw new Error('W: toggle ' + id + ' must be a slider button in the static HTML');
   if (!elW[id].classList.contains('on')) throw new Error('W: toggle ' + id + ' must be ON by default');
 });
@@ -805,7 +806,7 @@ XX.toggleEdit('systems');
 
 // PHASE Y: v27 — гаечный ключ на бегунке слайдера
 const knobCount = (staticHtml.match(/<span class="knob">🔧<\/span>/g) || []).length;
-if (knobCount !== 9) throw new Error('Y: all 9 toggle knobs must carry the wrench icon (found ' + knobCount + ')');
+if (knobCount !== 10) throw new Error('Y: all 10 toggle knobs must carry the wrench icon (found ' + knobCount + ')');
 if (!staticHtml.includes('.toggle .knob') || !staticHtml.includes('display:flex')) throw new Error('Y: the knob must be a flex container centering the icon');
 
 
@@ -848,7 +849,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 38')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 39')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -942,9 +943,10 @@ XAC.renderLists();
 if (!elAC['traitsBox'].innerHTML.includes('Трейт один: длинный текст трейта.')) throw new Error('AC: the traits card must show the traits text');
 if (elAC['traitsBox'].innerHTML.includes('подробнее')) throw new Error('AC: traits must never collapse into «подробнее»');
 if (!elAC['traitsBox'].innerHTML.includes('Трейт один: длинный текст трейта. Трейт один: длинный текст трейта. Трейт один: длинный текст трейта. Трейт один: длинный текст трейта.')) throw new Error('AC: the traits card must show the whole long text, not a truncated paragraph');
-// Core Bonuses и снаряжение пилота убраны с вкладки Пилота (есть Заметки на Мехе)
-if (staticHtml.includes('Core Bonuses и снаряжение') || staticHtml.includes('pilot.coreBonuses') || staticHtml.includes('pilot.gear')) throw new Error('AC: the Core Bonuses / pilot Gear card must be gone');
-if ('coreBonuses' in SAC.pilot || 'gear' in SAC.pilot) throw new Error('AC: the Core Bonuses / Gear fields must be gone from the save');
+// Старая карточка «Core Bonuses и снаряжение» пилота убрана с вкладки Пилота (есть Заметки на Мехе).
+// v39: Core Bonuses вернулись как полноценный пикер (фаза AK) — поле pilot.coreBonuses снова в сейве, запрещён только gear.
+if (staticHtml.includes('Core Bonuses и снаряжение') || staticHtml.includes('pilot.gear')) throw new Error('AC: the old Core Bonuses / pilot Gear card must be gone');
+if ('gear' in SAC.pilot) throw new Error('AC: the Gear field must be gone from the save');
 if (!staticHtml.includes('Заметки')) throw new Error('AC: the Mech tab notes must stay');
 // иконки ресурсов: Stress — ядерная опасность, Overcharge — молния
 if (!staticHtml.includes('<span class="ico">☢️</span>Stress')) throw new Error('AC: Stress must carry the radiation icon');
@@ -1056,7 +1058,7 @@ const rAH2 = runEval({});
 if (rAH2.S.mech.hpMax !== 10 || rAH2.S.mech.heatMax !== 6) throw new Error('AH: a fresh Everest save must keep its maxes');
 
 
-// PHASE AI: v38 — счётчики в одну колонку на телефоне + Personalizations (+2 HP)
+// PHASE AI: v38 — Personalizations (+2 HP); раскладка счётчиков — v39 (откат к 2 колонкам)
 // Personalizations — единственная система в данных, дающая +2 к максимуму HP
 const { X: XAI, S: SAI, DB: DBAI, elements: elAI, g: gAI } = runEval({});
 XAI.set('mech.frame', 'Everest');
@@ -1071,10 +1073,80 @@ if (XAI.get('mech.hpMax') !== 16) throw new Error('AI: with Hull 2 and Personali
 SAI.systems = SAI.systems.filter(s => s.name !== 'Personalizations');
 XAI.recalcDerived();
 if (XAI.get('mech.hpMax') !== 14) throw new Error('AI: after removing Personalizations, HP max must return to 10 + 4 = 14');
-// счётчики ресурсов — одна колонка на телефоне, значение не переносится
+// счётчики ресурсов — v39: 2 колонки как раньше, значение переносится, отступ до кнопок правил
 if (!staticHtml.includes('class="grid res-grid"')) throw new Error('AI: the resources grid must carry the res-grid class');
-if (!/\.res-grid\s*\{\s*grid-template-columns:1fr;\s*\}/.test(staticHtml)) throw new Error('AI: on phones (max-width:560px) the resources grid must be a single column');
-if (!staticHtml.includes('.counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; white-space:nowrap;')) throw new Error('AI: the counter value must not wrap (white-space:nowrap)');
+if (/\.res-grid[^{]*\{[^}]*grid-template-columns:1fr[;}]/.test(staticHtml)) throw new Error('AI: no single-column override — the resources grid must stay 2 columns');
+if (staticHtml.includes('white-space:nowrap')) throw new Error('AI: the counter value must wrap (no nowrap)');
+if (!/\.res-grid\s*\{\s*margin-bottom:16px;\s*\}/.test(staticHtml)) throw new Error('AI: the resources grid must have a 16px bottom margin (gap before the rules buttons)');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP');
+// PHASE AJ: v39 — счётчики в 2 колонки, кнопки правил сдвинуты ниже (версия — фаза AA)
+if (!staticHtml.includes('class="grid res-grid"')) throw new Error('AJ: the resources grid must carry the res-grid class');
+if (!/\.res-grid\s*\{\s*margin-bottom:16px;\s*\}/.test(staticHtml)) throw new Error('AJ: the resources grid must have a 16px bottom margin');
+for (const t of ['Оверчардж', 'Таблица потери структуры (Structure)', 'Таблица перегрева реактора (Stress)', 'Отдых и полный ремонт']) {
+  if (!staticHtml.includes(t)) throw new Error('AJ: rules block missing: ' + t);
+}
+
+// PHASE AK: v39 — Core Bonuses (30 шт., корбук стр. 35/118/127/158/191/225)
+const { X: XAK, S: SAK } = runEval({});
+// данные: 6 у каждого из 5 производителей
+if (!Array.isArray(XAK.CORE_BONUSES)) throw new Error('AK: CORE_BONUSES data must exist');
+const CB = XAK.CORE_BONUSES;
+if (CB.length !== 30) throw new Error('AK: there must be 30 core bonuses, got ' + CB.length);
+const CB_CORPS = {};
+CB.forEach(cb=>{ CB_CORPS[cb.corp] = (CB_CORPS[cb.corp]||0)+1; });
+['GMS','IPS-N','SSC','HORUS','HA'].forEach(c=>{ if (CB_CORPS[c] !== 6) throw new Error('AK: ' + c + ' must have 6 core bonuses, got ' + (CB_CORPS[c]||0)); });
+if (!CB.some(cb=>cb.n==='Reinforced Frame' && cb.corp==='IPS-N')) throw new Error('AK: Reinforced Frame must be IPS-N');
+if (!CB.some(cb=>cb.n==='Superior By Design' && cb.corp==='HA')) throw new Error('AK: Superior By Design must be HA');
+if (!CB.some(cb=>cb.n==='The Lesson of the Open Door' && cb.corp==='HORUS')) throw new Error('AK: Lesson of the Open Door must be HORUS');
+// слоты: LL3 -> 1, LL6 -> 2, LL9 -> 3
+XAK.set('pilot.ll', 2);
+if (XAK.coreBonusSlots() !== 0) throw new Error('AK: LL2 must give 0 core bonus slots');
+XAK.set('pilot.ll', 3);
+if (XAK.coreBonusSlots() !== 1) throw new Error('AK: LL3 must give 1 core bonus slot');
+XAK.set('pilot.ll', 6);
+if (XAK.coreBonusSlots() !== 2) throw new Error('AK: LL6 must give 2 core bonus slots');
+XAK.set('pilot.ll', 9);
+if (XAK.coreBonusSlots() !== 3) throw new Error('AK: LL9 must give 3 core bonus slots');
+// требования: GMS — всегда; IPS-N — 3 ранга за бонус (+3 за следующий)
+// пилот: Blackbeard II + Lancaster I = 3 ранга IPS-N, LL3
+SAK.pilot.licenses = [{name:'Blackbeard', rank:2}, {name:'Lancaster', rank:1}];
+XAK.set('pilot.ll', 3);
+const gms = XAK.findCoreBonus('Improved Armament');
+if (!XAK.coreBonusAllowed(gms).ok) throw new Error('AK: a GMS core bonus must always be allowed');
+const rf = XAK.findCoreBonus('Reinforced Frame');
+const alRF = XAK.coreBonusAllowed(rf);
+if (!alRF.ok || alRF.need !== 3 || alRF.have !== 3) throw new Error('AK: Reinforced Frame needs 3 IPS-N ranks; pilot has 3, got need=' + alRF.need + ' have=' + alRF.have);
+const sbd = XAK.findCoreBonus('Superior By Design');
+const alSBD = XAK.coreBonusAllowed(sbd);
+if (alSBD.ok) throw new Error('AK: Superior By Design must be blocked without HA ranks (have=' + alSBD.have + ')');
+// второй бонус IPS-N требует уже 6 рангов
+SAK.pilot.coreBonuses = ['Reinforced Frame'];
+const alRF2 = XAK.coreBonusAllowed(XAK.findCoreBonus('Sloped Plating'));
+if (alRF2.ok || alRF2.need !== 6) throw new Error('AK: a second IPS-N bonus needs 6 ranks, got need=' + alRF2.need + ' ok=' + alRF2.ok);
+// бонусы к максимумам: Reinforced Frame +5 HP, Superior By Design +2 Heat Cap
+XAK.set('mech.frame', 'Everest');
+XAK.set('pilot.hull', 0); XAK.set('pilot.engineering', 0);
+SAK.pilot.coreBonuses = [];
+XAK.recalcDerived();
+if (XAK.get('mech.hpMax') !== 10) throw new Error('AK: Everest HP max must be 10 without Reinforced Frame');
+if (XAK.get('mech.heatMax') !== 6) throw new Error('AK: Everest Heat max must be 6 without Superior By Design');
+SAK.pilot.coreBonuses = ['Reinforced Frame', 'Superior By Design'];
+XAK.recalcDerived();
+if (XAK.get('mech.hpMax') !== 15) throw new Error('AK: with Reinforced Frame, HP max must be 10 + 5 = 15, got ' + XAK.get('mech.hpMax'));
+if (XAK.get('mech.heatMax') !== 8) throw new Error('AK: with Superior By Design, Heat max must be 6 + 2 = 8, got ' + XAK.get('mech.heatMax'));
+// добавление/удаление через API
+SAK.pilot.coreBonuses = [];
+XAK.set('pilot.ll', 3);
+XAK.addCoreBonusByIdx(CB.findIndex(cb=>cb.n==='Reinforced Frame'));
+if (SAK.pilot.coreBonuses.length !== 1 || SAK.pilot.coreBonuses[0] !== 'Reinforced Frame') throw new Error('AK: addCoreBonusByIdx must add Reinforced Frame');
+XAK.addCoreBonusByIdx(CB.findIndex(cb=>cb.n==='Reinforced Frame'));
+if (SAK.pilot.coreBonuses.length !== 1) throw new Error('AK: adding the same core bonus twice must not duplicate it');
+XAK.removeCoreBonus(0);
+if (SAK.pilot.coreBonuses.length !== 0) throw new Error('AK: removeCoreBonus must remove the bonus');
+// карточка и диалог — в статике
+if (!staticHtml.includes('id="coreBonuses"')) throw new Error('AK: the Core Bonuses card container must exist');
+if (!staticHtml.includes('id="cbDlg"')) throw new Error('AK: the Core Bonuses picker dialog must exist');
+if (!staticHtml.includes('Core Bonuses')) throw new Error('AK: the Core Bonuses card title must exist');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses)');
