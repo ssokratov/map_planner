@@ -848,7 +848,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 36')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 37')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1035,4 +1035,25 @@ if (XAG.STR.u014.ru !== 'Полный ремонт (отдых)') throw new Erro
 if (!staticHtml.includes('data-f="pilot.hull"') || !staticHtml.includes('data-f="pilot.engineering"')) throw new Error('AG: the HASE inputs must still be bound');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block');
+// PHASE AH: v37 — загрузка пересчитывает максимумы (лечит устаревший сейв)
+// Сейв тестового браузера: имя фрейма «Blackbeard», а максимумы от Эвереста (HP 10, Heat 6).
+// У Чёрной Бороды HP 12, Heat Cap 4 — загрузка должна их исправить.
+const staleAH = JSON.parse(JSON.stringify(S));
+staleAH.mech.frame = 'Blackbeard';
+staleAH.mech.hpMax = 10;
+staleAH.mech.heatMax = 6;
+staleAH.mech.repairsMax = 5;
+staleAH.pilot.hull = 0; staleAH.pilot.agility = 0; staleAH.pilot.systems = 0; staleAH.pilot.engineering = 0;
+const storeAH = { 'lancer-tracker-v1': JSON.stringify(staleAH) };
+const rAH = runEval(storeAH);
+const SAH = rAH.S;
+if (SAH.mech.frame !== 'Blackbeard') throw new Error('AH: the stale save frame must stay Blackbeard');
+if (SAH.mech.hpMax !== 12) throw new Error('AH: on load, a stale HP max (10, Everest) for Blackbeard must be corrected to 12');
+if (SAH.mech.heatMax !== 4) throw new Error('AH: on load, a stale Heat max (6, Everest) for Blackbeard must be corrected to 4');
+if (SAH.mech.repairsMax !== 5) throw new Error('AH: Repairs max must stay 5 (both frames have repcap 5)');
+// свежий сейв (Everest) загрузкой не портится
+const rAH2 = runEval({});
+if (rAH2.S.mech.hpMax !== 10 || rAH2.S.mech.heatMax !== 6) throw new Error('AH: a fresh Everest save must keep its maxes');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE');
