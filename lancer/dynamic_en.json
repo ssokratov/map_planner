@@ -170,5 +170,33 @@
  "p004": {
   "ru": "Трейты фрейма — заполняются кнопкой «Применить фрейм»",
   "en": "Frame traits — filled in by the \"Apply Frame\" button"
+ },
+ "custom_name_needed": {
+  "ru": "Введите название",
+  "en": "Enter a name"
+ },
+ "edit_toggle": {
+  "ru": "Редактирование",
+  "en": "Editing"
+ },
+ "p002": {
+  "ru": "Найти: название, описание…",
+  "en": "Search: name, description…"
+ },
+ "p003": {
+  "ru": "Найти: название, GMS, LL2…",
+  "en": "Search: name, GMS, LL2…"
+ },
+ "p009": {
+  "ru": "Найти фрейм: название, корпорация, роль…",
+  "en": "Find a frame: name, corporation, role…"
+ },
+ "p010": {
+  "ru": "Найти триггер: название…",
+  "en": "Find a trigger: name…"
+ },
+ "search_ph_license": {
+  "ru": "Найти лицензию: название фрейма…",
+  "en": "Find a license: frame name…"
  }
 }

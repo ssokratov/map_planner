@@ -28,10 +28,6 @@
    "tag": "label",
    "en": "Speed"
   },
-  "u009": {
-   "tag": "button",
-   "en": "Apply Frame"
-  },
   "u010": {
    "tag": "p",
    "en": "Sets the mounts, Core System, traits, and base stats of the selected frame (accounting for HASE). The frame's integrated weapon (if any) is added to the Integrated mount. If the mounts already have weapons, it will ask for confirmation — the weapons will be removed."
@@ -259,10 +255,6 @@
   "u068": {
    "tag": "h2",
    "en": "Systems"
-  },
-  "u069": {
-   "tag": "button",
-   "en": "＋ Add"
   },
   "u070": {
    "tag": "p",
@@ -619,24 +611,12 @@
   "u156": {
    "tag": "label",
    "en": "Range"
-  },
-  "u157": {
-   "tag": "span",
-   "en": "Editing"
   }
  },
  "placeholders": {
   "p001": {
    "tag": "input",
    "en": "Mech Name"
-  },
-  "p002": {
-   "tag": "input",
-   "en": "Search: name, description…"
-  },
-  "p003": {
-   "tag": "input",
-   "en": "Search: name, GMS, LL2…"
   },
   "p005": {
    "tag": "textarea",
@@ -653,14 +633,6 @@
   "p008": {
    "tag": "input",
    "en": "E.g.: Colonist"
-  },
-  "p009": {
-   "tag": "input",
-   "en": "Find a frame: name, corporation, role…"
-  },
-  "p010": {
-   "tag": "input",
-   "en": "Find a trigger: name…"
   }
  }
 }

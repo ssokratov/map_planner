@@ -53,8 +53,9 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'weaponMatches:weaponMatches,systemMatches:systemMatches,'
   + 'showWeaponResults:showWeaponResults,showSystemResults:showSystemResults,'
   + 'addWeaponByIndex:addWeaponByIndex,addSystemByIndex:addSystemByIndex,'
-  + 'addSystemFromDb:addSystemFromDb,'
   + 'toggleEdit:toggleEdit,editOn:editOn,'
+  + 'openSearch:openSearch,closeSearchDlg:closeSearchDlg,renderSearchResults:renderSearchResults,'
+  + 'showLicenseResults:showLicenseResults,addLicenseByName:addLicenseByName,'
   + 'openCustomWeaponDlg:openCustomWeaponDlg,addCustomWeapon:addCustomWeapon,'
   + 'openCustomSystemDlg:openCustomSystemDlg,addCustomSystem:addCustomSystem,'
   + 'applyFrame:applyFrame,toggleLicenseFilter:toggleLicenseFilter,'
@@ -70,7 +71,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'findWeapon:findWeapon,findSystem:findSystem,findTalent:findTalent,frameKey:frameKey,'
   + 'dispVal:dispVal,dispField:dispField,mountCap:mountCap,STR:STR,L:L,'
   + 'frameMatches:frameMatches,showFrameResults:showFrameResults,pickFrame:pickFrame,'
-  + 'frameLabel:frameLabel,renderLicenseDb:renderLicenseDb,renderTalentDb:renderTalentDb,'
+  + 'frameLabel:frameLabel,'
   + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,renderDescBoxes:renderDescBoxes,'
   + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter,'
   + 'TRIGGERS:TRIGGERS,findTrigger:findTrigger,trigDisp:trigDisp,triggerMatches:triggerMatches,'
@@ -460,15 +461,26 @@ if (!elP['frameResults'].innerHTML.includes('Ничего не найдено'))
 XP.pickFrame('Blackbeard');
 if (SP2.mech.frame !== 'Blackbeard') throw new Error('P: pickFrame must set mech.frame');
 if (SP2.mounts.map(m=>m.type).join() !== DBP.frames['Blackbeard'].m.join()) throw new Error('P: pickFrame must apply the frame mounts');
-// двуязычные datalist'ы лицензий и талантов (в обоих режимах отображения)
-const licVals = () => [...elP['licenseDb'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
-if (!licVals().includes('Blackbeard') || !licVals().includes('Чёрная Борода')) throw new Error('P: license datalist must offer EN and RU names in RU mode');
-if (!elP['licenseDb'].innerHTML.includes('label="IPS-N')) throw new Error('P: license datalist labels must show the corporation');
+// поиск лицензий — в модалке (v25): двуязычный, без Эвереста, с корпорацией
+XP.showLicenseResults('', null, 20);
+let licBox = elP['licenseResults'].innerHTML;
+if (!licBox.includes('Blackbeard') || !licBox.includes('Чёрная Борода')) throw new Error('P: license search must offer EN and RU names in RU mode');
+if (!licBox.includes('IPS-N')) throw new Error('P: license search must show the corporation');
+if (licBox.includes('Эверест') || licBox.includes('Everest')) throw new Error('P: license search must not offer Everest (no license needed)');
+XP.showLicenseResults('штурмовик', null, 20);
+if (!elP['licenseResults'].innerHTML.includes('Чёрная Борода')) throw new Error('P: license search must match the RU role');
 XP.setLang('en');
-if (!licVals().includes('Blackbeard') || !licVals().includes('Чёрная Борода')) throw new Error('P: license datalist must offer EN and RU names in EN mode');
-const talVals = [...elP['talentDb'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
-if (!talVals.includes('Ace') || !talVals.includes('Ас')) throw new Error('P: talent datalist must offer EN and RU names');
+XP.showLicenseResults('чёрная борода', null, 20);
+licBox = elP['licenseResults'].innerHTML;
+if (!licBox.includes('Blackbeard')) throw new Error('P: license search must find Blackbeard by its RU name in EN mode');
 XP.setLang('ru');
+// выбор лицензии в модалке добавляет строку с рангом I
+const nLicBefore = SP2.pilot.licenses.length;
+XP.addLicenseByName('Blackbeard');
+if (SP2.pilot.licenses.length !== nLicBefore + 1 || SP2.pilot.licenses[SP2.pilot.licenses.length-1].name !== 'Blackbeard' || SP2.pilot.licenses[SP2.pilot.licenses.length-1].rank !== 1) throw new Error('P: addLicenseByName must add the license with rank I');
+// поиск талантов двуязычный: по EN-имени находится, показывается RU
+XP.showTalentResults('ace');
+if (!elP['talentResults'].innerHTML.includes('Ас')) throw new Error('P: talent search must find Ace by its EN name');
 // фикс dispField (v15): Core System / описание / трейты переводятся в RU-режиме
 // (фрейм сейчас Blackbeard — после pickFrame выше)
 if (XP.dispField('mech.coreSystem') !== DBP.frames['Blackbeard'].cr) throw new Error('P: dispField coreSystem must be RU in RU mode');
@@ -534,27 +546,24 @@ if (mechIdx < 0 || pilotIdx < 0 || pilotIdx < mechIdx) throw new Error('R: tabs 
 if (staticHtml.includes('data-f="mech.frame"')) throw new Error('R: mech.frame must not be an editable input anymore');
 if (staticHtml.includes('id="frames"')) throw new Error('R: frames datalist must be gone');
 if (!staticHtml.includes('id="mechFrameName"')) throw new Error('R: Mech tab must show the frame name read-only');
-const pickIdx = staticHtml.indexOf('id="framePick"');
-const applyIdx = staticHtml.indexOf('onclick="applyFrame()"');
-if (pickIdx < pilotIdx) throw new Error('R: frame picker must live in the Pilot tab');
-if (applyIdx < pilotIdx) throw new Error('R: Apply Frame button must live in the Pilot tab');
+if (staticHtml.includes('id="framePick"')) throw new Error('R: the frame picker input must be gone (search is in the modal now)');
+if (staticHtml.includes('applyFrame()')) throw new Error('R: the Apply Frame button must be gone');
+if (!staticHtml.includes("openSearch('frame')")) throw new Error('R: the frame section must have a search icon opening the modal');
 const { X: XR, S: SR, elements: elR, g: gR } = runEval({});
 SR.pilot.licenses.push({name:'Blackbeard', rank:2}); XR.save(); XR.renderLists();
 XR.pickFrame('Blackbeard');
 if (SR.mech.frame !== 'Blackbeard') throw new Error('R: pickFrame must set mech.frame');
 if (elR['mechFrameName'].textContent !== 'Чёрная Борода') throw new Error('R: Mech tab must show the frame name in RU');
-// кнопка «Применить фрейм» читает пикер
+// applyFrame — только с явным аргументом (из модалки через pickFrame)
 gR.confirmCalls.length = 0;
-elR['framePick'].value = 'Swallowtail';
-XR.applyFrame();
-if (!gR.confirmCalls.some(m => /нет лицензии/.test(m))) throw new Error('R: applyFrame from the picker must warn about missing license');
-if (SR.mech.frame !== 'Swallowtail') throw new Error('R: applyFrame must apply the frame from the picker');
+XR.applyFrame('Swallowtail');
+if (!gR.confirmCalls.some(m => /нет лицензии/.test(m))) throw new Error('R: applyFrame must warn about missing license');
+if (SR.mech.frame !== 'Swallowtail') throw new Error('R: applyFrame must apply the frame');
 if (elR['mechFrameName'].textContent !== 'Махаон') throw new Error('R: Mech tab must show the new frame name in RU');
-// пустой пикер — кнопка ничего не делает
-elR['framePick'].value = '';
+// пустой аргумент — ничего не делает
 gR.confirmCalls.length = 0;
-XR.applyFrame();
-if (gR.confirmCalls.length !== 0) throw new Error('R: applyFrame with an empty picker must do nothing');
+XR.applyFrame('');
+if (gR.confirmCalls.length !== 0) throw new Error('R: applyFrame with an empty name must do nothing');
 if (SR.mech.frame !== 'Swallowtail') throw new Error('R: empty applyFrame must not change the frame');
 
 // PHASE S: v21 — оружие и системы только для просмотра; кастомные — через модалку
@@ -571,7 +580,7 @@ if (sysHtmlS.includes('✎')) throw new Error('S: system descriptions must not o
 // в карточках оружия нет input'ов — урон, дальность и теги только текстом
 XS.addWeaponByIndex(0, DBS.weapons.findIndex(w=>w.n==='Assault Rifle'));
 let mountsHtmlS = elS['mounts'].innerHTML;
-if ((mountsHtmlS.match(/<input/g) || []).length !== SS.mounts.length) throw new Error('S: weapon rows must not contain inputs (only one search input per mount)');
+if ((mountsHtmlS.match(/<input/g) || []).length !== 0) throw new Error('S: weapon rows must not contain inputs (the search is in the modal now)');
 if (!mountsHtmlS.includes('Штурмовая винтовка')) throw new Error('S: weapon rows must show the RU name');
 if (!mountsHtmlS.includes('1d6 кинетический')) throw new Error('S: weapon rows must show the damage as text');
 if (!mountsHtmlS.includes('Дальность 10')) throw new Error('S: weapon rows must show the range as text');
@@ -628,15 +637,15 @@ if (elT['mechFrameName'].textContent !== 'Чёрная Борода') throw new 
 const { X: XU, S: SU, DB: DBU, elements: elU, g: gU } = runEval({});
 // по умолчанию редактирование включено
 if (!XU.editOn('mounts') || !XU.editOn('talents') || !XU.editOn('triggers')) throw new Error('U: editing must be ON by default for all three blocks');
-if (!elU['editToggleMounts'].checked || !elU['editToggleTalents'].checked || !elU['editToggleTriggers'].checked) throw new Error('U: edit toggles must be checked by default');
+if (!elU['editToggleMounts'].classList.contains('on') || !elU['editToggleTalents'].classList.contains('on') || !elU['editToggleTriggers'].classList.contains('on')) throw new Error('U: edit toggles must be ON by default');
 // маунты: выключить — исчезают поиск, удаление, добавление и подсказка
 XU.toggleEdit('mounts');
 if (XU.editOn('mounts')) throw new Error('U: toggleEdit must turn mounts editing OFF');
-if (elU['editToggleMounts'].checked) throw new Error('U: the mounts toggle must uncheck');
+if (elU['editToggleMounts'].classList.contains('on')) throw new Error('U: the mounts toggle must switch OFF');
 if (elU['weaponsHint'].style.display !== 'none') throw new Error('U: the weapons hint must hide when mounts editing is OFF');
 if (elU['addMountBtn'].style.display !== 'none') throw new Error('U: the + Mount button must hide when mounts editing is OFF');
 let mountsHtmlU = elU['mounts'].innerHTML;
-if (mountsHtmlU.includes('mountPick-')) throw new Error('U: the weapon search must hide when mounts editing is OFF');
+if (mountsHtmlU.includes("openSearch('weapon'")) throw new Error('U: the weapon search must hide when mounts editing is OFF');
 if (mountsHtmlU.includes('Кастомное Оружие')) throw new Error('U: the + Custom Weapon button must hide when mounts editing is OFF');
 if (mountsHtmlU.includes('delWeapon') || mountsHtmlU.includes('delMount')) throw new Error('U: delete buttons must hide when mounts editing is OFF');
 if (mountsHtmlU.includes('<select')) throw new Error('U: the mount type select must hide when mounts editing is OFF');
@@ -650,7 +659,7 @@ if (mountsHtmlU.includes('delWeapon')) throw new Error('U: the weapon delete but
 SU.talents[0].name = 'Ace'; XU.renderLists();
 XU.toggleEdit('talents');
 if (elU['talentsHint'].style.display !== 'none') throw new Error('U: the talents hint must hide when talents editing is OFF');
-if (elU['talentPick'].style.display !== 'none' || elU['addTalentBtn'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
+if (elU['talentSearchRow'].style.display !== 'none' || elU['addTalentBtn'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
 let talHtmlU = elU['talents'].innerHTML;
 if (talHtmlU.includes('<input') || talHtmlU.includes('<select') || talHtmlU.includes('delRow')) throw new Error('U: talent rows must not contain inputs, selects or delete buttons in view mode');
 if (!talHtmlU.includes('Ас') || !talHtmlU.includes('>I<')) throw new Error('U: talent rows must show the name and rank as text in view mode');
@@ -673,14 +682,14 @@ const { X: XV, S: SV, DB: DBV, elements: elV, g: gV } = runEval({});
 if (elV['mechCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['haseCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
 // системы: выключить — поиск, добавление и ✕ исчезают, карточки остаются
 XV.toggleEdit('systems');
-if (elV['systemsHint'].style.display !== 'none' || elV['addSystemBtn'].style.display !== 'none' || elV['systemSearchRow'].style.display !== 'none' || elV['systemResults'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
+if (elV['systemsHint'].style.display !== 'none' || elV['addSystemBtn'].style.display !== 'none' || elV['systemSearchRow'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
 let sysHtmlV = elV['systems'].innerHTML;
 if (sysHtmlV.includes('delRow')) throw new Error('V: system delete buttons must hide when systems editing is OFF');
 if (!sysHtmlV.includes('Заряды HEX образца Б')) throw new Error('V: the system cards must stay visible in view mode');
 // лицензии: выключить — строки текстом, фильтр и секция фрейма скрыты
 SV.pilot.licenses.push({name:'Blackbeard', rank:2}); XV.renderLists();
 XV.toggleEdit('licenses');
-if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['addLicenseBtn'].style.display !== 'none' || elV['frameSection'].style.display !== 'none') throw new Error('V: the license filter, hint, add button and frame section must hide when licenses editing is OFF');
+if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['licenseAddRow'].style.display !== 'none' || elV['frameSection'].style.display !== 'none') throw new Error('V: the license filter, hint, add button and frame section must hide when licenses editing is OFF');
 let licHtmlV = elV['licenses'].innerHTML;
 if (licHtmlV.includes('<input') || licHtmlV.includes('<select') || licHtmlV.includes('delLicense')) throw new Error('V: license rows must not contain inputs, selects or delete buttons in view mode');
 if (!licHtmlV.includes('Чёрная Борода') || !licHtmlV.includes('>II<')) throw new Error('V: license rows must show the name and rank as text in view mode');
@@ -690,7 +699,7 @@ if (!elV['mechCard'].classList.contains('view')) throw new Error('V: the Mech ca
 if (!elV['pilotCard'].classList.contains('view')) throw new Error('V: the Pilot card must get the view class when pilot editing is OFF');
 if (!elV['haseCard'].classList.contains('view')) throw new Error('V: the HASE card must get the view class when hase editing is OFF');
 if (!elV['coreCard'].classList.contains('view')) throw new Error('V: the Core System card must get the view class when core editing is OFF');
-if (!elV['editToggleMech'].checked === false) throw new Error('V: the mech toggle must uncheck');
+if (elV['editToggleMech'].classList.contains('on')) throw new Error('V: the mech toggle must switch OFF');
 if (elV['coreDescBox'].innerHTML.includes('✎') || elV['traitsBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit buttons must hide when core editing is OFF');
 // включить обратно — всё возвращается
 XV.toggleEdit('systems'); XV.toggleEdit('licenses'); XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
@@ -698,4 +707,66 @@ if (elV['mechCard'].classList.contains('view') || elV['coreCard'].classList.cont
 if (!elV['systems'].innerHTML.includes('delRow')) throw new Error('V: system delete buttons must return when systems editing is ON');
 if (!elV['coreDescBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit button must return when core editing is ON');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks');
+// PHASE W: v25 — слайдер-тогглы, удаление кнопки «Применить фрейм», «Описание» лишнее, единая модалка поиска
+const { X: XW, S: SW, DB: DBW, elements: elW, g: gW } = runEval({});
+// в статике не должно остаться встроенных полей поиска и их результатов
+['mountPick-','systemPick','talentPick','triggerPick','framePick','mountResults-','systemResults','talentResults','triggerResults','frameResults','licenseDb','talentDb'].forEach(id=>{
+  if (staticHtml.includes('id="'+id)) throw new Error('W: inline search ' + id + ' must be gone from the static HTML');
+});
+if (staticHtml.includes('applyFrame()')) throw new Error('W: the Apply Frame button must be gone');
+if (staticHtml.includes('Редактирование')) throw new Error('W: the word Редактирование must be gone from the static HTML');
+if (staticHtml.includes('id="searchDlg"') === false) throw new Error('W: the search dialog must exist');
+if (!staticHtml.includes("openSearch('system'") || !staticHtml.includes("openSearch('talent'") || !staticHtml.includes("openSearch('trigger'") || !staticHtml.includes("openSearch('license'") || !staticHtml.includes("openSearch('frame'")) throw new Error('W: every static block must have a search icon opening the modal');
+if (!elW['mounts'].innerHTML.includes("openSearch('weapon'")) throw new Error('W: the mounts must have a search icon opening the modal');
+// строки: удалённые ключи ушли, новые динамические — на месте
+if (XW.STR.u009 || XW.STR.u157 || XW.STR.u069) throw new Error('W: removed strings u009/u157/u069 must not be in STR');
+if (!XW.STR.edit_toggle || !XW.STR.search_ph_license) throw new Error('W: the new dynamic strings must be in STR');
+if (!XW.STR.p002 || !XW.STR.p003 || !XW.STR.p009 || !XW.STR.p010) throw new Error('W: the moved search placeholders must stay in STR');
+// тогглы — кнопки-слайдеры без текста (в статике — button.toggle.on, без чекбокса и слова)
+['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleHase','editToggleCore'].forEach(id=>{
+  if (!staticHtml.includes('<button type="button" class="toggle on" id="' + id + '"')) throw new Error('W: toggle ' + id + ' must be a slider button in the static HTML');
+  if (!elW[id].classList.contains('on')) throw new Error('W: toggle ' + id + ' must be ON by default');
+});
+if (staticHtml.includes('edit-toggle')) throw new Error('W: no checkbox toggles must remain in the static HTML');
+if (!staticHtml.includes('id="licenseFilterToggle"')) throw new Error('W: the license filter checkbox must stay (it is not an edit toggle)');
+XW.toggleEdit('mounts');
+if (elW['editToggleMounts'].classList.contains('on')) throw new Error('W: the mounts slider must switch OFF');
+XW.toggleEdit('mounts');
+// модалка: открывается, показывает результаты, плейсхолдер — по виду поиска
+XW.openSearch('weapon', 0);
+if (!elW['searchDlg']._open) throw new Error('W: openSearch must open the dialog');
+if (!elW['searchDlgResults'].innerHTML.includes('Штурмовая винтовка')) throw new Error('W: the weapon search modal must show results');
+if (!elW['searchDlgResults'].innerHTML.includes('closeSearchDlg()')) throw new Error('W: picking a result must close the modal');
+if (elW['searchDlgInput'].placeholder !== XW.L('ph_weapsearch')) throw new Error('W: the weapon search placeholder must be set');
+XW.renderSearchResults('assault');
+if (!elW['searchDlgResults'].innerHTML.includes('Штурмовая винтовка')) throw new Error('W: the modal search must filter by query');
+XW.renderSearchResults('xyz-no-such-weapon');
+if (!elW['searchDlgResults'].innerHTML.includes('Ничего не найдено')) throw new Error('W: the modal must show not-found');
+XW.closeSearchDlg();
+if (elW['searchDlg']._open) throw new Error('W: closeSearchDlg must close the dialog');
+XW.openSearch('system');
+if (!elW['searchDlgResults'].innerHTML.includes('Заряды HEX образца Б')) throw new Error('W: the system search modal must show results');
+XW.openSearch('talent');
+if (!elW['searchDlgResults'].innerHTML.includes('Ас')) throw new Error('W: the talent search modal must show results');
+XW.openSearch('trigger');
+XW.renderSearchResults('угр');
+if (!elW['searchDlgResults'].innerHTML.includes('Угрожать')) throw new Error('W: the trigger search modal must find Угрожать by query');
+XW.openSearch('frame');
+if (!elW['searchDlgResults'].innerHTML.includes('Эверест')) throw new Error('W: the frame search modal must show results');
+XW.openSearch('license');
+if (!elW['searchDlgResults'].innerHTML.includes('Чёрная Борода')) throw new Error('W: the license search modal must show results');
+if (elW['searchDlgResults'].innerHTML.includes('Эверест')) throw new Error('W: the license search modal must not offer Everest');
+XW.closeSearchDlg();
+// выбор в модалке добавляет, а «Описание» в карточках больше не пишется
+XW.openSearch('weapon', 0);
+const wIdx = DBW.weapons.findIndex(w=>w.n==='Assault Rifle');
+XW.addWeaponByIndex(0, wIdx); XW.closeSearchDlg();
+let mountsHtmlW = elW['mounts'].innerHTML;
+if (!mountsHtmlW.includes('Штурмовая винтовка')) throw new Error('W: the picked weapon must be added');
+if (mountsHtmlW.includes('Описание')) throw new Error('W: the word Описание must be gone from the weapon cards');
+if (!mountsHtmlW.includes('Как и мехи GMS')) throw new Error('W: the description preview must stay as the summary');
+if (!elW['coreDescBox'].innerHTML.includes('Активное — Усиление')) throw new Error('W: the Core System description must stay');
+if (elW['coreDescBox'].innerHTML.includes('Описание')) throw new Error('W: the word Описание must be gone from the Core System description');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label');
