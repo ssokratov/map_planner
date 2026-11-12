@@ -116,7 +116,7 @@ X.toggleLicenseFilter(true); // back ON for the license tests
 // PHASE B: applyFrame Blackbeard with HASE 2/1/2/1 - derived stats
 S.mech.frame = 'Blackbeard';
 S.pilot.hull = 2; S.pilot.agility = 1; S.pilot.systems = 2; S.pilot.engineering = 1;
-X.applyFrame();
+X.applyFrame('Blackbeard');
 const FB = DB.frames['Blackbeard'];
 if (S.mech.hpMax !== FB.s.hp + 4) throw new Error('B: hpMax should be frame hp + Hull*2');
 if (S.mech.speed !== FB.s.speed + 0) throw new Error('B: speed should be frame speed + floor(Agi/2)');
@@ -132,7 +132,7 @@ if (S.mounts.map(m => m.type).join(',') !== FB.m.join(',')) throw new Error('B: 
 
 // PHASE C: Lancaster -> Integrated mount + Latch Drone
 S.mech.frame = 'Lancaster';
-X.applyFrame();
+X.applyFrame('Lancaster');
 const im = S.mounts.find(m => m.type === 'Integrated');
 if (!im) throw new Error('C: Lancaster must add an Integrated mount');
 const latch = im.weapons.find(w => w.name === 'Latch Drone');
@@ -181,8 +181,9 @@ S.pilot.licenses.push({ name: 'Blackbeard', rank: 1 }); X.save(); X.renderLists(
 if (!X.itemAvailable(axeG)) throw new Error('G: Chain Axe must be available with Blackbeard I');
 if (X.itemAvailable(bristleG)) throw new Error('G: Bristlecrown (LL2) must NOT be available with Blackbeard I');
 if (X.frameAvailable('Blackbeard')) throw new Error('G: Blackbeard frame needs rank II, not I');
-if (!elA['frames'].innerHTML.includes('Эверест')) throw new Error('G: frames datalist must include Everest (Эверест in RU)');
-if (elA['frames'].innerHTML.includes('Чёрная Борода')) throw new Error('G: frames datalist must NOT include Blackbeard at rank I');
+X.showFrameResults('');
+if (!elA['frameResults'].innerHTML.includes('Эверест')) throw new Error('G: frame picker must include Everest (Эверест in RU)');
+if (elA['frameResults'].innerHTML.includes('Чёрная Борода')) throw new Error('G: frame picker must NOT include Blackbeard at rank I');
 if (elA['licenseRankSum'].textContent !== '1') throw new Error('G: license rank sum should be 1');
 if (elA['licenseRankSum'].style.color !== '#ff6b6b') throw new Error('G: rank sum should be red when it differs from LL (0)');
 // rank 2: frame + LL2 gear yes, LL3 other licenses no
@@ -190,24 +191,24 @@ S.pilot.licenses[0].rank = 2; X.save(); X.renderLists();
 if (!X.frameAvailable('Blackbeard')) throw new Error('G: Blackbeard frame must be available at rank II');
 if (!X.itemAvailable(bristleG)) throw new Error('G: Bristlecrown must be available at rank II');
 if (X.itemAvailable(railgunG)) throw new Error('G: Railgun (Deaths Head LL3) must NOT be available');
-if (!elA['frames'].innerHTML.includes('Чёрная Борода')) throw new Error('G: frames datalist must include Blackbeard at rank II');
+X.showFrameResults('');
+if (!elA['frameResults'].innerHTML.includes('Чёрная Борода')) throw new Error('G: frame picker must include Blackbeard at rank II');
 // unlicensed weapons must not appear in search results at all
 X.showWeaponResults(0, 'vijaya');
 box = elA['mountResults-0'].innerHTML;
 if ((box.match(/class="dbrow"/g) || []).length !== 0) throw new Error('G: unlicensed Vijaya Rockets must not appear in search results');
 // applyFrame with unlicensed frame must warn in the confirm text
-S.mech.frame = 'Tokugawa';
 gA.confirmCalls.length = 0;
-X.applyFrame();
+X.applyFrame('Tokugawa');
 if (!gA.confirmCalls.some(m => /нет лицензии/.test(m))) throw new Error('G: applyFrame must warn about missing license');
 // filter OFF: everything available, frames datalist full
 X.toggleLicenseFilter(false);
 if (!X.itemAvailable(railgunG)) throw new Error('G: with filter OFF, Railgun must be available');
 if (!X.frameAvailable('Tokugawa')) throw new Error('G: with filter OFF, Tokugawa must be available');
-// datalist двуязычный: по 2 опции на фрейм (RU + EN), различных фреймов — 29
-const frameVals = [...elA['frames'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
-if (new Set(frameVals.map(v=>X.frameKey(v))).size !== 29) throw new Error('G: with filter OFF, frames datalist must have all 29 frames');
-if (!frameVals.includes('Blackbeard') || !frameVals.includes('Чёрная Борода')) throw new Error('G: frames datalist must offer both EN and RU names');
+// пикер с выключенным фильтром находит все 29 фреймов
+X.showFrameResults('');
+if (!elA['frameResults'].innerHTML.includes('Показано 8 из 29')) throw new Error('G: with filter OFF, frame picker must find all 29 frames');
+if (!elA['frameResults'].innerHTML.includes('Эверест')) throw new Error('G: frame picker must show Everest with filter OFF');
 if (elA['licNoteW'].textContent !== '') throw new Error('G: filter note must be empty when filter is OFF');
 X.showWeaponResults(0, 'vijaya');
 if ((elA['mountResults-0'].innerHTML.match(/class="dbrow"/g) || []).length !== 1) throw new Error('G: with filter OFF, Vijaya Rockets must appear in search results');
@@ -520,4 +521,34 @@ if (!staticHtml.includes('.desc-preview { color:var(--dim); overflow:hidden; tex
 if (!staticHtml.includes('.core-grid > * { min-width:0; }')) throw new Error('Q: core-grid children must have min-width:0');
 if (!staticHtml.includes('details.desc { border:1px solid var(--line); border-radius:6px; padding:8px 10px; background:var(--panel2); min-width:0; }')) throw new Error('Q: details.desc must have min-width:0');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix');
+// PHASE R: v20 — фрейм переехал на вкладку пилота, на вкладке меха — только текст
+const mechIdx = staticHtml.indexOf('id="tab-mech"');
+const pilotIdx = staticHtml.indexOf('id="tab-pilot"');
+if (mechIdx < 0 || pilotIdx < 0 || pilotIdx < mechIdx) throw new Error('R: tabs must be present in order');
+if (staticHtml.includes('data-f="mech.frame"')) throw new Error('R: mech.frame must not be an editable input anymore');
+if (staticHtml.includes('id="frames"')) throw new Error('R: frames datalist must be gone');
+if (!staticHtml.includes('id="mechFrameName"')) throw new Error('R: Mech tab must show the frame name read-only');
+const pickIdx = staticHtml.indexOf('id="framePick"');
+const applyIdx = staticHtml.indexOf('onclick="applyFrame()"');
+if (pickIdx < pilotIdx) throw new Error('R: frame picker must live in the Pilot tab');
+if (applyIdx < pilotIdx) throw new Error('R: Apply Frame button must live in the Pilot tab');
+const { X: XR, S: SR, elements: elR, g: gR } = runEval({});
+SR.pilot.licenses.push({name:'Blackbeard', rank:2}); XR.save(); XR.renderLists();
+XR.pickFrame('Blackbeard');
+if (SR.mech.frame !== 'Blackbeard') throw new Error('R: pickFrame must set mech.frame');
+if (elR['mechFrameName'].textContent !== 'Чёрная Борода') throw new Error('R: Mech tab must show the frame name in RU');
+// кнопка «Применить фрейм» читает пикер
+gR.confirmCalls.length = 0;
+elR['framePick'].value = 'Swallowtail';
+XR.applyFrame();
+if (!gR.confirmCalls.some(m => /нет лицензии/.test(m))) throw new Error('R: applyFrame from the picker must warn about missing license');
+if (SR.mech.frame !== 'Swallowtail') throw new Error('R: applyFrame must apply the frame from the picker');
+if (elR['mechFrameName'].textContent !== 'Махаон') throw new Error('R: Mech tab must show the new frame name in RU');
+// пустой пикер — кнопка ничего не делает
+elR['framePick'].value = '';
+gR.confirmCalls.length = 0;
+XR.applyFrame();
+if (gR.confirmCalls.length !== 0) throw new Error('R: applyFrame with an empty picker must do nothing');
+if (SR.mech.frame !== 'Swallowtail') throw new Error('R: empty applyFrame must not change the frame');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab');

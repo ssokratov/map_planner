@@ -342,7 +342,7 @@
   },
   "u089": {
    "tag": "h2",
-   "en": "Licenses"
+   "en": "Licenses & Frame"
   },
   "u091": {
    "tag": "p",
@@ -583,6 +583,14 @@
   "u146": {
    "tag": "span",
    "en": "Mech, pilot, rules. Data is stored only in this browser (localStorage)."
+  },
+  "u147": {
+   "tag": "label",
+   "en": "Frame"
+  },
+  "u148": {
+   "tag": "h3",
+   "en": "Frame"
   }
  },
  "placeholders": {
