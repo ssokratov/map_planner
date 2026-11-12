@@ -848,7 +848,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 32')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 33')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -952,4 +952,28 @@ if (!staticHtml.includes('<span class="ico">⚡</span>Overcharge')) throw new Er
 if (staticHtml.includes('<span class="ico">⚡</span>Stress') || staticHtml.includes('<span class="ico">🌀</span>Overcharge')) throw new Error('AC: the old Stress/Overcharge icons must be gone');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning');
+// PHASE AD: v33 — System Points переехал из HASE в Системы (только при редактировании); подсказка HASE тоже только при редактировании
+const { X: XAD, S: SAD, DB: DBAD, elements: elAD, g: gAD } = runEval({});
+// SP-поле теперь в блоке Систем, рядом со счётчиком SP, и только одно такое поле на странице
+if (!staticHtml.includes('id="spCapRow"')) throw new Error('AD: the SP capacity field must live in the Systems card');
+if ((staticHtml.match(/System Points \(SP\)/g) || []).length !== 1) throw new Error('AD: there must be exactly one System Points field (in the Systems card, not in HASE)');
+if (!(staticHtml.indexOf('id="spCapRow"') > staticHtml.indexOf('id="spCounterRow"'))) throw new Error('AD: the SP capacity field must sit next to the SP counter');
+// SP-поле видно только при редактировании систем
+if (elAD['spCapRow'].style.display === 'none') throw new Error('AD: the SP capacity field must show when systems editing is ON');
+XAD.toggleEdit('systems');
+if (elAD['spCapRow'].style.display !== 'none') throw new Error('AD: the SP capacity field must hide when systems editing is OFF');
+if (elAD['spCounterRow'].style.display !== 'none') throw new Error('AD: the SP counter must hide together with the SP field in view mode');
+XAD.toggleEdit('systems');
+// подсказка HASE видна только при редактировании HASE
+if (!staticHtml.includes('id="haseHint"')) throw new Error('AD: the HASE explanation must have an id to hide in view mode');
+if (elAD['haseHint'].style.display === 'none') throw new Error('AD: the HASE explanation must show when HASE editing is ON');
+XAD.toggleEdit('hase');
+if (elAD['haseHint'].style.display !== 'none') throw new Error('AD: the HASE explanation must hide when HASE editing is OFF');
+XAD.toggleEdit('hase');
+// в сетке HASE осталось 9 полей (3×3 на телефоне), без System Points
+const haseHtml = staticHtml.split('id="haseCard"')[1].split('u062')[0];
+if ((haseHtml.match(/<input/g) || []).length !== 9) throw new Error('AD: the HASE grid must have 9 fields after SP moved out');
+if (haseHtml.includes('mech.sp')) throw new Error('AD: the HASE card must not reference mech.sp anymore');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too');

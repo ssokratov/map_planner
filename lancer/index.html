@@ -226,9 +226,8 @@
         <div><label>E-Defense</label><input type="number" data-f="mech.edef" value="8"></div>
         <div><label>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
         <div><label>Tech Attack</label><input type="number" data-f="mech.tech" value="0"></div>
-        <div><label>System Points (SP)</label><input type="number" data-f="mech.sp" value="6"></div>
       </div>
-      <p class="hint" data-i18n="u061">HASE на LL0: 2 очка (одно +2 или два +1), +1 очко за LL. Hull: +2 HP/очко, +1 Repair Cap за 2 очка. Agility: +1 Evasion/очко, +1 Speed за 2. Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2. Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2. Значения по умолчанию — GMS Everest на LL0.</p>
+      <p class="hint" id="haseHint" data-i18n="u061">HASE на LL0: 2 очка (одно +2 или два +1), +1 очко за LL. Hull: +2 HP/очко, +1 Repair Cap за 2 очка. Agility: +1 Evasion/очко, +1 Speed за 2. Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2. Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2. Значения по умолчанию — GMS Everest на LL0.</p>
     </div>
     <div class="card">
       <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob">🔧</span></button></div>
@@ -248,6 +247,7 @@
     <div class="card">
       <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob">🔧</span></button></div>
       <p class="hint" id="spCounterRow" style="padding:0 0 8px"><span id="spCounter"></span></p>
+      <div class="row" id="spCapRow" style="align-items:center"><label style="flex:1 1 auto">System Points (SP)</label><input type="number" data-f="mech.sp" value="6" style="flex:0 0 90px"></div>
       <p class="hint" id="systemsHint" style="padding:0 0 8px" data-i18n="u070">База: <span id="dbSystemCount"></span> систем из открытых данных Massif Press (lancer-data). Поиск ищет по названию, типу, корпорации и уровню лицензии (LL0–LL3). Выбор подставляет SP и описание с эффектом.<span id="licNoteS"></span></p>
       <div id="systems"></div>
       <div class="row" id="systemAddRow" style="margin-top:10px">
@@ -442,7 +442,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 32</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 33</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
@@ -1094,7 +1094,8 @@ function syncEditToggles(){
   show('weaponsHint', em); show('addMountBtn', em);
   show('talentsHint', et); show('talentAddRow', et);
   show('triggerAddRow', eg);
-  show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', es);
+  show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', es); show('spCapRow', es);
+  show('haseHint', editOn('hase'));
   show('licenseFilterRow', el2); show('licensesHint', el2); show('licenseAddRow', el2); show('licensesNote', el2 && !!S.pilot.licensesNote);
   show('frameSearchBtn', editOn('mech'));
   // Статичные карточки: в просмотре поля выглядят как текст и не ловят тап
