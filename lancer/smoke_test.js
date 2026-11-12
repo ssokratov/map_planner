@@ -848,7 +848,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 37')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 38')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1056,4 +1056,25 @@ const rAH2 = runEval({});
 if (rAH2.S.mech.hpMax !== 10 || rAH2.S.mech.heatMax !== 6) throw new Error('AH: a fresh Everest save must keep its maxes');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE');
+// PHASE AI: v38 — счётчики в одну колонку на телефоне + Personalizations (+2 HP)
+// Personalizations — единственная система в данных, дающая +2 к максимуму HP
+const { X: XAI, S: SAI, DB: DBAI, elements: elAI, g: gAI } = runEval({});
+XAI.set('mech.frame', 'Everest');
+XAI.set('pilot.hull', 0); XAI.set('pilot.engineering', 0);
+XAI.recalcDerived();
+if (XAI.get('mech.hpMax') !== 10) throw new Error('AI: Everest HP max must be 10 without Personalizations');
+SAI.systems.push({name:'Personalizations', sp:0, desc:''});
+XAI.recalcDerived();
+if (XAI.get('mech.hpMax') !== 12) throw new Error('AI: with Personalizations equipped, HP max must be 10 + 2 = 12');
+XAI.set('pilot.hull', 2); XAI.recalcDerived();
+if (XAI.get('mech.hpMax') !== 16) throw new Error('AI: with Hull 2 and Personalizations, HP max must be 10 + 4 + 2 = 16');
+SAI.systems = SAI.systems.filter(s => s.name !== 'Personalizations');
+XAI.recalcDerived();
+if (XAI.get('mech.hpMax') !== 14) throw new Error('AI: after removing Personalizations, HP max must return to 10 + 4 = 14');
+// счётчики ресурсов — одна колонка на телефоне, значение не переносится
+if (!staticHtml.includes('class="grid res-grid"')) throw new Error('AI: the resources grid must carry the res-grid class');
+if (!/\.res-grid\s*\{\s*grid-template-columns:1fr;\s*\}/.test(staticHtml)) throw new Error('AI: on phones (max-width:560px) the resources grid must be a single column');
+if (!staticHtml.includes('.counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; white-space:nowrap;')) throw new Error('AI: the counter value must not wrap (white-space:nowrap)');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP');

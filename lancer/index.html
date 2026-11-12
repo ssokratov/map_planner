@@ -29,7 +29,8 @@
   textarea { min-height:64px; resize:vertical; }
   .counter { display:flex; align-items:center; gap:8px; }
   .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
-  .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
+  .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; white-space:nowrap; }
+  @media (max-width:560px){ .res-grid { grid-template-columns:1fr; } }
   .counter .val small { color:var(--dim); font-size:15px; font-weight:400; }
   .counter .val.low { color:var(--bad); }
   .counter .val.hot { color:var(--accent); }
@@ -138,7 +139,7 @@
     </div>
     <div class="card">
       <h2 data-i18n="u011">Ресурсы боя</h2>
-      <div class="grid">
+      <div class="grid res-grid">
         <div class="res" style="--rc:#ff6b6b"><label><span class="ico">❤️</span>HP</label>
           <div class="counter"><button onclick="step('mech.hp',-1)">−</button><div class="val" id="v-mech.hp">10 <small>/ 10</small></div><button onclick="step('mech.hp',1)">+</button></div>
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
@@ -441,7 +442,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 37</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 38</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
@@ -1117,6 +1118,8 @@ function recalcDerived(){
   const st = F.s;
   const H = +get('pilot.hull')||0, E = +get('pilot.engineering')||0;
   set('mech.hpMax', st.hp + H*2);
+  // Personalizations (GMS, LL0) — единственная система в данных, дающая +2 к максимуму HP.
+  if (S.systems.some(s => { const d = findSystem(s.name); return d && d.n === 'Personalizations'; })) set('mech.hpMax', get('mech.hpMax') + 2);
   set('mech.heatMax', st.heatcap + E);
   set('mech.repairsMax', st.repcap + Math.floor(H/2));
   set('mech.structureMax', st.structure);
