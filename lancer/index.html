@@ -488,7 +488,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 49</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 50</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
@@ -595,6 +595,10 @@ const STR = {"u001": {"ru": "Lancer <span>// Трекер персонажа</sp
 // __STR_END__
 // Состояние компонента описания (v17): какие <details> раскрыты, какое правится
 let openDescs = new Set();
+let openSearchDescs = new Set();
+function rerenderSearch(){ const inp = document.getElementById('searchDlgInput'); renderSearchResults(inp ? inp.value : ''); }
+function openSearchDesc(key){ openSearchDescs.add(key); rerenderSearch(); }
+function closeSearchDesc(key){ openSearchDescs.delete(key); rerenderSearch(); }
 let editingDesc = null;
 // Язык интерфейса и базы: 'ru' | 'en'. STR вшивается build_i18n.py.
 function lang(){ return (S.settings && S.settings.lang) || 'ru'; }
@@ -1339,9 +1343,16 @@ function showSystemResults(q, box, limit){
   const shown = matches.slice(0, limit || 8);
   box.innerHTML = shown.map(({s,i})=>{
     const d = sd(s);
+    const key = 'sys:' + i;
+    const first = (d.x||'').split('\n\n')[0].replace(/\n/g,' ');
+    const needsMore = first.length > 140;
+    let descHtml;
+    if (!needsMore) descHtml = esc(excerpt(d.x, 140));
+    else if (openSearchDescs.has(key)) descHtml = esc(d.x) + ' <button class="desc-more" onclick="closeSearchDesc(\'' + key + '\')">' + esc(L('desc_less')) + '</button>';
+    else descHtml = esc(excerpt(d.x, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, (s.p||0) + ' SP', d.lab].filter(x=>x).join(' · '))}</span><span class="dim">${esc(excerpt(d.x, 140))}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, (s.p||0) + ' SP', d.lab].filter(x=>x).join(' · '))}</span><span class="dim" style="white-space:pre-line">${descHtml}</span></div>
       <button class="btn" style="flex:0 0 auto" onclick="addSystemByIndex(${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length > (limit || 8) ? `<div class="dbmore">${L('show_more').replace('{N}', matches.length)}</div>` : '') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');

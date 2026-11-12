@@ -51,10 +51,11 @@ function makeStub(store){
 }
 const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MOUNT_ALLOWED,'
   + 'weaponMatches:weaponMatches,systemMatches:systemMatches,'
-  + 'showWeaponResults:showWeaponResults,showSystemResults:showSystemResults,'
+  + 'showWeaponResults:showWeaponResults,showSystemResults:showSystemResults,sd:sd,'
   + 'addWeaponByIndex:addWeaponByIndex,addSystemByIndex:addSystemByIndex,'
   + 'toggleEdit:toggleEdit,editOn:editOn,'
   + 'openSearch:openSearch,closeSearchDlg:closeSearchDlg,renderSearchResults:renderSearchResults,'
+  + 'openSearchDesc:openSearchDesc,closeSearchDesc:closeSearchDesc,rerenderSearch:rerenderSearch,'
   + 'showLicenseResults:showLicenseResults,addLicenseByName:addLicenseByName,'
   + 'openCustomWeaponDlg:openCustomWeaponDlg,addCustomWeapon:addCustomWeapon,'
   + 'openCustomSystemDlg:openCustomSystemDlg,addCustomSystem:addCustomSystem,'
@@ -849,7 +850,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 49')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 50')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1310,4 +1311,27 @@ const hasePart = statsHtmlAU.slice(d1, d2);
 ['pilot.hull','pilot.agility','pilot.systems','pilot.engineering'].forEach(f=>{ if (!hasePart.includes(f)) throw new Error('AU: HASE stat ' + f + ' must sit between the two dividers'); });
 if (hasePart.includes('mech.armor')) throw new Error('AU: the defense stats must come after the second divider');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE');
+// PHASE AV: v50 — в поиске систем «подробнее» раскрывает полное описание, «свернуть» возвращает обрезку
+const { X: XAV, DB: DBAV, elements: elAV } = runEval({});
+XAV.openSearch('system');
+let htmlAV = elAV['searchDlgResults'].innerHTML;
+const mAV = htmlAV.match(/openSearchDesc\('(sys:\d+)'\)/);
+if (!mAV) throw new Error('AV: a long system description must offer a подробнее button in the search');
+const keyAV = mAV[1];
+const idxAV = +keyAV.split(':')[1];
+if (!htmlAV.includes('…')) throw new Error('AV: the long description must be truncated with an ellipsis');
+const fullAV = (XAV.sd(DBAV.systems[idxAV]).x || '').split('\n\n')[0].replace(/\n/g,' ');
+if (fullAV.length <= 140) throw new Error('AV: the test system must have a long description');
+if (htmlAV.includes(fullAV.slice(100, 160))) throw new Error('AV: the tail of the full description must be hidden before expanding');
+// раскрыть
+XAV.openSearchDesc(keyAV);
+htmlAV = elAV['searchDlgResults'].innerHTML;
+if (htmlAV.includes("openSearchDesc('" + keyAV + "')")) throw new Error('AV: after expanding, the подробнее button must be gone');
+if (!htmlAV.includes("closeSearchDesc('" + keyAV + "')")) throw new Error('AV: after expanding, a свернуть button must appear');
+if (!htmlAV.includes(fullAV.slice(100, 160))) throw new Error('AV: after expanding, the full description must be shown');
+// свернуть обратно
+XAV.closeSearchDesc(keyAV);
+htmlAV = elAV['searchDlgResults'].innerHTML;
+if (!htmlAV.includes("openSearchDesc('" + keyAV + "')")) throw new Error('AV: after collapsing, the подробнее button must return');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions');
