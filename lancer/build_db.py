@@ -180,7 +180,20 @@ def build(local_dir):
     frames = fetch("frames.json", local_dir)
     talents = fetch("talents.json", local_dir)
     tagmap = {t["id"]: t for t in tags}
-    tags_db = {t["id"]: {"n": t["name"], "d": clean(t.get("description") or "")} for t in tags}
+    # русский перевод компендиума (ru.json рядом со скриптом); отсутствующая
+    # позиция падает обратно на английский, чтобы сборка никогда не ломалась
+    ru = {}
+    ru_path = HERE / "ru.json"
+    if ru_path.exists():
+        ru = json.loads(ru_path.read_text(encoding="utf-8"))
+    def ru_get(section, key, field, default=""):
+        ent = (ru.get(section) or {}).get(key) or {}
+        v = ent.get(field)
+        return v if v not in (None, "") else default
+    ru_tagmap = {t["id"]: {"name": ru_get("tags", t["id"], "n", t["name"])} for t in tags}
+    tags_db = {t["id"]: {"n": t["name"], "d": clean(t.get("description") or ""),
+                          "nr": ru_get("tags", t["id"], "n", t["name"]),
+                          "dr": ru_get("tags", t["id"], "d", clean(t.get("description") or ""))} for t in tags}
 
     db_w, warns = [], []
     for x in weapons:
@@ -216,6 +229,11 @@ def build(local_dir):
         srcf = SRC_NAMES.get(src, src)
         lab_parts = [src] + ([lic] if lic and lic != src else []) + ([f"LL{lvl}"] if lvl is not None else [])
         lab = " · ".join(p for p in lab_parts if p)
+        # русская подпись: производитель и уровень — как в оригинале,
+        # имя лицензии — русское имя фрейма
+        lic_ru = ru_get("frames", lic, "n", lic) if lic else ""
+        lab_ru_parts = [src] + ([lic_ru] if lic and lic != src else []) + ([f"LL{lvl}"] if lvl is not None else [])
+        lab_ru = " · ".join(p for p in lab_ru_parts if p)
         mount = MOUNT_MAP.get(x.get("mount"), "Main")
         # profile weapons (e.g. Assault Cannon) carry damage/range in profiles;
         # use the first usable profile (skip N/A stubs like Apocalypse Rail charge 4)
@@ -233,6 +251,13 @@ def build(local_dir):
             "d": dmg, "r": rng, "g": tags_txt, "tg": tags_struct,
             "lab": " · ".join(p for p in [lab, mount] if p),
             "sf": srcf if srcf != src else "",
+            "nr": ru_get("weapons", x["name"], "n", x["name"]),
+            "tr": ru_get("weapons", x["name"], "t", x.get("type") or ""),
+            "dr": ru_get("weapons", x["name"], "d", dmg),
+            "rr": ru_get("weapons", x["name"], "r", rng),
+            "xr": ru_get("weapons", x["name"], "x", full_desc),
+            "gr": fmt_tags(x.get("tags"), ru_tagmap),
+            "labr": " · ".join(p for p in [lab_ru, mount] if p),
             "lic": x.get("license") or "",
             "ll": x.get("license_level") if x.get("license_level") is not None else None,
             "lim": limited_val(x.get("tags")),
@@ -261,10 +286,17 @@ def build(local_dir):
         srcf = SRC_NAMES.get(src, src)
         lab_parts = [src] + ([lic] if lic and lic != src else []) + ([f"LL{lvl}"] if lvl is not None else [])
         lab = " · ".join(p for p in lab_parts if p)
+        lic_ru = ru_get("frames", lic, "n", lic) if lic else ""
+        lab_ru_parts = [src] + ([lic_ru] if lic and lic != src else []) + ([f"LL{lvl}"] if lvl is not None else [])
+        lab_ru = " · ".join(p for p in lab_ru_parts if p)
         db_s.append({
             "n": x["name"], "t": x.get("type") or "", "p": x.get("sp") or 0,
             "lab": " · ".join(p for p in [lab, f"{x.get('sp') or 0} SP"] if p),
             "sf": srcf if srcf != src else "",
+            "nr": ru_get("systems", x["name"], "n", x["name"]),
+            "tr": ru_get("systems", x["name"], "t", x.get("type") or ""),
+            "xr": ru_get("systems", x["name"], "x", full_desc),
+            "labr": " · ".join(p for p in [lab_ru, f"{x.get('sp') or 0} SP"] if p),
             "lic": x.get("license") or "",
             "ll": x.get("license_level") if x.get("license_level") is not None else None,
             "lim": limited_val(x.get("tags")),
@@ -280,6 +312,10 @@ def build(local_dir):
             "c": cs.get("name") or "",
             "cd": fmt_core(cs),
             "t": fmt_traits(x.get("traits")),
+            "nr": ru_get("frames", x["name"], "n", x["name"]),
+            "cr": ru_get("frames", x["name"], "c", cs.get("name") or ""),
+            "cdr": ru_get("frames", x["name"], "cd", fmt_core(cs)),
+            "tr": ru_get("frames", x["name"], "t", fmt_traits(x.get("traits"))),
             "s": x.get("stats") or {},
             "iw": iw,
             # лицензия фрейма: имя = имя фрейма; ранг, нужный для фрейма, — II
@@ -290,7 +326,11 @@ def build(local_dir):
     db = {"weapons": db_w, "systems": db_s, "frames": frames_db,
           "talents": [{"n": x["name"], "t": clean(x.get("terse") or ""),
                        "r": [r["name"] for r in (x.get("ranks") or [])],
-                       "d": [clean_list(r.get("description") or "") for r in (x.get("ranks") or [])]}
+                       "d": [clean_list(r.get("description") or "") for r in (x.get("ranks") or [])],
+                       "nr": ru_get("talents", x["name"], "n", x["name"]),
+                       "tr": ru_get("talents", x["name"], "t", clean(x.get("terse") or "")),
+                       "rr": (ru_get("talents", x["name"], "r") or [r["name"] for r in (x.get("ranks") or [])]),
+                       "dr": (ru_get("talents", x["name"], "d") or [clean_list(r.get("description") or "") for r in (x.get("ranks") or [])])}
                       for x in talents],
           "tags": tags_db}
     for w_ in warns:
@@ -304,6 +344,11 @@ def main():
     db = build(args.local)
     lit = json.dumps(db, ensure_ascii=False, separators=(",", ":"))
     print(f"weapons: {len(db['weapons'])}, systems: {len(db['systems'])}, talents: {len(db['talents'])}, tags: {len(db['tags'])}, DB bytes: {len(lit.encode('utf-8'))}")
+    ru_n = sum(1 for w in db['weapons'] if w.get('nr') and w['nr'] != w['n'])
+    ru_s = sum(1 for s in db['systems'] if s.get('nr') and s['nr'] != s['n'])
+    ru_t = sum(1 for t in db['talents'] if t.get('nr') and t['nr'] != t['n'])
+    ru_f = sum(1 for k, f in db['frames'].items() if f.get('nr') and f['nr'] != k)
+    print(f"RU names: weapons {ru_n}/{len(db['weapons'])}, systems {ru_s}/{len(db['systems'])}, talents {ru_t}/{len(db['talents'])}, frames {ru_f}/{len(db['frames'])}")
     html_src = INDEX.read_text(encoding="utf-8")
     block = "// __DB_START__\nconst DB = " + lit + ";\n// __DB_END__"
     if "// __DB_START__" in html_src:
