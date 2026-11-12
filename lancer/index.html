@@ -106,7 +106,7 @@
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
   .toggle { width:40px; height:24px; border-radius:999px; background:#3a4350; border:1px solid var(--line); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
-  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s ease; }
+  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
   .toggle.on { background:var(--good); border-color:var(--good); }
   .toggle.on .knob { left:19px; }
   .card.view input { border-color:transparent; background:transparent; pointer-events:none; padding-left:0; }
@@ -133,7 +133,7 @@
   <!-- ============ MECH ============ -->
   <section id="tab-mech" class="tab active">
     <div class="card" id="mechCard">
-      <div class="card-head"><h2 data-i18n="u005">Мех</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u005">Мех</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob">🔧</span></button></div>
       <div class="grid">
         <div><label data-i18n="u006">Имя меха</label><input type="text" data-f="mech.name" placeholder="Имя меха" data-i18n-ph="p001"></div>
         <div><label data-i18n="u147">Фрейм</label><div class="frame-ro" id="mechFrameName">Everest</div></div>
@@ -220,7 +220,7 @@
     </details>
     </div>
     <div class="card" id="haseCard">
-      <div class="card-head"><h2 data-i18n="u059">Защита, сенсоры и Mech Skills — HASE</h2><button type="button" class="toggle on" id="editToggleHase" onclick="toggleEdit('hase')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u059">Защита, сенсоры и Mech Skills — HASE</h2><button type="button" class="toggle on" id="editToggleHase" onclick="toggleEdit('hase')"><span class="knob">🔧</span></button></div>
       <div class="grid5">
         <div><label>Hull</label><input type="number" data-f="pilot.hull" value="0"></div>
         <div><label>Agility</label><input type="number" data-f="pilot.agility" value="0"></div>
@@ -236,7 +236,7 @@
       <p class="hint" data-i18n="u061">HASE на LL0: 2 очка (одно +2 или два +1), +1 очко за LL. Hull: +2 HP/очко, +1 Repair Cap за 2 очка. Agility: +1 Evasion/очко, +1 Speed за 2. Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2. Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2. Значения по умолчанию — GMS Everest на LL0.</p>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob">🔧</span></button></div>
       <p class="hint" id="talentsHint" style="padding:0 0 8px" data-i18n="u063">На LL0: три таланта ранга I. База: <span id="dbTalentCount"></span> талантов из открытых данных Massif Press (lancer-data). Поиск ищет по названию, описанию и рангам; выбор подставляет описание текущего ранга.</p>
       <div id="talents"></div>
       <div class="row" id="talentAddRow" style="margin-top:10px">
@@ -245,13 +245,13 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob">🔧</span></button></div>
       <p class="hint" id="weaponsHint" style="padding:0 0 8px" data-i18n="u066">База: <span id="dbWeaponCount"></span> видов оружия из открытых данных Massif Press (lancer-data). Поиск ищет по названию, маунту (Main, Aux, Heavy), типу, тегам, корпорации (GMS, IPS-N, Horus, Smith-Shimano) и уровню лицензии (LL0–LL3); несколько слов через пробел сужают поиск (например, «IPS-N LL1»).<span id="licNoteW"></span></p>
       <div id="mounts"></div>
       <button class="btn add" id="addMountBtn" onclick="addMount()" data-i18n="u067">+ Маунт</button>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob">🔧</span></button></div>
       <p class="hint" style="padding:0 0 8px"><span id="spCounter"></span></p>
       <p class="hint" id="systemsHint" style="padding:0 0 8px" data-i18n="u070">База: <span id="dbSystemCount"></span> систем из открытых данных Massif Press (lancer-data). Поиск ищет по названию, типу, корпорации и уровню лицензии (LL0–LL3). Выбор подставляет SP и описание с эффектом.<span id="licNoteS"></span></p>
       <div id="systems"></div>
@@ -261,7 +261,7 @@
       </div>
     </div>
     <div class="card" id="coreCard">
-      <div class="card-head"><h2>Core System</h2><button type="button" class="toggle on" id="editToggleCore" onclick="toggleEdit('core')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2>Core System</h2><button type="button" class="toggle on" id="editToggleCore" onclick="toggleEdit('core')"><span class="knob">🔧</span></button></div>
       <div class="core-grid">
         <div>
           <div><label data-i18n="u072">Название</label><input type="text" data-f="mech.coreSystem" value="Hyperspec Fuel Injector"></div>
@@ -325,7 +325,7 @@
   <!-- ============ PILOT ============ -->
   <section id="tab-pilot" class="tab">
     <div class="card" id="pilotCard">
-      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle on" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle on" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob">🔧</span></button></div>
       <div class="grid">
         <div><label data-i18n="u082">Имя пилота</label><input type="text" data-f="pilot.name" placeholder="Имя" data-i18n-ph="p006"></div>
         <div><label data-i18n="u083">Позывной / Callsign</label><input type="text" data-f="pilot.callsign" placeholder="Позывной" data-i18n-ph="p007"></div>
@@ -339,7 +339,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob">🔧</span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u087">На LL0: четыре триггера по +2. При росте LL: +2 к одному триггеру за уровень, максимум +6.</p>
       <div id="triggers"></div>
       <div class="row" id="triggerAddRow" style="margin-top:10px">
@@ -348,7 +348,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle on" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob"></span></button></div>
+      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle on" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob">🔧</span></button></div>
       <label id="licenseFilterRow" style="display:flex;gap:8px;align-items:center;font-weight:600" data-i18n="u090"><input type="checkbox" id="licenseFilterToggle" onchange="toggleLicenseFilter(this.checked)" style="width:auto"> Фильтровать оружие, системы и фреймы по лицензиям</label>
       <p class="hint" id="licensesHint" style="padding:8px 0" data-i18n="u091">Когда фильтр включён, в поиске видны только GMS (LL0) и снаряжение лицензий пилота; фрейм доступен со II ранга лицензии. Отключи фильтр, чтобы увидеть всю базу.</p>
       <div id="licenses"></div>
