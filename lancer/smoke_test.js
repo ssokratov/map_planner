@@ -66,7 +66,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'addTalentByIndex:addTalentByIndex,fillTalentFromDb:fillTalentFromDb,'
   + 'MOUNT_TYPES:MOUNT_TYPES,MOUNT_STYLE:MOUNT_STYLE,'
   + 'stepSysCharges:stepSysCharges,stepWeapCharges:stepWeapCharges,'
-  + 'fullRepair:fullRepair,renderLists:renderLists,save:save,get:get,set:set,'
+  + 'fullRepair:fullRepair,renderLists:renderLists,renderCounters:renderCounters,save:save,get:get,set:set,'
   + 'lang:lang,setLang:setLang,applyLang:applyLang,wd:wd,sd:sd,td:td,tagd:tagd,fd:fd,'
   + 'findWeapon:findWeapon,findSystem:findSystem,findTalent:findTalent,frameKey:frameKey,'
   + 'dispVal:dispVal,dispField:dispField,mountCap:mountCap,STR:STR,L:L,'
@@ -849,7 +849,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 39')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 40')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1149,4 +1149,31 @@ if (!staticHtml.includes('id="coreBonuses"')) throw new Error('AK: the Core Bonu
 if (!staticHtml.includes('id="cbDlg"')) throw new Error('AK: the Core Bonuses picker dialog must exist');
 if (!staticHtml.includes('Core Bonuses')) throw new Error('AK: the Core Bonuses card title must exist');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses)');
+// PHASE AL: v40 — максимум ресурсов как в Оверчарже: одно число в счётчике, «max: N» мелким внизу; Repairs без русского слова
+const { X: XAL, S: SAL, elements: elAL } = runEval({});
+XAL.set('mech.frame', 'Everest');
+XAL.set('pilot.hull', 2); XAL.set('pilot.engineering', 1);
+XAL.recalcDerived();
+XAL.renderCounters();
+const resVals = {hp:['10','14'], structure:['4','4'], heat:['0','7'], stress:['4','4'], repairs:['5','6']};
+for (const [k, pair] of Object.entries(resVals)) {
+  const [cur, mxv] = pair;
+  const el = elAL['v-mech.' + k];
+  if (!el) throw new Error('AL: counter element missing: v-mech.' + k);
+  if (el.textContent.trim() !== cur) throw new Error('AL: v-mech.' + k + ' must show just the current value ' + cur + ', got ' + JSON.stringify(el.textContent));
+  if (el.innerHTML.includes('/')) throw new Error('AL: v-mech.' + k + ' must not contain a slash/max');
+  const mx = elAL['max-mech.' + k];
+  if (!mx) throw new Error('AL: max line missing: max-mech.' + k);
+  if (mx.textContent.trim() !== 'max: ' + mxv) throw new Error('AL: max-mech.' + k + ' must say "max: ' + mxv + '", got ' + JSON.stringify(mx.textContent));
+}
+// пилотский HP — как раньше, «v / max» в самом значении
+const ph = elAL['v-pilot.hp'];
+if (!ph || !ph.innerHTML.includes('/')) throw new Error('AL: pilot HP must still show "v / max"');
+// статика: строки max-* есть, подпись Repairs — без «Ремонты»
+['max-mech.hp','max-mech.structure','max-mech.heat','max-mech.stress','max-mech.repairs'].forEach(id=>{
+  if (!staticHtml.includes('id="' + id + '"')) throw new Error('AL: static max line missing: ' + id);
+});
+if (staticHtml.includes('Repairs / Ремонты')) throw new Error('AL: the Repairs label must not contain the Russian word');
+if (!staticHtml.includes('>Repairs</label>')) throw new Error('AL: the Repairs label must be just "Repairs"');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word');
