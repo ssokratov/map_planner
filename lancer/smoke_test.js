@@ -690,7 +690,7 @@ if (!sysHtmlV.includes('Заряды HEX образца Б')) throw new Error('V
 // лицензии: выключить — строки текстом, фильтр и секция фрейма скрыты
 SV.pilot.licenses.push({name:'Blackbeard', rank:2}); XV.renderLists();
 XV.toggleEdit('licenses');
-if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['licenseAddRow'].style.display !== 'none' || elV['frameSection'].style.display !== 'none') throw new Error('V: the license filter, hint, add button and frame section must hide when licenses editing is OFF');
+if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['licenseAddRow'].style.display !== 'none') throw new Error('V: the license filter, hint and add button must hide when licenses editing is OFF');
 let licHtmlV = elV['licenses'].innerHTML;
 if (licHtmlV.includes('<input') || licHtmlV.includes('<select') || licHtmlV.includes('delLicense')) throw new Error('V: license rows must not contain inputs, selects or delete buttons in view mode');
 if (!licHtmlV.includes('Чёрная Борода II')) throw new Error('V: license rows must show the name and rank as one text in view mode');
@@ -889,4 +889,30 @@ XAA.toggleEdit('mounts');
 if (!elAA['mounts'].innerHTML.includes('Тестовое описание оружия')) throw new Error('AA: weapon descriptions must return when mounts editing is ON');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones with подробнее/свернуть, no separate SP label on systems, weapon descriptions only when editing, version in the footer');
+// PHASE AB: v30 — выбор фрейма вернулся на Мех: кнопка поиска справа от названия; подтверждение рассказывает про встроенное оружие
+const { X: XAB, S: SAB, DB: DBAB, elements: elAB, g: gAB } = runEval({});
+// секция фрейма в Пилоте ушла совсем, вместе с подсказкой и её строками
+if (staticHtml.includes('id="frameSection"')) throw new Error('AB: the frame section must be gone from the Pilot tab');
+if (staticHtml.includes('u010') || staticHtml.includes('u148')) throw new Error('AB: the frame hint and heading strings must be gone');
+if (!('frame_iw_note' in XAB.STR)) throw new Error('AB: the integrated-weapon confirm note must exist in STR');
+// кнопка поиска фрейма — справа от названия на вкладке Мех, только при редактировании
+if (!staticHtml.includes('id="frameSearchBtn"')) throw new Error('AB: the frame search button must exist');
+if (!staticHtml.includes("openSearch('frame')")) throw new Error('AB: the frame search button must open the frame search');
+if (elAB['frameSearchBtn'].style.display === 'none') throw new Error('AB: the frame search button must show when mech editing is ON');
+XAB.toggleEdit('mech');
+if (elAB['frameSearchBtn'].style.display !== 'none') throw new Error('AB: the frame search button must hide when mech editing is OFF');
+if (elAB['mechFrameName'].textContent !== 'Эверест') throw new Error('AB: the frame name must stay visible as text in view mode');
+XAB.toggleEdit('mech');
+// подтверждение смены фрейма: Ланкастер несёт встроенное оружие — про это сказано
+gAB.confirmCalls.length = 0;
+XAB.applyFrame('Lancaster');
+if (!gAB.confirmCalls.some(m => /встроенное оружие фрейма/.test(m))) throw new Error('AB: the apply confirm must mention the integrated weapon for Lancaster');
+if (SAB.mech.frame !== 'Lancaster') throw new Error('AB: accepting the confirm must set the frame to Lancaster');
+if (elAB['mechFrameName'].textContent !== 'Ланкастер') throw new Error('AB: the Mech tab must show the new frame name');
+// Чёрная Борода без встроенного оружия — про него в подтверждении ничего нет
+gAB.confirmCalls.length = 0;
+XAB.applyFrame('Blackbeard');
+if (gAB.confirmCalls.some(m => /встроенное оружие фрейма/.test(m))) throw new Error('AB: the apply confirm must not mention an integrated weapon for Blackbeard');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones with подробнее/свернуть, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm');

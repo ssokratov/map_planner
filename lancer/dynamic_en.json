@@ -39,6 +39,10 @@
   "en": "Editing",
   "ru": "Редактирование"
  },
+ "frame_iw_note": {
+  "en": "the frame's integrated weapon will be added to the Integrated mount",
+  "ru": "встроенное оружие фрейма добавится в маунт Integrated"
+ },
  "frame_not_found": {
   "en": "Frame not found in the database: ",
   "ru": "Фрейм не найден в базе: "
