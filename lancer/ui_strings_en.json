@@ -591,6 +591,34 @@
   "u148": {
    "tag": "h3",
    "en": "Frame"
+  },
+  "u149": {
+   "tag": "h3",
+   "en": "Custom Weapon"
+  },
+  "u150": {
+   "tag": "h3",
+   "en": "Custom System"
+  },
+  "u151": {
+   "tag": "button",
+   "en": "Add"
+  },
+  "u152": {
+   "tag": "button",
+   "en": "Cancel"
+  },
+  "u154": {
+   "tag": "label",
+   "en": "Charges (Limited)"
+  },
+  "u155": {
+   "tag": "label",
+   "en": "Damage"
+  },
+  "u156": {
+   "tag": "label",
+   "en": "Range"
   }
  },
  "placeholders": {

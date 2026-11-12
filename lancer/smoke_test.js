@@ -51,8 +51,9 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'weaponMatches:weaponMatches,systemMatches:systemMatches,'
   + 'showWeaponResults:showWeaponResults,showSystemResults:showSystemResults,'
   + 'addWeaponByIndex:addWeaponByIndex,addSystemByIndex:addSystemByIndex,'
-  + 'addBlankWeapon:addBlankWeapon,addSystemFromDb:addSystemFromDb,'
-  + 'fillWeaponFromDb:fillWeaponFromDb,fillSystemFromDb:fillSystemFromDb,'
+  + 'addSystemFromDb:addSystemFromDb,'
+  + 'openCustomWeaponDlg:openCustomWeaponDlg,addCustomWeapon:addCustomWeapon,'
+  + 'openCustomSystemDlg:openCustomSystemDlg,addCustomSystem:addCustomSystem,'
   + 'applyFrame:applyFrame,toggleLicenseFilter:toggleLicenseFilter,'
   + 'itemAvailable:itemAvailable,frameAvailable:frameAvailable,'
   + 'sysLim:sysLim,sysLeft:sysLeft,weapLim:weapLim,weapLeft:weapLeft,sysSp:sysSp,'
@@ -338,9 +339,10 @@ if (arW.x.startsWith('Reliable')) throw new Error('L: weapon desc must not start
 XK.addWeaponByIndex(0, DBK.weapons.findIndex(w=>w.n==='Assault Rifle'));
 let mountsHtmlL = elK['mounts'].innerHTML;
 if (!mountsHtmlL.includes('class="tag"') || !mountsHtmlL.includes('Надёжное 2')) throw new Error('L: Assault Rifle row must show a Reliable 2 tag chip (Надёжное 2 in RU)');
-XK.addBlankWeapon(0);
+SK.mounts[0].weapons.push({name:'My Custom Gun', dmg:'1d6', range:'10', desc:''});
+XK.renderLists();
 mountsHtmlL = elK['mounts'].innerHTML;
-if ((mountsHtmlL.match(/class="tag"/g) || []).length !== 1) throw new Error('L: a custom (blank) weapon must show no tag chips');
+if ((mountsHtmlL.match(/class="tag"/g) || []).length !== 1) throw new Error('L: a custom weapon must show no tag chips');
 XK.showTag('tg_reliable', '2');
 if (elK['tagDlgName'].textContent !== 'Надёжное 2') throw new Error('L: tag dialog must show the tag name (Надёжное 2 in RU)');
 if (!elK['tagDlgDesc'].textContent.includes('скользящим ударом')) throw new Error('L: tag dialog must show the tag description with {VAL} substituted');
@@ -374,7 +376,9 @@ if (!elN['spCounter'].textContent.includes('использовано 6 из 6'))
 SN.systems.push({ name: 'My Custom System', sp: 3, desc: '' });
 XN.renderLists();
 const sysHtmlN2 = elN['systems'].innerHTML;
-if ((sysHtmlN2.match(/type="number"/g) || []).length !== 1) throw new Error('N: exactly one SP input must appear — for the custom system');
+if ((sysHtmlN2.match(/type="number"/g) || []).length !== 0) throw new Error('N: no SP input must appear — even for a custom system (display-only)');
+if (!sysHtmlN2.includes('SP 3')) throw new Error('N: the custom system must show its SP as text (SP 3)');
+if (!sysHtmlN2.includes('Кастомная система')) throw new Error('N: the custom system must be labelled as custom');
 if (XN.sysSp(SN.systems[SN.systems.length - 1]) !== 3) throw new Error('N: sysSp must take the save value for a custom system');
 
 // PHASE O: RUS/ENG toggle — RU fields, bilingual search, display switching
@@ -402,12 +406,12 @@ if (XO.tagLabel('tg_reliable', 2) !== 'Reliable 2') throw new Error('O: tagLabel
 // поиск на русском продолжает работать в EN-режиме
 if (!XO.weaponMatches(DBO.weapons.find(w=>w.n==='Assault Rifle'), 'штурмовая')) throw new Error('O: RU query must still match in EN mode');
 if (!XO.talentMatches(DBO.talents.find(t=>t.n==='Ace'), 'ас')) throw new Error('O: RU talent query must still match in EN mode');
-// ввод русского имени в поле подставляет английский ключ в сохранение
-XO.addBlankWeapon(0);
-XO.fillWeaponFromDb(0, 0, 'Штурмовая винтовка');
-if (SO.mounts[0].weapons[0].name !== 'Assault Rifle') throw new Error('O: filling a RU weapon name must store the EN key');
-XO.fillSystemFromDb(0, 'Заряды HEX образца Б');
-if (SO.systems[0].name !== 'Pattern-B HEX Charges') throw new Error('O: filling a RU system name must store the EN key');
+// имя, сохранённое по-русски, разрешается при отображении (поиск и пикер хранят EN-ключ)
+SO.mounts[0].weapons.push({name:'Штурмовая винтовка', dmg:'', range:'', desc:''});
+XO.renderLists();
+if (!elO['mounts'].innerHTML.includes('Assault Rifle')) throw new Error('O: a RU-stored weapon name must resolve to EN in EN mode');
+XO.setLang('ru');
+if (!elO['mounts'].innerHTML.includes('Штурмовая винтовка')) throw new Error('O: a RU-stored weapon name must display in RU mode');
 XO.fillTalentFromDb(0, 'Ас');
 if (SO.talents[0].name !== 'Ace') throw new Error('O: filling a RU talent name must store the EN key');
 // frameKey разрешает оба языка; переключение обратно
@@ -472,8 +476,7 @@ if (XP.dispField('mech.coreSystem') !== DBP.frames['Blackbeard'].c) throw new Er
 if (XP.dispField('mech.traits') !== DBP.frames['Blackbeard'].t) throw new Error('P: dispField traits must be EN in EN mode');
 XP.setLang('ru');
 // компонент описания: <details> вместо textarea, правка по кнопке
-XP.addBlankWeapon(0);
-XP.fillWeaponFromDb(0, 0, 'Assault Rifle');
+XP.addWeaponByIndex(0, DBP.weapons.findIndex(w=>w.n==='Assault Rifle'));
 const mountsHtmlP = elP['mounts'].innerHTML;
 if (!mountsHtmlP.includes('<details class="desc"')) throw new Error('P: weapon rows must render the description as <details>');
 if (!mountsHtmlP.includes('Штурмовая винтовка')) throw new Error('P: weapon rows must keep the RU weapon name');
@@ -484,8 +487,8 @@ if (!sysHtmlP.includes('SP 2')) throw new Error('P: system rows must keep the SP
 if (!elP['coreDescBox'].innerHTML.includes('<details class="desc"')) throw new Error('P: coreDesc must render as <details>');
 if (!elP['coreDescBox'].innerHTML.includes('Штурмовая гарпунная система')) throw new Error('P: coreDesc box must show the RU core description');
 if (!elP['traitsBox'].innerHTML.includes('Гарпунный трос')) throw new Error('P: traits box must show the RU traits');
-XP.editDesc('s-0');
-if (!elP['systems'].innerHTML.includes('id="editingDesc"')) throw new Error('P: editDesc must show the editing textarea');
+XP.editDesc('coreDesc');
+if (!elP['coreDescBox'].innerHTML.includes('id="editingDesc"')) throw new Error('P: editDesc must show the editing textarea for Core System');
 // подпись под заголовком переводится
 if (XP.L('u146') !== 'Мех, пилот, правила. Данные хранятся только в этом браузере (localStorage).') throw new Error('P: u146 RU tagline must exist');
 XP.setLang('en');
@@ -551,4 +554,54 @@ XR.applyFrame();
 if (gR.confirmCalls.length !== 0) throw new Error('R: applyFrame with an empty picker must do nothing');
 if (SR.mech.frame !== 'Swallowtail') throw new Error('R: empty applyFrame must not change the frame');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab');
+// PHASE S: v21 — оружие и системы только для просмотра; кастомные — через модалку
+const { X: XS, S: SS, DB: DBS, elements: elS, g: gS } = runEval({});
+// в карточках систем нет input'ов — только текст, SP, мета и описание
+let sysHtmlS = elS['systems'].innerHTML;
+if (sysHtmlS.includes('<input')) throw new Error('S: system rows must not contain inputs');
+if (!sysHtmlS.includes('Заряды HEX образца Б')) throw new Error('S: system rows must show the RU name');
+if (!sysHtmlS.includes('Развёртываемое')) throw new Error('S: system rows must show the system type (meta info)');
+if (!sysHtmlS.includes('GMS · LL0 · 2 SP')) throw new Error('S: system rows must show the corporation/license/SP (meta info)');
+if (!sysHtmlS.includes('SP 2')) throw new Error('S: system rows must show the SP');
+if (!sysHtmlS.includes('<details class="desc"')) throw new Error('S: system rows must render the description as <details>');
+if (sysHtmlS.includes('✎')) throw new Error('S: system descriptions must not offer editing');
+// в карточках оружия нет input'ов — урон, дальность и теги только текстом
+XS.addWeaponByIndex(0, DBS.weapons.findIndex(w=>w.n==='Assault Rifle'));
+let mountsHtmlS = elS['mounts'].innerHTML;
+if ((mountsHtmlS.match(/<input/g) || []).length !== SS.mounts.length) throw new Error('S: weapon rows must not contain inputs (only one search input per mount)');
+if (!mountsHtmlS.includes('Штурмовая винтовка')) throw new Error('S: weapon rows must show the RU name');
+if (!mountsHtmlS.includes('1d6 кинетический')) throw new Error('S: weapon rows must show the damage as text');
+if (!mountsHtmlS.includes('Дальность 10')) throw new Error('S: weapon rows must show the range as text');
+if (!mountsHtmlS.includes('GMS · LL0 · Main')) throw new Error('S: weapon rows must show the corporation/license (meta info)');
+if (!mountsHtmlS.includes('Надёжное 2')) throw new Error('S: weapon rows must keep the tag chips');
+if (!mountsHtmlS.includes('<details class="desc"')) throw new Error('S: weapon rows must render the description as <details>');
+if (mountsHtmlS.includes('✎')) throw new Error('S: weapon descriptions must not offer editing');
+// модалка кастомного оружия
+XS.openCustomWeaponDlg(0);
+if (!elS['customWeaponDlg']._open) throw new Error('S: openCustomWeaponDlg must open the dialog');
+elS['cwName'].value = 'My Custom Gun'; elS['cwDmg'].value = '2d6'; elS['cwRange'].value = '15'; elS['cwDesc'].value = 'Custom effect';
+XS.addCustomWeapon();
+if (SS.mounts[0].weapons[SS.mounts[0].weapons.length-1].name !== 'My Custom Gun') throw new Error('S: addCustomWeapon must add the entered weapon');
+if (!elS['mounts'].innerHTML.includes('My Custom Gun')) throw new Error('S: the custom weapon must display');
+if (!elS['mounts'].innerHTML.includes('Кастомное оружие')) throw new Error('S: the custom weapon must be labelled as custom');
+if (elS['customWeaponDlg']._open) throw new Error('S: addCustomWeapon must close the dialog');
+// без названия — не добавляется (в стабе alert бросает)
+XS.openCustomWeaponDlg(0);
+elS['cwName'].value = '';
+const nWBefore = SS.mounts[0].weapons.length;
+let alerted = false;
+try { XS.addCustomWeapon(); } catch (e) { alerted = /Введите название/.test(e.message); }
+if (!alerted) throw new Error('S: addCustomWeapon without a name must alert');
+if (SS.mounts[0].weapons.length !== nWBefore) throw new Error('S: addCustomWeapon without a name must not add');
+// модалка кастомной системы (с Limited)
+XS.openCustomSystemDlg();
+if (!elS['customSystemDlg']._open) throw new Error('S: openCustomSystemDlg must open the dialog');
+elS['csName'].value = 'My Custom System'; elS['csSp'].value = 3; elS['csLim'].value = 2; elS['csDesc'].value = 'Custom system effect';
+XS.addCustomSystem();
+const cs = SS.systems[SS.systems.length-1];
+if (cs.name !== 'My Custom System' || cs.sp !== 3 || cs.lim !== 2 || cs.left !== 2) throw new Error('S: addCustomSystem must store name, SP and Limited charges');
+if (!elS['systems'].innerHTML.includes('My Custom System')) throw new Error('S: the custom system must display');
+if (!elS['systems'].innerHTML.includes('Кастомная система')) throw new Error('S: the custom system must be labelled as custom');
+if (!elS['systems'].innerHTML.includes('Limited 2: заряды')) throw new Error('S: the custom Limited system must show a charges stepper');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals');
