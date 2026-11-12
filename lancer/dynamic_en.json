@@ -15,9 +15,29 @@
   "en": "Used ✓",
   "ru": "Использовано ✓"
  },
+ "custom_name_needed": {
+  "en": "Enter a name",
+  "ru": "Введите название"
+ },
  "db_not_found": {
   "en": "Not found in the database: ",
   "ru": "Не найдено в базе: "
+ },
+ "desc_less": {
+  "en": "Less",
+  "ru": "свернуть"
+ },
+ "desc_more": {
+  "en": "More",
+  "ru": "подробнее"
+ },
+ "edit_desc": {
+  "en": "✎ Edit",
+  "ru": "✎ Редактировать"
+ },
+ "edit_toggle": {
+  "en": "Editing",
+  "ru": "Редактирование"
  },
  "frame_not_found": {
   "en": "Frame not found in the database: ",
@@ -87,6 +107,26 @@
   "en": "Nothing found",
   "ru": "Ничего не найдено"
  },
+ "p002": {
+  "en": "Search: name, description…",
+  "ru": "Найти: название, описание…"
+ },
+ "p003": {
+  "en": "Search: name, GMS, LL2…",
+  "ru": "Найти: название, GMS, LL2…"
+ },
+ "p004": {
+  "en": "Frame traits — filled in when you pick a frame in search",
+  "ru": "Трейты фрейма — заполняются выбором фрейма в поиске"
+ },
+ "p009": {
+  "en": "Find a frame: name, corporation, role…",
+  "ru": "Найти фрейм: название, корпорация, роль…"
+ },
+ "p010": {
+  "en": "Find a trigger: name…",
+  "ru": "Найти триггер: название…"
+ },
  "ph_dmg": {
   "en": "Damage (e.g. 1d6+2)",
   "ru": "Урон (напр. 1d6+2)"
@@ -139,6 +179,10 @@
   "en": "✓ saved ",
   "ru": "✓ сохранено "
  },
+ "search_ph_license": {
+  "en": "Find a license: frame name…",
+  "ru": "Найти лицензию: название фрейма…"
+ },
  "show_more": {
   "en": "Showing 8 of {N} — narrow the search",
   "ru": "Показано 8 из {N} — уточни поиск"
@@ -162,41 +206,5 @@
  "sp_used": {
   "en": "SP: used ",
   "ru": "SP: использовано "
- },
- "edit_desc": {
-  "ru": "✎ Редактировать",
-  "en": "✎ Edit"
- },
- "p004": {
-  "ru": "Трейты фрейма — заполняются выбором фрейма в поиске",
-  "en": "Frame traits — filled in when you pick a frame in search"
- },
- "custom_name_needed": {
-  "ru": "Введите название",
-  "en": "Enter a name"
- },
- "edit_toggle": {
-  "ru": "Редактирование",
-  "en": "Editing"
- },
- "p002": {
-  "ru": "Найти: название, описание…",
-  "en": "Search: name, description…"
- },
- "p003": {
-  "ru": "Найти: название, GMS, LL2…",
-  "en": "Search: name, GMS, LL2…"
- },
- "p009": {
-  "ru": "Найти фрейм: название, корпорация, роль…",
-  "en": "Find a frame: name, corporation, role…"
- },
- "p010": {
-  "ru": "Найти триггер: название…",
-  "en": "Find a trigger: name…"
- },
- "search_ph_license": {
-  "ru": "Найти лицензию: название фрейма…",
-  "en": "Find a license: frame name…"
  }
 }

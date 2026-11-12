@@ -72,7 +72,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'dispVal:dispVal,dispField:dispField,mountCap:mountCap,STR:STR,L:L,'
   + 'frameMatches:frameMatches,showFrameResults:showFrameResults,pickFrame:pickFrame,'
   + 'frameLabel:frameLabel,'
-  + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,renderDescBoxes:renderDescBoxes,'
+  + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,closeDesc:closeDesc,renderDescBoxes:renderDescBoxes,'
   + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter,'
   + 'TRIGGERS:TRIGGERS,findTrigger:findTrigger,trigDisp:trigDisp,triggerMatches:triggerMatches,'
   + 'showTriggerResults:showTriggerResults,addTriggerByName:addTriggerByName};';
@@ -268,7 +268,7 @@ if (XI.sysLim(SI.systems[0]) !== 3) throw new Error('I: sysLim should derive 3 f
 if (XI.sysLeft(SI.systems[0]) !== 3) throw new Error('I: sysLeft should default to full (3)');
 let sysHtml = elI['systems'].innerHTML;
 if ((sysHtml.match(/Limited 3/g) || []).length !== 1) throw new Error('I: exactly one Limited-3 charges row should render for the starter systems');
-if (!sysHtml.includes('SP 2')) throw new Error('I: SP must show as a visible static label (SP 2) for book systems');
+if (!sysHtml.includes('2 SP')) throw new Error('I: SP must show in the system meta line (2 SP) for book systems');
 if (sysHtml.includes('Limited 0')) throw new Error('I: no charges row should render for non-Limited systems');
 // stepper clamps
 XI.stepSysCharges(0, -1); if (XI.sysLeft(SI.systems[0]) !== 2) throw new Error('I: stepSysCharges -1 should give 2');
@@ -371,7 +371,7 @@ if (!mountsM.includes('⬢') || !mountsM.includes('#C0392B')) throw new Error('M
 const { X: XN, S: SN, DB: DBN, elements: elN } = runEval({});
 const sysHtmlN = elN['systems'].innerHTML;
 if ((sysHtmlN.match(/type="number"/g) || []).length !== 0) throw new Error('N: book systems must not show an editable SP input');
-if ((sysHtmlN.match(/SP 2/g) || []).length !== 3) throw new Error('N: the 3 starter systems must show static "SP 2"');
+if ((sysHtmlN.match(/2 SP/g) || []).length !== 3) throw new Error('N: the 3 starter systems must show their SP in the meta line (2 SP each)');
 if ((sysHtmlN.match(/Limited 3: заряды/g) || []).length !== 1) throw new Error('N: only Pattern-B (Limited 3) must show a charges stepper');
 SN.systems[0].sp = 99; // tampered save must not change a book system's SP
 if (XN.sysSp(SN.systems[0]) !== 2) throw new Error('N: sysSp must take the book value for a DB system');
@@ -498,7 +498,7 @@ if (!mountsHtmlP.includes('Штурмовая винтовка')) throw new Erro
 if (!mountsHtmlP.includes('1d6 кинетический')) throw new Error('P: weapon rows must keep the RU damage text');
 const sysHtmlP = elP['systems'].innerHTML;
 if (!sysHtmlP.includes('<details class="desc"')) throw new Error('P: system rows must render the description as <details>');
-if (!sysHtmlP.includes('SP 2')) throw new Error('P: system rows must keep the SP text');
+if (!sysHtmlP.includes('2 SP')) throw new Error('P: system rows must keep the SP text in the meta line');
 if (!elP['coreDescBox'].innerHTML.includes('<details class="desc"')) throw new Error('P: coreDesc must render as <details>');
 if (!elP['coreDescBox'].innerHTML.includes('Штурмовая гарпунная система')) throw new Error('P: coreDesc box must show the RU core description');
 if (!elP['traitsBox'].innerHTML.includes('Гарпунный трос')) throw new Error('P: traits box must show the RU traits');
@@ -574,7 +574,7 @@ if (sysHtmlS.includes('<input')) throw new Error('S: system rows must not contai
 if (!sysHtmlS.includes('Заряды HEX образца Б')) throw new Error('S: system rows must show the RU name');
 if (!sysHtmlS.includes('Развёртываемое')) throw new Error('S: system rows must show the system type (meta info)');
 if (!sysHtmlS.includes('GMS · LL0 · 2 SP')) throw new Error('S: system rows must show the corporation/license/SP (meta info)');
-if (!sysHtmlS.includes('SP 2')) throw new Error('S: system rows must show the SP');
+if (!sysHtmlS.includes('2 SP')) throw new Error('S: system rows must show the SP in the meta line');
 if (!sysHtmlS.includes('<details class="desc"')) throw new Error('S: system rows must render the description as <details>');
 if (sysHtmlS.includes('✎')) throw new Error('S: system descriptions must not offer editing');
 // в карточках оружия нет input'ов — урон, дальность и теги только текстом
@@ -844,4 +844,49 @@ SZ.pilot.licensesNote = ''; XZ.renderLists();
 if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty unrecognized-license note must stay hidden');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names');
+// PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
+const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
+// версия трекера в подвале страницы
+if (!staticHtml.includes('Версия трекера: 29')) throw new Error('AA: the footer must show the tracker version');
+// descBox: короткое описание — целиком, без <details>
+const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
+if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
+if (!shortHtml.includes('Короткое описание в одно предложение.')) throw new Error('AA: a short description must show in full');
+// descBox: длинное описание — превью + «подробнее», внутри — «свернуть»
+const longText = 'Длинное описание. '.repeat(20);
+const longHtml = XAA.descBox('t-long', '', longText, '', '', false);
+if (!longHtml.includes('<details')) throw new Error('AA: a long description must collapse into <details>');
+if (!longHtml.includes('подробнее')) throw new Error('AA: a long description must offer «подробнее»');
+if (!longHtml.includes('свернуть')) throw new Error('AA: a long description must offer «свернуть» when open');
+if (!longHtml.includes('Длинное описание.')) throw new Error('AA: the long description preview must show the start of the text');
+// closeDesc: раскрытое описание системы сворачивается обратно
+SAA.systems[0].desc = longText; XAA.renderLists();
+let sysHtmlAA = elAA['systems'].innerHTML;
+if (!sysHtmlAA.includes('подробнее')) throw new Error('AA: the long system description must offer «подробнее»');
+XAA.toggleDesc('s-0', true); XAA.renderLists();
+if (!elAA['systems'].innerHTML.includes('<details class="desc" open')) throw new Error('AA: toggleDesc(true) must open the description');
+XAA.closeDesc('s-0');
+if (elAA['systems'].innerHTML.includes('<details class="desc" open')) throw new Error('AA: closeDesc must collapse the description');
+// системы: «SP N» справа из шапки убрано, в мета-строке SP остался
+sysHtmlAA = elAA['systems'].innerHTML;
+if (sysHtmlAA.includes('<span class="dim" style="flex:0 0 auto">SP ')) throw new Error('AA: the system row header must not carry a separate SP label');
+if (!sysHtmlAA.includes('2 SP')) throw new Error('AA: the system meta line must still show the SP cost');
+// кастомная система: SP в мета-строке
+SAA.systems.push({name:'Моя система', sp:3, desc:'Короткое.', lim:0});
+XAA.renderLists();
+sysHtmlAA = elAA['systems'].innerHTML;
+if (!sysHtmlAA.includes('Моя система')) throw new Error('AA: the custom system must render');
+if (!sysHtmlAA.includes('Кастомная система · SP 3')) throw new Error('AA: a custom system meta line must show its SP');
+// оружие: описание только при редактировании
+XAA.addWeaponByIndex(0, DBAA.weapons.findIndex(w=>w.n==='Assault Rifle'));
+const wLast = SAA.mounts[0].weapons[SAA.mounts[0].weapons.length-1];
+wLast.desc = 'Тестовое описание оружия для проверки.';
+XAA.renderLists();
+if (!elAA['mounts'].innerHTML.includes('Тестовое описание оружия')) throw new Error('AA: weapon descriptions must show when mounts editing is ON');
+XAA.toggleEdit('mounts');
+if (elAA['mounts'].innerHTML.includes('Тестовое описание оружия')) throw new Error('AA: weapon descriptions must hide in view mode');
+XAA.toggleEdit('mounts');
+if (!elAA['mounts'].innerHTML.includes('Тестовое описание оружия')) throw new Error('AA: weapon descriptions must return when mounts editing is ON');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones with подробнее/свернуть, no separate SP label on systems, weapon descriptions only when editing, version in the footer');
