@@ -849,7 +849,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 40')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 41')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1176,4 +1176,22 @@ if (!ph || !ph.innerHTML.includes('/')) throw new Error('AL: pilot HP must still
 if (staticHtml.includes('Repairs / Ремонты')) throw new Error('AL: the Repairs label must not contain the Russian word');
 if (!staticHtml.includes('>Repairs</label>')) throw new Error('AL: the Repairs label must be just "Repairs"');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word');
+// PHASE AM: v41 — таблицы (Structure / Stress) переделаны в строки: на телефоне ничего не обрезается
+if (staticHtml.includes('<table')) throw new Error('AM: no <table> must remain in the static HTML');
+const tblRows = (staticHtml.match(/class="tbl-row"/g) || []).length;
+if (tblRows !== 8) throw new Error('AM: there must be 8 table rows (4 structure + 4 stress), found ' + tblRows);
+if (!staticHtml.includes('.tbl-row') || !staticHtml.includes('.tbl-roll')) throw new Error('AM: the row CSS must exist');
+for (const name of ['Glancing Blow','System Trauma','Direct Hit','Crushing Hit','Emergency Shunt','Destabilized Power Plant','Meltdown','Irreversible Meltdown']) {
+  if (!staticHtml.includes(name)) throw new Error('AM: table result missing: ' + name);
+}
+for (const roll of ['5–6','2–4']) {
+  const n = (staticHtml.match(new RegExp('<span class="tbl-roll">' + roll.replace('–','–') + '</span>', 'g')) || []).length;
+  if (n !== 2) throw new Error('AM: roll ' + roll + ' must appear in both tables, found ' + n);
+}
+const { X: XAM } = runEval({});
+for (const k of ['u023','u024','u025','u037','u038','u039']) {
+  if (XAM.STR[k]) throw new Error('AM: removed table-header string ' + k + ' must not be in STR');
+}
+if (!XAM.STR.u026 || !XAM.STR.u041) throw new Error('AM: the row strings must stay in STR');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows');
