@@ -70,10 +70,6 @@
    "en": "Full Repair (Rest)",
    "tag": "button"
   },
-  "u015": {
-   "en": "Full repair: HP, Structure, Stress, and Heat to maximum, Repairs to maximum, Core Power restored, overcharge reset, statuses cleared.",
-   "tag": "p"
-  },
   "u016": {
    "en": "Overcharge",
    "tag": "summary"

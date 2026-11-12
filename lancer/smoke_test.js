@@ -58,7 +58,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'showLicenseResults:showLicenseResults,addLicenseByName:addLicenseByName,'
   + 'openCustomWeaponDlg:openCustomWeaponDlg,addCustomWeapon:addCustomWeapon,'
   + 'openCustomSystemDlg:openCustomSystemDlg,addCustomSystem:addCustomSystem,'
-  + 'applyFrame:applyFrame,toggleLicenseFilter:toggleLicenseFilter,'
+  + 'applyFrame:applyFrame,recalcDerived:recalcDerived,toggleLicenseFilter:toggleLicenseFilter,'
   + 'itemAvailable:itemAvailable,frameAvailable:frameAvailable,'
   + 'sysLim:sysLim,sysLeft:sysLeft,weapLim:weapLim,weapLeft:weapLeft,sysSp:sysSp,'
   + 'weapTags:weapTags,tagLabel:tagLabel,tagChips:tagChips,showTag:showTag,'
@@ -848,7 +848,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 35')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 36')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1006,4 +1006,33 @@ if (staticHtml.includes('Лицензии и фрейм') || staticHtml.includes
 if (!XAF.STR.u091.ru.includes('фрейм доступен со II ранга')) throw new Error('AF: the license filter hint must still explain the frame rank rule');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии»');
+// PHASE AG: v36 — максимумы ресурсов по правилам (фрейм + HASE) + кнопка ремонта в блоке правил
+const { X: XAG, S: SAG, DB: DBAG, elements: elAG, g: gAG } = runEval({});
+// Everest: hp 10, heatcap 6, repcap 5, structure 4, stress 4 (база фрейма)
+XAG.set('mech.frame', 'Everest');
+XAG.set('pilot.hull', 2); XAG.set('pilot.engineering', 1);
+XAG.recalcDerived();
+if (XAG.get('mech.hpMax') !== 14) throw new Error('AG: HP max must be frame HP 10 + Hull 2x2 = 14');
+if (XAG.get('mech.heatMax') !== 7) throw new Error('AG: Heat max must be frame heatcap 6 + Engineering 1 = 7');
+if (XAG.get('mech.repairsMax') !== 6) throw new Error('AG: Repairs max must be frame repcap 5 + floor(Hull 2/2) = 6');
+if (XAG.get('mech.structureMax') !== 4) throw new Error('AG: Structure max must be the frame structure (4)');
+if (XAG.get('mech.stressMax') !== 4) throw new Error('AG: Stress max must be the frame stress (4)');
+// обрезка текущего значения до нового максимума
+XAG.set('mech.hp', 20); XAG.recalcDerived();
+if (XAG.get('mech.hp') !== 14) throw new Error('AG: current HP above the new max must be clamped to 14');
+// Hull 0 → максимумы возвращаются к базовым значениям фрейма
+XAG.set('pilot.hull', 0); XAG.set('pilot.engineering', 0); XAG.recalcDerived();
+if (XAG.get('mech.hpMax') !== 10 || XAG.get('mech.heatMax') !== 6 || XAG.get('mech.repairsMax') !== 5) throw new Error('AG: at HASE 0 the maxes must be the frame base values');
+// кнопка «Полный ремонт» — внутри блока «Отдых и полный ремонт», после правил (u058), до </details>
+const detailsIdx = staticHtml.indexOf('data-i18n="u050"');
+const btnIdx = staticHtml.indexOf('onclick="fullRepair()"');
+const u058Idx = staticHtml.indexOf('data-i18n="u058"');
+const closeIdx = staticHtml.indexOf('</details>', u058Idx);
+if (!(detailsIdx < u058Idx && u058Idx < btnIdx && btnIdx < closeIdx)) throw new Error('AG: the Full Repair button must sit inside the Rest & Full Repair block, after the full-repair rules');
+if (staticHtml.includes('data-i18n="u015"') || XAG.STR.u015) throw new Error('AG: the redundant full-repair explanation (u015) must be gone');
+if (XAG.STR.u014.ru !== 'Полный ремонт (отдых)') throw new Error('AG: the button label must still be «Полный ремонт (отдых)»');
+// HASE-инпуты по-прежнему есть и привязаны к данным
+if (!staticHtml.includes('data-f="pilot.hull"') || !staticHtml.includes('data-f="pilot.engineering"')) throw new Error('AG: the HASE inputs must still be bound');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block');
