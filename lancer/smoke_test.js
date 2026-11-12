@@ -659,14 +659,14 @@ if (mountsHtmlU.includes('delWeapon')) throw new Error('U: the weapon delete but
 SU.talents[0].name = 'Ace'; XU.renderLists();
 XU.toggleEdit('talents');
 if (elU['talentsHint'].style.display !== 'none') throw new Error('U: the talents hint must hide when talents editing is OFF');
-if (elU['talentSearchRow'].style.display !== 'none' || elU['addTalentBtn'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
+if (elU['talentAddRow'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
 let talHtmlU = elU['talents'].innerHTML;
 if (talHtmlU.includes('<input') || talHtmlU.includes('<select') || talHtmlU.includes('delRow')) throw new Error('U: talent rows must not contain inputs, selects or delete buttons in view mode');
 if (!talHtmlU.includes('Ас') || !talHtmlU.includes('>I<')) throw new Error('U: talent rows must show the name and rank as text in view mode');
 // триггеры: выключить — строки текстом; подсказка про правила остаётся
 SU.triggers[0].name = 'Act Unseen or Unheard'; XU.renderLists();
 XU.toggleEdit('triggers');
-if (elU['triggerSearchRow'].style.display !== 'none' || elU['addTriggerBtn'].style.display !== 'none') throw new Error('U: the trigger search and + Trigger button must hide when triggers editing is OFF');
+if (elU['triggerAddRow'].style.display !== 'none') throw new Error('U: the trigger search and + Trigger button must hide when triggers editing is OFF');
 let trigHtmlU = elU['triggers'].innerHTML;
 if (trigHtmlU.includes('<input') || trigHtmlU.includes('delRow')) throw new Error('U: trigger rows must not contain inputs or delete buttons in view mode');
 if (!trigHtmlU.includes('Действовать незаметно') || !trigHtmlU.includes('+2')) throw new Error('U: trigger rows must show the name and bonus as text in view mode');
@@ -682,7 +682,7 @@ const { X: XV, S: SV, DB: DBV, elements: elV, g: gV } = runEval({});
 if (elV['mechCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['haseCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
 // системы: выключить — поиск, добавление и ✕ исчезают, карточки остаются
 XV.toggleEdit('systems');
-if (elV['systemsHint'].style.display !== 'none' || elV['addSystemBtn'].style.display !== 'none' || elV['systemSearchRow'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
+if (elV['systemsHint'].style.display !== 'none' || elV['systemAddRow'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
 let sysHtmlV = elV['systems'].innerHTML;
 if (sysHtmlV.includes('delRow')) throw new Error('V: system delete buttons must hide when systems editing is OFF');
 if (!sysHtmlV.includes('Заряды HEX образца Б')) throw new Error('V: the system cards must stay visible in view mode');
@@ -769,4 +769,35 @@ if (!elW['coreDescBox'].innerHTML.includes('Активное — Усилени�
 if (elW['coreDescBox'].innerHTML.includes('Описание')) throw new Error('W: the word Описание must be gone from the Core System description');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label');
+// PHASE X: v26 — иконка поиска слева от кнопки добавления, кнопки переименованы в «+ Кастом …»
+['talentSearchRow','triggerSearchRow','systemSearchRow'].forEach(id=>{
+  if (staticHtml.includes('id="'+id+'"')) throw new Error('X: the standalone search row ' + id + ' must be gone');
+});
+['talentAddRow','triggerAddRow','systemAddRow','licenseAddRow'].forEach(id=>{
+  if (!staticHtml.includes('id="'+id+'"')) throw new Error('X: the add row ' + id + ' must exist');
+});
+// иконка — внутри ряда добавления, перед кнопкой
+['talent','trigger','system','license'].forEach(kind=>{
+  const rowIdx = staticHtml.indexOf('openSearch(\'' + kind + '\')');
+  const btnIdx = staticHtml.indexOf('add' + kind[0].toUpperCase() + kind.slice(1) + 'Btn');
+  if (rowIdx < 0 || btnIdx < 0 || rowIdx > btnIdx) throw new Error('X: the ' + kind + ' search icon must be left of its add button');
+});
+if (!staticHtml.includes('>+ Кастом Триггер<') || !staticHtml.includes('>+ Кастом Талант<') || !staticHtml.includes('>+ Кастом Система<') || !staticHtml.includes('>+ Кастом Лицензия<')) throw new Error('X: the add buttons must be renamed to + Кастом …');
+['>+ Триггер<','>+ Талант<','>+ Система<','>+ Лицензия<'].forEach(lbl=>{
+  if (staticHtml.includes(lbl)) throw new Error('X: the old button label ' + lbl + ' must be gone');
+});
+if (!XW.STR.u064 || XW.STR.u064.ru !== '+ Кастом Талант' || XW.STR.u088.ru !== '+ Кастом Триггер') throw new Error('X: the renamed button strings must be in STR');
+// тоггл скрывает весь ряд добавления целиком
+const { X: XX, S: SX, elements: elX } = runEval({});
+XX.toggleEdit('talents');
+if (elX['talentAddRow'].style.display !== 'none') throw new Error('X: the talent add row must hide when talents editing is OFF');
+XX.toggleEdit('talents');
+XX.toggleEdit('triggers');
+if (elX['triggerAddRow'].style.display !== 'none') throw new Error('X: the trigger add row must hide when triggers editing is OFF');
+XX.toggleEdit('triggers');
+XX.toggleEdit('systems');
+if (elX['systemAddRow'].style.display !== 'none') throw new Error('X: the system add row must hide when systems editing is OFF');
+XX.toggleEdit('systems');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button');

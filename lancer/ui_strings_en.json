@@ -238,7 +238,7 @@
   },
   "u064": {
    "tag": "button",
-   "en": "+ Talent"
+   "en": "+ Custom Talent"
   },
   "u065": {
    "tag": "h2",
@@ -262,7 +262,7 @@
   },
   "u071": {
    "tag": "button",
-   "en": "+ System"
+   "en": "+ Custom System"
   },
   "u072": {
    "tag": "label",
@@ -330,7 +330,7 @@
   },
   "u088": {
    "tag": "button",
-   "en": "+ Trigger"
+   "en": "+ Custom Trigger"
   },
   "u089": {
    "tag": "h2",
@@ -342,7 +342,7 @@
   },
   "u092": {
    "tag": "button",
-   "en": "+ License"
+   "en": "+ Custom License"
   },
   "u093": {
    "tag": "p",
