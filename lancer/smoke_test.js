@@ -68,7 +68,9 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'frameMatches:frameMatches,showFrameResults:showFrameResults,pickFrame:pickFrame,'
   + 'frameLabel:frameLabel,renderLicenseDb:renderLicenseDb,renderTalentDb:renderTalentDb,'
   + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,renderDescBoxes:renderDescBoxes,'
-  + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter};';
+  + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter,'
+  + 'TRIGGERS:TRIGGERS,findTrigger:findTrigger,trigDisp:trigDisp,triggerMatches:triggerMatches,'
+  + 'showTriggerResults:showTriggerResults,addTriggerByName:addTriggerByName};';
 function runEval(store){
   const stub = makeStub(store);
   Object.assign(global, stub.g);
@@ -488,4 +490,34 @@ if (XP.L('u146') !== 'Мех, пилот, правила. Данные хран�
 XP.setLang('en');
 if (XP.L('u146') !== 'Mech, pilot, rules. Data is stored only in this browser (localStorage).') throw new Error('P: u146 EN tagline must exist');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix');
+// PHASE Q: v18 — поиск триггеров + фикс переполнения описания на телефоне
+const { X: XQ, S: SQ, DB: DBQ, elements: elQ, g: gQ } = runEval({});
+if (XQ.TRIGGERS.length !== 22) throw new Error('Q: TRIGGERS must have 22 core-book triggers');
+if (!XQ.TRIGGERS.every(t=>t.en && t.ru)) throw new Error('Q: every trigger must have EN and RU names');
+const gsw = XQ.TRIGGERS.find(t=>t.en==='Get Somewhere Quickly');
+if (!gsw || gsw.alt !== 'Get Somewhere Fast' || gsw.ru !== 'Быстро добраться') throw new Error('Q: Get Somewhere Quickly must carry the Fast alias and RU name');
+if (!XQ.triggerMatches(gsw, 'быстро')) throw new Error('Q: trigger search must match the RU name');
+if (!XQ.triggerMatches(gsw, 'fast')) throw new Error('Q: trigger search must match the Fast alias');
+if (!XQ.triggerMatches(XQ.TRIGGERS.find(t=>t.en==='Apply Fists to Faces'), 'морды')) throw new Error('Q: trigger search must match the RU name');
+if (!XQ.triggerMatches(XQ.TRIGGERS.find(t=>t.en==='Charm'), 'charm')) throw new Error('Q: trigger search must match the EN name in RU mode');
+if (XQ.triggerMatches(XQ.TRIGGERS.find(t=>t.en==='Charm'), 'угрожать')) throw new Error('Q: trigger search must not match a wrong trigger');
+if (XQ.trigDisp('Бить морды') !== 'Бить морды') throw new Error('Q: trigDisp must show the RU name in RU mode');
+XQ.setLang('en');
+if (XQ.trigDisp('Бить морды') !== 'Apply Fists to Faces') throw new Error('Q: trigDisp must resolve the RU name to EN in EN mode');
+if (XQ.trigDisp('Apply Fists to Faces') !== 'Apply Fists to Faces') throw new Error('Q: trigDisp must show the EN name in EN mode');
+if (XQ.trigDisp('My Custom Trigger') !== 'My Custom Trigger') throw new Error('Q: trigDisp must pass custom triggers through');
+XQ.setLang('ru');
+XQ.showTriggerResults('угр');
+if (!elQ['triggerResults'].innerHTML.includes('Угрожать')) throw new Error('Q: trigger results must show the RU name for угр');
+if (!elQ['triggerResults'].innerHTML.includes('Threaten')) throw new Error('Q: trigger results must show the EN name as a hint');
+const nTrigBefore = SQ.triggers.length;
+XQ.addTriggerByName('Spot');
+if (SQ.triggers.length !== nTrigBefore + 1) throw new Error('Q: addTriggerByName must add a trigger');
+if (SQ.triggers[SQ.triggers.length-1].name !== 'Spot' || SQ.triggers[SQ.triggers.length-1].bonus !== 2) throw new Error('Q: added trigger must store the EN name with +2');
+if (!elQ['triggers'].innerHTML.includes('Замечать')) throw new Error('Q: added trigger must display in RU');
+// CSS: превью описания не должно раздувать карточку (v18, баг с телефона)
+if (!staticHtml.includes('.desc-preview { color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1 1 auto; }')) throw new Error('Q: desc preview must have min-width:0 to shrink');
+if (!staticHtml.includes('.core-grid > * { min-width:0; }')) throw new Error('Q: core-grid children must have min-width:0');
+if (!staticHtml.includes('details.desc { border:1px solid var(--line); border-radius:6px; padding:8px 10px; background:var(--panel2); min-width:0; }')) throw new Error('Q: details.desc must have min-width:0');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix');

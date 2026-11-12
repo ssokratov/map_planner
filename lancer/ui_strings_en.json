@@ -617,6 +617,10 @@
   "p009": {
    "tag": "input",
    "en": "Find a frame: name, corporation, role…"
+  },
+  "p010": {
+   "tag": "input",
+   "en": "Find a trigger: name…"
   }
  }
 }
