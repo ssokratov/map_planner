@@ -382,18 +382,6 @@
    "ru": "Сумма рангов лицензий: <span id=\"licenseRankSum\"></span> · LL пилота: <span id=\"licenseLL\"></span>",
    "tag": "p"
   },
-  "u094": {
-   "ru": "Core Bonuses и снаряжение",
-   "tag": "h2"
-  },
-  "u095": {
-   "ru": "Core Bonuses (первый — на LL3)",
-   "tag": "label"
-  },
-  "u096": {
-   "ru": "Снаряжение пилота / Gear",
-   "tag": "label"
-  },
   "u097": {
    "ru": "Ход и структура боя",
    "tag": "summary"

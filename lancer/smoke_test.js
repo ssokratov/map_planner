@@ -848,7 +848,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 31')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 32')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -924,4 +924,32 @@ XAB.applyFrame('Blackbeard');
 if (gAB.confirmCalls.some(m => /встроенное оружие фрейма/.test(m))) throw new Error('AB: the apply confirm must not mention an integrated weapon for Blackbeard');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm');
+// PHASE AC: v32 — «свернуть» как синяя ссылка в конце текста; трейты фрейма отдельной карточкой целиком; Core Bonuses/Gear убраны; Stress ☢️, Overcharge ⚡
+const { X: XAC, S: SAC, DB: DBAC, elements: elAC, g: gAC } = runEval({});
+// «свернуть» — синяя ссылка в конце полного текста, а не кнопка под ним
+const longTextAC = 'Длинное описание. '.repeat(15) + 'ХВОСТ-ОПИСАНИЯ';
+XAC.openDesc('t-long');
+const longOpenHtmlAC = XAC.descBox('t-long', '', longTextAC, '', '', false);
+if (!longOpenHtmlAC.includes('<button class="desc-more" onclick="closeDesc')) throw new Error('AC: «свернуть» must be an inline link (desc-more) at the end of the text');
+if (longOpenHtmlAC.includes('<button class="btn"')) throw new Error('AC: the expanded description must not have a bordered button below the text');
+if (!longOpenHtmlAC.includes('ХВОСТ-ОПИСАНИЯ')) throw new Error('AC: the open description must show the full text');
+// трейты фрейма — отдельная карточка, всегда целиком, без «подробнее»
+if (!staticHtml.includes('id="traitsCard"')) throw new Error('AC: frame traits must live in their own card');
+if (!(staticHtml.indexOf('id="traitsCard"') < staticHtml.indexOf('id="traitsBox"'))) throw new Error('AC: the traits box must sit inside the traits card');
+if (!(staticHtml.indexOf('id="traitsBox"') < staticHtml.indexOf('u077'))) throw new Error('AC: the traits box must sit before the Statuses card');
+SAC.mech.traits = 'Трейт один: длинный текст трейта. '.repeat(12);
+XAC.renderLists();
+if (!elAC['traitsBox'].innerHTML.includes('Трейт один: длинный текст трейта.')) throw new Error('AC: the traits card must show the traits text');
+if (elAC['traitsBox'].innerHTML.includes('подробнее')) throw new Error('AC: traits must never collapse into «подробнее»');
+if (!elAC['traitsBox'].innerHTML.includes('Трейт один: длинный текст трейта. Трейт один: длинный текст трейта. Трейт один: длинный текст трейта. Трейт один: длинный текст трейта.')) throw new Error('AC: the traits card must show the whole long text, not a truncated paragraph');
+// Core Bonuses и снаряжение пилота убраны с вкладки Пилота (есть Заметки на Мехе)
+if (staticHtml.includes('Core Bonuses и снаряжение') || staticHtml.includes('pilot.coreBonuses') || staticHtml.includes('pilot.gear')) throw new Error('AC: the Core Bonuses / pilot Gear card must be gone');
+if ('coreBonuses' in SAC.pilot || 'gear' in SAC.pilot) throw new Error('AC: the Core Bonuses / Gear fields must be gone from the save');
+if (!staticHtml.includes('Заметки')) throw new Error('AC: the Mech tab notes must stay');
+// иконки ресурсов: Stress — ядерная опасность, Overcharge — молния
+if (!staticHtml.includes('<span class="ico">☢️</span>Stress')) throw new Error('AC: Stress must carry the radiation icon');
+if (!staticHtml.includes('<span class="ico">⚡</span>Overcharge')) throw new Error('AC: Overcharge must carry the lightning icon');
+if (staticHtml.includes('<span class="ico">⚡</span>Stress') || staticHtml.includes('<span class="ico">🌀</span>Overcharge')) throw new Error('AC: the old Stress/Overcharge icons must be gone');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning');

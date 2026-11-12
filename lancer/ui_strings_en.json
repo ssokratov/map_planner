@@ -382,18 +382,6 @@
    "en": "Sum of license ranks: <span id=\"licenseRankSum\"></span> · Pilot's LL: <span id=\"licenseLL\"></span>",
    "tag": "p"
   },
-  "u094": {
-   "en": "Core Bonuses & Gear",
-   "tag": "h2"
-  },
-  "u095": {
-   "en": "Core Bonuses (first at LL3)",
-   "tag": "label"
-  },
-  "u096": {
-   "en": "Pilot Gear",
-   "tag": "label"
-  },
   "u097": {
    "en": "Turn Structure",
    "tag": "summary"
