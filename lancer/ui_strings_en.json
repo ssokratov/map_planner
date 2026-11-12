@@ -579,6 +579,10 @@
   "u090": {
    "tag": "label",
    "en": "<input type=\"checkbox\" id=\"licenseFilterToggle\" onchange=\"toggleLicenseFilter(this.checked)\" style=\"width:auto\"> Filter weapons, systems and frames by licenses"
+  },
+  "u146": {
+   "tag": "span",
+   "en": "Mech, pilot, rules. Data is stored only in this browser (localStorage)."
   }
  },
  "placeholders": {
@@ -593,10 +597,6 @@
   "p003": {
    "tag": "input",
    "en": "Search: name, GMS, LL2…"
-  },
-  "p004": {
-   "tag": "textarea",
-   "en": "Frame traits — filled in by the \"Apply Frame\" button"
   },
   "p005": {
    "tag": "textarea",
@@ -613,6 +613,10 @@
   "p008": {
    "tag": "input",
    "en": "E.g.: Colonist"
+  },
+  "p009": {
+   "tag": "input",
+   "en": "Find a frame: name, corporation, role…"
   }
  }
 }

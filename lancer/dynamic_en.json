@@ -1,1 +1,174 @@
-{"apply_frame":{"en":"Apply frame ","ru":"Применить фрейм "},"charges":{"en":"Limited {N}: charges","ru":"Limited {N}: заряды"},"cp_notused":{"en":"Not used","ru":"Не использовано"},"cp_used":{"en":"Used ✓","ru":"Использовано ✓"},"db_not_found":{"en":"Not found in the database: ","ru":"Не найдено в базе: "},"frame_not_found":{"en":"Frame not found in the database: ","ru":"Фрейм не найден в базе: "},"frame_replaced_a":{"en":"\nReplaced: mounts (","ru":"\nБудут заменены: маунты ("},"frame_replaced_b":{"en":"), traits and base stats (with HASE). Systems are untouched.","ru":"), трейты и базовые статы (с учётом HASE). Системы не трогаются."},"heat_unit":{"en":" heat","ru":" тепла"},"json_read_fail":{"en":"Could not read JSON","ru":"Не удалось прочитать JSON"},"lic_filter_on":{"en":" · license filter on","ru":" · фильтр по лицензиям включён"},"lic_unrecognized":{"en":"Unrecognized from the old license field: ","ru":"Не распознано из старого поля лицензий: "},"license_hint":{"en":". Turn off the license filter in the Pilot tab to add without a license.","ru":". Отключи фильтр по лицензиям во вкладке «Пилот», чтобы добавить без лицензии."},"license_needed":{"en":"License needed: ","ru":"Нужна лицензия "},"mountcap_flex":{"en":"1 Main or 2 Aux","ru":"1 Main или 2 Aux"},"mountcap_heavy":{"en":"1 Heavy · a Superheavy takes one more mount","ru":"1 Heavy · Superheavy занимает ещё один маунт"},"mountcap_integrated":{"en":"frame integrated weapon","ru":"встроенное оружие фрейма"},"mountcap_mainaux":{"en":"1 Main + 1 Aux or 2 Aux","ru":"1 Main + 1 Aux или 2 Aux"},"mounts_cleared":{"en":"existing weapons in mounts will be removed","ru":"существующее оружие в маунтах будет удалено"},"next_heat":{"en":"next: ","ru":"следующий: "},"no_license_rank":{"en":"the pilot has no license for this frame (needs rank ","ru":"у пилота нет лицензии на этот фрейм (нужен ранг "},"not_found":{"en":"Nothing found","ru":"Ничего не найдено"},"ph_dmg":{"en":"Damage (e.g. 1d6+2)","ru":"Урон (напр. 1d6+2)"},"ph_license":{"en":"License (frame)","ru":"Лицензия (фрейм)"},"ph_range":{"en":"Range","ru":"Дальность"},"ph_sysdesc":{"en":"System description…","ru":"Описание системы…"},"ph_system":{"en":"System","ru":"Система"},"ph_talent":{"en":"Talent","ru":"Талант"},"ph_trigger":{"en":"Trigger","ru":"Триггер"},"ph_weapdesc":{"en":"Description: effects, tags, reload…","ru":"Описание: эффекты, теги, перезарядка…"},"ph_weapon":{"en":"Weapon","ru":"Оружие"},"ph_weapsearch":{"en":"Search: Main, IPS-N LL1, Assault Rifle…","ru":"Найти: Main, IPS-N LL1, Assault Rifle…"},"rank_word":{"en":" rank ","ru":" ранг "},"reset_confirm":{"en":"Reset all fields to a blank LL0 sheet (Everest)?","ru":"Сбросить все поля к пустому листу LL0 (Everest)?"},"saved":{"en":"✓ saved ","ru":"✓ сохранено "},"show_more":{"en":"Showing 8 of {N} — narrow the search","ru":"Показано 8 из {N} — уточни поиск"},"sp_free":{"en":" · free ","ru":" · свободно "},"sp_of":{"en":" of ","ru":" из "},"sp_title":{"en":"System Points — system cost","ru":"System Points — стоимость системы"},"sp_title_fixed":{"en":"System Points — system cost (per the book, fixed)","ru":"System Points — стоимость системы (по книге, не меняется)"},"sp_used":{"en":"SP: used ","ru":"SP: использовано "}}
+{
+ "apply_frame": {
+  "en": "Apply frame ",
+  "ru": "Применить фрейм "
+ },
+ "charges": {
+  "en": "Limited {N}: charges",
+  "ru": "Limited {N}: заряды"
+ },
+ "cp_notused": {
+  "en": "Not used",
+  "ru": "Не использовано"
+ },
+ "cp_used": {
+  "en": "Used ✓",
+  "ru": "Использовано ✓"
+ },
+ "db_not_found": {
+  "en": "Not found in the database: ",
+  "ru": "Не найдено в базе: "
+ },
+ "frame_not_found": {
+  "en": "Frame not found in the database: ",
+  "ru": "Фрейм не найден в базе: "
+ },
+ "frame_replaced_a": {
+  "en": "\nReplaced: mounts (",
+  "ru": "\nБудут заменены: маунты ("
+ },
+ "frame_replaced_b": {
+  "en": "), traits and base stats (with HASE). Systems are untouched.",
+  "ru": "), трейты и базовые статы (с учётом HASE). Системы не трогаются."
+ },
+ "heat_unit": {
+  "en": " heat",
+  "ru": " тепла"
+ },
+ "json_read_fail": {
+  "en": "Could not read JSON",
+  "ru": "Не удалось прочитать JSON"
+ },
+ "lic_filter_on": {
+  "en": " · license filter on",
+  "ru": " · фильтр по лицензиям включён"
+ },
+ "lic_unrecognized": {
+  "en": "Unrecognized from the old license field: ",
+  "ru": "Не распознано из старого поля лицензий: "
+ },
+ "license_hint": {
+  "en": ". Turn off the license filter in the Pilot tab to add without a license.",
+  "ru": ". Отключи фильтр по лицензиям во вкладке «Пилот», чтобы добавить без лицензии."
+ },
+ "license_needed": {
+  "en": "License needed: ",
+  "ru": "Нужна лицензия "
+ },
+ "mountcap_flex": {
+  "en": "1 Main or 2 Aux",
+  "ru": "1 Main или 2 Aux"
+ },
+ "mountcap_heavy": {
+  "en": "1 Heavy · a Superheavy takes one more mount",
+  "ru": "1 Heavy · Superheavy занимает ещё один маунт"
+ },
+ "mountcap_integrated": {
+  "en": "frame integrated weapon",
+  "ru": "встроенное оружие фрейма"
+ },
+ "mountcap_mainaux": {
+  "en": "1 Main + 1 Aux or 2 Aux",
+  "ru": "1 Main + 1 Aux или 2 Aux"
+ },
+ "mounts_cleared": {
+  "en": "existing weapons in mounts will be removed",
+  "ru": "существующее оружие в маунтах будет удалено"
+ },
+ "next_heat": {
+  "en": "next: ",
+  "ru": "следующий: "
+ },
+ "no_license_rank": {
+  "en": "the pilot has no license for this frame (needs rank ",
+  "ru": "у пилота нет лицензии на этот фрейм (нужен ранг "
+ },
+ "not_found": {
+  "en": "Nothing found",
+  "ru": "Ничего не найдено"
+ },
+ "ph_dmg": {
+  "en": "Damage (e.g. 1d6+2)",
+  "ru": "Урон (напр. 1d6+2)"
+ },
+ "ph_license": {
+  "en": "License (frame)",
+  "ru": "Лицензия (фрейм)"
+ },
+ "ph_range": {
+  "en": "Range",
+  "ru": "Дальность"
+ },
+ "ph_sysdesc": {
+  "en": "System description…",
+  "ru": "Описание системы…"
+ },
+ "ph_system": {
+  "en": "System",
+  "ru": "Система"
+ },
+ "ph_talent": {
+  "en": "Talent",
+  "ru": "Талант"
+ },
+ "ph_trigger": {
+  "en": "Trigger",
+  "ru": "Триггер"
+ },
+ "ph_weapdesc": {
+  "en": "Description: effects, tags, reload…",
+  "ru": "Описание: эффекты, теги, перезарядка…"
+ },
+ "ph_weapon": {
+  "en": "Weapon",
+  "ru": "Оружие"
+ },
+ "ph_weapsearch": {
+  "en": "Search: Main, IPS-N LL1, Assault Rifle…",
+  "ru": "Найти: Main, IPS-N LL1, Assault Rifle…"
+ },
+ "rank_word": {
+  "en": " rank ",
+  "ru": " ранг "
+ },
+ "reset_confirm": {
+  "en": "Reset all fields to a blank LL0 sheet (Everest)?",
+  "ru": "Сбросить все поля к пустому листу LL0 (Everest)?"
+ },
+ "saved": {
+  "en": "✓ saved ",
+  "ru": "✓ сохранено "
+ },
+ "show_more": {
+  "en": "Showing 8 of {N} — narrow the search",
+  "ru": "Показано 8 из {N} — уточни поиск"
+ },
+ "sp_free": {
+  "en": " · free ",
+  "ru": " · свободно "
+ },
+ "sp_of": {
+  "en": " of ",
+  "ru": " из "
+ },
+ "sp_title": {
+  "en": "System Points — system cost",
+  "ru": "System Points — стоимость системы"
+ },
+ "sp_title_fixed": {
+  "en": "System Points — system cost (per the book, fixed)",
+  "ru": "System Points — стоимость системы (по книге, не меняется)"
+ },
+ "sp_used": {
+  "en": "SP: used ",
+  "ru": "SP: использовано "
+ },
+ "edit_desc": {
+  "ru": "✎ Редактировать",
+  "en": "✎ Edit"
+ },
+ "p004": {
+  "ru": "Трейты фрейма — заполняются кнопкой «Применить фрейм»",
+  "en": "Frame traits — filled in by the \"Apply Frame\" button"
+ }
+}

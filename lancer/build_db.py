@@ -22,6 +22,10 @@ MOUNT_MAP = {"Auxiliary": "Aux", "Main": "Main", "Heavy": "Heavy",
 # manufacturer codes -> full names (for search; the books use the codes)
 SRC_NAMES = {"GMS": "GMS", "IPS-N": "IPS-N", "HORUS": "HORUS",
              "SSC": "Smith-Shimano", "HA": "Harrison Armory"}
+# frame roles (lancer-data mechtype) -> Russian; v17, user request
+ROLE_RU = {"Striker": "Штурмовик", "Defender": "Защитник",
+           "Support": "Поддержка", "Controller": "Контролёр",
+           "Artillery": "Артиллерия", "Balanced": "Универсал"}
 
 def fetch(name, local_dir):
     if local_dir:
@@ -307,11 +311,19 @@ def build(local_dir):
     for x in frames:
         cs = x.get("core_system") or {}
         iw = [w_by_id[i] for i in (cs.get("integrated") or []) if i in w_by_id]
+        fsrc = x.get("source") or ""
+        fsrcf = SRC_NAMES.get(fsrc, fsrc)
+        frole = [r for r in (x.get("mechtype") or []) if r]
         frames_db[x["name"]] = {
             "m": x.get("mounts") or [],
             "c": cs.get("name") or "",
             "cd": fmt_core(cs),
             "t": fmt_traits(x.get("traits")),
+            # корпорация и роль фрейма (v17: видны в поиске и ищутся)
+            "src": fsrc,
+            "sf": fsrcf if fsrcf != fsrc else "",
+            "role": frole,
+            "roler": [ROLE_RU.get(r, r) for r in frole],
             "nr": ru_get("frames", x["name"], "n", x["name"]),
             "cr": ru_get("frames", x["name"], "c", cs.get("name") or ""),
             "cdr": ru_get("frames", x["name"], "cd", fmt_core(cs)),

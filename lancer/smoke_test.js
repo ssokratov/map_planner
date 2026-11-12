@@ -64,7 +64,11 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'fullRepair:fullRepair,renderLists:renderLists,save:save,get:get,set:set,'
   + 'lang:lang,setLang:setLang,applyLang:applyLang,wd:wd,sd:sd,td:td,tagd:tagd,fd:fd,'
   + 'findWeapon:findWeapon,findSystem:findSystem,findTalent:findTalent,frameKey:frameKey,'
-  + 'dispVal:dispVal,mountCap:mountCap,STR:STR,L:L};';
+  + 'dispVal:dispVal,dispField:dispField,mountCap:mountCap,STR:STR,L:L,'
+  + 'frameMatches:frameMatches,showFrameResults:showFrameResults,pickFrame:pickFrame,'
+  + 'frameLabel:frameLabel,renderLicenseDb:renderLicenseDb,renderTalentDb:renderTalentDb,'
+  + 'descBox:descBox,editDesc:editDesc,toggleDesc:toggleDesc,renderDescBoxes:renderDescBoxes,'
+  + 'frameAvailable:frameAvailable,toggleLicenseFilter:toggleLicenseFilter};';
 function runEval(store){
   const stub = makeStub(store);
   Object.assign(global, stub.g);
@@ -198,7 +202,10 @@ if (!gA.confirmCalls.some(m => /нет лицензии/.test(m))) throw new Err
 X.toggleLicenseFilter(false);
 if (!X.itemAvailable(railgunG)) throw new Error('G: with filter OFF, Railgun must be available');
 if (!X.frameAvailable('Tokugawa')) throw new Error('G: with filter OFF, Tokugawa must be available');
-if ((elA['frames'].innerHTML.match(/<option/g) || []).length !== 29) throw new Error('G: with filter OFF, frames datalist must have all 29 frames');
+// datalist двуязычный: по 2 опции на фрейм (RU + EN), различных фреймов — 29
+const frameVals = [...elA['frames'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
+if (new Set(frameVals.map(v=>X.frameKey(v))).size !== 29) throw new Error('G: with filter OFF, frames datalist must have all 29 frames');
+if (!frameVals.includes('Blackbeard') || !frameVals.includes('Чёрная Борода')) throw new Error('G: frames datalist must offer both EN and RU names');
 if (elA['licNoteW'].textContent !== '') throw new Error('G: filter note must be empty when filter is OFF');
 X.showWeaponResults(0, 'vijaya');
 if ((elA['mountResults-0'].innerHTML.match(/class="dbrow"/g) || []).length !== 1) throw new Error('G: with filter OFF, Vijaya Rockets must appear in search results');
@@ -414,4 +421,71 @@ if (XO.mountCap('Flex') !== '1 Main или 2 Aux') throw new Error('O: mountCap 
 XO.setLang('en');
 if (XO.mountCap('Flex') !== '1 Main or 2 Aux') throw new Error('O: mountCap must be EN in EN mode');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle');
+// PHASE P: v17 — корпорация и роль фреймов, двуязычные datalist'ы, компонент описания, фикс dispField
+const { X: XP, S: SP2, DB: DBP, elements: elP, g: gP } = runEval({});
+// корпорация и роль в базе фреймов
+if (DBP.frames['Blackbeard'].src !== 'IPS-N' || DBP.frames['Blackbeard'].role[0] !== 'Striker' || DBP.frames['Blackbeard'].roler[0] !== 'Штурмовик') throw new Error('P: Blackbeard must carry IPS-N / Striker / Штурмовик');
+if (DBP.frames['Tortuga'].role.join() !== 'Defender,Striker' || DBP.frames['Tortuga'].roler.join() !== 'Защитник,Штурмовик') throw new Error('P: Tortuga must carry two roles');
+if (DBP.frames['Everest'].role[0] !== 'Balanced' || DBP.frames['Everest'].roler[0] !== 'Универсал') throw new Error('P: Everest must be Balanced / Универсал');
+if (DBP.frames['Death’s Head'].src !== 'SSC' || DBP.frames['Death’s Head'].sf !== 'Smith-Shimano') throw new Error('P: Death’s Head must carry SSC / Smith-Shimano');
+// поиск фреймов: корпорация, роль, оба языка
+if (!XP.frameMatches('Blackbeard', 'ips-n')) throw new Error('P: frame search must match the corporation code');
+if (!XP.frameMatches('Death’s Head', 'smith-shimano')) throw new Error('P: frame search must match the full corporation name');
+if (!XP.frameMatches('Blackbeard', 'штурмовик')) throw new Error('P: frame search must match the RU role');
+if (!XP.frameMatches('Blackbeard', 'striker')) throw new Error('P: frame search must match the EN role');
+if (!XP.frameMatches('Death’s Head', 'артиллерия')) throw new Error('P: frame search must match the RU role Artillery');
+if (!XP.frameMatches('Blackbeard', 'чёрная борода')) throw new Error('P: frame search must match the RU name');
+if (!XP.frameMatches('Blackbeard', 'll2')) throw new Error('P: frame search must match LL');
+if (XP.frameMatches('Blackbeard', 'артиллерия')) throw new Error('P: frame search must not match a wrong role');
+if (XP.frameLabel(DBP.frames['Blackbeard']) !== 'IPS-N · Штурмовик · LL2') throw new Error('P: frame label must be corp, RU role, LL in RU mode');
+// результаты поиска фреймов: фильтр лицензий + корпорация и роль в строке
+XP.toggleLicenseFilter(false);
+XP.showFrameResults('штурмовик');
+let frBox = elP['frameResults'].innerHTML;
+if (!frBox.includes('Чёрная Борода') || !frBox.includes('IPS-N') || !frBox.includes('Штурмовик')) throw new Error('P: frame results must show the RU name, corporation and role');
+if (!frBox.includes('Нельсон') || !frBox.includes('Тортуга')) throw new Error('P: frame results for штурмовик must include Nelson and Tortuga');
+XP.showFrameResults('xyz-no-such-frame');
+if (!elP['frameResults'].innerHTML.includes('Ничего не найдено')) throw new Error('P: frame results must show not-found for an unknown query');
+// pickFrame: ставит фрейм и применяет его (confirm в стабе = true)
+XP.pickFrame('Blackbeard');
+if (SP2.mech.frame !== 'Blackbeard') throw new Error('P: pickFrame must set mech.frame');
+if (SP2.mounts.map(m=>m.type).join() !== DBP.frames['Blackbeard'].m.join()) throw new Error('P: pickFrame must apply the frame mounts');
+// двуязычные datalist'ы лицензий и талантов (в обоих режимах отображения)
+const licVals = () => [...elP['licenseDb'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
+if (!licVals().includes('Blackbeard') || !licVals().includes('Чёрная Борода')) throw new Error('P: license datalist must offer EN and RU names in RU mode');
+if (!elP['licenseDb'].innerHTML.includes('label="IPS-N')) throw new Error('P: license datalist labels must show the corporation');
+XP.setLang('en');
+if (!licVals().includes('Blackbeard') || !licVals().includes('Чёрная Борода')) throw new Error('P: license datalist must offer EN and RU names in EN mode');
+const talVals = [...elP['talentDb'].innerHTML.matchAll(/value="([^"]+)"/g)].map(m=>m[1]);
+if (!talVals.includes('Ace') || !talVals.includes('Ас')) throw new Error('P: talent datalist must offer EN and RU names');
+XP.setLang('ru');
+// фикс dispField (v15): Core System / описание / трейты переводятся в RU-режиме
+// (фрейм сейчас Blackbeard — после pickFrame выше)
+if (XP.dispField('mech.coreSystem') !== DBP.frames['Blackbeard'].cr) throw new Error('P: dispField coreSystem must be RU in RU mode');
+if (XP.dispField('mech.traits') !== DBP.frames['Blackbeard'].tr) throw new Error('P: dispField traits must be RU in RU mode');
+if (XP.dispField('mech.coreDesc') !== DBP.frames['Blackbeard'].cdr) throw new Error('P: dispField coreDesc must be RU in RU mode');
+XP.setLang('en');
+if (XP.dispField('mech.coreSystem') !== DBP.frames['Blackbeard'].c) throw new Error('P: dispField coreSystem must be EN in EN mode');
+if (XP.dispField('mech.traits') !== DBP.frames['Blackbeard'].t) throw new Error('P: dispField traits must be EN in EN mode');
+XP.setLang('ru');
+// компонент описания: <details> вместо textarea, правка по кнопке
+XP.addBlankWeapon(0);
+XP.fillWeaponFromDb(0, 0, 'Assault Rifle');
+const mountsHtmlP = elP['mounts'].innerHTML;
+if (!mountsHtmlP.includes('<details class="desc"')) throw new Error('P: weapon rows must render the description as <details>');
+if (!mountsHtmlP.includes('Штурмовая винтовка')) throw new Error('P: weapon rows must keep the RU weapon name');
+if (!mountsHtmlP.includes('1d6 кинетический')) throw new Error('P: weapon rows must keep the RU damage text');
+const sysHtmlP = elP['systems'].innerHTML;
+if (!sysHtmlP.includes('<details class="desc"')) throw new Error('P: system rows must render the description as <details>');
+if (!sysHtmlP.includes('SP 2')) throw new Error('P: system rows must keep the SP text');
+if (!elP['coreDescBox'].innerHTML.includes('<details class="desc"')) throw new Error('P: coreDesc must render as <details>');
+if (!elP['coreDescBox'].innerHTML.includes('Штурмовая гарпунная система')) throw new Error('P: coreDesc box must show the RU core description');
+if (!elP['traitsBox'].innerHTML.includes('Гарпунный трос')) throw new Error('P: traits box must show the RU traits');
+XP.editDesc('s-0');
+if (!elP['systems'].innerHTML.includes('id="editingDesc"')) throw new Error('P: editDesc must show the editing textarea');
+// подпись под заголовком переводится
+if (XP.L('u146') !== 'Мех, пилот, правила. Данные хранятся только в этом браузере (localStorage).') throw new Error('P: u146 RU tagline must exist');
+XP.setLang('en');
+if (XP.L('u146') !== 'Mech, pilot, rules. Data is stored only in this browser (localStorage).') throw new Error('P: u146 EN tagline must exist');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix');
