@@ -662,7 +662,8 @@ if (elU['talentsHint'].style.display !== 'none') throw new Error('U: the talents
 if (elU['talentAddRow'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
 let talHtmlU = elU['talents'].innerHTML;
 if (talHtmlU.includes('<input') || talHtmlU.includes('<select') || talHtmlU.includes('delRow')) throw new Error('U: talent rows must not contain inputs, selects or delete buttons in view mode');
-if (!talHtmlU.includes('Ас') || !talHtmlU.includes('>I<')) throw new Error('U: talent rows must show the name and rank as text in view mode');
+if (!talHtmlU.includes('Ас I')) throw new Error('U: talent rows must show the name and rank as one text in view mode');
+if (talHtmlU.includes('<span class="dim">I</span>')) throw new Error('U: the talent rank must not hang in a separate column in view mode');
 // триггеры: выключить — строки текстом; подсказка про правила остаётся
 SU.triggers[0].name = 'Act Unseen or Unheard'; XU.renderLists();
 XU.toggleEdit('triggers');
@@ -692,7 +693,8 @@ XV.toggleEdit('licenses');
 if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['licenseAddRow'].style.display !== 'none' || elV['frameSection'].style.display !== 'none') throw new Error('V: the license filter, hint, add button and frame section must hide when licenses editing is OFF');
 let licHtmlV = elV['licenses'].innerHTML;
 if (licHtmlV.includes('<input') || licHtmlV.includes('<select') || licHtmlV.includes('delLicense')) throw new Error('V: license rows must not contain inputs, selects or delete buttons in view mode');
-if (!licHtmlV.includes('Чёрная Борода') || !licHtmlV.includes('>II<')) throw new Error('V: license rows must show the name and rank as text in view mode');
+if (!licHtmlV.includes('Чёрная Борода II')) throw new Error('V: license rows must show the name and rank as one text in view mode');
+if (licHtmlV.includes('<span class="dim">II</span>')) throw new Error('V: the license rank must not hang in a separate column in view mode');
 // статичные карточки: выключить — класс view, поля как текст
 XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
 if (!elV['mechCard'].classList.contains('view')) throw new Error('V: the Mech card must get the view class when mech editing is OFF');
@@ -806,4 +808,40 @@ if (knobCount !== 9) throw new Error('Y: all 9 toggle knobs must carry the wrenc
 if (!staticHtml.includes('.toggle .knob') || !staticHtml.includes('display:flex')) throw new Error('Y: the knob must be a flex container centering the icon');
 
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob');
+// PHASE Z: v28 — игровой режим: пояснения маунтов, SP-счётчик и предупреждение о лицензиях прячутся; ранги в один текст с именем
+const { X: XZ, S: SZ, DB: DBZ, elements: elZ, g: gZ } = runEval({});
+// маунты: пояснение ёмкости есть при редактировании, нет в просмотре; тип маунта остаётся текстом
+if (!elZ['mounts'].innerHTML.includes('mount-cap')) throw new Error('Z: the mount capacity note must show when mounts editing is ON');
+XZ.toggleEdit('mounts');
+if (elZ['mounts'].innerHTML.includes('mount-cap')) throw new Error('Z: the mount capacity note must hide when mounts editing is OFF');
+if (elZ['mounts'].innerHTML.includes('занимает ещё один маунт')) throw new Error('Z: the mount capacity explanation must hide when mounts editing is OFF');
+if (!elZ['mounts'].innerHTML.includes('<b>Main</b>')) throw new Error('Z: the mount type must stay visible as text in view mode');
+XZ.toggleEdit('mounts');
+if (!elZ['mounts'].innerHTML.includes('mount-cap')) throw new Error('Z: the mount capacity note must return when mounts editing is ON');
+// системы: SP-счётчик прячется в просмотре
+if (elZ['spCounterRow'].style.display === 'none') throw new Error('Z: the SP counter must show when systems editing is ON');
+XZ.toggleEdit('systems');
+if (elZ['spCounterRow'].style.display !== 'none') throw new Error('Z: the SP counter must hide when systems editing is OFF');
+XZ.toggleEdit('systems');
+// таланты: ранг II в один текст с именем в просмотре
+SZ.talents[0].name = 'Ace'; SZ.talents[0].rank = 2; XZ.renderLists();
+XZ.toggleEdit('talents');
+let talHtmlZ = elZ['talents'].innerHTML;
+if (!talHtmlZ.includes('Ас II')) throw new Error('Z: the talent name and rank must be one text in view mode');
+if (talHtmlZ.includes('<span class="dim">II</span>')) throw new Error('Z: the talent rank must not be a separate column in view mode');
+XZ.toggleEdit('talents');
+// лицензии: ранг в один текст; предупреждение о нераспознанных лицензиях — только при редактировании
+SZ.pilot.licenses.push({name:'Blackbeard', rank:2}); SZ.pilot.licensesNote = 'Foo'; XZ.renderLists();
+if (elZ['licensesNote'].style.display === 'none') throw new Error('Z: the unrecognized-license note must show when licenses editing is ON and a note exists');
+XZ.toggleEdit('licenses');
+let licHtmlZ = elZ['licenses'].innerHTML;
+if (!licHtmlZ.includes('Чёрная Борода II')) throw new Error('Z: the license name and rank must be one text in view mode');
+if (licHtmlZ.includes('<span class="dim">II</span>')) throw new Error('Z: the license rank must not be a separate column in view mode');
+if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: the unrecognized-license note must hide when licenses editing is OFF');
+XZ.toggleEdit('licenses');
+// без предупреждения — строка не показывается даже при редактировании
+SZ.pilot.licensesNote = ''; XZ.renderLists();
+if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty unrecognized-license note must stay hidden');
+
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names');

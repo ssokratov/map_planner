@@ -252,7 +252,7 @@
     </div>
     <div class="card">
       <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob">🔧</span></button></div>
-      <p class="hint" style="padding:0 0 8px"><span id="spCounter"></span></p>
+      <p class="hint" id="spCounterRow" style="padding:0 0 8px"><span id="spCounter"></span></p>
       <p class="hint" id="systemsHint" style="padding:0 0 8px" data-i18n="u070">База: <span id="dbSystemCount"></span> систем из открытых данных Massif Press (lancer-data). Поиск ищет по названию, типу, корпорации и уровню лицензии (LL0–LL3). Выбор подставляет SP и описание с эффектом.<span id="licNoteS"></span></p>
       <div id="systems"></div>
       <div class="row" id="systemAddRow" style="margin-top:10px">
@@ -805,7 +805,7 @@ function renderLists(){
       ${editOn('talents') ? `<div class="row"><input type="text" placeholder="${L('ph_talent')}" value="${esc(tDisp)}" onchange="fillTalentFromDb(${i},this.value)">
       <select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
-      <button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}</b><span class="dim">${esc(rankRoman)}</span></div>`}
+      <button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
       ${rd ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px"><b>${esc(rd.n)}:</b> ${esc(rd.d)}</div>` : ''}
     </div>`;
   }).join('');
@@ -838,7 +838,7 @@ function renderLists(){
     return `<div class="mount">
       <div class="mount-head"><span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22">${ms.icon}</span>${em ? `<select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
         ${MOUNT_TYPES.map(t=>`<option ${mt.type===t?'selected':''}>${t}</option>`).join('')}</select>` : `<b>${esc(mt.type)}</b>`}
-        <span class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</span>
+        ${em ? `<span class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</span>` : ''}
         ${em ? `<button class="btn danger" style="flex:0 0 auto" onclick="delMount(${mi})">✕</button>` : ''}</div>
       ${rows}
       ${em ? `<div class="row"><button class="btn icon" style="flex:0 0 auto" onclick="openSearch('weapon', ${mi})">🔍</button>
@@ -874,7 +874,7 @@ function renderLists(){
     <select class="narrow" onchange="S.pilot.licenses[${i}].rank=+this.value;save();renderLists()">
       ${[1,2,3].map(r=>`<option value="${r}" ${l.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
     <button class="btn danger" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>` : `
-    <div class="row"><b style="flex:1 1 auto">${esc(fd(l.name).n)}</b><span class="dim">${['I','II','III'][l.rank-1] || ''}</span></div>`).join('');
+    <div class="row"><b style="flex:1 1 auto">${esc(fd(l.name).n)}${['I','II','III'][l.rank-1] ? ' ' + ['I','II','III'][l.rank-1] : ''}</b></div>`).join('');
   updateLicenseSummary();
   renderDescBoxes();
   syncEditToggles();
@@ -1097,8 +1097,8 @@ function syncEditToggles(){
   show('weaponsHint', em); show('addMountBtn', em);
   show('talentsHint', et); show('talentAddRow', et);
   show('triggerAddRow', eg);
-  show('systemsHint', es); show('systemAddRow', es);
-  show('licenseFilterRow', el2); show('licensesHint', el2); show('licenseAddRow', el2); show('frameSection', el2);
+  show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', es);
+  show('licenseFilterRow', el2); show('licensesHint', el2); show('licenseAddRow', el2); show('frameSection', el2); show('licensesNote', el2 && !!S.pilot.licensesNote);
   // Статичные карточки: в просмотре поля выглядят как текст и не ловят тап
   const view = (id, on)=>{ const el = document.getElementById(id); if (el) el.classList.toggle('view', !on); };
   view('mechCard', editOn('mech')); view('pilotCard', editOn('pilot'));
