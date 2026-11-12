@@ -20,10 +20,10 @@
   section.tab.active { display:block; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
   .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  .grid5 { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
-  @media (max-width:560px){ .grid,.grid3{ grid-template-columns:1fr 1fr; } .grid5{ grid-template-columns:repeat(3,1fr); } }
+  .grid5 { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+  @media (max-width:560px){ .grid,.grid3{ grid-template-columns:repeat(2,minmax(0,1fr)); } .grid5{ grid-template-columns:repeat(3,minmax(0,1fr)); } #statsCard.view .grid5{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
   label { display:block; font-size:12px; color:var(--dim); margin-bottom:4px; }
   input[type=text], input[type=number], textarea, select { width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:9px 10px; font-size:15px; }
   textarea { min-height:64px; resize:vertical; }
@@ -67,7 +67,7 @@
   .res label .ico { margin-right:4px; }
   .grid label .ico, .grid5 label .ico { margin-right:4px; }
   /* Статы в просмотре (редактирование выкл.): подпись и значение в одну строку, компактно */
-  #statsCard.view .grid > div, #statsCard.view .grid5 > div { display:flex; align-items:baseline; gap:6px; }
+  #statsCard.view .grid > div, #statsCard.view .grid5 > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
   #statsCard.view .grid label, #statsCard.view .grid5 label { flex:0 0 auto; margin-bottom:0; }
   #statsCard.view .grid input[type="number"], #statsCard.view .grid5 input[type="number"] { flex:0 0 auto; width:3ch; padding:0; }
   #statsCard.view .grid input[type="text"] { flex:1 1 auto; width:auto; min-width:0; padding:0; }
@@ -110,7 +110,7 @@
   .desc-more { color:var(--accent2); background:none; border:none; padding:0; font:inherit; cursor:pointer; }
   .desc-text { white-space:pre-line; font-size:14px; line-height:1.55; margin:8px 0 4px; overflow-wrap:break-word; }
   .core-grid > * { min-width:0; }
-  .frame-ro { font-size:16px; font-weight:600; padding:9px 0; }
+  .frame-ro { font-size:16px; font-weight:600; padding:9px 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wmeta { color:var(--dim); font-size:13px; margin:2px 0 4px; }
   .card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .card-head h2 { margin:0; }
@@ -485,7 +485,7 @@
   <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
 </footer>
 <p class="hint" data-i18n="u144">Полный ремонт — кнопка в карточке «Ресурсы боя» на вкладке меха. Core Power — 1 CP раз за миссию. Оверчардж сбрасывается только полным ремонтом. Lancer — игра Massif Press (Miguel Lopez, Tom Parkinson Morgan). Трекер неофициальный, для личного использования.</p>
-  <p class="hint" style="margin-top:8px">Версия трекера: 47</p>
+  <p class="hint" style="margin-top:8px">Версия трекера: 48</p>
   <div class="row" style="margin-top:8px">
     <span class="dim">Язык / Language:</span>
     <button class="btn" data-lang-btn="ru" onclick="setLang('ru')">RUS</button>
