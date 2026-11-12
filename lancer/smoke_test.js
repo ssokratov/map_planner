@@ -14,7 +14,9 @@ function makeEl(id){
   const el = {
     id, value: '', innerHTML: '', style: {},
     checked: false, dataset: {},
-    classList: { toggle(){}, add(){}, remove(){} },
+    classList: { _s: new Set(),
+      toggle(c, f){ if (f === undefined) { this._s.has(c) ? this._s.delete(c) : this._s.add(c); } else if (f) this._s.add(c); else this._s.delete(c); },
+      add(c){ this._s.add(c); }, remove(c){ this._s.delete(c); }, contains(c){ return this._s.has(c); } },
     setAttribute(){}, getAttribute(){ return null; },
     addEventListener(){}, appendChild(){},
     showModal(){ this._open = true; }, close(){ this._open = false; },
@@ -52,6 +54,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'showWeaponResults:showWeaponResults,showSystemResults:showSystemResults,'
   + 'addWeaponByIndex:addWeaponByIndex,addSystemByIndex:addSystemByIndex,'
   + 'addSystemFromDb:addSystemFromDb,'
+  + 'toggleEdit:toggleEdit,editOn:editOn,'
   + 'openCustomWeaponDlg:openCustomWeaponDlg,addCustomWeapon:addCustomWeapon,'
   + 'openCustomSystemDlg:openCustomSystemDlg,addCustomSystem:addCustomSystem,'
   + 'applyFrame:applyFrame,toggleLicenseFilter:toggleLicenseFilter,'
@@ -621,4 +624,78 @@ if (ST.mech.traits !== DBT.frames['Blackbeard'].t) throw new Error('T: accepting
 if (ST.mounts.map(m=>m.type).join() !== DBT.frames['Blackbeard'].m.join()) throw new Error('T: accepting the confirm must set the mounts');
 if (elT['mechFrameName'].textContent !== 'Чёрная Борода') throw new Error('T: the Mech tab must show the new frame name after applying');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic');
+// PHASE U: v23 — тоггл редактирования маунтов, талантов и триггеров
+const { X: XU, S: SU, DB: DBU, elements: elU, g: gU } = runEval({});
+// по умолчанию редактирование включено
+if (!XU.editOn('mounts') || !XU.editOn('talents') || !XU.editOn('triggers')) throw new Error('U: editing must be ON by default for all three blocks');
+if (!elU['editToggleMounts'].checked || !elU['editToggleTalents'].checked || !elU['editToggleTriggers'].checked) throw new Error('U: edit toggles must be checked by default');
+// маунты: выключить — исчезают поиск, удаление, добавление и подсказка
+XU.toggleEdit('mounts');
+if (XU.editOn('mounts')) throw new Error('U: toggleEdit must turn mounts editing OFF');
+if (elU['editToggleMounts'].checked) throw new Error('U: the mounts toggle must uncheck');
+if (elU['weaponsHint'].style.display !== 'none') throw new Error('U: the weapons hint must hide when mounts editing is OFF');
+if (elU['addMountBtn'].style.display !== 'none') throw new Error('U: the + Mount button must hide when mounts editing is OFF');
+let mountsHtmlU = elU['mounts'].innerHTML;
+if (mountsHtmlU.includes('mountPick-')) throw new Error('U: the weapon search must hide when mounts editing is OFF');
+if (mountsHtmlU.includes('Кастомное Оружие')) throw new Error('U: the + Custom Weapon button must hide when mounts editing is OFF');
+if (mountsHtmlU.includes('delWeapon') || mountsHtmlU.includes('delMount')) throw new Error('U: delete buttons must hide when mounts editing is OFF');
+if (mountsHtmlU.includes('<select')) throw new Error('U: the mount type select must hide when mounts editing is OFF');
+if (!mountsHtmlU.includes('<b>Main</b>')) throw new Error('U: the mount type must show as text when mounts editing is OFF');
+// оружие остаётся карточкой, степпер Limited — на месте
+XU.addWeaponByIndex(0, DBU.weapons.findIndex(w=>w.n==='Assault Rifle'));
+mountsHtmlU = elU['mounts'].innerHTML;
+if (!mountsHtmlU.includes('Штурмовая винтовка')) throw new Error('U: the weapon card must stay visible in view mode');
+if (mountsHtmlU.includes('delWeapon')) throw new Error('U: the weapon delete button must hide in view mode');
+// таланты: выключить — строки текстом, без полей и удаления
+SU.talents[0].name = 'Ace'; XU.renderLists();
+XU.toggleEdit('talents');
+if (elU['talentsHint'].style.display !== 'none') throw new Error('U: the talents hint must hide when talents editing is OFF');
+if (elU['talentPick'].style.display !== 'none' || elU['addTalentBtn'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
+let talHtmlU = elU['talents'].innerHTML;
+if (talHtmlU.includes('<input') || talHtmlU.includes('<select') || talHtmlU.includes('delRow')) throw new Error('U: talent rows must not contain inputs, selects or delete buttons in view mode');
+if (!talHtmlU.includes('Ас') || !talHtmlU.includes('>I<')) throw new Error('U: talent rows must show the name and rank as text in view mode');
+// триггеры: выключить — строки текстом; подсказка про правила остаётся
+SU.triggers[0].name = 'Act Unseen or Unheard'; XU.renderLists();
+XU.toggleEdit('triggers');
+if (elU['triggerSearchRow'].style.display !== 'none' || elU['addTriggerBtn'].style.display !== 'none') throw new Error('U: the trigger search and + Trigger button must hide when triggers editing is OFF');
+let trigHtmlU = elU['triggers'].innerHTML;
+if (trigHtmlU.includes('<input') || trigHtmlU.includes('delRow')) throw new Error('U: trigger rows must not contain inputs or delete buttons in view mode');
+if (!trigHtmlU.includes('Действовать незаметно') || !trigHtmlU.includes('+2')) throw new Error('U: trigger rows must show the name and bonus as text in view mode');
+// включить обратно — контролы возвращаются
+XU.toggleEdit('mounts'); XU.toggleEdit('talents'); XU.toggleEdit('triggers');
+if (!XU.editOn('mounts') || !XU.editOn('talents') || !XU.editOn('triggers')) throw new Error('U: toggling back must restore editing');
+if (elU['mounts'].innerHTML.includes('<b>Main</b>') && !elU['mounts'].innerHTML.includes('<select')) throw new Error('U: the mount type select must return when mounts editing is ON');
+if (!elU['talents'].innerHTML.includes('<input')) throw new Error('U: talent inputs must return when talents editing is ON');
+
+// PHASE V: v24 — тоггл редактирования в остальных блоках
+const { X: XV, S: SV, DB: DBV, elements: elV, g: gV } = runEval({});
+['systems','licenses','mech','pilot','hase','core'].forEach(b=>{ if (!XV.editOn(b)) throw new Error('V: editing must be ON by default for ' + b); });
+if (elV['mechCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['haseCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
+// системы: выключить — поиск, добавление и ✕ исчезают, карточки остаются
+XV.toggleEdit('systems');
+if (elV['systemsHint'].style.display !== 'none' || elV['addSystemBtn'].style.display !== 'none' || elV['systemSearchRow'].style.display !== 'none' || elV['systemResults'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
+let sysHtmlV = elV['systems'].innerHTML;
+if (sysHtmlV.includes('delRow')) throw new Error('V: system delete buttons must hide when systems editing is OFF');
+if (!sysHtmlV.includes('Заряды HEX образца Б')) throw new Error('V: the system cards must stay visible in view mode');
+// лицензии: выключить — строки текстом, фильтр и секция фрейма скрыты
+SV.pilot.licenses.push({name:'Blackbeard', rank:2}); XV.renderLists();
+XV.toggleEdit('licenses');
+if (elV['licenseFilterRow'].style.display !== 'none' || elV['licensesHint'].style.display !== 'none' || elV['addLicenseBtn'].style.display !== 'none' || elV['frameSection'].style.display !== 'none') throw new Error('V: the license filter, hint, add button and frame section must hide when licenses editing is OFF');
+let licHtmlV = elV['licenses'].innerHTML;
+if (licHtmlV.includes('<input') || licHtmlV.includes('<select') || licHtmlV.includes('delLicense')) throw new Error('V: license rows must not contain inputs, selects or delete buttons in view mode');
+if (!licHtmlV.includes('Чёрная Борода') || !licHtmlV.includes('>II<')) throw new Error('V: license rows must show the name and rank as text in view mode');
+// статичные карточки: выключить — класс view, поля как текст
+XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
+if (!elV['mechCard'].classList.contains('view')) throw new Error('V: the Mech card must get the view class when mech editing is OFF');
+if (!elV['pilotCard'].classList.contains('view')) throw new Error('V: the Pilot card must get the view class when pilot editing is OFF');
+if (!elV['haseCard'].classList.contains('view')) throw new Error('V: the HASE card must get the view class when hase editing is OFF');
+if (!elV['coreCard'].classList.contains('view')) throw new Error('V: the Core System card must get the view class when core editing is OFF');
+if (!elV['editToggleMech'].checked === false) throw new Error('V: the mech toggle must uncheck');
+if (elV['coreDescBox'].innerHTML.includes('✎') || elV['traitsBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit buttons must hide when core editing is OFF');
+// включить обратно — всё возвращается
+XV.toggleEdit('systems'); XV.toggleEdit('licenses'); XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('hase'); XV.toggleEdit('core');
+if (elV['mechCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: the view class must be removed when editing is back ON');
+if (!elV['systems'].innerHTML.includes('delRow')) throw new Error('V: system delete buttons must return when systems editing is ON');
+if (!elV['coreDescBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit button must return when core editing is ON');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks');

@@ -619,6 +619,10 @@
   "u156": {
    "tag": "label",
    "en": "Range"
+  },
+  "u157": {
+   "tag": "span",
+   "en": "Editing"
   }
  },
  "placeholders": {
