@@ -604,4 +604,21 @@ if (!elS['systems'].innerHTML.includes('My Custom System')) throw new Error('S: 
 if (!elS['systems'].innerHTML.includes('Кастомная система')) throw new Error('S: the custom system must be labelled as custom');
 if (!elS['systems'].innerHTML.includes('Limited 2: заряды')) throw new Error('S: the custom Limited system must show a charges stepper');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals');
+// PHASE T: v22 — отклонённый диалог применения фрейма ничего не меняет
+const { X: XT, S: ST, DB: DBT, elements: elT, g: gT } = runEval({});
+const realConfirm = global.confirm;
+global.confirm = () => false;
+XT.pickFrame('Blackbeard');
+if (ST.mech.frame !== 'Everest') throw new Error('T: dismissing the apply confirm must not change the frame name');
+if (ST.mech.coreSystem !== DBT.frames['Everest'].c) throw new Error('T: dismissing the apply confirm must not change the Core System');
+if (ST.mech.traits !== DBT.frames['Everest'].t) throw new Error('T: dismissing the apply confirm must not change the traits');
+if (ST.mounts.map(m=>m.type).join() !== DBT.frames['Everest'].m.join()) throw new Error('T: dismissing the apply confirm must not change the mounts');
+global.confirm = realConfirm;
+XT.pickFrame('Blackbeard');
+if (ST.mech.frame !== 'Blackbeard') throw new Error('T: accepting the confirm must set the frame');
+if (ST.mech.coreSystem !== DBT.frames['Blackbeard'].c) throw new Error('T: accepting the confirm must set the Core System');
+if (ST.mech.traits !== DBT.frames['Blackbeard'].t) throw new Error('T: accepting the confirm must set the traits');
+if (ST.mounts.map(m=>m.type).join() !== DBT.frames['Blackbeard'].m.join()) throw new Error('T: accepting the confirm must set the mounts');
+if (elT['mechFrameName'].textContent !== 'Чёрная Борода') throw new Error('T: the Mech tab must show the new frame name after applying');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic');

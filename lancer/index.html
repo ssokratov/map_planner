@@ -985,7 +985,9 @@ function showFrameResults(q){
   }).join('') + (matches.length > 8 ? `<div class="dbmore">${L('show_more').replace('{N}', matches.length)}</div>` : '') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
 }
 function pickFrame(key){
-  set('mech.frame', key); save(); renderLists(); applyFrame(key);
+  // applyFrame сам ставит имя фрейма ПОСЛЕ подтверждения (v20) — иначе
+  // отклонённый диалог оставлял бы новое имя при старых маунтах/статах.
+  applyFrame(key);
 }
 // Описание: читаемый текст в <details> + правка по кнопке (v17, для телефона)
 function descBox(key, label, text, ph, saveExpr, editable){
