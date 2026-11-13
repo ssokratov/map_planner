@@ -139,7 +139,7 @@
   .tbl-row ul, #haseHint ul { margin:6px 0; padding-left:20px; }
   .tbl-row li, #haseHint li { margin-bottom:2px; }
   .tbl-roll { display:inline-block; font-weight:700; color:var(--accent2); margin-right:8px; }
-  footer { padding:16px; display:flex; flex-wrap:wrap; gap:8px; border-top:1px solid var(--line); }
+  .rules-foot { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; padding-top:16px; border-top:1px solid var(--line); }
   .hint { color:var(--dim); font-size:13px; padding:0 16px 16px; }
   .card .hint { padding:8px 0 0; }
   .saved { color:var(--good); font-size:13px; }
@@ -562,21 +562,21 @@
         <li data-i18n="u185"><b>LL12:</b> GRIT 6 · Навыки 14 · Лицензии 12 · Таланты 15 · Core 4 · Триггеры 32</li>
       </ul>
     </details>
+    <div class="rules-foot">
+      <button class="btn primary" onclick="exportJSON()" data-i18n="u141">Экспорт JSON</button>
+      <button class="btn" onclick="document.getElementById('importFile').click()" data-i18n="u142">Импорт JSON</button>
+      <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
+      <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
+      <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
+      <div class="row" style="margin-top:12px">
+        <span class="dim">RUS</span>
+        <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
+        <span class="dim">ENG</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 74</span>
+      </div>
+    </div>
   </section>
 </main>
-<footer>
-  <button class="btn primary" onclick="exportJSON()" data-i18n="u141">Экспорт JSON</button>
-  <button class="btn" onclick="document.getElementById('importFile').click()" data-i18n="u142">Импорт JSON</button>
-  <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
-  <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
-  <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
-  <div class="row" style="margin-top:12px">
-    <span class="dim">RUS</span>
-    <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
-    <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 73</span>
-  </div>
-</footer>
 
 <dialog id="tagDialog" onclick="if(event.target===this)this.close()">
   <h3 id="tagDlgName"></h3>
@@ -878,13 +878,38 @@ function save(){
 }
 function get(path){ return path.split('.').reduce((o,k)=>o&&o[k], S); }
 function set(path, v){ const ks = path.split('.'); let o = S; for (let i=0;i<ks.length-1;i++) o = o[ks[i]]; o[ks[ks.length-1]] = v; }
+let curTab = 'mech';
 function showTab(t){
+  curTab = t;
   document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   document.getElementById('tabMechBtn').classList.toggle('active', t==='mech');
   document.getElementById('tabPilotBtn').classList.toggle('active', t==='pilot');
   document.getElementById('tabRulesBtn').classList.toggle('active', t==='rules');
 }
+// Свайпы для переключения вкладок на телефоне (v74): свайп влево — следующая вкладка,
+// свайп вправо — предыдущая; вертикальный свайп — обычная прокрутка, не трогаем.
+function swipeTab(dir){
+  const order = ['mech','pilot','rules'];
+  const n = order.indexOf(curTab) + dir;
+  if (n >= 0 && n < order.length) showTab(order[n]);
+}
+(function(){
+  const m = document.querySelector('main');
+  if (!m || !m.addEventListener) return;
+  let sx = 0, sy = 0;
+  m.addEventListener('touchstart', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if (!t) return;
+    sx = t.clientX; sy = t.clientY;
+  }, {passive:true});
+  m.addEventListener('touchend', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if (!t) return;
+    const dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) swipeTab(dx < 0 ? 1 : -1);
+  }, {passive:true});
+})();
 function step(path, d){
   const max = get(path+'Max');
   let v = (get(path)||0) + d;
