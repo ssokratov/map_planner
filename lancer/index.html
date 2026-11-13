@@ -7,10 +7,10 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>Lancer — Трекер персонажа</title>
 <style>
-  :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; }
+  :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; --hud-amber:#ffb000; --hud-amber-dim:rgba(255,176,0,.45); --hud-grid:rgba(255,255,255,.028); }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html { overflow-x:clip; }
-  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
+  body { margin:0; background-color:var(--bg); background-image:linear-gradient(var(--hud-grid) 1px, transparent 1px), linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px); background-size:28px 28px; color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
   nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:4px 8px calc(4px + env(safe-area-inset-bottom));
     background:
       linear-gradient(180deg, rgba(255,212,59,.10), rgba(255,212,59,0) 30%),
@@ -44,8 +44,8 @@
   /* Вспышка Core Power (v85): золотая вспышка при активации, раз за миссию */
   @keyframes cpFlash { 0% { box-shadow:0 0 0 rgba(255,212,59,0); filter:brightness(1); } 25% { box-shadow:0 0 32px rgba(255,212,59,.95), 0 0 64px rgba(255,212,59,.45); filter:brightness(1.6); } 100% { box-shadow:0 0 0 rgba(255,212,59,0); filter:brightness(1); } }
   #corePanel.cp-flash { animation:cpFlash 1.6s ease; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
-  .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
+  .card { background:var(--panel); border:1px solid var(--line); border-top:2px solid var(--hud-amber); border-radius:0; padding:14px; margin-bottom:14px; }
+  .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.08em; text-transform:uppercase; color:var(--hud-amber); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
   .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
   @media (max-width:560px){ .grid,.grid3{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
@@ -111,9 +111,9 @@
   .row > * { flex:1; }
   .row .narrow { flex:0 0 64px; }
   .row select.lic-rank { flex:0 0 84px; }
-  .btn { padding:10px 14px; font-size:15px; border-radius:8px; border:1px solid var(--line); background:var(--panel2); color:var(--text); cursor:pointer; }
+  .btn { padding:10px 14px; font-size:15px; border-radius:0; border:1px solid var(--line); background:var(--panel2); color:var(--text); cursor:pointer; }
   .btn.danger { border-color:var(--bad); color:var(--bad); }
-  .btn.primary { background:var(--accent); border-color:var(--accent); font-weight:700; }
+  .btn.primary { background:var(--hud-amber); border-color:var(--hud-amber); color:#0e1116; font-weight:700; }
   .add { width:100%; margin-top:4px; }
   .status-tags { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; }
   .status-tags:empty { display:none; }
@@ -190,8 +190,8 @@
   #coreBtn.cp-used .cp-core { fill:#2c3542; }
   #coreBtn.cp-used .cp-rim { stroke:#3a4556; }
   #coreBtn.cp-used .cp-label { fill:#7a8794; }
-  details.sec { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
-  details.sec summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--accent2); text-transform:uppercase; letter-spacing:.05em; }
+  details.sec { background:var(--panel); border:1px solid var(--line); border-top:2px solid var(--hud-amber); border-radius:0; padding:12px 14px; margin-bottom:10px; }
+  details.sec summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--hud-amber); text-transform:uppercase; letter-spacing:.08em; }
   details.sec h3 { margin:14px 0 6px; font-size:14px; color:var(--text); }
   details.sec ul { margin:4px 0 10px; padding-left:20px; }
   details.sec li { margin-bottom:7px; font-size:14px; line-height:1.5; }
@@ -213,9 +213,9 @@
   .card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
-  .toggle { width:40px; height:24px; border-radius:999px; background:#3a4350; border:1px solid var(--line); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
-  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
-  .toggle.on { background:var(--good); border-color:var(--good); }
+  .toggle { width:40px; height:24px; border-radius:0; background:#3a4350; border:1px solid var(--line); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
+  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:0; background:#fff; transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
+  .toggle.on { background:var(--hud-amber); border-color:var(--hud-amber); }
   .toggle.on .knob { left:19px; }
   /* Слайдер языка (v75): буквы RUS/ENG внутри пилюли, бегунок — подсветка активной половины */
   #langToggle { width:86px; height:28px; }
@@ -606,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 135</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 136</span>
       </div>
     </div>
   </section>
