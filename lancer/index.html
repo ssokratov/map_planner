@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 104</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 105</span>
       </div>
     </div>
   </section>
@@ -1822,6 +1822,9 @@ function tagWordStem(name){
   if (!n) return '';
   let m = n.match(/^(.*?)(ое|ая|ый|ий|ой)$/);
   if (m && m[1].length >= 3) return m[1];
+  // Отвлечённое существительное на -ость от того же корня: бронебойность -> бронебойн.
+  m = n.match(/^(.*?)(ость)$/);
+  if (m && m[1].length >= 3) return m[1];
   m = n.match(/^(.*?)(а|я)$/);
   if (m && m[1].length >= 4) return m[1];
   return n;
@@ -1832,7 +1835,12 @@ function tagWordStem(name){
 // в русских описаниях пишутся механики). Точное имя тега НЕ линковать:
 // обычные прилагательные в прозе («надёжный», английское reliable) —
 // это те же слова, что и имена тегов, и их линковка даёт ложные чипы.
-// Число после термина (ОТБРОС 1) уходит в диалог как значение тега.
+// Слово текста стеммится тем же tagWordStem, что и имя тега, поэтому
+// склонённые формы и отвлечённые существительные (БРОНЕБОЙНОСТЬ,
+// бронебойного) находятся по той же основе. Число после термина
+// (ОТБРОС 1) уходит в диалог как значение тега. Внутри чипа —
+// каноническое имя тега обычным регистром (как в старых чипах:
+// «Щит», «Уникальное»), а не капс из текста.
 function linkTagTerms(html){
   if (!html || !DB.tags) return html;
   if (!linkTagTerms._stems){
@@ -1849,11 +1857,13 @@ function linkTagTerms(html){
   const stems = linkTagTerms._stems;
   return html.replace(/([A-Za-zА-Яа-яЁё]+)(\s+\d+)?/g, (m, w, num)=>{
     if (!(w.length > 1 && w === w.toUpperCase())) return m;
-    const lw = w.toLowerCase();
+    const wstem = tagWordStem(w);
+    if (!wstem) return m;
     for (const [stem, id] of stems){
-      if (lw.startsWith(stem) && lw.length - stem.length <= 3){
+      if (wstem === stem || (wstem.startsWith(stem) && wstem.length - stem.length <= 2)){
         const val = num ? num.trim() : '';
-        return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val)}')">${m}</span>`;
+        const label = tagLabel(id, val);
+        return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val)}')">${esc(label)}</span>`;
       }
     }
     return m;
