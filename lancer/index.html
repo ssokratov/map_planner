@@ -45,8 +45,7 @@
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
   .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  .grid5 { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
-  @media (max-width:560px){ .grid,.grid3{ grid-template-columns:repeat(2,minmax(0,1fr)); } .grid5{ grid-template-columns:repeat(3,minmax(0,1fr)); } #statsCard.view .grid5{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:560px){ .grid,.grid3{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
   label { display:block; font-size:12px; color:var(--dim); margin-bottom:4px; }
   input[type=text], input[type=number], textarea, select { width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:9px 10px; font-size:15px; }
   textarea { min-height:64px; resize:vertical; }
@@ -124,12 +123,19 @@
   .res { border-top:3px solid var(--rc,#2c3542); border-radius:8px; padding:10px; background:var(--panel2); }
   .res label { color:var(--text); font-size:14px; font-weight:700; }
   .res label .ico { margin-right:4px; }
-  .grid label .ico, .grid5 label .ico { margin-right:4px; }
-  /* Статы в просмотре (редактирование выкл.): подпись и значение в одну строку, компактно */
-  #statsCard.view .grid > div, #statsCard.view .grid5 > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
-  .stat-div { grid-column:1 / -1; border-top:1px solid var(--line); margin:2px 0; height:0; }
-  #statsCard.view .grid label, #statsCard.view .grid5 label { flex:0 0 auto; margin-bottom:0; }
-  #statsCard.view .grid input[type="number"], #statsCard.view .grid5 input[type="number"] { flex:0 0 auto; width:3ch; padding:0; }
+  .grid label .ico { margin-right:4px; }
+  /* Таблица статов: название сверху, значение снизу; в строке все ячейки равной ширины */
+  .stat-table { display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+  .stat-row { display:grid; gap:10px; }
+  .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
+  .stat-row.cols-3 { grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .stat-cell { display:flex; flex-direction:column; align-items:center; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 4px 6px; min-width:0; }
+  .stat-cell label { font-size:12px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; }
+  .stat-cell input[type="number"] { width:100%; max-width:64px; text-align:center; font-size:18px; font-weight:700; padding:2px 4px; }
+  /* Статы в просмотре (редактирование выкл.): имя и фрейм — в одну строку, компактно */
+  #statsCard.view .grid > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
+  #statsCard.view .grid label { flex:0 0 auto; margin-bottom:0; }
+  #statsCard.view .grid input[type="number"] { flex:0 0 auto; width:3ch; padding:0; }
   #statsCard.view .grid input[type="text"] { flex:1 1 auto; width:auto; min-width:0; padding:0; }
   #statsCard.view .grid .frame-ro { flex:1 1 auto; }
   .oc-next { text-align:center; font-size:13px; color:var(--dim); margin-top:4px; }
@@ -356,21 +362,25 @@
       <div class="grid">
         <div style="grid-column:1 / -1"><label data-i18n="u006">Имя меха</label><input type="text" data-f="mech.name" placeholder="Имя меха" data-i18n-ph="p001"></div>
         <div style="grid-column:1 / -1"><label data-i18n="u147">Фрейм</label><div class="row" style="margin-bottom:0;align-items:center"><div class="frame-ro" id="mechFrameName" style="flex:1 1 auto">Everest</div><button class="btn icon" id="frameSearchBtn" style="flex:0 0 auto" onclick="openSearch('frame')">🔍</button></div></div>
-        <div><label data-i18n="u007">Размер / Size</label><input type="number" min="1" data-f="mech.size" value="1"></div>
-        <div><label data-i18n="u008">Скорость / Speed</label><input type="number" data-f="mech.speed" value="4"></div>
       </div>
-      <div class="grid5" style="margin-top:10px">
-        <div class="stat-div"></div>
-        <div><label><span class="ico">❤️</span>Hull</label><input type="number" data-f="pilot.hull" value="0"></div>
-        <div><label><span class="ico">💨</span>Agility</label><input type="number" data-f="pilot.agility" value="0"></div>
-        <div><label><span class="ico">💻</span>Systems</label><input type="number" data-f="pilot.systems" value="0"></div>
-        <div><label><span class="ico">⚙️</span>Engineering</label><input type="number" data-f="pilot.engineering" value="0"></div>
-        <div class="stat-div"></div>
-        <div><label data-i18n="u060">Armor (макс. 4)</label><input type="number" min="0" max="4" data-f="mech.armor" value="0"></div>
-        <div><label><span class="ico">🌀</span>Evasion</label><input type="number" data-f="mech.evasion" value="8"></div>
-        <div><label><span class="ico">📡</span>E-Defense</label><input type="number" data-f="mech.edef" value="8"></div>
-        <div><label><span class="ico">🔭</span>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
-        <div><label><span class="ico">🎯</span>Tech Attack</label><input type="number" data-f="mech.tech" value="0"></div>
+      <div class="stat-table">
+        <div class="stat-row cols-4">
+          <div class="stat-cell"><label>Hull</label><input type="number" data-f="pilot.hull" value="0"></div>
+          <div class="stat-cell"><label>Agility</label><input type="number" data-f="pilot.agility" value="0"></div>
+          <div class="stat-cell"><label>Systems</label><input type="number" data-f="pilot.systems" value="0"></div>
+          <div class="stat-cell"><label>Engineering</label><input type="number" data-f="pilot.engineering" value="0"></div>
+        </div>
+        <div class="stat-row cols-4">
+          <div class="stat-cell"><label>Size</label><input type="number" min="1" data-f="mech.size" value="1"></div>
+          <div class="stat-cell"><label>Speed</label><input type="number" data-f="mech.speed" value="4"></div>
+          <div class="stat-cell"><label>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
+          <div class="stat-cell"><label>Tech Attack</label><input type="number" data-f="mech.tech" value="0"></div>
+        </div>
+        <div class="stat-row cols-3">
+          <div class="stat-cell"><label>Armor</label><input type="number" min="0" max="4" data-f="mech.armor" value="0"></div>
+          <div class="stat-cell"><label>Evasion</label><input type="number" data-f="mech.evasion" value="8"></div>
+          <div class="stat-cell"><label>E-Defense</label><input type="number" data-f="mech.edef" value="8"></div>
+        </div>
       </div>
       <div class="hint" id="haseHint" data-i18n="u061">На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul></div>
     </div>
@@ -567,7 +577,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 112</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 113</span>
       </div>
     </div>
   </section>
