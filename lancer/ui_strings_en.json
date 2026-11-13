@@ -652,27 +652,162 @@
     },
     "u180": {
       "en": "<b>LL0:</b> GRIT 0 · Skills 2 · Licenses 0 · Talents 3 · Core 0 · Triggers 8",
-      "tag": "li"
+      "tag": "js"
     },
     "u181": {
       "en": "<b>LL1:</b> GRIT 1 · Skills 3 · Licenses 1 · Talents 4 · Core 0 · Triggers 10",
-      "tag": "li"
+      "tag": "js"
     },
     "u182": {
       "en": "<b>LL3:</b> GRIT 2 · Skills 5 · Licenses 3 · Talents 6 · Core 1 · Triggers 14",
-      "tag": "li"
+      "tag": "js"
     },
     "u183": {
       "en": "<b>LL6:</b> GRIT 3 · Skills 8 · Licenses 6 · Talents 9 · Core 2 · Triggers 20",
-      "tag": "li"
+      "tag": "js"
     },
     "u184": {
       "en": "<b>LL9:</b> GRIT 5 · Skills 11 · Licenses 9 · Talents 12 · Core 3 · Triggers 26",
-      "tag": "li"
+      "tag": "js"
     },
     "u185": {
       "en": "<b>LL12:</b> GRIT 6 · Skills 14 · Licenses 12 · Talents 15 · Core 4 · Triggers 32",
-      "tag": "li"
+      "tag": "js"
+    },
+    "u186": {
+      "ru": "Мастер создания",
+      "en": "Creation Wizard",
+      "tag": "span"
+    },
+    "u187": {
+      "ru": "Мастер создания персонажа",
+      "en": "Character Creation Wizard",
+      "tag": "js"
+    },
+    "u188": {
+      "ru": "Пилот",
+      "en": "Pilot",
+      "tag": "js"
+    },
+    "u189": {
+      "ru": "Лицензии",
+      "en": "Licenses",
+      "tag": "js"
+    },
+    "u190": {
+      "ru": "Таланты",
+      "en": "Talents",
+      "tag": "js"
+    },
+    "u191": {
+      "ru": "Триггеры",
+      "en": "Triggers",
+      "tag": "js"
+    },
+    "u192": {
+      "ru": "Навыки меха",
+      "en": "Mech Skills",
+      "tag": "js"
+    },
+    "u193": {
+      "ru": "Фрейм",
+      "en": "Frame",
+      "tag": "js"
+    },
+    "u194": {
+      "ru": "Мех",
+      "en": "Mech",
+      "tag": "js"
+    },
+    "u195": {
+      "ru": "Системы",
+      "en": "Systems",
+      "tag": "js"
+    },
+    "u196": {
+      "ru": "Core Bonuses",
+      "en": "Core Bonuses",
+      "tag": "js"
+    },
+    "u197": {
+      "ru": "Готово",
+      "en": "Done",
+      "tag": "js"
+    },
+    "u198": {
+      "ru": "Назад",
+      "en": "Back",
+      "tag": "js"
+    },
+    "u199": {
+      "ru": "Далее",
+      "en": "Next",
+      "tag": "js"
+    },
+    "u200": {
+      "ru": "Завершить",
+      "en": "Finish",
+      "tag": "js"
+    },
+    "u201": {
+      "ru": "Добавить",
+      "en": "Add",
+      "tag": "js"
+    },
+    "u202": {
+      "ru": "Имя, позывной и предыстория пилота. Всё можно поменять позже на вкладке «Пилот».",
+      "en": "Pilot's name, callsign and background. You can change all of this later on the Pilot tab.",
+      "tag": "js"
+    },
+    "u203": {
+      "ru": "LL — сумма рангов лицензий. На старте (LL0) лицензий нет: только снаряжение GMS и фрейм Эверест.",
+      "en": "LL is the sum of license ranks. At LL0 you have no licenses: GMS gear only and the Everest frame.",
+      "tag": "js"
+    },
+    "u204": {
+      "ru": "На старте (LL0) — три таланта ранга I. Новые ранги и таланты — при левел апе.",
+      "en": "At LL0, pick three rank I talents. New ranks and talents come with level ups.",
+      "tag": "js"
+    },
+    "u205": {
+      "ru": "На старте (LL0) — четыре триггера на +2.",
+      "en": "At LL0, pick four triggers at +2.",
+      "tag": "js"
+    },
+    "u206": {
+      "ru": "На старте (LL0) — +2 к одному навыку или +1 к двум. Максимумы ресурсов пересчитаются сами.",
+      "en": "At LL0, +2 to one mech skill or +1 to two. Resource maximums recalculate automatically.",
+      "tag": "js"
+    },
+    "u207": {
+      "ru": "На старте (LL0) — фрейм Эверест. Фреймы других производителей требуют лицензию ранга II.",
+      "en": "At LL0, the Everest frame. Other manufacturers' frames need a rank II license.",
+      "tag": "js"
+    },
+    "u208": {
+      "ru": "Системы тратят SP фрейма. Занятость SP — под списком.",
+      "en": "Systems spend the frame's SP. Used SP is shown below the list.",
+      "tag": "js"
+    },
+    "u209": {
+      "ru": "Core Bonuses открываются на LL3: один слот за каждые 3 LL.",
+      "en": "Core Bonuses unlock at LL3: one slot per 3 LL.",
+      "tag": "js"
+    },
+    "u210": {
+      "ru": "Персонаж собран. Всё можно поправить на вкладках — мастер открывается снова из подвала страницы.",
+      "en": "Your character is ready. Everything can be changed on the tabs — the wizard can be reopened from the page footer.",
+      "tag": "js"
+    },
+    "u211": {
+      "ru": "Оружие",
+      "en": "Weapon",
+      "tag": "js"
+    },
+    "u212": {
+      "ru": "Имя меха и оружие на маунтах. Маунты и встроенное оружие уже выставлены фреймом — здесь можно добавить ещё оружия.",
+      "en": "Mech name and weapons on mounts. Mounts and integrated weapons were set by the frame — you can add more weapons here.",
+      "tag": "js"
     }
   }
 }

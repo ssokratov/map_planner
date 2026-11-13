@@ -37,6 +37,8 @@ def main():
     for key in sorted(ui['units']):
         tag = ui['units'][key]['tag']
         ru = ui['units'][key]['ru']
+        if tag == 'js':
+            continue  # только из JS через L() — в HTML не ищется, но в STR попадает
         if f'data-i18n="{key}"' in html:
             continue  # уже вшит
         pat = re.compile(r'<(' + re.escape(tag) + r')\b([^>]*)>' + re.escape(ru) + r'</' + re.escape(tag) + r'>')
