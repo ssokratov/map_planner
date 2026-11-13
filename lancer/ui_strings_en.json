@@ -26,18 +26,6 @@
       "en": "Lancer <span>// Character Tracker</span>",
       "tag": "h1"
     },
-    "u002": {
-      "en": "Mech",
-      "tag": "button"
-    },
-    "u003": {
-      "en": "Pilot",
-      "tag": "button"
-    },
-    "u004": {
-      "en": "Rules",
-      "tag": "button"
-    },
     "u006": {
       "en": "Mech Name",
       "tag": "label"
@@ -53,10 +41,6 @@
     "u011": {
       "en": "Combat Resources",
       "tag": "h2"
-    },
-    "u012": {
-      "en": "<span class=\"ico\">🔥</span>Heat",
-      "tag": "label"
     },
     "u013": {
       "en": "<span class=\"ico\">🔧</span>Repairs",
@@ -87,7 +71,7 @@
       "tag": "li"
     },
     "u021": {
-      "en": "Structure Damage Table",
+      "en": "Structure Damage",
       "tag": "summary"
     },
     "u022": {
@@ -131,7 +115,7 @@
       "tag": "div"
     },
     "u035": {
-      "en": "Reactor Stress Table",
+      "en": "Reactor Overheat",
       "tag": "summary"
     },
     "u036": {
