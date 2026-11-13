@@ -141,6 +141,14 @@
   .stat-row.hase { background:linear-gradient(180deg, rgba(255,212,59,.17), rgba(255,212,59,.07)); }
   .stat-row.mid { background:linear-gradient(180deg, rgba(92,223,51,.14), rgba(92,223,51,.05)); }
   .stat-row.bot { background:linear-gradient(180deg, rgba(140,160,180,.19), rgba(140,160,180,.08)); }
+  .trig-table { display:flex; flex-direction:column; gap:0; margin-top:10px; border:1px solid var(--line); background:var(--panel2); }
+  .trig-table:empty { border:none; background:transparent; margin-top:0; }
+  .trig-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:linear-gradient(180deg, rgba(255,212,59,.17), rgba(255,212,59,.07)); box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
+  .trig-row + .trig-row { border-top:1px solid var(--line); }
+  .trig-name { flex:1 1 auto; font-size:15px; font-weight:600; min-width:0; }
+  .trig-val { flex:0 0 auto; font-size:20px; font-weight:700; min-width:40px; text-align:center; }
+  input.trig-name, input.trig-val { background:transparent; border-color:transparent; padding:2px 4px; }
+  input.trig-val { width:56px; }
 
   /* Статы в просмотре (редактирование выкл.): имя и фрейм — в одну строку, компактно */
   #statsCard.view .grid > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
@@ -461,7 +469,7 @@
     <div class="card">
       <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob">🔧</span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u087">На LL0: четыре триггера по +2. При росте LL: +2 к одному триггеру за уровень, максимум +6.</p>
-      <div id="triggers"></div>
+      <div id="triggers" class="trig-table"></div>
       <div class="row" id="triggerAddRow" style="margin-top:10px">
         <button class="btn icon" style="flex:0 0 auto" onclick="openSearch('trigger')">🔍</button>
         <button class="btn add" id="addTriggerBtn" onclick="addRow('triggers','trigger')" data-i18n="u088">+ Кастом Триггер</button>
@@ -599,7 +607,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 131</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 132</span>
       </div>
     </div>
   </section>
@@ -1393,10 +1401,10 @@ function renderLists(){
   const mfn = document.getElementById('mechFrameName');
   if (mfn) mfn.textContent = fd(get('mech.frame')).n;
   document.getElementById('triggers').innerHTML = S.triggers.map((t,i)=> editOn('triggers') ? `
-    <div class="row"><input type="text" placeholder="${L('ph_trigger')}" value="${esc(trigDisp(t.name))}" onchange="S.triggers[${i}].name=this.value;save()">
-    <input class="narrow" type="number" value="${t.bonus}" onchange="S.triggers[${i}].bonus=+this.value;save()">
+    <div class="trig-row"><input class="trig-name" type="text" placeholder="${L('ph_trigger')}" value="${esc(trigDisp(t.name))}" onchange="S.triggers[${i}].name=this.value;save()">
+    <input class="trig-val" type="number" value="${t.bonus}" onchange="S.triggers[${i}].bonus=+this.value;save()">
     <button class="btn danger" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>` : `
-    <div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim">${t.bonus>=0?'+':''}${t.bonus}</span></div>`).join('');
+    <div class="trig-row"><span class="trig-name">${esc(trigDisp(t.name))}</span><span class="trig-val">${t.bonus>=0?'+':''}${t.bonus}</span></div>`).join('');
   document.getElementById('talents').innerHTML = S.talents.map((t,i)=>{
     const rds = talentRankDesc(t);
     const dtn = findTalent(t.name);
