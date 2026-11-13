@@ -527,7 +527,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 60</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 61</span>
   </div>
 </footer>
 
@@ -620,7 +620,9 @@ function openSearch(kind, ctx){
   renderSearchResults('');
   const dlg = document.getElementById('searchDlg');
   if (dlg && dlg.showModal) dlg.showModal();
-  if (inp && inp.focus) inp.focus();
+  // Фокус в поле поиска НЕ ставим (v61): на телефоне он сразу открывает
+  // клавиатуру на пол-экрана, а чаще хочется просто поскроллить опции.
+  // Кто хочет искать — тапнет в поле сам.
 }
 function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if (dlg && dlg.close) dlg.close(); }
 function renderSearchResults(q){
