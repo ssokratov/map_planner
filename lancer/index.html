@@ -41,26 +41,29 @@
   .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
   .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
   .res-grid { margin-bottom:16px; }
-  .res-top { display:flex; gap:18px; align-items:flex-start; margin-bottom:16px; }
-  .hp-ring { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .res-top { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; margin-bottom:16px; }
+  .hp-ring { display:flex; flex-direction:column; align-items:center; gap:6px; }
   .ring-wrap { position:relative; width:150px; height:150px; }
   .ring-wrap svg { width:150px; height:150px; transform:rotate(-90deg); display:block; }
   .ring-track { fill:none; stroke:var(--line); stroke-width:11; }
   .ring-fill { fill:none; stroke:var(--good); stroke-width:11; stroke-linecap:round; transition:stroke-dashoffset .25s ease, stroke .25s ease; }
-  .ring-val { position:absolute; inset:0; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:6px; pointer-events:none; z-index:1; }
+  .ring-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; z-index:1; }
+  .ring-main { display:flex; flex-direction:row; align-items:baseline; gap:5px; }
+  .ring-max { font-size:12px; color:var(--dim); margin-top:2px; }
   .ring-val .val { font-size:36px; font-weight:800; line-height:1; }
   .ring-val .val.low { color:var(--bad); }
-  .ring-heart { font-size:26px; line-height:1; }
-  .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:28px; height:48px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; }
-  .ring-minus { left:14px; }
-  .ring-plus { right:14px; }
-  .heat-thermo { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .ring-hp { font-size:18px; color:var(--dim); line-height:1; }
+  .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:30px; height:52px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.85); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; background:rgba(255,255,255,.07); border-radius:10px; }
+  .ring-minus { left:12px; border-right:1px solid rgba(255,255,255,.12); }
+  .ring-plus { right:12px; border-left:1px solid rgba(255,255,255,.12); }
+  .heat-thermo { display:flex; flex-direction:column; align-items:center; gap:6px; }
   .thermo { position:relative; width:64px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
   .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; }
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
   .thermo-ico { font-size:16px; line-height:1; margin-top:2px; }
+  .thermo-max { font-size:11px; color:rgba(255,255,255,.8); text-shadow:0 1px 2px rgba(0,0,0,.8); margin-top:2px; }
   .thermo-plus, .thermo-minus { position:absolute; left:0; right:0; height:34px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; }
   .thermo-plus { top:0; }
   .thermo-minus { bottom:0; }
@@ -192,20 +195,18 @@
               <circle class="ring-fill" id="hpRingFill" cx="70" cy="70" r="58"/>
             </svg>
             <div class="ring-minus" onclick="step('mech.hp',-1)" role="button" aria-label="HP минус">−</div>
-            <div class="ring-val"><div class="val" id="v-mech.hp">10</div><div class="ring-heart">❤️</div></div>
+            <div class="ring-val"><div class="ring-main"><div class="val" id="v-mech.hp">10</div><div class="ring-hp">hp</div></div><div class="ring-max" id="max-mech.hp">max: 10</div></div>
             <div class="ring-plus" onclick="step('mech.hp',1)" role="button" aria-label="HP плюс">+</div>
           </div>
-          <div class="oc-next" id="max-mech.hp">max: 10</div>
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
         </div>
         <div class="heat-thermo">
           <div class="thermo">
             <div class="thermo-fill" id="heatThermoFill"></div>
             <div class="thermo-plus" onclick="step('mech.heat',1)" role="button" aria-label="Heat плюс">+</div>
-            <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-ico">🔥</div></div>
+            <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-ico">🔥</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
             <div class="thermo-minus" onclick="step('mech.heat',-1)" role="button" aria-label="Heat минус">−</div>
           </div>
-          <div class="oc-next" id="max-mech.heat">max: 6</div>
           <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
         </div>
       </div>
@@ -573,7 +574,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 68</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 69</span>
   </div>
 </footer>
 
