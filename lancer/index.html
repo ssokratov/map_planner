@@ -7,7 +7,7 @@
 <style>
   :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
   nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:6px 8px calc(6px + env(safe-area-inset-bottom));
     background:
       linear-gradient(180deg, rgba(255,212,59,.10), rgba(255,212,59,0) 30%),
@@ -575,7 +575,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 76</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 77</span>
       </div>
     </div>
   </section>
