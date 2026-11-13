@@ -62,7 +62,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'applyFrame:applyFrame,recalcDerived:recalcDerived,toggleLicenseFilter:toggleLicenseFilter,'
   + 'itemAvailable:itemAvailable,frameAvailable:frameAvailable,'
   + 'sysLim:sysLim,sysLeft:sysLeft,weapLim:weapLim,weapLeft:weapLeft,sysSp:sysSp,'
-  + 'delMount:delMount,delWeapon:delWeapon,'
+  + 'delMount:delMount,delWeapon:delWeapon,toggleLang:toggleLang,licenseNameOptions:licenseNameOptions,'
   + 'weapTags:weapTags,tagLabel:tagLabel,tagChips:tagChips,showTag:showTag,'
   + 'talentRankDesc:talentRankDesc,talentMatches:talentMatches,showTalentResults:showTalentResults,'
   + 'addTalentByIndex:addTalentByIndex,fillTalentFromDb:fillTalentFromDb,'
@@ -104,6 +104,7 @@ if (!S.mech.coreDesc.includes('Power Up')) throw new Error('A: Everest core desc
 if (!S.mech.traits.includes('Initiative')) throw new Error('A: Everest traits missing');
 if (S.settings.licenseFilter !== true) throw new Error('A: license filter should default ON');
 if (S.pilot.licenses.length !== 0) throw new Error('A: fresh pilot should have no licenses');
+if (S.talents.length !== 0 || S.triggers.length !== 0) throw new Error('A: fresh save must not create empty talents/triggers (v52)');
 
 // PHASE F: multi-field search - mount, corp, license level (filter OFF = full DB)
 X.toggleLicenseFilter(false);
@@ -419,7 +420,7 @@ XO.renderLists();
 if (!elO['mounts'].innerHTML.includes('Assault Rifle')) throw new Error('O: a RU-stored weapon name must resolve to EN in EN mode');
 XO.setLang('ru');
 if (!elO['mounts'].innerHTML.includes('Штурмовая винтовка')) throw new Error('O: a RU-stored weapon name must display in RU mode');
-XO.fillTalentFromDb(0, 'Ас');
+SO.talents.push({name:'',rank:1}); XO.fillTalentFromDb(0, 'Ас');
 if (SO.talents[0].name !== 'Ace') throw new Error('O: filling a RU talent name must store the EN key');
 // frameKey разрешает оба языка; переключение обратно
 if (XO.frameKey('Чёрная Борода') !== 'Blackbeard') throw new Error('O: frameKey must resolve RU frame names');
@@ -660,7 +661,7 @@ mountsHtmlU = elU['mounts'].innerHTML;
 if (!mountsHtmlU.includes('Штурмовая винтовка')) throw new Error('U: the weapon card must stay visible in view mode');
 if (mountsHtmlU.includes('delWeapon')) throw new Error('U: the weapon delete button must hide in view mode');
 // таланты: выключить — строки текстом, без полей и удаления
-SU.talents[0].name = 'Ace'; XU.renderLists();
+SU.talents.push({name:'',rank:1}); SU.talents[0].name = 'Ace'; XU.renderLists();
 XU.toggleEdit('talents');
 if (elU['talentsHint'].style.display !== 'none') throw new Error('U: the talents hint must hide when talents editing is OFF');
 if (elU['talentAddRow'].style.display !== 'none') throw new Error('U: the talent search and + Talent button must hide when talents editing is OFF');
@@ -669,7 +670,7 @@ if (talHtmlU.includes('<input') || talHtmlU.includes('<select') || talHtmlU.incl
 if (!talHtmlU.includes('Ас I')) throw new Error('U: talent rows must show the name and rank as one text in view mode');
 if (talHtmlU.includes('<span class="dim">I</span>')) throw new Error('U: the talent rank must not hang in a separate column in view mode');
 // триггеры: выключить — строки текстом; подсказка про правила остаётся
-SU.triggers[0].name = 'Act Unseen or Unheard'; XU.renderLists();
+SU.triggers.push({name:'',bonus:2}); SU.triggers[0].name = 'Act Unseen or Unheard'; XU.renderLists();
 XU.toggleEdit('triggers');
 if (elU['triggerAddRow'].style.display !== 'none') throw new Error('U: the trigger search and + Trigger button must hide when triggers editing is OFF');
 let trigHtmlU = elU['triggers'].innerHTML;
@@ -828,7 +829,7 @@ XZ.toggleEdit('systems');
 if (elZ['spCounterRow'].style.display !== 'none') throw new Error('Z: the SP counter must hide when systems editing is OFF');
 XZ.toggleEdit('systems');
 // таланты: ранг II в один текст с именем в просмотре
-SZ.talents[0].name = 'Ace'; SZ.talents[0].rank = 2; XZ.renderLists();
+SZ.talents.push({name:'',rank:1}); SZ.talents[0].name = 'Ace'; SZ.talents[0].rank = 2; XZ.renderLists();
 XZ.toggleEdit('talents');
 let talHtmlZ = elZ['talents'].innerHTML;
 if (!talHtmlZ.includes('Ас II')) throw new Error('Z: the talent name and rank must be one text in view mode');
@@ -851,7 +852,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 51')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 52')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1351,4 +1352,62 @@ XAW.delMount(0);
 if (SAW.mounts.length !== mountsBeforeCancel) throw new Error('AW: cancelling the confirm must keep the mount');
 global.confirm = savedConfirm;
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation');
+// PHASE AX: v52 — поиск талантов показывает описания рангов с «подробнее»; миграция чистит пустые
+// сначала миграция старого сейва с пустыми строками
+const oldStore = {};
+oldStore['lancer-tracker-v1'] = JSON.stringify({ pilot:{ll:0}, mech:{frame:'Everest'}, talents:[{name:'',rank:1},{name:'Ace',rank:1}], triggers:[{name:'',bonus:2},{name:'Spot',bonus:2}], mounts:[{type:'Main',weapons:[]}], systems:[], statuses:[], settings:{} });
+const rOld = runEval(oldStore);
+if (rOld.S.talents.length !== 1 || rOld.S.talents[0].name !== 'Ace') throw new Error('AX: migrate must strip empty talents but keep named ones');
+if (rOld.S.triggers.length !== 1 || rOld.S.triggers[0].name !== 'Spot') throw new Error('AX: migrate must strip empty triggers but keep named ones');
+// поиск талантов — отдельным runEval (глобальный document принадлежит последнему runEval)
+const { X: XAX, S: SAX, DB: DBAX, elements: elAX, g: gAX } = runEval({});
+XAX.openSearch('talent');
+let htmlAX = elAX['searchDlgResults'].innerHTML;
+const mAX = htmlAX.match(/openSearchDesc\('(tal:\d+)'\)/);
+if (!mAX) throw new Error('AX: a long talent description must offer a подробнее button in the search');
+const keyAX = mAX[1];
+const idxAX = +keyAX.split(':')[1];
+const dAX = XAX.td(DBAX.talents[idxAX]);
+const fullAX = (dAX.r||[]).map((rn,k)=>['I','II','III'][k]+'. '+rn+': '+(dAX.d[k]||'')).join('\n\n');
+if (fullAX.length <= 140) throw new Error('AX: the test talent must have a long full description');
+if (htmlAX.includes(fullAX.slice(100, 160))) throw new Error('AX: the tail of the full talent description must be hidden before expanding');
+// раскрыть
+XAX.openSearchDesc(keyAX);
+htmlAX = elAX['searchDlgResults'].innerHTML;
+if (htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: after expanding, the подробнее button must be gone');
+if (!htmlAX.includes("closeSearchDesc('" + keyAX + "')")) throw new Error('AX: after expanding, a свернуть button must appear');
+if (!htmlAX.includes(fullAX.slice(100, 160))) throw new Error('AX: after expanding, the full talent description must be shown');
+// свернуть обратно
+XAX.closeSearchDesc(keyAX);
+htmlAX = elAX['searchDlgResults'].innerHTML;
+if (!htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: after collapsing, the подробнее button must return');
+
+// PHASE AY: v52 — имя лицензии — дропдаун; футер без текста u144; язык — слайдер
+if (html.includes('Полный ремонт — кнопка в карточке')) throw new Error('AY: the footer disclaimer text (u144) must be gone');
+if (!staticHtml.includes('id="langToggle"')) throw new Error('AY: the language slider must exist in the footer');
+if (staticHtml.includes('data-lang-btn')) throw new Error('AY: the old RUS/ENG buttons must be gone');
+if (!staticHtml.includes('Версия трекера: 52')) throw new Error('AY: the footer must still show the tracker version');
+// слайдер переключает язык и отражает состояние
+const { X: XAY, S: SAY, elements: elAY } = runEval({});
+if (XAY.lang() !== 'ru') throw new Error('AY: default language must be ru');
+XAY.toggleLang();
+if (XAY.lang() !== 'en') throw new Error('AY: toggleLang must switch ru -> en');
+if (!elAY['langToggle'].classList.contains('on')) throw new Error('AY: the slider must be ON (knob right) in EN mode');
+XAY.toggleLang();
+if (XAY.lang() !== 'ru') throw new Error('AY: toggleLang must switch en -> ru');
+if (elAY['langToggle'].classList.contains('on')) throw new Error('AY: the slider must be OFF (knob left) in RU mode');
+// имя лицензии — дропдаун со всеми фреймами (кроме Everest), а не текстовое поле
+SAY.pilot.licenses.push({name:'Blackbeard', rank:2});
+XAY.renderLists();
+const licHtmlAY = elAY['licenses'].innerHTML;
+if (licHtmlAY.includes('<input')) throw new Error('AY: the license name must not be a text input');
+if (!licHtmlAY.includes('<select')) throw new Error('AY: the license name must be a dropdown select');
+if (!licHtmlAY.includes('value="Blackbeard"')) throw new Error('AY: the license dropdown must carry the frame key as the option value');
+if (!licHtmlAY.includes('Чёрная Борода')) throw new Error('AY: the license dropdown must show the localized frame name');
+// кастомная лицензия (не из базы) — сохраняется как опция, а не теряется
+SAY.pilot.licenses.push({name:'My Homebrew Frame', rank:1});
+XAY.renderLists();
+const licHtmlAY2 = elAY['licenses'].innerHTML;
+if (!licHtmlAY2.includes('My Homebrew Frame')) throw new Error('AY: a custom license name must be kept as an option, not dropped');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown');

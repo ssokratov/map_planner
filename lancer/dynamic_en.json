@@ -135,10 +135,6 @@
     "en": "Damage (e.g. 1d6+2)",
     "ru": "Урон (напр. 1d6+2)"
   },
-  "ph_license": {
-    "en": "License (frame)",
-    "ru": "Лицензия (фрейм)"
-  },
   "ph_range": {
     "en": "Range",
     "ru": "Дальность"
