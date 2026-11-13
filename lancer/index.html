@@ -169,14 +169,13 @@
   .cp-top { display:flex; align-items:center; gap:12px; }
   .cp-info { flex:1; min-width:0; font-size:14px; line-height:1.45; text-align:left; color:var(--dim); }
   .cp-info b { color:var(--text); }
-  #coreBtn.cp-round { flex-shrink:0; width:120px; height:120px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  #coreBtn.cp-round { flex-shrink:0; width:120px; height:120px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   #coreBtn.cp-round svg { width:100%; height:100%; display:block; }
-  #coreBtn .cp-bolt { font-size:44px; fill:#fff; }
   /* текст по дуге — мелкий, как подписи DANGER/ZONE у термометра (11px, разрядка 2px) */
-  #coreBtn .cp-label { font-size:11px; letter-spacing:2px; font-weight:700; fill:#fff; }
+  #coreBtn .cp-label { font-size:11px; letter-spacing:3px; font-weight:700; fill:#fff; }
   #coreBtn.cp-ready { background:radial-gradient(circle at 35% 30%, #ff7a7a, #d63030 55%, #9e1f1f); border:2px solid #ff8a8a; color:#fff; box-shadow:0 0 0 2px rgba(255,107,107,.25), 0 4px 14px rgba(214,48,48,.45); }
   #coreBtn.cp-used { background:#2c3542; border:2px solid #3a4556; color:#7a8794; box-shadow:inset 0 3px 8px rgba(0,0,0,.5); cursor:default; }
-  #coreBtn.cp-used .cp-bolt, #coreBtn.cp-used .cp-label { fill:#7a8794; }
+  #coreBtn.cp-used .cp-label { fill:#7a8794; }
   details.sec { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
   details.sec summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--accent2); text-transform:uppercase; letter-spacing:.05em; }
   details.sec h3 { margin:14px 0 6px; font-size:14px; color:var(--text); }
@@ -293,8 +292,8 @@
       </div>
       <div class="core-power" id="corePanel">
         <div class="cp-top">
-          <div class="cp-info"><b>Core Power (CP):</b> <span data-i18n="u075">1 раз за миссию. Восстанавливается при полном ремонте или в начале миссии.</span></div>
-          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="cpArc" d="M 28,88 A 45,45 0 0,0 92,88" fill="none"/></defs><text class="cp-bolt" x="60" y="58" text-anchor="middle" dominant-baseline="central">⚡</text><text class="cp-label"><textPath id="cpLabelText" href="#cpArc" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text></svg></button>
+          <div class="cp-info"><b>Core Power (CP):</b><br><span data-i18n="u075">1 раз за миссию. Восстанавливается при полном ремонте или в начале миссии.</span></div>
+          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="cpArc" d="M 28,88 A 40,40 0 0,0 92,88" fill="none"/></defs><text class="cp-label"><textPath id="cpLabelText" href="#cpArc" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text></svg></button>
         </div>
         <div class="core-desc">
           <div class="core-name" id="coreNameBox">Hyperspec Fuel Injector</div>
@@ -594,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 118</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 119</span>
       </div>
     </div>
   </section>
