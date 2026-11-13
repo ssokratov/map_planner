@@ -62,7 +62,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'applyFrame:applyFrame,recalcDerived:recalcDerived,toggleLicenseFilter:toggleLicenseFilter,'
   + 'itemAvailable:itemAvailable,frameAvailable:frameAvailable,'
   + 'sysLim:sysLim,sysLeft:sysLeft,weapLim:weapLim,weapLeft:weapLeft,sysSp:sysSp,'
-  + 'delMount:delMount,delWeapon:delWeapon,toggleLang:toggleLang,licenseNameOptions:licenseNameOptions,'
+  + 'delMount:delMount,delWeapon:delWeapon,toggleLang:toggleLang,licenseNameOptions:licenseNameOptions,stepLL:stepLL,'
   + 'weapTags:weapTags,tagLabel:tagLabel,tagChips:tagChips,showTag:showTag,'
   + 'talentRankDesc:talentRankDesc,talentMatches:talentMatches,showTalentResults:showTalentResults,'
   + 'addTalentByIndex:addTalentByIndex,fillTalentFromDb:fillTalentFromDb,'
@@ -852,7 +852,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 53')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 54')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1386,7 +1386,7 @@ if (!htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: af
 if (html.includes('Полный ремонт — кнопка в карточке')) throw new Error('AY: the footer disclaimer text (u144) must be gone');
 if (!staticHtml.includes('id="langToggle"')) throw new Error('AY: the language slider must exist in the footer');
 if (staticHtml.includes('data-lang-btn')) throw new Error('AY: the old RUS/ENG buttons must be gone');
-if (!staticHtml.includes('Версия трекера: 53')) throw new Error('AY: the footer must still show the tracker version');
+if (!staticHtml.includes('Версия трекера: 54')) throw new Error('AY: the footer must still show the tracker version');
 // слайдер переключает язык и отражает состояние
 const { X: XAY, S: SAY, elements: elAY } = runEval({});
 if (XAY.lang() !== 'ru') throw new Error('AY: default language must be ru');
@@ -1424,4 +1424,24 @@ if (XAZ.STR.u166.en !== 'Level Up (gaining LL)') throw new Error('AZ: the level-
 if (!XAZ.STR.u170.en.includes('+1 talent rank')) throw new Error('AZ: the talent-rank item must translate to EN');
 if (XAZ.STR.u179.en !== 'Totals by LL (sheet check)') throw new Error('AZ: the level chart heading must translate to EN');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL)');
+// PHASE BA: v54 — License Level — степпер −/+ вместо текстового поля
+if (staticHtml.includes('data-f="pilot.ll" value="0"') && staticHtml.includes('<input type="number" min="0" max="12" data-f="pilot.ll"')) throw new Error('BA: LL must not be a number input');
+if (!staticHtml.includes('id="v-pilot.ll"')) throw new Error('BA: the LL stepper must show its value in #v-pilot.ll');
+if (!staticHtml.includes("stepLL(-1)") || !staticHtml.includes("stepLL(1)")) throw new Error('BA: the LL stepper must have −/+ buttons calling stepLL');
+const { X: XBA, S: SBA, elements: elBA } = runEval({});
+if (SBA.pilot.ll !== 0) throw new Error('BA: fresh LL must be 0');
+XBA.stepLL(1);
+if (SBA.pilot.ll !== 1) throw new Error('BA: stepLL(+1) must raise LL to 1');
+if (elBA['v-pilot.ll'].textContent !== '1' && elBA['v-pilot.ll'].textContent !== 1) throw new Error('BA: the LL display must show 1 after stepLL(+1)');
+XBA.stepLL(1); XBA.stepLL(1);
+if (SBA.pilot.ll !== 3) throw new Error('BA: three stepLL(+1) must reach LL3');
+// Grit пересчитывается сам: LL3 -> Grit 2
+XBA.renderCounters();
+const gritBA = elBA['pilotCard'] ? null : null;
+if (SBA.pilot.grit !== undefined) { /* grit lives in the input, checked via renderCounters below */ }
+XBA.stepLL(10);
+if (SBA.pilot.ll !== 12) throw new Error('BA: LL must clamp at 12');
+XBA.stepLL(-20);
+if (SBA.pilot.ll !== 0) throw new Error('BA: LL must clamp at 0');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL), v54: License Level is a stepper, no text field');

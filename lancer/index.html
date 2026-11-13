@@ -364,7 +364,10 @@
       <div class="grid">
         <div><label data-i18n="u082">Имя пилота</label><input type="text" data-f="pilot.name" placeholder="Имя" data-i18n-ph="p006"></div>
         <div><label data-i18n="u083">Позывной / Callsign</label><input type="text" data-f="pilot.callsign" placeholder="Позывной" data-i18n-ph="p007"></div>
-        <div><label>License Level (LL)</label><input type="number" min="0" max="12" data-f="pilot.ll" value="0"></div>
+        <div><label>License Level (LL)</label>
+          <div class="counter"><button onclick="stepLL(-1)">−</button><div class="val" id="v-pilot.ll">0</div><button onclick="stepLL(1)">+</button></div>
+          <input type="hidden" data-f="pilot.ll" value="0">
+        </div>
         <div><label data-i18n="u084">Grit (½ LL)</label><input type="number" min="0" data-f="pilot.grit" value="0" readonly></div>
         <div><label>Background</label><input type="text" data-f="pilot.background" placeholder="Например: Colonist" data-i18n-ph="p008"></div>
         <div><label data-i18n="u085">HP пилота (макс. 6)</label>
@@ -518,7 +521,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 53</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 54</span>
   </div>
 </footer>
 
@@ -801,6 +804,10 @@ function step(path, d){
   v = Math.max(0, Math.min(max, v));
   set(path, v); save(); renderCounters();
 }
+function stepLL(d){
+  const v = Math.max(0, Math.min(12, (get('pilot.ll')||0) + d));
+  set('pilot.ll', v); save(); renderCounters(); updateLicenseSummary();
+}
 function stepOC(d){
   let v = Math.max(0, Math.min(4, (get('mech.overcharge')||0) + d));
   set('mech.overcharge', v); save(); renderCounters();
@@ -828,6 +835,8 @@ function renderCounters(){
   cb.textContent = get('mech.coreUsed') ? L('cp_used') : L('cp_notused');
   cb.classList.toggle('cp-ready', !get('mech.coreUsed'));
   cb.classList.toggle('cp-used', !!get('mech.coreUsed'));
+  const llEl = document.getElementById('v-pilot.ll');
+  if (llEl) llEl.textContent = get('pilot.ll')||0;
   const grit = document.querySelector('[data-f="pilot.grit"]');
   if (grit) grit.value = Math.ceil((+get('pilot.ll')||0)/2);
 }
