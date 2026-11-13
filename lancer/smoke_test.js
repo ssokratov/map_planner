@@ -506,8 +506,10 @@ if (!sysHtmlP.includes('2 SP')) throw new Error('P: system rows must keep the SP
 if (!elP['coreDescBox'].innerHTML.includes('<div class="desc-text">')) throw new Error('P: coreDesc must render as a paragraph');
 if (!elP['coreDescBox'].innerHTML.includes('Штурмовая гарпунная система')) throw new Error('P: coreDesc box must show the RU core description');
 if (!elP['traitsBox'].innerHTML.includes('Гарпунный трос')) throw new Error('P: traits box must show the RU traits');
+// v66: Core System — только для чтения (идёт от фрейма): editDesc не открывает редактор, кнопки правки нет
 XP.editDesc('coreDesc');
-if (!elP['coreDescBox'].innerHTML.includes('id="editingDesc"')) throw new Error('P: editDesc must show the editing textarea for Core System');
+if (elP['coreDescBox'].innerHTML.includes('id="editingDesc"')) throw new Error('P: Core System must be read-only — editDesc must not open an editor for it');
+if (elP['coreDescBox'].innerHTML.includes('Редактировать')) throw new Error('P: Core System description must have no edit button');
 // подпись под заголовком переводится
 if (XP.L('u146') !== 'Мех, пилот, правила. Данные хранятся только в этом браузере (localStorage).') throw new Error('P: u146 RU tagline must exist');
 XP.setLang('en');
@@ -540,7 +542,7 @@ if (SQ.triggers[SQ.triggers.length-1].name !== 'Spot' || SQ.triggers[SQ.triggers
 if (!elQ['triggers'].innerHTML.includes('Замечать')) throw new Error('Q: added trigger must display in RU');
 // CSS: описание не должно раздувать карточку на телефоне (v18, баг с телефона;
 // с v31 описание — переносимый абзац, а не nowrap-превью, так что переполнения нет по построению)
-if (!staticHtml.includes('.core-grid > * { min-width:0; }')) throw new Error('Q: core-grid children must have min-width:0');
+// v66: core-grid удалён вместе с отдельной карточкой Core System — переполнения там больше негде взяться
 if (!staticHtml.includes('.desc-text { white-space:pre-line;')) throw new Error('Q: descriptions must wrap (pre-line), not overflow');
 if (!staticHtml.includes('overflow-wrap:break-word;')) throw new Error('Q: descriptions must break long words instead of overflowing');
 
@@ -685,7 +687,7 @@ if (!elU['talents'].innerHTML.includes('<input')) throw new Error('U: talent inp
 // PHASE V: v24 — тоггл редактирования в остальных блоках
 const { X: XV, S: SV, DB: DBV, elements: elV, g: gV } = runEval({});
 ['systems','licenses','mech','pilot','core'].forEach(b=>{ if (!XV.editOn(b)) throw new Error('V: editing must be ON by default for ' + b); });
-if (elV['statsCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default');
+if (elV['statsCard'].classList.contains('view') || elV['pilotCard'].classList.contains('view')) throw new Error('V: static cards must not have the view class by default'); // v66: coreCard удалена, осталась только пара stats/pilot
 // системы: выключить — поиск, добавление и ✕ исчезают, карточки остаются
 XV.toggleEdit('systems');
 if (elV['systemsHint'].style.display !== 'none' || elV['systemAddRow'].style.display !== 'none') throw new Error('V: the systems search, hint and add button must hide when systems editing is OFF');
@@ -705,14 +707,15 @@ XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('core');
 if (!elV['statsCard'].classList.contains('view')) throw new Error('V: the Stats card must get the view class when mech editing is OFF');
 if (!elV['pilotCard'].classList.contains('view')) throw new Error('V: the Pilot card must get the view class when pilot editing is OFF');
 
-if (!elV['coreCard'].classList.contains('view')) throw new Error('V: the Core System card must get the view class when core editing is OFF');
+// v66: coreCard удалена — view-класс у неё больше не проверяется
 if (elV['editToggleMech'].classList.contains('on')) throw new Error('V: the mech toggle must switch OFF');
 if (elV['coreDescBox'].innerHTML.includes('✎') || elV['traitsBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit buttons must hide when core editing is OFF');
 // включить обратно — всё возвращается
 XV.toggleEdit('systems'); XV.toggleEdit('licenses'); XV.toggleEdit('mech'); XV.toggleEdit('pilot'); XV.toggleEdit('core');
-if (elV['statsCard'].classList.contains('view') || elV['coreCard'].classList.contains('view')) throw new Error('V: the view class must be removed when editing is back ON');
+if (elV['statsCard'].classList.contains('view')) throw new Error('V: the view class must be removed when editing is back ON');
 if (!elV['systems'].innerHTML.includes('delRow')) throw new Error('V: system delete buttons must return when systems editing is ON');
-if (!elV['coreDescBox'].innerHTML.includes('✎')) throw new Error('V: the Core System edit button must return when core editing is ON');
+if (elV['coreDescBox'].innerHTML.includes('✎')) throw new Error('V: the Core System must stay read-only even when core editing is ON (v66)');
+if (!elV['traitsBox'].innerHTML.includes('✎')) throw new Error('V: the traits edit button must return when core editing is ON');
 
 // PHASE W: v25 — слайдер-тогглы, удаление кнопки «Применить фрейм», «Описание» лишнее, единая модалка поиска
 const { X: XW, S: SW, DB: DBW, elements: elW, g: gW } = runEval({});
@@ -730,7 +733,7 @@ if (XW.STR.u009 || XW.STR.u157 || XW.STR.u069 || XW.STR.u005 || XW.STR.u059) thr
 if (!XW.STR.edit_toggle || !XW.STR.search_ph_license) throw new Error('W: the new dynamic strings must be in STR');
 if (!XW.STR.p002 || !XW.STR.p003 || !XW.STR.p009 || !XW.STR.p010) throw new Error('W: the moved search placeholders must stay in STR');
 // тогглы — кнопки-слайдеры без текста (в статике — button.toggle.on, без чекбокса и слова)
-['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleCore','editToggleCoreBonuses'].forEach(id=>{
+['editToggleMounts','editToggleTalents','editToggleTriggers','editToggleSystems','editToggleLicenses','editToggleMech','editTogglePilot','editToggleCoreBonuses'].forEach(id=>{ // v66: editToggleCore удалён — у Core System больше нет редактирования
   if (!staticHtml.includes('<button type="button" class="toggle on" id="' + id + '"')) throw new Error('W: toggle ' + id + ' must be a slider button in the static HTML');
   if (!elW[id].classList.contains('on')) throw new Error('W: toggle ' + id + ' must be ON by default');
 });
@@ -809,7 +812,7 @@ XX.toggleEdit('systems');
 
 // PHASE Y: v27 — гаечный ключ на бегунке слайдера
 const knobCount = (staticHtml.match(/<span class="knob">🔧<\/span>/g) || []).length;
-if (knobCount !== 9) throw new Error('Y: all 9 toggle knobs must carry the wrench icon (found ' + knobCount + ')');
+if (knobCount !== 8) throw new Error('Y: all 8 toggle knobs must carry the wrench icon (found ' + knobCount + ')'); // v66: 9-й тоггл (Core System) удалён
 if (!staticHtml.includes('.toggle .knob') || !staticHtml.includes('display:flex')) throw new Error('Y: the knob must be a flex container centering the icon');
 
 
@@ -852,7 +855,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 65')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 66')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1385,7 +1388,7 @@ if (!htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: af
 if (html.includes('Полный ремонт — кнопка в карточке')) throw new Error('AY: the footer disclaimer text (u144) must be gone');
 if (!staticHtml.includes('id="langToggle"')) throw new Error('AY: the language slider must exist in the footer');
 if (staticHtml.includes('data-lang-btn')) throw new Error('AY: the old RUS/ENG buttons must be gone');
-if (!staticHtml.includes('Версия трекера: 65')) throw new Error('AY: the footer must still show the tracker version');
+if (!staticHtml.includes('Версия трекера: 66')) throw new Error('AY: the footer must still show the tracker version');
 // слайдер переключает язык и отражает состояние
 const { X: XAY, S: SAY, elements: elAY } = runEval({});
 if (XAY.lang() !== 'ru') throw new Error('AY: default language must be ru');
@@ -1556,7 +1559,7 @@ if (!rBD2.X.luVisibleSteps().some(s=>s.id==='core')) throw new Error('BD: LL5->L
 
 // PHASE BE (v64): справочник действий — свои реакции и протоколы, только те, что даёт сборка
 if (!html.includes('id="myActions"')) throw new Error('BE: the Rules tab must have a #myActions container');
-if (!html.includes('Версия трекера: 65')) throw new Error('BE: footer must say version 64');
+if (!html.includes('Версия трекера: 66')) throw new Error('BE: footer must say version 64');
 const ABE = global.__x.ACTIONS_REF;
 if (!ABE || ABE.reactions.length !== 14) throw new Error('BE: ACTIONS_REF must have 14 reactions, got ' + (ABE && ABE.reactions.length));
 if (ABE.protocols.length !== 17) throw new Error('BE: ACTIONS_REF must have 17 protocols, got ' + ABE.protocols.length);
@@ -1629,4 +1632,32 @@ if (!elBF['tab-pilot'].classList.contains('active')) throw new Error('BF: showTa
 if (!elBF['tabPilotBtn'].classList.contains('active')) throw new Error('BF: showTab(pilot) must mark the person icon active');
 if (elBF['tabMechBtn'].classList.contains('active')) throw new Error('BF: showTab(pilot) must deactivate the robot icon');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL), v54: License Level is a stepper, no text field, v55: LL is derived from license ranks, no LL field to set, v56: LL and Grit update live when licenses change (renderLists calls renderCounters), v57: character creation wizard (10 steps, auto-opens on a fresh save, core step only at LL3+), v58: weapons and systems removed from the creation wizard (normal experience), level-up wizard (draft + apply, core step only when a new slot opens), v59: level-up wizard rewritten (direct writes, familiar UI with current items + search pickers, no reallocation step — rules as text, no Apply, button at the top of the Rules tab, renderLists syncs data-f inputs), v60: search pickers show all matching results, no paging (the «Показано 8 из N» footer lied — it said 8 while 20 were rendered), v61: the search modal no longer auto-focuses the input (no keyboard popping up on open — tap the field to search), v62: v61 was not enough — showModal() itself focuses the first focusable element, so the modal now blurs whatever got focused right after opening, v63: talent search cards no longer show the redundant rank-names enumeration (it merged with the first rank description) — a line break separates the tagline from the rank descriptions, v64: actions reference — «Your actions» at the top of the Rules tab shows only the reactions and protocols your talents and systems grant (Intercede, Supersonic, Return Fire, Valiant Aid, Flank + 7 system reactions + 17 system protocols, verified against the core book and lancer-data), protocols live under free actions, defaults stay below, v65: Cockpit navigation — bottom bar, icon-only (full-body robot, person, book, 56px tap targets, hazard-stripe top edge, yellow active state), HP is a ring (the ring IS the counter, colour shifts green/yellow/orange/red) and Heat is a vertical thermometer beside it, Structure/Stress/Repairs/Overcharge stay as counters below');
+
+// PHASE BG (v66): Core System — в карточке ресурсов (кнопка под индикаторами, описание под кнопкой),
+// редактирования нет; термометр шире, цифра как в кольце HP, +/- внутри термометра, огонёк под числом, лейблов нет
+if (staticHtml.includes('id="coreCard"')) throw new Error('BG: the separate Core System card must be gone');
+if (staticHtml.includes('id="editToggleCore"')) throw new Error('BG: the Core System edit toggle must be gone');
+if (staticHtml.includes('data-f="mech.coreSystem"')) throw new Error('BG: the Core System name must not be an editable input');
+const resCardIdx = staticHtml.indexOf('Ресурсы боя');
+const coreBtnIdx = staticHtml.indexOf('id="coreBtn"', resCardIdx);
+const ocDetailsIdx = staticHtml.indexOf('<details class="sec">', resCardIdx);
+if (!(coreBtnIdx > 0 && ocDetailsIdx > 0 && coreBtnIdx < ocDetailsIdx)) throw new Error('BG: the Core Power button must live inside the resources card, before the rules blocks');
+if (!staticHtml.includes('id="coreNameBox"') || !staticHtml.includes('id="coreDescBox"')) throw new Error('BG: Core System name and description must live in the resources card');
+const coreDescIdx = staticHtml.indexOf('id="coreDescBox"', resCardIdx);
+if (!(coreDescIdx > coreBtnIdx && coreDescIdx < ocDetailsIdx)) throw new Error('BG: the Core System description must sit below the Core Power button and above the rules blocks');
+if (staticHtml.includes('data-i18n="u012"')) throw new Error('BG: the Heat label above the thermometer must be gone');
+if (staticHtml.includes('>HP</label>')) throw new Error('BG: the HP label above the ring must be gone');
+if (!staticHtml.includes('class="thermo-plus"') || !staticHtml.includes('class="thermo-minus"')) throw new Error('BG: +/- must live inside the thermometer');
+if (!/\.thermo\s*\{[^}]*width:64px/.test(staticHtml)) throw new Error('BG: the thermometer must be wider (64px)');
+if (!/\.thermo-val\s+\.val\s*\{[^}]*font-size:36px/.test(staticHtml)) throw new Error('BG: the thermometer digit must be 36px, same as the HP ring');
+if (!staticHtml.includes('class="thermo-ico"')) throw new Error('BG: the flame must sit under the number inside the thermometer');
+// имя Core System показывается из фрейма, описание — только для чтения
+const rBG = runEval({});
+const elBG = rBG.elements, XBG = rBG.X;
+XBG.renderLists();
+if (!elBG['coreNameBox']) throw new Error('BG: coreNameBox must exist');
+if (elBG['coreNameBox'].textContent.trim() !== XBG.dispField('mech.coreSystem')) throw new Error('BG: coreNameBox must show the frame Core System name, got ' + JSON.stringify(elBG['coreNameBox'].textContent));
+if (!elBG['coreDescBox'].innerHTML.includes(XBG.dispField('mech.coreDesc').slice(0, 30))) throw new Error('BG: coreDescBox must still show the Core System description');
+if (elBG['coreDescBox'].innerHTML.includes('Редактировать')) throw new Error('BG: coreDescBox must have no edit button');
+
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL), v54: License Level is a stepper, no text field, v55: LL is derived from license ranks, no LL field to set, v56: LL and Grit update live when licenses change (renderLists calls renderCounters), v57: character creation wizard (10 steps, auto-opens on a fresh save, core step only at LL3+), v58: weapons and systems removed from the creation wizard (normal experience), level-up wizard (draft + apply, core step only when a new slot opens), v59: level-up wizard rewritten (direct writes, familiar UI with current items + search pickers, no reallocation step — rules as text, no Apply, button at the top of the Rules tab, renderLists syncs data-f inputs), v60: search pickers show all matching results, no paging (the «Показано 8 из N» footer lied — it said 8 while 20 were rendered), v61: the search modal no longer auto-focuses the input (no keyboard popping up on open — tap the field to search), v62: v61 was not enough — showModal() itself focuses the first focusable element, so the modal now blurs whatever got focused right after opening, v63: talent search cards no longer show the redundant rank-names enumeration (it merged with the first rank description) — a line break separates the tagline from the rank descriptions, v64: actions reference — «Your actions» at the top of the Rules tab shows only the reactions and protocols your talents and systems grant (Intercede, Supersonic, Return Fire, Valiant Aid, Flank + 7 system reactions + 17 system protocols, verified against the core book and lancer-data), protocols live under free actions, defaults stay below, v65: Cockpit navigation — bottom bar, icon-only (full-body robot, person, book, 56px tap targets, hazard-stripe top edge, yellow active state), HP is a ring (the ring IS the counter, colour shifts green/yellow/orange/red) and Heat is a vertical thermometer beside it, Structure/Stress/Repairs/Overcharge stay as counters below, v66: Core System moved into the resources card (Core Power button under the indicators, name + description below it, then the rules blocks), Core System is read-only (no edit toggle, no name input, description has no edit button — it always comes from the frame), HP/Heat labels removed, thermometer is 64px wide with the digit at 36px like the HP ring, +/- live inside the thermometer (top/bottom, not button-styled), flame under the number inside it');
