@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 99</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 100</span>
       </div>
     </div>
   </section>
@@ -1112,6 +1112,16 @@ function actionGranted(a){
 }
 // Рендер секции «Твои действия» на вкладке «Правила»: свои реакции и протоколы —
 // только те, что даёт твоя сборка; они выводятся выше дефолтных.
+// Цена действия в тепле: берётся из тега tg_heat_self системы, которая даёт действие.
+// Сам экшен в ACTIONS_REF цену не хранит — она на системе (иначе теряется, как было с щитом).
+function actionHeatBadge(a){
+  if (!a.grant || !a.grant.system) return '';
+  const d = findSystem(a.grant.system);
+  if (!d || !Array.isArray(d.tg)) return '';
+  const h = d.tg.find(([id]) => id === 'tg_heat_self');
+  if (!h || !h[1]) return '';
+  return ' ' + tagChips([['tg_heat_self', h[1]]]);
+}
 function renderMyActions(){
   const box = document.getElementById('myActions');
   if(!box) return;
@@ -1127,7 +1137,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u230')) + '</h3><ul>';
     for(const a of myRe){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b> — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + esc(en ? a.tr_en : a.tr_ru) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + esc(en ? a.ef_en : a.ef_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + esc(en ? a.tr_en : a.tr_ru) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + esc(en ? a.ef_en : a.ef_ru) + '</li>';
     }
     h += '</ul>';
   }
@@ -1135,7 +1145,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u231')) + '</h3><ul>';
     for(const a of myPr){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b> — ' + esc(en ? a.tx_en : a.tx_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + esc(en ? a.tx_en : a.tx_ru) + '</li>';
     }
     h += '</ul>';
   }
@@ -1769,7 +1779,7 @@ function showSystemResults(q, box){
     else descHtml = esc(excerpt(d.x, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, (s.p||0) + ' SP', d.lab].filter(x=>x).join(' · '))}</span><span class="dim" style="white-space:pre-line">${descHtml}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, (s.p||0) + ' SP', d.lab].filter(x=>x).join(' · '))}</span>${(s.tg && s.tg.length) ? `<div class="tags">${tagChips(s.tg)}</div>` : ''}<span class="dim" style="white-space:pre-line">${descHtml}</span></div>
       <button class="btn" style="flex:0 0 auto" onclick="addSystemByIndex(${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
