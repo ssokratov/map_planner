@@ -27,11 +27,10 @@
   main { padding:16px 16px 104px; max-width:860px; margin:0 auto; }
   section.tab { display:none; }
   section.tab.active { display:block; }
-  /* Смена вкладок (v75): новый экран въезжает с той стороны, куда свайпнули/тапнули */
-  section.tab.slide-in-right { animation:tabInRight .25s ease; }
-  section.tab.slide-in-left { animation:tabInLeft .25s ease; }
-  @keyframes tabInRight { from { transform:translateX(28px); } to { transform:translateX(0); } }
-  @keyframes tabInLeft { from { transform:translateX(-28px); } to { transform:translateX(0); } }
+  /* Смена вкладок (v78): transform-слайд убран — он ронял навигацию на Android;
+     новый экран просто мягко проявляется, движение осталось в линзе навигации */
+  section.tab.fade-in { animation:tabFadeIn .18s ease; }
+  @keyframes tabFadeIn { from { opacity:.35; } to { opacity:1; } }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
@@ -575,7 +574,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 77</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 78</span>
       </div>
     </div>
   </section>
@@ -883,18 +882,20 @@ function get(path){ return path.split('.').reduce((o,k)=>o&&o[k], S); }
 function set(path, v){ const ks = path.split('.'); let o = S; for (let i=0;i<ks.length-1;i++) o = o[ks[i]]; o[ks[ks.length-1]] = v; }
 let curTab = 'mech';
 function showTab(t){
-  const order = ['mech','pilot','rules'];
-  const dir = order.indexOf(t) - order.indexOf(curTab);
+  const changed = t !== curTab;
   curTab = t;
   if (window.scrollTo) window.scrollTo(0,0); // каждая вкладка начинается сверху
-  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+  // снимаем active и fade-in со всех вкладок по id (querySelectorAll в smoke-стабе пуст)
+  ['mech','pilot','rules'].forEach(k=>{
+    const s = document.getElementById('tab-'+k);
+    s.classList.remove('active');
+    s.classList.remove('fade-in');
+  });
   const sec = document.getElementById('tab-'+t);
   sec.classList.add('active');
-  // анимация въезда нового экрана с нужной стороны (v75)
-  sec.classList.remove('slide-in-right');
-  sec.classList.remove('slide-in-left');
+  // мягкое появление нового экрана (v78); повторный тап по той же вкладке не анимируем
   void sec.offsetWidth; // перезапуск анимации
-  if (dir !== 0) sec.classList.add(dir > 0 ? 'slide-in-right' : 'slide-in-left');
+  if (changed) sec.classList.add('fade-in');
   document.getElementById('tabMechBtn').classList.toggle('active', t==='mech');
   document.getElementById('tabPilotBtn').classList.toggle('active', t==='pilot');
   document.getElementById('tabRulesBtn').classList.toggle('active', t==='rules');
