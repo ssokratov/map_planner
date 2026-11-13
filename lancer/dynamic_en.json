@@ -4,8 +4,8 @@
     "ru": "Применить фрейм "
   },
   "charges": {
-    "en": "Limited {N}: charges",
-    "ru": "Limited {N}: заряды"
+    "en": "Charges:",
+    "ru": "Заряды:"
   },
   "cp_notused": {
     "en": "Not used",
