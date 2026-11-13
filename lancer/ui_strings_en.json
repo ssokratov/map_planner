@@ -593,6 +593,86 @@
     "u165": {
       "en": "Stats",
       "tag": "h2"
+    },
+    "u166": {
+      "en": "Level Up (gaining LL)",
+      "tag": "summary"
+    },
+    "u167": {
+      "en": "After each mission — success or failure, it doesn't matter — the pilot's LL rises by 1 (max LL12). At each level up, gain:",
+      "tag": "p"
+    },
+    "u168": {
+      "en": "<b>+2 to a trigger:</b> +2 to an existing trigger, or a new trigger at +2.",
+      "tag": "li"
+    },
+    "u169": {
+      "en": "<b>+1 to a mech skill (HASE):</b> Hull, Agility, Systems, or Engineering.",
+      "tag": "li"
+    },
+    "u170": {
+      "en": "<b>+1 talent rank:</b> a new talent at rank I, or +1 to an existing talent (max III).",
+      "tag": "li"
+    },
+    "u171": {
+      "en": "<b>+1 license rank:</b> a new license at rank I, or +1 to an existing license (max III).",
+      "tag": "li"
+    },
+    "u172": {
+      "en": "<b>GRIT rises on its own:</b> GRIT = ½ LL, rounded up (first point at LL1).",
+      "tag": "li"
+    },
+    "u173": {
+      "en": "<b>At every 3rd LL (3, 6, 9, 12):</b> +1 Core Bonus.",
+      "tag": "li"
+    },
+    "u174": {
+      "en": "Reallocation (optional, one per level up)",
+      "tag": "h3"
+    },
+    "u175": {
+      "en": "Move all points from one talent to another talent.",
+      "tag": "li"
+    },
+    "u176": {
+      "en": "Move all points from one license to another license.",
+      "tag": "li"
+    },
+    "u177": {
+      "en": "Replace one Core Bonus with another one you qualify for.",
+      "tag": "li"
+    },
+    "u178": {
+      "en": "If reallocating a license leaves you without a Core Bonus you qualified for, you must replace it with one you now qualify for.",
+      "tag": "li"
+    },
+    "u179": {
+      "en": "Totals by LL (sheet check)",
+      "tag": "h3"
+    },
+    "u180": {
+      "en": "<b>LL0:</b> GRIT 0 · Skills 2 · Licenses 0 · Talents 3 · Core 0 · Triggers 8",
+      "tag": "li"
+    },
+    "u181": {
+      "en": "<b>LL1:</b> GRIT 1 · Skills 3 · Licenses 1 · Talents 4 · Core 0 · Triggers 10",
+      "tag": "li"
+    },
+    "u182": {
+      "en": "<b>LL3:</b> GRIT 2 · Skills 5 · Licenses 3 · Talents 6 · Core 1 · Triggers 14",
+      "tag": "li"
+    },
+    "u183": {
+      "en": "<b>LL6:</b> GRIT 3 · Skills 8 · Licenses 6 · Talents 9 · Core 2 · Triggers 20",
+      "tag": "li"
+    },
+    "u184": {
+      "en": "<b>LL9:</b> GRIT 5 · Skills 11 · Licenses 9 · Talents 12 · Core 3 · Triggers 26",
+      "tag": "li"
+    },
+    "u185": {
+      "en": "<b>LL12:</b> GRIT 6 · Skills 14 · Licenses 12 · Talents 15 · Core 4 · Triggers 32",
+      "tag": "li"
     }
   }
 }
