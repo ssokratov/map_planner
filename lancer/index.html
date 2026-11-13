@@ -132,12 +132,13 @@
   .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
   .stat-cell { display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; min-width:0; }
   .stat-cell + .stat-cell { border-left:1px solid var(--line); }
-  .stat-cell label { font-size:11px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; text-transform:uppercase; letter-spacing:.06em; }
+  .stat-cell label { font-size:10px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; text-transform:uppercase; letter-spacing:.04em; }
   .stat-cell input[type="number"] { width:100%; max-width:64px; text-align:center; font-size:20px; font-weight:700; padding:2px 4px; border-color:transparent; background:transparent; }
-  /* HASE — навыки пилота: тёплая подложка, чтобы группа читалась */
-  .stat-row.hase { background:rgba(232,89,12,.08); }
-  /* Grit — ключевое производное число: значение акцентным цветом */
-  .stat-cell.grit input[type="number"] { color:var(--accent); }
+  /* Строки — разные цвета, чтобы группы читались: верхняя жёлтая, средняя неоново-зелёная, нижняя стальная */
+  .stat-row.hase { background:rgba(255,212,59,.12); }
+  .stat-row.mid { background:rgba(92,223,51,.10); }
+  .stat-row.bot { background:rgba(140,160,180,.14); }
+
   /* Статы в просмотре (редактирование выкл.): имя и фрейм — в одну строку, компактно */
   #statsCard.view .grid > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
   #statsCard.view .grid label { flex:0 0 auto; margin-bottom:0; }
@@ -376,13 +377,13 @@
           <div class="stat-cell"><label>Systems</label><input type="number" data-f="pilot.systems" value="0"></div>
           <div class="stat-cell"><label>Engineering</label><input type="number" data-f="pilot.engineering" value="0"></div>
         </div>
-        <div class="stat-row cols-4">
+        <div class="stat-row cols-4 mid">
           <div class="stat-cell"><label>Size</label><input type="number" min="1" data-f="mech.size" value="1"></div>
           <div class="stat-cell"><label>Speed</label><input type="number" data-f="mech.speed" value="4"></div>
           <div class="stat-cell"><label>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
           <div class="stat-cell"><label>T.Attack</label><input type="number" data-f="mech.tech" value="0"></div>
         </div>
-        <div class="stat-row cols-4">
+        <div class="stat-row cols-4 bot">
           <div class="stat-cell"><label>Armor</label><input type="number" min="0" max="4" data-f="mech.armor" value="0"></div>
           <div class="stat-cell grit"><label>Grit</label><input type="number" data-f="pilot.grit" value="0" readonly></div>
           <div class="stat-cell"><label>Evasion</label><input type="number" data-f="mech.evasion" value="8"></div>
@@ -584,7 +585,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 115</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 116</span>
       </div>
     </div>
   </section>
