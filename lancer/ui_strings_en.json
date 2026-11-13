@@ -852,6 +852,10 @@
     "u233": {
       "en": "Statuses",
       "tag": "h3"
+    },
+    "u234": {
+      "en": "Restored by a full repair or at the start of a mission.",
+      "tag": "p"
     }
   }
 }
