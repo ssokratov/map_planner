@@ -518,7 +518,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 55</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 56</span>
   </div>
 </footer>
 
@@ -1053,6 +1053,7 @@ function renderLists(){
   syncEditToggles();
   const licNote = S.settings.licenseFilter ? L('lic_filter_on') : '';
   ['licNoteW','licNoteS'].forEach(id=>{ const el = document.getElementById(id); if (el) el.textContent = licNote; });
+  renderCounters();
 }
 function updateLicenseSummary(){
   const llEl = document.getElementById('licenseLL');
