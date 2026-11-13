@@ -527,7 +527,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 62</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 63</span>
   </div>
 </footer>
 
@@ -1514,7 +1514,7 @@ function showTalentResults(q, box){
     else if (full) descHtml = esc(excerpt(full, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span><span class="dim">${esc(d.r.join(' · '))}</span>${descHtml ? `<span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span>${descHtml ? `<br><span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
       <button class="btn" style="flex:0 0 auto" onclick="addTalentByIndex(${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
