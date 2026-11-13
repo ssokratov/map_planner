@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 120</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 121</span>
       </div>
     </div>
   </section>
@@ -2010,7 +2010,7 @@ function renderStatusTags(){
   const active = (S.statuses || []).filter(s => s !== 'Danger Zone' && STATUS_INFO[s]);
   box.innerHTML = active.map(s => {
     const info = STATUS_INFO[s];
-    return `<span class="status-tag" style="--sc:${info.c}" onclick="showStatus('${s}')">${esc(statusLabel(s))}<button class="status-x" onclick="event.stopPropagation();removeStatus('${s}')" aria-label="Убрать статус">×</button></span>`;
+    return `<span class="status-tag" style="--sc:${info.c}" onclick="showStatus('${s}')">${esc(s)}<button class="status-x" onclick="event.stopPropagation();removeStatus('${s}')" aria-label="Убрать статус">×</button></span>`; // v121: тег — только английское имя (короче); двуязычное имя и описание — в справочнике и в диалоге
   }).join('');
 }
 function renderStatusRef(){
