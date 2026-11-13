@@ -848,6 +848,10 @@
     "u232": {
       "en": "No extra actions yet — they will appear when you take a talent or system that grants one.",
       "tag": "js"
+    },
+    "u233": {
+      "en": "Statuses",
+      "tag": "h3"
     }
   }
 }

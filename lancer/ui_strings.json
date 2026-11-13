@@ -853,6 +853,11 @@
       "ru": "Дополнительных действий пока нет — они появятся, когда возьмёшь талант или систему, которая их даёт.",
       "en": "No extra actions yet — they will appear when you take a talent or system that grants one.",
       "tag": "js"
+    },
+    "u233": {
+      "ru": "Статусы",
+      "en": "Statuses",
+      "tag": "h3"
     }
   }
 }
