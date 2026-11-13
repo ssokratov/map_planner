@@ -41,11 +41,13 @@
   .ring-wrap svg { width:150px; height:150px; transform:rotate(-90deg); display:block; }
   .ring-track { fill:none; stroke:var(--line); stroke-width:11; }
   .ring-fill { fill:none; stroke:var(--good); stroke-width:11; stroke-linecap:round; transition:stroke-dashoffset .25s ease, stroke .25s ease; }
-  .ring-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-val { position:absolute; inset:0; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:6px; pointer-events:none; z-index:1; }
   .ring-val .val { font-size:36px; font-weight:800; line-height:1; }
-  .ring-val .ring-max { font-size:14px; color:var(--dim); margin-top:2px; }
-  .ring-btns { display:flex; gap:10px; }
-  .ring-btns button { width:46px; height:46px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
+  .ring-val .val.low { color:var(--bad); }
+  .ring-heart { font-size:26px; line-height:1; }
+  .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:28px; height:48px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; }
+  .ring-minus { left:14px; }
+  .ring-plus { right:14px; }
   .heat-thermo { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:6px; }
   .thermo { position:relative; width:64px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
   .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; }
@@ -111,7 +113,7 @@
   .dbinfo span.dim { color:var(--dim); font-size:12px; }
   .dbmore { color:var(--dim); font-size:12px; padding:2px 0 6px; }
   .core-power { background:linear-gradient(180deg, #232a35, #1a1f28) padding-box, repeating-linear-gradient(45deg, #ffd43b 0 10px, #10131a 10px 20px) border-box; border:3px solid transparent; border-radius:8px; padding:12px; text-align:center; margin-bottom:12px; }
-  .core-desc { margin-bottom:12px; }
+  .core-power .core-desc { text-align:left; margin:10px 0 8px; }
   .core-name { font-size:15px; font-weight:700; margin-bottom:2px; }
   .core-power .btn { width:100%; margin-bottom:8px; }
   #coreBtn.cp-ready { background:#d63030; border-color:#ff6b6b; color:#fff; font-weight:700; font-size:16px; line-height:1.25; padding:14px; box-shadow:0 0 0 2px rgba(255,107,107,.25), 0 4px 14px rgba(214,48,48,.35); }
@@ -183,9 +185,10 @@
               <circle class="ring-track" cx="70" cy="70" r="58"/>
               <circle class="ring-fill" id="hpRingFill" cx="70" cy="70" r="58"/>
             </svg>
-            <div class="ring-val"><div class="val" id="v-mech.hp">10</div><div class="ring-max" id="hpRingMax">/ 10</div></div>
+            <div class="ring-minus" onclick="step('mech.hp',-1)" role="button" aria-label="HP минус">−</div>
+            <div class="ring-val"><div class="val" id="v-mech.hp">10</div><div class="ring-heart">❤️</div></div>
+            <div class="ring-plus" onclick="step('mech.hp',1)" role="button" aria-label="HP плюс">+</div>
           </div>
-          <div class="ring-btns"><button onclick="step('mech.hp',-1)" aria-label="HP минус">−</button><button onclick="step('mech.hp',1)" aria-label="HP плюс">+</button></div>
           <div class="oc-next" id="max-mech.hp">max: 10</div>
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
         </div>
@@ -224,12 +227,12 @@
       <div class="core-power">
         <label style="text-align:left">Core Power (CP)</label>
         <button class="btn" id="coreBtn" onclick="toggleCore()" data-i18n="u074">Не использовано</button>
+        <div class="core-desc">
+          <div class="core-name" id="coreNameBox">Hyperspec Fuel Injector</div>
+          <div id="coreDescBox"></div>
+        </div>
         <p class="hint" data-i18n="u075">1 CP, раз за миссию. Восстанавливается при полном ремонте или в начале миссии.</p>
         <input type="hidden" data-f="mech.coreUsed" value="0">
-      </div>
-      <div class="core-desc">
-        <div class="core-name" id="coreNameBox">Hyperspec Fuel Injector</div>
-        <div id="coreDescBox"></div>
       </div>
     <details class="sec">
       <summary data-i18n="u016">Оверчардж</summary>
@@ -564,7 +567,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 66</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 67</span>
   </div>
 </footer>
 
@@ -1084,8 +1087,6 @@ function renderCounters(){
     hpRing.style.strokeDashoffset = C * (1 - (m ? Math.max(0, v) / m : 0));
     hpRing.style.stroke = v <= 0 ? '#ff6b6b' : (v / m <= 0.25 ? '#ff922b' : (v / m <= 0.5 ? '#ffd43b' : '#51cf66'));
   }
-  const hpRingMax = document.getElementById('hpRingMax');
-  if (hpRingMax) hpRingMax.textContent = '/ ' + get('mech.hpMax');
   const htFill = document.getElementById('heatThermoFill');
   if (htFill) {
     const v = get('mech.heat'), m = get('mech.heatMax');
