@@ -343,7 +343,7 @@
       "tag": "button"
     },
     "u093": {
-      "ru": "Сумма рангов лицензий: <span id=\"licenseRankSum\"></span> · LL пилота: <span id=\"licenseLL\"></span>",
+      "ru": "LL пилота: <span id=\"licenseLL\"></span>",
       "tag": "p"
     },
     "u097": {

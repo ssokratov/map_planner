@@ -62,7 +62,7 @@ const EXPOSE = '\n;global.__x={getS:function(){return S;},DB:DB,MOUNT_ALLOWED:MO
   + 'applyFrame:applyFrame,recalcDerived:recalcDerived,toggleLicenseFilter:toggleLicenseFilter,'
   + 'itemAvailable:itemAvailable,frameAvailable:frameAvailable,'
   + 'sysLim:sysLim,sysLeft:sysLeft,weapLim:weapLim,weapLeft:weapLeft,sysSp:sysSp,'
-  + 'delMount:delMount,delWeapon:delWeapon,toggleLang:toggleLang,licenseNameOptions:licenseNameOptions,stepLL:stepLL,'
+  + 'delMount:delMount,delWeapon:delWeapon,toggleLang:toggleLang,licenseNameOptions:licenseNameOptions,calcLL:calcLL,'
   + 'weapTags:weapTags,tagLabel:tagLabel,tagChips:tagChips,showTag:showTag,'
   + 'talentRankDesc:talentRankDesc,talentMatches:talentMatches,showTalentResults:showTalentResults,'
   + 'addTalentByIndex:addTalentByIndex,fillTalentFromDb:fillTalentFromDb,'
@@ -95,7 +95,7 @@ if (!(heatIdx > 0 && stressIdx > 0 && heatIdx < stressIdx)) throw new Error('0: 
 // PHASE A: fresh-load defaults
 let r = runEval({});
 let elA = r.elements, gA = r.g, X = r.X, S = r.S, DB = r.DB;
-if (S.pilot.ll !== 0) throw new Error('A: fresh LL should be 0');
+if (X.calcLL() !== 0) throw new Error('A: fresh LL should be 0 (no licenses)');
 if (S.mech.frame !== 'Everest') throw new Error('A: fresh frame should be Everest');
 if (S.mounts.length !== 3 || S.mounts[0].type !== 'Main' || S.mounts[1].type !== 'Flex' || S.mounts[2].type !== 'Heavy') throw new Error('A: default mounts should be Main/Flex/Heavy');
 if (S.systems.length !== 3) throw new Error('A: 3 starter systems expected');
@@ -193,8 +193,7 @@ if (X.frameAvailable('Blackbeard')) throw new Error('G: Blackbeard frame needs r
 X.showFrameResults('');
 if (!elA['frameResults'].innerHTML.includes('Эверест')) throw new Error('G: frame picker must include Everest (Эверест in RU)');
 if (elA['frameResults'].innerHTML.includes('Чёрная Борода')) throw new Error('G: frame picker must NOT include Blackbeard at rank I');
-if (elA['licenseRankSum'].textContent !== '1') throw new Error('G: license rank sum should be 1');
-if (elA['licenseRankSum'].style.color !== '#ff6b6b') throw new Error('G: rank sum should be red when it differs from LL (0)');
+if (elA['licenseLL'].textContent !== '1' && elA['licenseLL'].textContent !== 1) throw new Error('G: LL display should be 1 (sum of license ranks)');
 // rank 2: frame + LL2 gear yes, LL3 other licenses no
 S.pilot.licenses[0].rank = 2; X.save(); X.renderLists();
 if (!X.frameAvailable('Blackbeard')) throw new Error('G: Blackbeard frame must be available at rank II');
@@ -852,7 +851,7 @@ if (elZ['licensesNote'].style.display !== 'none') throw new Error('Z: an empty u
 // PHASE AA: v29 — описания (короткое целиком, длинное с «подробнее»/«свернуть»), без «SP N» в шапке систем, описание оружия только при редактировании, версия в подвале
 const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // версия трекера в подвале страницы
-if (!staticHtml.includes('Версия трекера: 54')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('Версия трекера: 55')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1105,19 +1104,18 @@ CB.forEach(cb=>{ CB_CORPS[cb.corp] = (CB_CORPS[cb.corp]||0)+1; });
 if (!CB.some(cb=>cb.n==='Reinforced Frame' && cb.corp==='IPS-N')) throw new Error('AK: Reinforced Frame must be IPS-N');
 if (!CB.some(cb=>cb.n==='Superior By Design' && cb.corp==='HA')) throw new Error('AK: Superior By Design must be HA');
 if (!CB.some(cb=>cb.n==='The Lesson of the Open Door' && cb.corp==='HORUS')) throw new Error('AK: Lesson of the Open Door must be HORUS');
-// слоты: LL3 -> 1, LL6 -> 2, LL9 -> 3
-XAK.set('pilot.ll', 2);
+// слоты: LL3 -> 1, LL6 -> 2, LL9 -> 3 (LL — сумма рангов лицензий, v55)
+SAK.pilot.licenses = [{name:'Blackbeard', rank:2}];
 if (XAK.coreBonusSlots() !== 0) throw new Error('AK: LL2 must give 0 core bonus slots');
-XAK.set('pilot.ll', 3);
+SAK.pilot.licenses = [{name:'Blackbeard', rank:3}];
 if (XAK.coreBonusSlots() !== 1) throw new Error('AK: LL3 must give 1 core bonus slot');
-XAK.set('pilot.ll', 6);
+SAK.pilot.licenses = [{name:'Blackbeard', rank:3}, {name:'Lancaster', rank:3}];
 if (XAK.coreBonusSlots() !== 2) throw new Error('AK: LL6 must give 2 core bonus slots');
-XAK.set('pilot.ll', 9);
+SAK.pilot.licenses = [{name:'Blackbeard', rank:3}, {name:'Lancaster', rank:3}, {name:'Vlad', rank:3}];
 if (XAK.coreBonusSlots() !== 3) throw new Error('AK: LL9 must give 3 core bonus slots');
 // требования: GMS — всегда; IPS-N — 3 ранга за бонус (+3 за следующий)
 // пилот: Blackbeard II + Lancaster I = 3 ранга IPS-N, LL3
 SAK.pilot.licenses = [{name:'Blackbeard', rank:2}, {name:'Lancaster', rank:1}];
-XAK.set('pilot.ll', 3);
 const gms = XAK.findCoreBonus('Improved Armament');
 if (!XAK.coreBonusAllowed(gms).ok) throw new Error('AK: a GMS core bonus must always be allowed');
 const rf = XAK.findCoreBonus('Reinforced Frame');
@@ -1143,7 +1141,6 @@ if (XAK.get('mech.hpMax') !== 15) throw new Error('AK: with Reinforced Frame, HP
 if (XAK.get('mech.heatMax') !== 8) throw new Error('AK: with Superior By Design, Heat max must be 6 + 2 = 8, got ' + XAK.get('mech.heatMax'));
 // добавление/удаление через API
 SAK.pilot.coreBonuses = [];
-XAK.set('pilot.ll', 3);
 XAK.addCoreBonusByIdx(CB.findIndex(cb=>cb.n==='Reinforced Frame'));
 if (SAK.pilot.coreBonuses.length !== 1 || SAK.pilot.coreBonuses[0] !== 'Reinforced Frame') throw new Error('AK: addCoreBonusByIdx must add Reinforced Frame');
 XAK.addCoreBonusByIdx(CB.findIndex(cb=>cb.n==='Reinforced Frame'));
@@ -1247,7 +1244,7 @@ if (!panelRule.includes('border:3px solid transparent')) throw new Error('AP: th
 const { X: XAQ, S: SAQ } = runEval({});
 if (XAQ.STR.cb_add) throw new Error('AQ: the removed cb_add string must not be in STR');
 const { X: XAQ2, S: SAQ2, elements: elAQ2 } = runEval({});
-XAQ2.set('pilot.ll', 3);
+SAQ2.pilot.licenses = [{name:'Blackbeard', rank:2}, {name:'Lancaster', rank:1}];
 XAQ2.openCoreBonusPicker();
 const listHtml = elAQ2['cbList'].innerHTML;
 if (listHtml.includes('cb_add') || listHtml.includes('Добавить</button>')) throw new Error('AQ: the picker must not contain an Add button');
@@ -1386,7 +1383,7 @@ if (!htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: af
 if (html.includes('Полный ремонт — кнопка в карточке')) throw new Error('AY: the footer disclaimer text (u144) must be gone');
 if (!staticHtml.includes('id="langToggle"')) throw new Error('AY: the language slider must exist in the footer');
 if (staticHtml.includes('data-lang-btn')) throw new Error('AY: the old RUS/ENG buttons must be gone');
-if (!staticHtml.includes('Версия трекера: 54')) throw new Error('AY: the footer must still show the tracker version');
+if (!staticHtml.includes('Версия трекера: 55')) throw new Error('AY: the footer must still show the tracker version');
 // слайдер переключает язык и отражает состояние
 const { X: XAY, S: SAY, elements: elAY } = runEval({});
 if (XAY.lang() !== 'ru') throw new Error('AY: default language must be ru');
@@ -1424,24 +1421,23 @@ if (XAZ.STR.u166.en !== 'Level Up (gaining LL)') throw new Error('AZ: the level-
 if (!XAZ.STR.u170.en.includes('+1 talent rank')) throw new Error('AZ: the talent-rank item must translate to EN');
 if (XAZ.STR.u179.en !== 'Totals by LL (sheet check)') throw new Error('AZ: the level chart heading must translate to EN');
 
-// PHASE BA: v54 — License Level — степпер −/+ вместо текстового поля
-if (staticHtml.includes('data-f="pilot.ll" value="0"') && staticHtml.includes('<input type="number" min="0" max="12" data-f="pilot.ll"')) throw new Error('BA: LL must not be a number input');
-if (!staticHtml.includes('id="v-pilot.ll"')) throw new Error('BA: the LL stepper must show its value in #v-pilot.ll');
-if (!staticHtml.includes("stepLL(-1)") || !staticHtml.includes("stepLL(1)")) throw new Error('BA: the LL stepper must have −/+ buttons calling stepLL');
+// PHASE BA: v55 — LL считается сам как сумма рангов лицензий; выбирать его не надо
+if (staticHtml.includes('stepLL(')) throw new Error('BA: stepLL must be gone');
+if (staticHtml.includes('id="v-pilot.ll"')) throw new Error('BA: the LL stepper display must be gone');
+if (staticHtml.includes('data-f="pilot.ll"')) throw new Error('BA: LL must not be an editable field');
+if (!staticHtml.includes('id="llDisplay"')) throw new Error('BA: LL must show as a read-only computed value');
 const { X: XBA, S: SBA, elements: elBA } = runEval({});
-if (SBA.pilot.ll !== 0) throw new Error('BA: fresh LL must be 0');
-XBA.stepLL(1);
-if (SBA.pilot.ll !== 1) throw new Error('BA: stepLL(+1) must raise LL to 1');
-if (elBA['v-pilot.ll'].textContent !== '1' && elBA['v-pilot.ll'].textContent !== 1) throw new Error('BA: the LL display must show 1 after stepLL(+1)');
-XBA.stepLL(1); XBA.stepLL(1);
-if (SBA.pilot.ll !== 3) throw new Error('BA: three stepLL(+1) must reach LL3');
-// Grit пересчитывается сам: LL3 -> Grit 2
+if (XBA.calcLL() !== 0) throw new Error('BA: fresh LL must be 0 (no licenses)');
+SBA.pilot.licenses = [{name:'Blackbeard', rank:2}, {name:'Lancaster', rank:1}];
+if (XBA.calcLL() !== 3) throw new Error('BA: LL must be the sum of license ranks (2+1=3)');
+if (XBA.coreBonusSlots() !== 1) throw new Error('BA: LL3 must give 1 core bonus slot');
 XBA.renderCounters();
-const gritBA = elBA['pilotCard'] ? null : null;
-if (SBA.pilot.grit !== undefined) { /* grit lives in the input, checked via renderCounters below */ }
-XBA.stepLL(10);
-if (SBA.pilot.ll !== 12) throw new Error('BA: LL must clamp at 12');
-XBA.stepLL(-20);
-if (SBA.pilot.ll !== 0) throw new Error('BA: LL must clamp at 0');
+if (elBA['llDisplay'].value !== 3 && elBA['llDisplay'].value !== '3') throw new Error('BA: the LL display must show 3 after adding licenses');
+// старый сейв с полем ll — миграция его удаляет, LL считается из лицензий
+const oldStoreBA = {};
+oldStoreBA['lancer-tracker-v1'] = JSON.stringify({ pilot:{ll:5, licenses:[{name:'Blackbeard', rank:2}]}, mech:{frame:'Everest'}, talents:[], triggers:[], mounts:[{type:'Main',weapons:[]}], systems:[], statuses:[], settings:{} });
+const rOldBA = runEval(oldStoreBA);
+if ('ll' in rOldBA.S.pilot) throw new Error('BA: migrate must drop the stored ll field');
+if (rOldBA.X.calcLL() !== 2) throw new Error('BA: an old save must compute LL from its licenses (2), not from the stored ll (5)');
 
-console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL), v54: License Level is a stepper, no text field');
+console.log('SMOKE TEST PASSED: Heat/Stress order, defaults, multi-field search, frame apply (mounts/core/traits/derived stats/integrated weapon), SP counter, systems search, license filter, TDZ regression, license migration, Limited charges, combat-reference blocks, talent search, weapon tag chips, mount badges, fixed SP, RUS/ENG toggle, frame corporation/roles, bilingual datalists, description component, dispField fix, trigger search, description overflow fix, frame moved to Pilot tab, display-only weapons/systems, custom modals, apply confirm dismiss is atomic, edit toggles, edit toggles in the remaining blocks, slider toggles, search modal, no Apply Frame button, no Описание label, search icon left of the + Кастом … button, wrench icon in the slider knob, game mode hides edit-only notes, ranks inline with names, short descriptions shown in full, long ones show a paragraph with подробнее at the end, no separate SP label on systems, weapon descriptions only when editing, version in the footer, frame picker back on the Mech tab with the integrated-weapon note in the confirm, collapse is a blue link at the end of the text, traits in their own always-full card, Core Bonuses/Gear removed, Stress is radiation and Overcharge is lightning, System Points moved to the Systems card (edit-only), HASE explanation is edit-only too, talent features are cumulative up to the chosen rank, licenses card renamed to just «Лицензии», resource maxes auto-calculated from frame+HASE, Full Repair button moved into the rules block, loading recomputes resource maxes from frame+HASE, resource counters spread to one column on phones, Personalizations adds +2 HP, v39: counters back to 2 columns, rules buttons moved down with a 16px gap, Core Bonuses (30, with slots, license-rank requirements and HP/Heat max bonuses), v40: resource max as in Overcharge (value alone, max: N below), Repairs label without the Russian word, v41: structure/stress tables rebuilt as rows, v42: Core Power button variant B (red bar when unused, gray pressed when used), no separate indicator, v43: dense table/HASE texts rebuilt as lists, v44: Core Power button same height in both states, hazard-stripe metal panel, v45: Core Bonus picker rows are tappable, no Add button, v46: Grit label shortened, license rank dropdown widened with Roman numerals, v47: Mech and HASE merged into one Stats card (2nd after Resources), icons, compact view mode, v48: stats in 2 columns in view mode on phones, grids shrink (minmax), frame name truncates with an ellipsis, v49: frame under the name (full width), robot icon removed, dividers around HASE, v50: systems search gets a подробнее button to expand long descriptions, v51: deleting a mount asks for confirmation, v52: talent search shows rank descriptions with подробнее, no empty talents/triggers on fresh load or reset, footer disclaimer removed, language is a RUS/ENG slider, license name is a dropdown, v53: level-up section in the Rules tab (checklist, reallocation, totals by LL), v54: License Level is a stepper, no text field, v55: LL is derived from license ranks, no LL field to set');

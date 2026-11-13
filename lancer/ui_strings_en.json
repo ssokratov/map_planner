@@ -343,7 +343,7 @@
       "tag": "button"
     },
     "u093": {
-      "en": "Sum of license ranks: <span id=\"licenseRankSum\"></span> · Pilot's LL: <span id=\"licenseLL\"></span>",
+      "en": "Pilot's LL: <span id=\"licenseLL\"></span>",
       "tag": "p"
     },
     "u097": {
