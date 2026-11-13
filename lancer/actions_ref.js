@@ -77,6 +77,12 @@ const ACTIONS_REF = {
      ef_en:'Take 2 Heat. The movement or status is prevented, and the target gains Immunity to all the above effects until the start of their next turn.'}
   ],
   protocols: [
+    {key:'shepherd', name:'Shepherd', ru:'Пастух', grant:{talent:'Drone Commander', rank:1},
+     tx_ru:'Вы можете переместить одного дрона, которым вы управляете и который находится в пределах ваших сенсоров, на расстояние до 4 клеток.',
+     tx_en:'You may move one drone that you control and that is within SENSORS up to 4 spaces.'},
+    {key:'steadyaim', name:'Steady Aim', ru:'Прицелиться', grant:{talent:'Crack Shot', rank:1},
+     tx_ru:'Протоколом вы можете прицелиться. Если вы это сделаете, вы становитесь обездвиженным до начала вашего следующего хода, но получаете +1 к точности на все атаки, совершаемые винтовками.',
+     tx_en:'As a protocol, you may steady your aim. If you do, you become Immobilized until the start of your next turn but gain +1 Accuracy on all attacks you make with Rifles.'},
     {key:'engagecompcon', name:'Engage COMP/CON', ru:'Включить COMP/CON', grant:{system:'COMP/CON-Class Assistant Unit'},
      tx_ru:'Передаёшь управление мехом его COMP/CON: мех действует независимо в твой ход со своим набором действий. У меха под COMP/CON нет собственной инициативы — нужны прямые указания.',
      tx_en:'You give control of your mech to its COMP/CON, allowing your mech to act independently on your turn with its own set of actions. Unlike other AIs, a mech controlled by a COMP/CON has no independent initiative and requires direct input.'},

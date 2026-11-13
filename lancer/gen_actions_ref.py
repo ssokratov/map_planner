@@ -48,6 +48,25 @@ TALENT_REACTIONS = [
     },
 ]
 
+# --- Протоколы талантов: сверены с корбуком (v107) ---
+# В отличие от реакций талантов, протоколы талантов в lancer-data не лежат
+# отдельным списком — они описаны внутри текста фичи таланта. Источник:
+# корбук, раздел талантов. Shepherd — Drone Commander I, Steady Aim — Crack Shot I.
+TALENT_PROTOCOLS = [
+    {
+        "key": "shepherd", "name": "Shepherd", "ru": "Пастух",
+        "grant": {"talent": "Drone Commander", "rank": 1},
+        "tx_en": "You may move one drone that you control and that is within SENSORS up to 4 spaces.",
+        "tx_ru": "Вы можете переместить одного дрона, которым вы управляете и который находится в пределах ваших сенсоров, на расстояние до 4 клеток.",
+    },
+    {
+        "key": "steadyaim", "name": "Steady Aim", "ru": "Прицелиться",
+        "grant": {"talent": "Crack Shot", "rank": 1},
+        "tx_en": "As a protocol, you may steady your aim. If you do, you become Immobilized until the start of your next turn but gain +1 Accuracy on all attacks you make with Rifles.",
+        "tx_ru": "Протоколом вы можете прицелиться. Если вы это сделаете, вы становитесь обездвиженным до начала вашего следующего хода, но получаете +1 к точности на все атаки, совершаемые винтовками.",
+    },
+]
+
 # --- Дефолтные реакции: сверены с корбуком ---
 DEFAULT_REACTIONS = [
     {
