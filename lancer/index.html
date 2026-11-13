@@ -77,10 +77,11 @@
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
   /* Пламя бинарное (v108): привязано к Danger Zone — до половины Heat Cap маленькая статичная иконка,
      в Danger Zone (тепло >= половины максимума) — большое пульсирующее пламя снизу */
-  /* Подписи DANGER / ZONE вокруг термометра (v108): вертикально, капс, всегда английский,
-     переливаются между красным и оранжевым. Левая читается снизу вверх, правая — сверху вниз. */
-  .dz-label { writing-mode:vertical-rl; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.6s ease-in-out infinite; user-select:none; pointer-events:none; }
-  .dz-left { transform:rotate(180deg); }
+  /* Подписи DANGER / ZONE вокруг термометра (v108–v109): буквы стоят прямо, одна под другой
+     (text-orientation:upright), капс, всегда английский, переливаются между красным и оранжевым.
+     Видны только в Danger Zone — вне её термометр чистый. */
+  .dz-label { display:none; writing-mode:vertical-rl; text-orientation:upright; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.6s ease-in-out infinite; user-select:none; pointer-events:none; }
+  .heat-thermo.dz-active .dz-label { display:block; }
   @keyframes dzGlow { 0%,100% { color:#ff3b30; text-shadow:0 0 6px rgba(255,59,48,.55); } 50% { color:#ff9500; text-shadow:0 0 6px rgba(255,149,0,.55); } }
   .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
   .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse .9s ease-in-out infinite; }
@@ -235,7 +236,7 @@
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
         </div>
         <div class="heat-thermo">
-          <span class="dz-label dz-left">DANGER</span>
+          <span class="dz-label">DANGER</span>
           <div class="thermo">
             <div class="thermo-fill" id="heatThermoFill"></div>
             <div class="thermo-ico" id="heatFlame">🔥</div>
@@ -243,7 +244,7 @@
             <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
             <div class="thermo-minus" onclick="step('mech.heat',-1)" role="button" aria-label="Heat минус">−</div>
           </div>
-          <span class="dz-label dz-right">ZONE</span>
+          <span class="dz-label">ZONE</span>
           <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
         </div>
       </div>
@@ -601,7 +602,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 108</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 109</span>
       </div>
     </div>
   </section>
@@ -1177,6 +1178,8 @@ function syncDangerZone(){
   const has = (S.statuses || []).includes('Danger Zone');
   if (on && !has) S.statuses = [...(S.statuses || []), 'Danger Zone'];
   if (!on && has) S.statuses = (S.statuses || []).filter(x => x !== 'Danger Zone');
+  const ht = document.querySelector('.heat-thermo');
+  if (ht) ht.classList.toggle('dz-active', on);
   const box = document.getElementById('statuses');
   if (box) box.querySelectorAll('label').forEach(l => {
     if (l.textContent.trim() === 'Danger Zone'){
