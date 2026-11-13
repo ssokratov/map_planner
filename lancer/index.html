@@ -17,9 +17,9 @@
       linear-gradient(180deg, rgba(255,212,59,.10), rgba(255,212,59,0) 30%),
       repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0 2px, transparent 2px 8px),
       linear-gradient(180deg, #2b333f 0%, #1d232d 55%, #14181f 100%);
-    border-top:1px solid rgba(255,212,59,.30);
-    box-shadow:0 -6px 20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07); }
-  nav::before { content:""; position:absolute; top:-4px; left:0; right:0; height:4px; background:repeating-linear-gradient(45deg,#ffd43b 0 10px,#10131a 10px 20px); }
+    border-top:2px solid #ffd43b;
+    box-shadow:0 -6px 20px rgba(0,0,0,.55), 0 -2px 16px rgba(255,212,59,.18), inset 0 1px 0 rgba(255,255,255,.07); }
+
   nav button { position:relative; flex:1; min-height:56px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; }
   nav button svg { width:30px; height:30px; display:block; }
   nav button.active { background:none; color:#ffd43b; }
@@ -53,7 +53,7 @@
   .ring-val .val { font-size:36px; font-weight:800; line-height:1; }
   .ring-val .val.low { color:var(--bad); }
   .ring-hp { font-size:18px; color:var(--dim); line-height:1; }
-  .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:30px; height:52px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.85); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; background:rgba(255,255,255,.07); border-radius:10px; }
+  .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:30px; height:52px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.85); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; }
   .ring-minus { left:12px; border-right:1px solid rgba(255,255,255,.12); }
   .ring-plus { right:12px; border-left:1px solid rgba(255,255,255,.12); }
   .heat-thermo { display:flex; flex-direction:column; align-items:center; gap:6px; }
@@ -574,7 +574,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 69</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 70</span>
   </div>
 </footer>
 
