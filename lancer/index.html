@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 97</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 98</span>
       </div>
     </div>
   </section>
@@ -1239,7 +1239,7 @@ function addCustomSystem(){
   if (!name) { alert(L('custom_name_needed')); return; }
   const row = {name, sp:+document.getElementById('csSp').value||0, desc:(document.getElementById('csDesc').value||'').trim()};
   const lim = +document.getElementById('csLim').value||0;
-  if (lim > 0) { row.lim = lim; row.left = lim; }
+  if (lim > 0) { row.lim = lim; row.left = lim + limBonus(); }
   S.systems.push(row);
   document.getElementById('customSystemDlg').close();
   save(); renderLists();
@@ -1477,7 +1477,8 @@ function showWeaponResults(mi, q, box){
 function addWeaponByIndex(mi, i){
   const w = DB.weapons[i];
   const row = {name:w.n, dmg:w.d, range:w.r, desc:w.x};
-  if (w.lim) row.left = w.lim;
+  const lim = weapLim(row);
+  if (lim > 0) row.left = lim;
   S.mounts[mi].weapons.push(row);
   save(); renderLists();
 }
@@ -1774,7 +1775,8 @@ function showSystemResults(q, box){
 function addSystemByIndex(i){
   const s = DB.systems[i];
   const row = {name:s.n, sp:s.p, desc:s.x};
-  if (s.lim) row.left = s.lim;
+  const lim = sysLim(row);
+  if (lim > 0) row.left = lim;
   S.systems.push(row);
   save(); renderLists();
 }
@@ -1787,10 +1789,12 @@ function updateSpCounter(){
   spEl.textContent = L('sp_used') + used + L('sp_of') + total + L('sp_free') + free;
   spEl.style.color = free < 0 ? '#ff6b6b' : '#51cf66';
 }
-function sysLim(s){ if (typeof s.lim === 'number') return s.lim; const d = findSystem(s.name); return d ? (d.lim||0) : 0; }
+// Бонус к Limited от Engineering (корбук, HASE): +1 к максимуму использований любого лимитного снаряжения за каждые 2 очка.
+function limBonus(){ return Math.floor((+get('pilot.engineering')||0) / 2); }
+function sysLim(s){ let base; if (typeof s.lim === 'number') base = s.lim; else { const d = findSystem(s.name); base = d ? (d.lim||0) : 0; } return base + limBonus(); }
 function sysLeft(s){ const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
 function sysSp(s){ const d = findSystem(s.name); return d ? (d.p||0) : (+s.sp||0); }
-function weapLim(w){ if (typeof w.lim === 'number') return w.lim; const d = findWeapon(w.name); return d ? (d.lim||0) : 0; }
+function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base + limBonus(); }
 function weapLeft(w){ const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
 function tagLabel(id, val){
