@@ -799,11 +799,6 @@
       "en": "Level Up",
       "tag": "button"
     },
-    "u214": {
-      "ru": "Перераспределение",
-      "en": "Reallocation",
-      "tag": "js"
-    },
     "u215": {
       "ru": "После миссии LL растёт на 1. Пройди шаги и собери всё, что полагается за новый LL.",
       "en": "After a mission, LL grows by 1. Walk through the steps and collect everything the new LL grants.",
@@ -844,11 +839,6 @@
       "en": "Apply",
       "tag": "js"
     },
-    "u223": {
-      "ru": "Необязательно, одно за левел ап. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна.",
-      "en": "Optional, one per level up. If reallocating a license loses you a Core Bonus, replacing it is mandatory.",
-      "tag": "js"
-    },
     "u224": {
       "ru": "Существующий",
       "en": "Existing",
@@ -867,6 +857,11 @@
     "u227": {
       "ru": "Нет перераспределения",
       "en": "No reallocation",
+      "tag": "js"
+    },
+    "u228": {
+      "ru": "Перераспределение (необязательно, одно за левел ап): все очки таланта — в другой талант; все очки лицензии — в другую лицензию; или заменить Core Bonus. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна. Делается вручную на вкладках.",
+      "en": "Reallocation (optional, one per level up): move all talent points to another talent; all license points to another license; or swap a Core Bonus. If reallocating a license loses you a Core Bonus, replacing it is mandatory. Do it manually on the tabs.",
       "tag": "js"
     }
   }
