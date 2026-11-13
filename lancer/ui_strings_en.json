@@ -719,11 +719,6 @@
       "en": "Mech",
       "tag": "js"
     },
-    "u195": {
-      "ru": "Системы",
-      "en": "Systems",
-      "tag": "js"
-    },
     "u196": {
       "ru": "Core Bonuses",
       "en": "Core Bonuses",
@@ -784,11 +779,6 @@
       "en": "At LL0, the Everest frame. Other manufacturers' frames need a rank II license.",
       "tag": "js"
     },
-    "u208": {
-      "ru": "Системы тратят SP фрейма. Занятость SP — под списком.",
-      "en": "Systems spend the frame's SP. Used SP is shown below the list.",
-      "tag": "js"
-    },
     "u209": {
       "ru": "Core Bonuses открываются на LL3: один слот за каждые 3 LL.",
       "en": "Core Bonuses unlock at LL3: one slot per 3 LL.",
@@ -799,14 +789,84 @@
       "en": "Your character is ready. Everything can be changed on the tabs — the wizard can be reopened from the page footer.",
       "tag": "js"
     },
-    "u211": {
-      "ru": "Оружие",
-      "en": "Weapon",
+    "u212": {
+      "ru": "Имя меха. Оружие и системы — на вкладке «Мех», в обычном режиме.",
+      "en": "Mech name. Weapons and systems are on the Mech tab, in the normal view.",
       "tag": "js"
     },
-    "u212": {
-      "ru": "Имя меха и оружие на маунтах. Маунты и встроенное оружие уже выставлены фреймом — здесь можно добавить ещё оружия.",
-      "en": "Mech name and weapons on mounts. Mounts and integrated weapons were set by the frame — you can add more weapons here.",
+    "u213": {
+      "ru": "Левел ап",
+      "en": "Level Up",
+      "tag": "button"
+    },
+    "u214": {
+      "ru": "Перераспределение",
+      "en": "Reallocation",
+      "tag": "js"
+    },
+    "u215": {
+      "ru": "После миссии LL растёт на 1. Пройди шаги и собери всё, что полагается за новый LL.",
+      "en": "After a mission, LL grows by 1. Walk through the steps and collect everything the new LL grants.",
+      "tag": "js"
+    },
+    "u216": {
+      "ru": "+2 к триггеру или новый триггер на +2.",
+      "en": "+2 to a trigger or a new trigger at +2.",
+      "tag": "js"
+    },
+    "u217": {
+      "ru": "+1 к навыку меха.",
+      "en": "+1 to a mech skill.",
+      "tag": "js"
+    },
+    "u218": {
+      "ru": "+1 ранг таланта или новый талант на I.",
+      "en": "+1 talent rank or a new talent at I.",
+      "tag": "js"
+    },
+    "u219": {
+      "ru": "+1 ранг лицензии или новая лицензия на I.",
+      "en": "+1 license rank or a new license at I.",
+      "tag": "js"
+    },
+    "u220": {
+      "ru": "Новый слот Core Bonus.",
+      "en": "A new Core Bonus slot.",
+      "tag": "js"
+    },
+    "u221": {
+      "ru": "Пропустить",
+      "en": "Skip",
+      "tag": "js"
+    },
+    "u222": {
+      "ru": "Применить",
+      "en": "Apply",
+      "tag": "js"
+    },
+    "u223": {
+      "ru": "Необязательно, одно за левел ап. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна.",
+      "en": "Optional, one per level up. If reallocating a license loses you a Core Bonus, replacing it is mandatory.",
+      "tag": "js"
+    },
+    "u224": {
+      "ru": "Существующий",
+      "en": "Existing",
+      "tag": "js"
+    },
+    "u225": {
+      "ru": "Новый",
+      "en": "New",
+      "tag": "js"
+    },
+    "u226": {
+      "ru": "Выбери…",
+      "en": "Choose…",
+      "tag": "js"
+    },
+    "u227": {
+      "ru": "Нет перераспределения",
+      "en": "No reallocation",
       "tag": "js"
     }
   }
