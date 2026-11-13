@@ -113,13 +113,15 @@
   .add { width:100%; margin-top:4px; }
   .status-tags { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; }
   .status-tags:empty { display:none; }
-  .status-tag { display:inline-flex; align-items:center; gap:6px; background:var(--sc,#2c3542); color:#fff; border-radius:999px; padding:5px 6px 5px 12px; font-size:13px; font-weight:700; cursor:pointer; }
+  .status-tag { display:inline-flex; align-items:center; gap:6px; background:var(--sc,#2c3542); color:#fff; border-radius:999px; padding:5px 6px 5px 12px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
   .status-x { display:flex; align-items:center; justify-content:center; width:18px; height:18px; border:none; border-radius:50%; background:rgba(0,0,0,.25); color:#fff; font-size:14px; line-height:1; cursor:pointer; padding:0; }
   .status-ref { margin-bottom:16px; }
-  .status-ref h3 { font-size:15px; margin:0 0 8px; }
-  .status-ref-list { display:flex; flex-wrap:wrap; gap:6px; }
-  .status-ref-item { background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:999px; padding:6px 12px; font-size:13px; cursor:pointer; }
-  .status-ref-item.on { border-color:var(--accent); background:#2a1a10; }
+  .status-ref summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--accent2); }
+  .status-ref-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .status-ref-item { display:block; width:100%; text-align:left; background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--sc,#2c3542); border-radius:8px; padding:8px 10px; cursor:pointer; }
+  .status-ref-item.on { border-color:var(--sc); }
+  .status-ref-name { font-weight:700; font-size:14px; }
+  .status-ref-desc { font-size:13px; color:var(--dim); line-height:1.4; margin-top:2px; }
   .res { border-top:3px solid var(--rc,#2c3542); border-radius:8px; padding:10px; background:var(--panel2); }
   .res label { color:var(--text); font-size:14px; font-weight:700; }
   .res label .ico { margin-right:4px; }
@@ -276,10 +278,10 @@
           <div class="oc-next" id="oc-next">следующий: 1 тепла</div>
         </div>
       </div>
-      <div class="status-ref">
-        <h3 data-i18n="u233">Статусы</h3>
+      <details class="status-ref">
+        <summary data-i18n="u233">Статусы</summary>
         <div class="status-ref-list" id="statusRef"></div>
-      </div>
+      </details>
       <div class="core-power" id="corePanel">
         <label style="text-align:left">Core Power (CP)</label>
         <button class="btn" id="coreBtn" onclick="toggleCore()" data-i18n="u074">Не использовано</button>
@@ -577,7 +579,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 113</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 114</span>
       </div>
     </div>
   </section>
@@ -1968,7 +1970,7 @@ function stepWeapCharges(mi, wi, d){ const w = S.mounts[mi].weapons[wi]; w.left 
 function statusLabel(name){
   const info = STATUS_INFO[name];
   if (!info) return name;
-  return lang() === 'en' ? name : info.ru;
+  return name + ' — ' + info.ru;
 }
 function statusDesc(name){
   const info = STATUS_INFO[name];
@@ -1989,14 +1991,18 @@ function renderStatusRef(){
   if (!box) return;
   const active = new Set(S.statuses || []);
   box.innerHTML = STATUSES.filter(s => s !== 'Danger Zone' && STATUS_INFO[s]).map(s => {
+    const info = STATUS_INFO[s];
     const on = active.has(s);
-    return `<button class="status-ref-item${on ? ' on' : ''}" onclick="addStatus('${s}')">${esc(statusLabel(s))}</button>`;
+    return `<div class="status-ref-item${on ? ' on' : ''}" style="--sc:${info.c}" onclick="toggleStatus('${s}')" role="button"><div class="status-ref-name">${on ? '✓ ' : ''}${esc(statusLabel(s))}</div><div class="status-ref-desc">${esc(statusDesc(s))}</div></div>`;
   }).join('');
 }
-function addStatus(name){
+function toggleStatus(name){
   if (!STATUS_INFO[name]) return;
-  if ((S.statuses || []).includes(name)){ showStatus(name); return; }
-  S.statuses = [...(S.statuses || []), name];
+  if ((S.statuses || []).includes(name)){
+    S.statuses = (S.statuses || []).filter(x => x !== name);
+  } else {
+    S.statuses = [...(S.statuses || []), name];
+  }
   save(); renderLists();
 }
 function removeStatus(name){
