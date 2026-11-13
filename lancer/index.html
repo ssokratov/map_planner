@@ -168,9 +168,7 @@
   .core-power .core-desc { text-align:left; margin:10px 0 8px; }
   .core-name { font-size:15px; font-weight:700; margin-bottom:2px; }
   /* Core Power: текст слева, круглая кнопка справа на той же высоте */
-  .cp-top { display:flex; align-items:center; gap:12px; }
-  .cp-info { flex:1; min-width:0; font-size:14px; line-height:1.45; text-align:left; color:var(--dim); }
-  .cp-info b { color:var(--text); }
+  .cp-top { display:flex; align-items:center; justify-content:center; }
   #coreBtn.cp-round { flex-shrink:0; width:120px; height:120px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; background:transparent; border:none; }
   #coreBtn.cp-round svg { width:100%; height:100%; display:block; }
   /* текст на красной обводке — золотой с металлическим отблеском (градиент cpGold), сверху CORE POWER, снизу ENGAGE/USED */
@@ -298,7 +296,6 @@
       </div>
       <div class="core-power" id="corePanel">
         <div class="cp-top">
-          <div class="cp-info"><b>Core Power (CP):</b><br><span data-i18n="u075">1 раз за миссию. Восстанавливается при полном ремонте или в начале миссии.</span></div>
           <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpRim" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a52a2a"/><stop offset="100%" stop-color="#6e1a1a"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><path id="cpArcTop" d="M 25,25 A 49,49 0 0,1 95,25" fill="none"/><path id="cpArcBottom" d="M 31,111 A 59,59 0 0,0 90,111" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="54" fill="none" stroke="url(#cpRim)" stroke-width="12"/><circle class="cp-core" cx="60" cy="60" r="48" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text></svg></button>
         </div>
         <div class="core-desc">
@@ -599,7 +596,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 124</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 125</span>
       </div>
     </div>
   </section>
