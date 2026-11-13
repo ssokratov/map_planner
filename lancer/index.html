@@ -361,15 +361,6 @@
       <div class="hint" id="haseHint" data-i18n="u061">HASE на LL0: 2 очка (одно +2 или два +1), +1 очко за LL.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul>Значения по умолчанию — GMS Everest на LL0.</div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob">🔧</span></button></div>
-      <p class="hint" id="talentsHint" style="padding:0 0 8px" data-i18n="u063">На LL0: три таланта ранга I. База: <span id="dbTalentCount"></span> талантов из открытых данных Massif Press (lancer-data). Поиск ищет по названию, описанию и рангам; выбор подставляет описание текущего ранга.</p>
-      <div id="talents"></div>
-      <div class="row" id="talentAddRow" style="margin-top:10px">
-        <button class="btn icon" style="flex:0 0 auto" onclick="openSearch('talent')">🔍</button>
-        <button class="btn add" id="addTalentBtn" onclick="addRow('talents','talent')" data-i18n="u064">+ Кастом Талант</button>
-      </div>
-    </div>
-    <div class="card">
       <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob">🔧</span></button></div>
       <p class="hint" id="weaponsHint" style="padding:0 0 8px" data-i18n="u066">База: <span id="dbWeaponCount"></span> видов оружия из открытых данных Massif Press (lancer-data). Поиск ищет по названию, маунту (Main, Aux, Heavy), типу, тегам, корпорации (GMS, IPS-N, Horus, Smith-Shimano) и уровню лицензии (LL0–LL3); несколько слов через пробел сужают поиск (например, «IPS-N LL1»).<span id="licNoteW"></span></p>
       <div id="mounts"></div>
@@ -389,6 +380,15 @@
     <div class="card" id="traitsCard">
       <h2 data-i18n="u076">Трейты фрейма</h2>
       <div id="traitsBox"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob">🔧</span></button></div>
+      <p class="hint" id="talentsHint" style="padding:0 0 8px" data-i18n="u063">На LL0: три таланта ранга I. База: <span id="dbTalentCount"></span> талантов из открытых данных Massif Press (lancer-data). Поиск ищет по названию, описанию и рангам; выбор подставляет описание текущего ранга.</p>
+      <div id="talents"></div>
+      <div class="row" id="talentAddRow" style="margin-top:10px">
+        <button class="btn icon" style="flex:0 0 auto" onclick="openSearch('talent')">🔍</button>
+        <button class="btn add" id="addTalentBtn" onclick="addRow('talents','talent')" data-i18n="u064">+ Кастом Талант</button>
+      </div>
     </div>
     <div class="card">
       <h2 data-i18n="u077">Статусы и условия</h2>
@@ -594,7 +594,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 91</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 92</span>
       </div>
     </div>
   </section>
