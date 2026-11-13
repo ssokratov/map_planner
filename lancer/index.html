@@ -49,6 +49,7 @@
   label { display:block; font-size:12px; color:var(--dim); margin-bottom:4px; }
   input[type=text], input[type=number], textarea, select { width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:9px 10px; font-size:15px; }
   textarea { min-height:64px; resize:vertical; }
+  textarea.autogrow { resize:none; overflow:hidden; }
   .counter { display:flex; align-items:center; gap:8px; }
   .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
   .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
@@ -115,8 +116,6 @@
   .status-tags:empty { display:none; }
   .status-tag { display:inline-flex; align-items:center; gap:6px; background:var(--sc,#2c3542); color:#fff; border-radius:999px; padding:5px 6px 5px 12px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
   .status-x { display:flex; align-items:center; justify-content:center; width:18px; height:18px; border:none; border-radius:50%; background:rgba(0,0,0,.25); color:#fff; font-size:14px; line-height:1; cursor:pointer; padding:0; }
-  .status-ref { margin-bottom:16px; }
-  .status-ref summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--accent2); }
   .status-ref-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
   .status-ref-item { display:block; width:100%; text-align:left; background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--sc,#2c3542); border-radius:8px; padding:8px 10px; cursor:pointer; }
   .status-ref-item.on { border-color:var(--sc); }
@@ -126,14 +125,19 @@
   .res label { color:var(--text); font-size:14px; font-weight:700; }
   .res label .ico { margin-right:4px; }
   .grid label .ico { margin-right:4px; }
-  /* Таблица статов: название сверху, значение снизу; в строке все ячейки равной ширины */
-  .stat-table { display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-  .stat-row { display:grid; gap:10px; }
+  /* Таблица статов: настоящая сетка — без зазоров и скруглений, ячейки вплотную, название сверху, значение снизу */
+  .stat-table { display:flex; flex-direction:column; gap:0; margin-top:10px; border:1px solid var(--line); background:var(--panel2); }
+  .stat-row { display:grid; gap:0; }
+  .stat-row + .stat-row { border-top:1px solid var(--line); }
   .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
-  .stat-row.cols-3 { grid-template-columns:repeat(3, minmax(0,1fr)); }
-  .stat-cell { display:flex; flex-direction:column; align-items:center; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 4px 6px; min-width:0; }
-  .stat-cell label { font-size:12px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; }
-  .stat-cell input[type="number"] { width:100%; max-width:64px; text-align:center; font-size:18px; font-weight:700; padding:2px 4px; }
+  .stat-cell { display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; min-width:0; }
+  .stat-cell + .stat-cell { border-left:1px solid var(--line); }
+  .stat-cell label { font-size:11px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; text-transform:uppercase; letter-spacing:.06em; }
+  .stat-cell input[type="number"] { width:100%; max-width:64px; text-align:center; font-size:20px; font-weight:700; padding:2px 4px; border-color:transparent; background:transparent; }
+  /* HASE — навыки пилота: тёплая подложка, чтобы группа читалась */
+  .stat-row.hase { background:rgba(232,89,12,.08); }
+  /* Grit — ключевое производное число: значение акцентным цветом */
+  .stat-cell.grit input[type="number"] { color:var(--accent); }
   /* Статы в просмотре (редактирование выкл.): имя и фрейм — в одну строку, компактно */
   #statsCard.view .grid > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
   #statsCard.view .grid label { flex:0 0 auto; margin-bottom:0; }
@@ -278,10 +282,6 @@
           <div class="oc-next" id="oc-next">следующий: 1 тепла</div>
         </div>
       </div>
-      <details class="status-ref">
-        <summary data-i18n="u233">Статусы</summary>
-        <div class="status-ref-list" id="statusRef"></div>
-      </details>
       <div class="core-power" id="corePanel">
         <label style="text-align:left">Core Power (CP)</label>
         <button class="btn" id="coreBtn" onclick="toggleCore()" data-i18n="u074">Не использовано</button>
@@ -300,6 +300,10 @@
         <li data-i18n="u019">Счётчик сбрасывается <b>только полным ремонтом</b> (не концом сцены!). Оглушённый мех не может перегружаться. После Brace нельзя перегружаться в следующий ход.</li>
         <li data-i18n="u020">Тепло берётся сразу, и действие выполняется сразу — нельзя «отложить» полученное быстрое действие на потом.</li>
       </ul>
+    </details>
+    <details class="sec">
+      <summary data-i18n="u233">Статусы</summary>
+      <div class="status-ref-list" id="statusRef"></div>
     </details>
     <details class="sec">
       <summary data-i18n="u021">Потеря структуры</summary>
@@ -366,7 +370,7 @@
         <div style="grid-column:1 / -1"><label data-i18n="u147">Фрейм</label><div class="row" style="margin-bottom:0;align-items:center"><div class="frame-ro" id="mechFrameName" style="flex:1 1 auto">Everest</div><button class="btn icon" id="frameSearchBtn" style="flex:0 0 auto" onclick="openSearch('frame')">🔍</button></div></div>
       </div>
       <div class="stat-table">
-        <div class="stat-row cols-4">
+        <div class="stat-row cols-4 hase">
           <div class="stat-cell"><label>Hull</label><input type="number" data-f="pilot.hull" value="0"></div>
           <div class="stat-cell"><label>Agility</label><input type="number" data-f="pilot.agility" value="0"></div>
           <div class="stat-cell"><label>Systems</label><input type="number" data-f="pilot.systems" value="0"></div>
@@ -376,10 +380,11 @@
           <div class="stat-cell"><label>Size</label><input type="number" min="1" data-f="mech.size" value="1"></div>
           <div class="stat-cell"><label>Speed</label><input type="number" data-f="mech.speed" value="4"></div>
           <div class="stat-cell"><label>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
-          <div class="stat-cell"><label>Tech Attack</label><input type="number" data-f="mech.tech" value="0"></div>
+          <div class="stat-cell"><label>T.Attack</label><input type="number" data-f="mech.tech" value="0"></div>
         </div>
-        <div class="stat-row cols-3">
+        <div class="stat-row cols-4">
           <div class="stat-cell"><label>Armor</label><input type="number" min="0" max="4" data-f="mech.armor" value="0"></div>
+          <div class="stat-cell grit"><label>Grit</label><input type="number" data-f="pilot.grit" value="0" readonly></div>
           <div class="stat-cell"><label>Evasion</label><input type="number" data-f="mech.evasion" value="8"></div>
           <div class="stat-cell"><label>E-Defense</label><input type="number" data-f="mech.edef" value="8"></div>
         </div>
@@ -418,7 +423,7 @@
     </div>
     <div class="card">
       <h2 data-i18n="u080">Заметки</h2>
-      <textarea data-f="mech.notes" placeholder="Трейты фрейма, тактика, долги…" data-i18n-ph="p005"></textarea>
+      <textarea class="autogrow" data-f="mech.notes" placeholder="Трейты фрейма, тактика, долги…" data-i18n-ph="p005" oninput="autoGrowNotes()"></textarea>
     </div>
   </section>
 
@@ -579,7 +584,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 114</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 115</span>
       </div>
     </div>
   </section>
@@ -926,6 +931,7 @@ function showTab(t){
   document.getElementById('tabMechBtn').classList.toggle('active', t==='mech');
   document.getElementById('tabPilotBtn').classList.toggle('active', t==='pilot');
   document.getElementById('tabRulesBtn').classList.toggle('active', t==='rules');
+  autoGrowNotes();
 }
 // Свайпы для переключения вкладок на телефоне (v74): свайп влево — следующая вкладка,
 // свайп вправо — предыдущая; вертикальный свайп — обычная прокрутка, не трогаем.
@@ -1225,8 +1231,10 @@ function renderCounters(){
   if (cp) cp.classList.toggle('cp-used', !!get('mech.coreUsed'));
   const llDisp = document.getElementById('llDisplay');
   if (llDisp) llDisp.value = calcLL();
-  const grit = document.querySelector('[data-f="pilot.grit"]');
-  if (grit) grit.value = Math.ceil(calcLL()/2);
+  // Grit — производное от LL; пишем и в сейв, и во ВСЕ поля на экране (их два: Пилот и таблица статов)
+  const gritVal = Math.ceil(calcLL()/2);
+  S.pilot.grit = gritVal;
+  document.querySelectorAll('[data-f="pilot.grit"]').forEach(el => { el.value = gritVal; });
 }
 function cpFlash(){
   const b = document.getElementById('corePanel');
@@ -1463,6 +1471,7 @@ function renderLists(){
   renderCounters();
   renderMyActions();
   syncInputs();
+  autoGrowNotes();
 }
 function updateLicenseSummary(){
   const llEl = document.getElementById('licenseLL');
@@ -1705,6 +1714,13 @@ function syncEditToggles(){
   const view = (id, on)=>{ const el = document.getElementById(id); if (el) el.classList.toggle('view', !on); };
   view('pilotCard', editOn('pilot'));
   view('statsCard', editOn('mech'));
+}
+// Поле заметок: растягивается само по высоте текста (без ручного resize и внутреннего скролла)
+function autoGrowNotes(){
+  const el = document.querySelector('[data-f="mech.notes"]');
+  if (!el || !el.offsetParent) return; // скрытая вкладка — не трогаем
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
 }
 function syncInputs(){
   document.querySelectorAll('[data-f]').forEach(el=>{
