@@ -214,7 +214,7 @@
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
   .toggle { width:40px; height:24px; border-radius:0; background:#3a4350; border:1px solid var(--line); box-shadow:inset 0 1px 1px rgba(0,0,0,.65); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
-  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:0; background:linear-gradient(180deg, #ffffff, #d7dde5); box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(0,0,0,.28); transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
+  .toggle .knob { position:absolute; top:0; left:0; width:19px; height:22px; border-radius:0; background:linear-gradient(180deg, #ffffff, #d7dde5); box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(0,0,0,.28); transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
   .toggle.on { background:var(--hud-amber); border-color:var(--hud-amber); }
   .toggle.on .knob { left:19px; }
   /* Слайдер языка (v75): буквы RUS/ENG внутри пилюли, бегунок — подсветка активной половины */
@@ -606,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 141</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 142</span>
       </div>
     </div>
   </section>
