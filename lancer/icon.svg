@@ -14,10 +14,14 @@
       <stop offset="50%" stop-color="#f5c518"/>
       <stop offset="100%" stop-color="#c9960a"/>
     </linearGradient>
+    <pattern id="hazard" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="56" height="28" fill="#ffd43b"/>
+      <rect y="28" width="56" height="28" fill="#10131a"/>
+    </pattern>
     <path id="arcTop" d="M 174,114 A 164,164 0 0,1 338,114" fill="none"/>
     <path id="arcBottom" d="M 160,422 A 192,192 0 0,0 352,422" fill="none"/>
   </defs>
-  <rect width="512" height="512" rx="112" fill="#0e1116"/>
+  <rect width="512" height="512" rx="112" fill="url(#hazard)"/>
   <circle cx="256" cy="256" r="177.5" fill="none" stroke="url(#rimRed)" stroke-width="35"/>
   <circle cx="256" cy="256" r="160" fill="url(#btn)"/>
   <path d="M 285 135 L 195 275 L 245 275 L 220 385 L 325 240 L 270 240 Z" fill="#ffe135" transform="translate(256 256) scale(0.9) translate(-256 -256)"/>
