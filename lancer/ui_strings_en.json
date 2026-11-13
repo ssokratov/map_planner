@@ -643,8 +643,8 @@
       "tag": "js"
     },
     "u186": {
-      "ru": "Мастер создания",
-      "en": "Creation Wizard",
+      "ru": "Мастер сборки",
+      "en": "Build Wizard",
       "tag": "span"
     },
     "u187": {
