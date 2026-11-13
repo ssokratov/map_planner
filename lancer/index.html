@@ -8,7 +8,7 @@
 <title>Lancer — Трекер персонажа</title>
 <style>
   :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; }
-  * { box-sizing:border-box; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html { overflow-x:clip; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
   nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:4px 8px calc(4px + env(safe-area-inset-bottom));
@@ -606,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 134</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 135</span>
       </div>
     </div>
   </section>
