@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 100</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 101</span>
       </div>
     </div>
   </section>
@@ -1803,10 +1803,10 @@ function updateSpCounter(){
 }
 // Бонус к Limited от Engineering (корбук, HASE): +1 к максимуму использований любого лимитного снаряжения за каждые 2 очка.
 function limBonus(){ return Math.floor((+get('pilot.engineering')||0) / 2); }
-function sysLim(s){ let base; if (typeof s.lim === 'number') base = s.lim; else { const d = findSystem(s.name); base = d ? (d.lim||0) : 0; } return base + limBonus(); }
+function sysLim(s){ let base; if (typeof s.lim === 'number') base = s.lim; else { const d = findSystem(s.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
 function sysLeft(s){ const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
 function sysSp(s){ const d = findSystem(s.name); return d ? (d.p||0) : (+s.sp||0); }
-function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base + limBonus(); }
+function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
 function weapLeft(w){ const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
 function sysTags(s){ if (Array.isArray(s.tg) && s.tg.length) return s.tg; const d = findSystem(s.name); return d ? (d.tg||[]) : []; }
