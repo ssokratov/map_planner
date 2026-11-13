@@ -199,8 +199,9 @@
       "tag": "label"
     },
     "u061": {
-      "en": "HASE at LL0: 2 points (one +2 or two +1), +1 point per LL.<ul><li>Hull: +2 HP/point, +1 Repair Cap per 2 points.</li><li>Agility: +1 Evasion/point, +1 Speed per 2.</li><li>Systems: +1 Tech Attack and E-Defense/point, +1 SP per 2.</li><li>Engineering: +1 Heat Cap/point, +1 to Limited gear per 2.</li></ul>Defaults are GMS Everest at LL0.",
-      "tag": "div"
+      "en": "At the start: 2 points, then +1 point per level.<ul><li>Hull: +2 HP/point, +1 Repair Cap per 2 points.</li><li>Agility: +1 Evasion/point, +1 Speed per 2.</li><li>Systems: +1 Tech Attack and E-Defense/point, +1 SP per 2.</li><li>Engineering: +1 Heat Cap/point, +1 to limited gear per 2.</li></ul>",
+      "tag": "div",
+      "ru": "На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul>"
     },
     "u062": {
       "en": "Talents",
