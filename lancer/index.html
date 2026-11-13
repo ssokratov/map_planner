@@ -76,7 +76,7 @@
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
   /* Пламя бинарное (v91): до крита (75%) — маленькая статичная иконка; на крите и выше — большое пульсирующее пламя снизу */
-  .thermo-ico { position:absolute; left:0; right:0; bottom:36px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
+  .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
   .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse .9s ease-in-out infinite; }
   @keyframes flamePulse { 0%,100% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.15) rotate(-3deg); } }
   .thermo-max { font-size:11px; color:rgba(255,255,255,.8); text-shadow:0 1px 2px rgba(0,0,0,.8); margin-top:2px; }
@@ -594,7 +594,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 94</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 95</span>
       </div>
     </div>
   </section>
