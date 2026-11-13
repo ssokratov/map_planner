@@ -183,7 +183,7 @@
   #coreBtn.cp-round svg { width:100%; height:100%; display:block; }
   /* текст на красной обводке — золотой с металлическим отблеском (градиент cpGold), сверху CORE POWER, снизу ENGAGE/USED */
   #coreBtn .cp-label { font-size:10px; letter-spacing:1px; font-weight:700; fill:url(#cpGold); }
-  #coreBtn.cp-ready { box-shadow:0 0 0 2px rgba(255,107,107,.25), 0 4px 14px rgba(214,48,48,.45); }
+  #coreBtn.cp-ready { box-shadow:0 0 0 2px rgba(255,107,107,.55), 0 4px 0 rgba(0,0,0,.5); }
   #coreBtn.cp-ready .cp-core { fill:url(#cpRed); }
   #coreBtn.cp-ready .cp-rim { stroke:url(#cpRim); }
   #coreBtn.cp-used { box-shadow:inset 0 3px 8px rgba(0,0,0,.5); cursor:default; }
@@ -213,8 +213,8 @@
   .card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
-  .toggle { width:40px; height:24px; border-radius:0; background:#3a4350; border:1px solid var(--line); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
-  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:0; background:#fff; transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
+  .toggle { width:40px; height:24px; border-radius:0; background:#3a4350; border:1px solid var(--line); box-shadow:inset 0 2px 4px rgba(0,0,0,.45); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
+  .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:0; background:linear-gradient(180deg, #ffffff, #d7dde5); box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(0,0,0,.28); transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
   .toggle.on { background:var(--hud-amber); border-color:var(--hud-amber); }
   .toggle.on .knob { left:19px; }
   /* Слайдер языка (v75): буквы RUS/ENG внутри пилюли, бегунок — подсветка активной половины */
@@ -222,7 +222,7 @@
   #langToggle .lang-opt { position:absolute; top:50%; transform:translateY(-50%); width:43px; text-align:center; font-size:11px; font-weight:700; color:var(--dim); z-index:1; pointer-events:none; transition:color .15s ease; }
   #langToggle .lang-opt[data-lang="ru"] { left:0; }
   #langToggle .lang-opt[data-lang="en"] { right:0; }
-  #langToggle .knob { width:41px; height:24px; border-radius:999px; background:var(--good); top:1px; left:1px; z-index:0; transition:left .18s ease; }
+  #langToggle .knob { width:41px; height:24px; border-radius:0; background:linear-gradient(180deg, #7be495, #51cf66 55%, #3f9e50); box-shadow:inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(0,0,0,.3); top:1px; left:1px; z-index:0; transition:left .18s ease; }
   #langToggle.on .knob { left:44px; }
   #langToggle.on { background:#3a4350; border-color:var(--line); }
   #langToggle:not(.on) .lang-opt[data-lang="ru"] { color:#fff; }
@@ -606,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 136</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 137</span>
       </div>
     </div>
   </section>
