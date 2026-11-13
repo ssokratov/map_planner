@@ -35,6 +35,12 @@
   @keyframes shakeBig { 0%,100% { transform:translate(0,0); } 15% { transform:translate(-7px,4px); } 30% { transform:translate(7px,-4px); } 45% { transform:translate(-6px,-3px); } 60% { transform:translate(6px,3px); } 75% { transform:translate(-4px,2px); } 90% { transform:translate(4px,-2px); } }
   main.shake-small { animation:shakeSmall .3s ease; }
   main.shake-big { animation:shakeBig .45s ease; }
+  /* Пульс критического HP (v85): кольцо краснеет-пульсирует, пока HP <= 25% */
+  @keyframes critPulse { 0%,100% { filter:drop-shadow(0 0 2px rgba(255,60,60,.35)); } 50% { filter:drop-shadow(0 0 14px rgba(255,60,60,.85)); } }
+  .ring-wrap.crit { animation:critPulse 1.2s ease-in-out infinite; }
+  /* Вспышка Core Power (v85): золотая вспышка при активации, раз за миссию */
+  @keyframes cpFlash { 0% { box-shadow:0 0 0 rgba(255,212,59,0); } 25% { box-shadow:0 0 32px rgba(255,212,59,.95), 0 0 64px rgba(255,212,59,.45); } 100% { box-shadow:0 0 0 rgba(255,212,59,0); } }
+  #coreBtn.cp-flash { animation:cpFlash .8s ease; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
@@ -203,7 +209,7 @@
       <h2 data-i18n="u011">Ресурсы боя</h2>
       <div class="res-top">
         <div class="hp-ring">
-          <div class="ring-wrap">
+          <div class="ring-wrap" id="hpRingWrap">
             <svg viewBox="0 0 140 140" aria-hidden="true">
               <circle class="ring-track" cx="70" cy="70" r="58"/>
               <circle class="ring-fill" id="hpRingFill" cx="70" cy="70" r="58"/>
@@ -579,7 +585,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 84</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 85</span>
       </div>
     </div>
   </section>
@@ -939,14 +945,17 @@ function shake(kind){
   void m.offsetWidth;
   m.classList.add(kind);
 }
+function buzz(pattern){
+  if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(pattern);
+}
 function step(path, d){
   const max = get(path+'Max');
   const old = get(path)||0;
   let v = old + d;
   v = Math.max(0, Math.min(max, v));
   set(path, v); save(); renderCounters();
-  if (v < old && path === 'mech.hp') shake('shake-small');
-  if (v < old && path === 'mech.structure') shake('shake-big');
+  if (v < old && path === 'mech.hp') { shake('shake-small'); buzz(30); }
+  if (v < old && path === 'mech.structure') { shake('shake-big'); buzz([50, 30, 90]); }
 }
 function stepOC(d){
   let v = Math.max(0, Math.min(4, (get('mech.overcharge')||0) + d));
@@ -1150,6 +1159,8 @@ function renderCounters(){
     hpRing.style.strokeDasharray = C;
     hpRing.style.strokeDashoffset = C * (1 - (m ? Math.max(0, v) / m : 0));
     hpRing.style.stroke = v <= 0 ? '#ff6b6b' : (v / m <= 0.25 ? '#ff922b' : (v / m <= 0.5 ? '#ffd43b' : '#51cf66'));
+    const rw = document.getElementById('hpRingWrap');
+    if (rw) rw.classList.toggle('crit', m ? v / m <= 0.25 : v <= 0);
   }
   const htFill = document.getElementById('heatThermoFill');
   if (htFill) {
@@ -1171,7 +1182,19 @@ function renderCounters(){
   const grit = document.querySelector('[data-f="pilot.grit"]');
   if (grit) grit.value = Math.ceil(calcLL()/2);
 }
-function toggleCore(){ set('mech.coreUsed', get('mech.coreUsed')?0:1); save(); renderCounters(); }
+function cpFlash(){
+  const b = document.getElementById('coreBtn');
+  if (!b) return;
+  b.classList.remove('cp-flash');
+  void b.offsetWidth;
+  b.classList.add('cp-flash');
+  setTimeout(function(){ b.classList.remove('cp-flash'); }, 850);
+}
+function toggleCore(){
+  const wasUsed = !!get('mech.coreUsed');
+  set('mech.coreUsed', wasUsed?0:1); save(); renderCounters();
+  if (!wasUsed) cpFlash();
+}
 function addRow(list, kind){
   if (kind==='trigger') S.triggers.push({name:'',bonus:2});
   if (kind==='talent') S.talents.push({name:'',rank:1});
