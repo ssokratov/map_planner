@@ -16,13 +16,13 @@
     border-top:2px solid #ffd43b;
     box-shadow:0 -6px 20px rgba(0,0,0,.55), 0 -2px 16px rgba(255,212,59,.18), inset 0 1px 0 rgba(255,255,255,.07); }
 
-  nav button { position:relative; flex:1; min-height:56px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; }
+  nav button { position:relative; z-index:1; flex:1; min-height:56px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; }
   nav button svg { width:30px; height:30px; display:block; transition:transform .2s ease, filter .2s ease; }
   nav button.active { background:none; color:#ffd43b; }
   nav button.active svg { filter:drop-shadow(0 0 6px rgba(255,212,59,.55)); transform:scale(1.15); }
-  /* Линза вокруг выбранного таба (v75): светящийся круг-стекло за иконкой */
-  nav button.active::before { content:""; position:absolute; left:50%; top:50%; width:52px; height:52px; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(255,212,59,.22) 0%, rgba(255,212,59,.08) 55%, transparent 72%); box-shadow:0 0 16px rgba(255,212,59,.35), inset 0 0 10px rgba(255,212,59,.20); animation:lensIn .3s ease; pointer-events:none; }
-  @keyframes lensIn { from { transform:translate(-50%,-50%) scale(.55); opacity:0; } to { transform:translate(-50%,-50%) scale(1); opacity:1; } }
+  /* Линза выбранного таба (v79): прямоугольник на всю кнопку (треть ширины навбара)
+     и на всю его высоту; один элемент, честно скользит между кнопками через transform */
+  .nav-lens { position:absolute; top:0; bottom:0; left:8px; width:calc((100% - 16px) / 3); border-radius:10px; background:linear-gradient(180deg, rgba(255,212,59,.16), rgba(255,212,59,.05)); box-shadow:0 0 18px rgba(255,212,59,.22), inset 0 0 0 1px rgba(255,212,59,.35); pointer-events:none; z-index:0; transition:transform .25s ease; }
   nav button.active::after { content:""; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:26px; height:3px; border-radius:2px; background:#ffd43b; }
   main { padding:16px 16px 104px; max-width:860px; margin:0 auto; }
   section.tab { display:none; }
@@ -187,6 +187,7 @@
 </head>
 <body>
 <nav>
+  <div class="nav-lens" id="navLens"></div>
   <button id="tabMechBtn" class="active" onclick="showTab('mech')" aria-label="Мех"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="2.5" x2="12" y2="4"/><circle cx="12" cy="1.6" r="0.7" fill="currentColor" stroke="none"/><rect x="9.5" y="4" width="5" height="3.6" rx="1"/><circle cx="11" cy="5.8" r="0.55" fill="currentColor" stroke="none"/><circle cx="13" cy="5.8" r="0.55" fill="currentColor" stroke="none"/><rect x="8" y="8.6" width="8" height="5.4" rx="1.4"/><rect x="10.6" y="10.4" width="2.8" height="1.8" rx="0.6"/><line x1="6.8" y1="9.6" x2="6.8" y2="13.4"/><line x1="17.2" y1="9.6" x2="17.2" y2="13.4"/><line x1="10" y1="15" x2="10" y2="20"/><line x1="14" y1="15" x2="14" y2="20"/><line x1="8.6" y1="20" x2="11.4" y2="20"/><line x1="12.6" y1="20" x2="15.4" y2="20"/></svg></button>
   <button id="tabPilotBtn" onclick="showTab('pilot')" aria-label="Пилот"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M5.2 20c.6-3.6 3.4-5.4 6.8-5.4s6.2 1.8 6.8 5.4"/></svg></button>
   <button id="tabRulesBtn" onclick="showTab('rules')" aria-label="Правила"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10.5 5 8 4.5 5 4.5v14c3 0 5.5.5 7 2 1.5-1.5 4-2 7-2v-14c-3 0-5.5.5-7 2z"/><line x1="12" y1="6.5" x2="12" y2="20.5"/></svg></button>
@@ -574,7 +575,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 78</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 79</span>
       </div>
     </div>
   </section>
@@ -891,6 +892,9 @@ function showTab(t){
     s.classList.remove('active');
     s.classList.remove('fade-in');
   });
+  // линза скользит к новой вкладке (v79): 0/100/200% своей ширины = Мех/Пилот/Правила
+  const lens = document.getElementById('navLens');
+  if (lens) lens.style.transform = 'translateX(' + (['mech','pilot','rules'].indexOf(t) * 100) + '%)';
   const sec = document.getElementById('tab-'+t);
   sec.classList.add('active');
   // мягкое появление нового экрана (v78); повторный тап по той же вкладке не анимируем
