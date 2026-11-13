@@ -40,7 +40,7 @@
   .ring-wrap.crit { animation:critPulse 1.2s ease-in-out infinite; }
   /* Вспышка Core Power (v85): золотая вспышка при активации, раз за миссию */
   @keyframes cpFlash { 0% { box-shadow:0 0 0 rgba(255,212,59,0); } 25% { box-shadow:0 0 32px rgba(255,212,59,.95), 0 0 64px rgba(255,212,59,.45); } 100% { box-shadow:0 0 0 rgba(255,212,59,0); } }
-  #coreBtn.cp-flash { animation:cpFlash .8s ease; }
+  #corePanel.cp-flash { animation:cpFlash 1.6s ease; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
@@ -75,7 +75,9 @@
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
-  .thermo-ico { font-size:16px; line-height:1; margin-top:2px; }
+  .thermo-ico { position:absolute; left:0; right:0; bottom:36px; text-align:center; font-size:20px; line-height:1; z-index:0; pointer-events:none; transform:scale(var(--fs,1)); transform-origin:center bottom; }
+  .thermo-ico.hot { animation:flamePulse .9s ease-in-out infinite; }
+  @keyframes flamePulse { 0%,100% { transform:scale(var(--fs,1)); } 50% { transform:scale(calc(var(--fs,1) * 1.3)); } }
   .thermo-max { font-size:11px; color:rgba(255,255,255,.8); text-shadow:0 1px 2px rgba(0,0,0,.8); margin-top:2px; }
   .thermo-plus, .thermo-minus { position:absolute; left:0; right:0; height:34px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   .thermo-plus { top:0; }
@@ -223,8 +225,9 @@
         <div class="heat-thermo">
           <div class="thermo">
             <div class="thermo-fill" id="heatThermoFill"></div>
+            <div class="thermo-ico" id="heatFlame">🔥</div>
             <div class="thermo-plus" onclick="step('mech.heat',1)" role="button" aria-label="Heat плюс">+</div>
-            <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-ico">🔥</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
+            <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
             <div class="thermo-minus" onclick="step('mech.heat',-1)" role="button" aria-label="Heat минус">−</div>
           </div>
           <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
@@ -251,7 +254,7 @@
           <div class="oc-next" id="oc-next">следующий: 1 тепла</div>
         </div>
       </div>
-      <div class="core-power">
+      <div class="core-power" id="corePanel">
         <label style="text-align:left">Core Power (CP)</label>
         <button class="btn" id="coreBtn" onclick="toggleCore()" data-i18n="u074">Не использовано</button>
         <div class="core-desc">
@@ -585,7 +588,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 85</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 86</span>
       </div>
     </div>
   </section>
@@ -945,17 +948,14 @@ function shake(kind){
   void m.offsetWidth;
   m.classList.add(kind);
 }
-function buzz(pattern){
-  if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(pattern);
-}
 function step(path, d){
   const max = get(path+'Max');
   const old = get(path)||0;
   let v = old + d;
   v = Math.max(0, Math.min(max, v));
   set(path, v); save(); renderCounters();
-  if (v < old && path === 'mech.hp') { shake('shake-small'); buzz(30); }
-  if (v < old && path === 'mech.structure') { shake('shake-big'); buzz([50, 30, 90]); }
+  if (v < old && path === 'mech.hp') shake('shake-small');
+  if (v < old && path === 'mech.structure') shake('shake-big');
 }
 function stepOC(d){
   let v = Math.max(0, Math.min(4, (get('mech.overcharge')||0) + d));
@@ -1168,6 +1168,13 @@ function renderCounters(){
     htFill.style.height = (m ? Math.min(100, Math.max(0, v) / m * 100) : 0) + '%';
     htFill.classList.toggle('hot', v >= m);
   }
+  const flame = document.getElementById('heatFlame');
+  if (flame) {
+    const v = get('mech.heat'), m = get('mech.heatMax');
+    const s = 1 + (m ? Math.max(0, v) / m : 0) * 1.3;
+    flame.style.setProperty('--fs', s.toFixed(2));
+    flame.classList.toggle('hot', m ? v >= m - 1 : false);
+  }
   const oc = get('mech.overcharge') || 0;
   const ocEl = document.getElementById('v-mech.overcharge');
   if (ocEl) ocEl.textContent = oc >= 4 ? '4+' : oc;
@@ -1183,12 +1190,12 @@ function renderCounters(){
   if (grit) grit.value = Math.ceil(calcLL()/2);
 }
 function cpFlash(){
-  const b = document.getElementById('coreBtn');
+  const b = document.getElementById('corePanel');
   if (!b) return;
   b.classList.remove('cp-flash');
   void b.offsetWidth;
   b.classList.add('cp-flash');
-  setTimeout(function(){ b.classList.remove('cp-flash'); }, 850);
+  setTimeout(function(){ b.classList.remove('cp-flash'); }, 1650);
 }
 function toggleCore(){
   const wasUsed = !!get('mech.coreUsed');
