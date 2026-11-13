@@ -599,7 +599,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 130</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 131</span>
       </div>
     </div>
   </section>
@@ -2210,10 +2210,10 @@ function wizStepHase(k, d){
   S.pilot[k] = v; save(); recalcDerived(); renderCounters(); renderLists();
 }
 function wizHase(){
-  const hase = [['hull','❤️','Hull'], ['agility','💨','Agility'], ['systems','💻','Systems'], ['engineering','⚙️','Engineering']];
-  const rows = hase.map(([k,ico,lab])=>{
+  const hase = [['hull','Hull'], ['agility','Agility'], ['systems','Systems'], ['engineering','Engineering']];
+  const rows = hase.map(([k,lab])=>{
     const v = S.pilot[k]||0;
-    return `<div class="row"><span style="flex:1 1 auto"><span class="ico">${ico}</span>${lab}</span>`
+    return `<div class="row"><span style="flex:1 1 auto">${lab}</span>`
     + `<div class="counter small" style="flex:0 0 auto"><button onclick="wizStepHase('${k}',-1)">−</button><div class="val">${v}</div><button onclick="wizStepHase('${k}',1)">+</button></div></div>`;
   }).join('');
   return `<div class="hint">${L('u061')}</div>${rows}`;
@@ -2392,11 +2392,11 @@ function luRaiseHase(k){
   save(); recalcDerived(); renderCounters(); renderLists(); luRenderStep();
 }
 function luHase(){
-  const hase = [['hull','❤️','Hull'], ['agility','💨','Agility'], ['systems','💻','Systems'], ['engineering','⚙️','Engineering']];
-  const rows = hase.map(([k,ico,lab])=>{
+  const hase = [['hull','Hull'], ['agility','Agility'], ['systems','Systems'], ['engineering','Engineering']];
+  const rows = hase.map(([k,lab])=>{
     const v = S.pilot[k]||0;
     const picked = luPicked.hase === k;
-    return `<div class="row"><span style="flex:1 1 auto"><span class="ico">${ico}</span>${lab} <b>${v}</b>${picked ? ' ✓' : ''}</span>`
+    return `<div class="row"><span style="flex:1 1 auto">${lab} <b>${v}</b>${picked ? ' ✓' : ''}</span>`
     + `<button class="btn ${picked ? 'primary' : ''}" onclick="luRaiseHase('${k}')">+1</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u217'))}</p>${rows}`;
