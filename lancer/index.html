@@ -527,7 +527,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 61</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 62</span>
   </div>
 </footer>
 
@@ -620,9 +620,11 @@ function openSearch(kind, ctx){
   renderSearchResults('');
   const dlg = document.getElementById('searchDlg');
   if (dlg && dlg.showModal) dlg.showModal();
-  // Фокус в поле поиска НЕ ставим (v61): на телефоне он сразу открывает
-  // клавиатуру на пол-экрана, а чаще хочется просто поскроллить опции.
+  // v61 убрала явный inp.focus(), но этого мало: showModal() сам фокусит
+  // первый фокусабельный элемент диалога (поле поиска) — и на телефоне
+  // клавиатура всё равно открывается. Снимаем фокус сразу после открытия.
   // Кто хочет искать — тапнет в поле сам.
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 }
 function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if (dlg && dlg.close) dlg.close(); }
 function renderSearchResults(q){
