@@ -462,7 +462,7 @@
       <summary data-i18n="u229">Твои действия</summary>
       <div id="myActions"></div>
     </details>
-    <details class="sec" open>
+    <details class="sec">
       <summary data-i18n="u097">Ход и структура боя</summary>
       <ul>
         <li data-i18n="u098">На своём ходу: <b>1 стандартное движение</b> (до значения Speed) и либо <b>2 быстрых действия</b>, либо <b>1 полное действие</b>.</li>
@@ -574,7 +574,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 72</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 73</span>
   </div>
 </footer>
 
@@ -912,12 +912,12 @@ const ACTIONS_REF = {
      ef_ru:'Немедленно Skirmish этим оружием по нему как реакцией, до того как он двинется.',
      tr_en:'A hostile character starts any movement (including Boost and other actions) inside the Threat of one of your weapons.',
      ef_en:'Immediately Skirmish with that weapon against them as a reaction, before they move.'},
-    {key:'intercede', name:'Intercede', ru:'Вмешательство', grant:{talent:'Sundance', rank:2},
+    {key:'intercede', name:'Intercede', ru:'Вмешательство', grant:{talent:'Bonded', rank:2},
      tr_ru:'Ты соседствуешь со своим bondmate (пилотом или мехом), и он получает урон от источника в твоей линии видимости.',
      ef_ru:'Ты можешь принять этот урон на себя.',
      tr_en:'You are adjacent to your bondmate (pilot or mech) and they take damage from a source within your line of sight.',
      ef_en:'You may take the damage instead.'},
-    {key:'supersonic', name:'Supersonic', ru:'Сверхзвук', grant:{talent:'Sundance', rank:3},
+    {key:'supersonic', name:'Supersonic', ru:'Сверхзвук', grant:{talent:'Ace', rank:3},
      tr_ru:'Ход твоей цели заканчивается. (Сначала: как быстрое действие на своём ходу разгони двигатели; если закончишь ход в полёте, назначь персонажа в пределах дальности, равной твоей Speed, и в линии видимости — и получи эту реакцию.)',
      ef_ru:'Ты перелетаешь в свободное пространство, соседнее с целью.',
      tr_en:'Your target\u2019s turn ends. (First: as a quick action on your turn, spin up your thrusters; if you end your turn flying, nominate a character within Range equal to your Speed and line of sight, and gain this reaction.)',
