@@ -69,13 +69,19 @@
   .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:25px; height:88px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.85); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   .ring-minus { left:15px; padding-left:3px; border-right:1px solid rgba(255,255,255,.12); }
   .ring-plus { right:15px; padding-right:3px; border-left:1px solid rgba(255,255,255,.12); }
-  .heat-thermo { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .heat-thermo { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; }
   .thermo { position:relative; width:64px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
   .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; }
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
-  /* Пламя бинарное (v91): до крита (75%) — маленькая статичная иконка; на крите и выше — большое пульсирующее пламя снизу */
+  /* Пламя бинарное (v108): привязано к Danger Zone — до половины Heat Cap маленькая статичная иконка,
+     в Danger Zone (тепло >= половины максимума) — большое пульсирующее пламя снизу */
+  /* Подписи DANGER / ZONE вокруг термометра (v108): вертикально, капс, всегда английский,
+     переливаются между красным и оранжевым. Левая читается снизу вверх, правая — сверху вниз. */
+  .dz-label { writing-mode:vertical-rl; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.6s ease-in-out infinite; user-select:none; pointer-events:none; }
+  .dz-left { transform:rotate(180deg); }
+  @keyframes dzGlow { 0%,100% { color:#ff3b30; text-shadow:0 0 6px rgba(255,59,48,.55); } 50% { color:#ff9500; text-shadow:0 0 6px rgba(255,149,0,.55); } }
   .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
   .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse .9s ease-in-out infinite; }
   @keyframes flamePulse { 0%,100% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.15) rotate(-3deg); } }
@@ -229,6 +235,7 @@
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
         </div>
         <div class="heat-thermo">
+          <span class="dz-label dz-left">DANGER</span>
           <div class="thermo">
             <div class="thermo-fill" id="heatThermoFill"></div>
             <div class="thermo-ico" id="heatFlame">🔥</div>
@@ -236,6 +243,7 @@
             <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
             <div class="thermo-minus" onclick="step('mech.heat',-1)" role="button" aria-label="Heat минус">−</div>
           </div>
+          <span class="dz-label dz-right">ZONE</span>
           <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
         </div>
       </div>
@@ -593,7 +601,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 107</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 108</span>
       </div>
     </div>
   </section>
@@ -958,7 +966,7 @@ function step(path, d){
   const old = get(path)||0;
   let v = old + d;
   v = Math.max(0, Math.min(max, v));
-  set(path, v); save(); renderCounters();
+  set(path, v); syncDangerZone(); save(); renderCounters();
   if (v < old && path === 'mech.hp') shake('shake-small');
   if (v < old && path === 'mech.structure') shake('shake-big');
 }
@@ -1158,6 +1166,26 @@ function renderMyActions(){
   box.innerHTML = h;
 }
 
+// Danger Zone (v108): мех в Danger Zone, когда тепло >= половины Heat Cap (корбук).
+// Пламя в термометре и галочка статуса привязаны к этой механике.
+function isDangerZone(){
+  const m = get('mech.heatMax') || 0;
+  return m ? (get('mech.heat') || 0) >= m / 2 : false;
+}
+function syncDangerZone(){
+  const on = isDangerZone();
+  const has = (S.statuses || []).includes('Danger Zone');
+  if (on && !has) S.statuses = [...(S.statuses || []), 'Danger Zone'];
+  if (!on && has) S.statuses = (S.statuses || []).filter(x => x !== 'Danger Zone');
+  const box = document.getElementById('statuses');
+  if (box) box.querySelectorAll('label').forEach(l => {
+    if (l.textContent.trim() === 'Danger Zone'){
+      l.classList.toggle('on', on);
+      const cb = l.querySelector('input[type=checkbox]');
+      if (cb) cb.checked = on;
+    }
+  });
+}
 function renderCounters(){
   // Пилотский HP — как раньше: «v / max» в самом значении.
   const ph = document.getElementById('v-pilot.hp');
@@ -1189,11 +1217,9 @@ function renderCounters(){
     htFill.style.height = (m ? Math.min(100, Math.max(0, v) / m * 100) : 0) + '%';
     htFill.classList.toggle('hot', v >= m);
   }
+  syncDangerZone();
   const flame = document.getElementById('heatFlame');
-  if (flame) {
-    const v = get('mech.heat'), m = get('mech.heatMax');
-    flame.classList.toggle('crit', m ? v >= m * 0.75 : false);
-  }
+  if (flame) flame.classList.toggle('crit', isDangerZone());
   const oc = get('mech.overcharge') || 0;
   const ocEl = document.getElementById('v-mech.overcharge');
   if (ocEl) ocEl.textContent = oc >= 4 ? '4+' : oc;
@@ -1718,6 +1744,7 @@ function recalcDerived(){
   ['mech.hp','mech.structure','mech.stress','mech.heat','mech.repairs'].forEach(p=>{
     const mx = get(p+'Max'); if ((get(p)||0) > mx) set(p, mx);
   });
+  syncDangerZone();
 }
 function applyFrame(name){
   // Фрейм выбирается только через модалку поиска (pickFrame) — пикера больше нет.
