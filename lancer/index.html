@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 103</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 104</span>
       </div>
     </div>
   </section>
@@ -1359,7 +1359,7 @@ function renderLists(){
       <select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
       <button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
-      ${rds.length ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px">${rds.map((r, k) => `<b>${['I','II','III'][k]}. ${esc(r.n)}:</b> ${esc(r.d)}`).join('\n\n')}</div>` : ''}
+      ${rds.length ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px">${rds.map((r, k) => `<b>${['I','II','III'][k]}. ${esc(r.n)}:</b> ${linkTagTerms(esc(r.d))}`).join('\n\n')}</div>` : ''}
     </div>`;
   }).join('');
   document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>{
@@ -1774,9 +1774,9 @@ function showSystemResults(q, box){
     const first = (d.x||'').split('\n\n')[0].replace(/\n/g,' ');
     const needsMore = first.length > 140;
     let descHtml;
-    if (!needsMore) descHtml = esc(excerpt(d.x, 140));
-    else if (openSearchDescs.has(key)) descHtml = esc(d.x) + ' <button class="desc-more" onclick="closeSearchDesc(\'' + key + '\')">' + esc(L('desc_less')) + '</button>';
-    else descHtml = esc(excerpt(d.x, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
+    if (!needsMore) descHtml = linkTagTerms(esc(excerpt(d.x, 140)));
+    else if (openSearchDescs.has(key)) descHtml = linkTagTerms(esc(d.x)) + ' <button class="desc-more" onclick="closeSearchDesc(\'' + key + '\')">' + esc(L('desc_less')) + '</button>';
+    else descHtml = linkTagTerms(esc(excerpt(d.x, 140))) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
       <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, (s.p||0) + ' SP', d.lab].filter(x=>x).join(' · '))}</span>${(s.tg && s.tg.length) ? `<div class="tags">${tagChips(s.tg)}</div>` : ''}<span class="dim" style="white-space:pre-line">${descHtml}</span></div>
