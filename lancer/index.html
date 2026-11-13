@@ -80,12 +80,12 @@
   /* Подписи DANGER / ZONE вокруг термометра (v108–v109): буквы стоят прямо, одна под другой
      (text-orientation:upright), капс, всегда английский, переливаются между красным и оранжевым.
      Видны только в Danger Zone — вне её термометр чистый. */
-  .dz-label { display:none; writing-mode:vertical-rl; text-orientation:upright; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.6s ease-in-out infinite; user-select:none; pointer-events:none; }
+  .dz-label { display:none; writing-mode:vertical-rl; text-orientation:upright; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.2s ease-in-out infinite; user-select:none; pointer-events:none; }
   .heat-thermo.dz-active .dz-label { display:block; }
   @keyframes dzGlow { 0%,100% { color:#ff3b30; text-shadow:0 0 6px rgba(255,59,48,.55); } 50% { color:#ff9500; text-shadow:0 0 6px rgba(255,149,0,.55); } }
   .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
-  .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse .9s ease-in-out infinite; }
-  @keyframes flamePulse { 0%,100% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.15) rotate(-3deg); } }
+  .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse 1.2s ease-in-out infinite; }
+  @keyframes flamePulse { 0%,100% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.15) rotate(-5deg); } }
   .thermo-max { font-size:11px; color:rgba(255,255,255,.8); text-shadow:0 1px 2px rgba(0,0,0,.8); margin-top:2px; }
   .thermo-plus, .thermo-minus { position:absolute; left:0; right:0; height:34px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   .thermo-plus { top:0; }
@@ -602,7 +602,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 109</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 110</span>
       </div>
     </div>
   </section>
