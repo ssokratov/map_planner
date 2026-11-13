@@ -12,10 +12,14 @@
   header h1 { font-size:20px; margin:0; letter-spacing:.08em; text-transform:uppercase; }
   header h1 span { color:var(--accent); }
   header .sub { color:var(--dim); font-size:13px; width:100%; }
-  nav { display:flex; gap:8px; padding:12px 16px 0; }
-  nav button { flex:1; padding:12px; font-size:16px; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; }
-  nav button.active { background:var(--accent); border-color:var(--accent); font-weight:700; }
-  main { padding:16px; max-width:860px; margin:0 auto; }
+  nav { position:fixed; left:50%; transform:translateX(-50%); width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:6px 8px calc(6px + env(safe-area-inset-bottom)); background:rgba(23,28,36,.98); }
+  nav::before { content:""; position:absolute; top:-4px; left:0; right:0; height:4px; background:repeating-linear-gradient(45deg,#ffd43b 0 10px,#10131a 10px 20px); }
+  nav button { position:relative; flex:1; min-height:56px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  nav button svg { width:30px; height:30px; display:block; }
+  nav button.active { background:none; color:#ffd43b; }
+  nav button.active svg { filter:drop-shadow(0 0 6px rgba(255,212,59,.55)); }
+  nav button.active::after { content:""; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:26px; height:3px; border-radius:2px; background:#ffd43b; }
+  main { padding:16px 16px 104px; max-width:860px; margin:0 auto; }
   section.tab { display:none; }
   section.tab.active { display:block; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
@@ -31,6 +35,23 @@
   .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
   .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
   .res-grid { margin-bottom:16px; }
+  .res-top { display:flex; gap:18px; align-items:flex-start; margin-bottom:16px; }
+  .hp-ring { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .hp-ring label, .heat-thermo label { align-self:flex-start; }
+  .ring-wrap { position:relative; width:150px; height:150px; }
+  .ring-wrap svg { width:150px; height:150px; transform:rotate(-90deg); display:block; }
+  .ring-track { fill:none; stroke:var(--line); stroke-width:11; }
+  .ring-fill { fill:none; stroke:var(--good); stroke-width:11; stroke-linecap:round; transition:stroke-dashoffset .25s ease, stroke .25s ease; }
+  .ring-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-val .val { font-size:36px; font-weight:800; line-height:1; }
+  .ring-val .ring-max { font-size:14px; color:var(--dim); margin-top:2px; }
+  .ring-btns { display:flex; gap:10px; }
+  .ring-btns button { width:46px; height:46px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
+  .heat-thermo { flex:0 0 118px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .thermo { position:relative; width:36px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
+  .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; }
+  .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
+  .thermo-val { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
   .counter .val small { color:var(--dim); font-size:15px; font-weight:400; }
   .counter .val.low { color:var(--bad); }
   .counter .val.hot { color:var(--accent); }
@@ -143,30 +164,45 @@
   <div class="sub"><span data-i18n="u146">Мех, пилот, правила. Данные хранятся только в этом браузере (localStorage).</span> <span class="saved" id="saved"></span></div>
 </header>
 <nav>
-  <button id="tabMechBtn" class="active" onclick="showTab('mech')" data-i18n="u002">Мех</button>
-  <button id="tabPilotBtn" onclick="showTab('pilot')" data-i18n="u003">Пилот</button>
-  <button id="tabRulesBtn" onclick="showTab('rules')" data-i18n="u004">Правила</button>
+  <button id="tabMechBtn" class="active" onclick="showTab('mech')" aria-label="Мех"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="2.5" x2="12" y2="4"/><circle cx="12" cy="1.6" r="0.7" fill="currentColor" stroke="none"/><rect x="9.5" y="4" width="5" height="3.6" rx="1"/><circle cx="11" cy="5.8" r="0.55" fill="currentColor" stroke="none"/><circle cx="13" cy="5.8" r="0.55" fill="currentColor" stroke="none"/><rect x="8" y="8.6" width="8" height="5.4" rx="1.4"/><rect x="10.6" y="10.4" width="2.8" height="1.8" rx="0.6"/><line x1="6.8" y1="9.6" x2="6.8" y2="13.4"/><line x1="17.2" y1="9.6" x2="17.2" y2="13.4"/><line x1="10" y1="15" x2="10" y2="20"/><line x1="14" y1="15" x2="14" y2="20"/><line x1="8.6" y1="20" x2="11.4" y2="20"/><line x1="12.6" y1="20" x2="15.4" y2="20"/></svg></button>
+  <button id="tabPilotBtn" onclick="showTab('pilot')" aria-label="Пилот"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M5.2 20c.6-3.6 3.4-5.4 6.8-5.4s6.2 1.8 6.8 5.4"/></svg></button>
+  <button id="tabRulesBtn" onclick="showTab('rules')" aria-label="Правила"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10.5 5 8 4.5 5 4.5v14c3 0 5.5.5 7 2 1.5-1.5 4-2 7-2v-14c-3 0-5.5.5-7 2z"/><line x1="12" y1="6.5" x2="12" y2="20.5"/></svg></button>
 </nav>
 <main>
   <!-- ============ MECH ============ -->
   <section id="tab-mech" class="tab active">
     <div class="card">
       <h2 data-i18n="u011">Ресурсы боя</h2>
-      <div class="grid res-grid">
-        <div class="res" style="--rc:#ff6b6b"><label><span class="ico">❤️</span>HP</label>
-          <div class="counter"><button onclick="step('mech.hp',-1)">−</button><div class="val" id="v-mech.hp">10</div><button onclick="step('mech.hp',1)">+</button></div>
+      <div class="res-top">
+        <div class="hp-ring">
+          <label><span class="ico">❤️</span>HP</label>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 140 140" aria-hidden="true">
+              <circle class="ring-track" cx="70" cy="70" r="58"/>
+              <circle class="ring-fill" id="hpRingFill" cx="70" cy="70" r="58"/>
+            </svg>
+            <div class="ring-val"><div class="val" id="v-mech.hp">10</div><div class="ring-max" id="hpRingMax">/ 10</div></div>
+          </div>
+          <div class="ring-btns"><button onclick="step('mech.hp',-1)" aria-label="HP минус">−</button><button onclick="step('mech.hp',1)" aria-label="HP плюс">+</button></div>
           <div class="oc-next" id="max-mech.hp">max: 10</div>
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
         </div>
+        <div class="heat-thermo">
+          <label data-i18n="u012"><span class="ico">🔥</span>Heat / Нагрев</label>
+          <div class="thermo">
+            <div class="thermo-fill" id="heatThermoFill"></div>
+            <div class="thermo-val" id="v-mech.heat">0</div>
+          </div>
+          <div class="ring-btns"><button onclick="step('mech.heat',-1)" aria-label="Heat минус">−</button><button onclick="step('mech.heat',1)" aria-label="Heat плюс">+</button></div>
+          <div class="oc-next" id="max-mech.heat">max: 6</div>
+          <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
+        </div>
+      </div>
+      <div class="grid res-grid">
         <div class="res" style="--rc:#4dabf7"><label><span class="ico">🛡️</span>Structure</label>
           <div class="counter"><button onclick="step('mech.structure',-1)">−</button><div class="val" id="v-mech.structure">4</div><button onclick="step('mech.structure',1)">+</button></div>
           <div class="oc-next" id="max-mech.structure">max: 4</div>
           <input type="hidden" data-f="mech.structure" value="4"><input type="hidden" data-f="mech.structureMax" value="4">
-        </div>
-        <div class="res" style="--rc:#e8590c"><label data-i18n="u012"><span class="ico">🔥</span>Heat / Нагрев</label>
-          <div class="counter"><button onclick="step('mech.heat',-1)">−</button><div class="val" id="v-mech.heat">0</div><button onclick="step('mech.heat',1)">+</button></div>
-          <div class="oc-next" id="max-mech.heat">max: 6</div>
-          <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
         </div>
         <div class="res" style="--rc:#ffd43b"><label><span class="ico">☢️</span>Stress</label>
           <div class="counter"><button onclick="step('mech.stress',-1)">−</button><div class="val" id="v-mech.stress">4</div><button onclick="step('mech.stress',1)">+</button></div>
@@ -531,7 +567,7 @@
     <span class="dim">RUS</span>
     <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="knob"></span></button>
     <span class="dim">ENG</span>
-    <span class="dim" style="margin-left:12px">Версия трекера: 64</span>
+    <span class="dim" style="margin-left:12px">Версия трекера: 65</span>
   </div>
 </footer>
 
@@ -1042,6 +1078,23 @@ function renderCounters(){
     const mx = document.getElementById('max-'+p);
     if (mx) mx.textContent = 'max: ' + m;
   });
+  // v65: HP-кольцо (r=58) и термометр Heat — они и есть трекеры, отдельных счётчиков больше нет.
+  const hpRing = document.getElementById('hpRingFill');
+  if (hpRing) {
+    const v = get('mech.hp'), m = get('mech.hpMax');
+    const C = 2 * Math.PI * 58;
+    hpRing.style.strokeDasharray = C;
+    hpRing.style.strokeDashoffset = C * (1 - (m ? Math.max(0, v) / m : 0));
+    hpRing.style.stroke = v <= 0 ? '#ff6b6b' : (v / m <= 0.25 ? '#ff922b' : (v / m <= 0.5 ? '#ffd43b' : '#51cf66'));
+  }
+  const hpRingMax = document.getElementById('hpRingMax');
+  if (hpRingMax) hpRingMax.textContent = '/ ' + get('mech.hpMax');
+  const htFill = document.getElementById('heatThermoFill');
+  if (htFill) {
+    const v = get('mech.heat'), m = get('mech.heatMax');
+    htFill.style.height = (m ? Math.min(100, Math.max(0, v) / m * 100) : 0) + '%';
+    htFill.classList.toggle('hot', v >= m);
+  }
   const oc = get('mech.overcharge') || 0;
   const ocEl = document.getElementById('v-mech.overcharge');
   if (ocEl) ocEl.textContent = oc >= 4 ? '4+' : oc;
