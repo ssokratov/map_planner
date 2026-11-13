@@ -478,14 +478,6 @@
       "en": "Other reactions come from systems and talents — see “Your actions” above.",
       "tag": "li"
     },
-    "u134": {
-      "en": "Free Actions",
-      "tag": "h3"
-    },
-    "u135": {
-      "en": "Any number on your turn, only the ones granted to you. Most often — <b>protocols</b>: a protocol activates/deactivates only at the start of a turn, each once per turn. (The Everest's Core Power is a protocol.)",
-      "tag": "li"
-    },
     "u136": {
       "en": "Pilot Actions (on Foot)",
       "tag": "summary"
