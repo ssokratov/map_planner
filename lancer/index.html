@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0e1116">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Lancer — Трекер персонажа</title>
 <style>
   :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; }
@@ -593,7 +595,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 121</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 122</span>
       </div>
     </div>
   </section>
@@ -2491,6 +2493,10 @@ function luDone(){
 }
 
 bind(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); applyLang(); maybeOpenWizard();
+</script>
+<script>
+// PWA (v122): регистрация service worker'а — network-first, чтобы свайп вниз всегда давал свежую версию, а кэш работал только офлайн.
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
 </body>
 </html>
