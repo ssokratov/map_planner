@@ -183,10 +183,6 @@
     "en": "Find a license: frame name…",
     "ru": "Найти лицензию: название фрейма…"
   },
-  "show_more": {
-    "en": "Showing 8 of {N} — narrow the search",
-    "ru": "Показано 8 из {N} — уточни поиск"
-  },
   "sp_free": {
     "en": " · free ",
     "ru": " · свободно "
