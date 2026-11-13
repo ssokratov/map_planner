@@ -29,6 +29,12 @@
      новый экран просто мягко проявляется, движение осталось в линзе навигации */
   section.tab.fade-in { animation:tabFadeIn .18s ease; }
   @keyframes tabFadeIn { from { opacity:.35; } to { opacity:1; } }
+  /* Тряска экрана при уроне (v84): трясётся только main; навигатор — сосед по body,
+     не потомок main, поэтому его fixed-позиционирование трансформ не ломает */
+  @keyframes shakeSmall { 0%,100% { transform:translate(0,0); } 20% { transform:translate(-4px,2px); } 40% { transform:translate(4px,-2px); } 60% { transform:translate(-3px,-1px); } 80% { transform:translate(3px,1px); } }
+  @keyframes shakeBig { 0%,100% { transform:translate(0,0); } 15% { transform:translate(-7px,4px); } 30% { transform:translate(7px,-4px); } 45% { transform:translate(-6px,-3px); } 60% { transform:translate(6px,3px); } 75% { transform:translate(-4px,2px); } 90% { transform:translate(4px,-2px); } }
+  main.shake-small { animation:shakeSmall .3s ease; }
+  main.shake-big { animation:shakeBig .45s ease; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
   .card h2 { margin:0 0 10px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
   .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
@@ -573,7 +579,7 @@
       <button class="btn" onclick="openWizard()" data-i18n="u186">Мастер создания</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 83</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 84</span>
       </div>
     </div>
   </section>
@@ -925,11 +931,22 @@ function swipeTab(dir){
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) swipeTab(dx < 0 ? 1 : -1);
   }, {passive:true});
 })();
+function shake(kind){
+  const m = document.querySelector('main');
+  if (!m) return;
+  m.classList.remove('shake-small');
+  m.classList.remove('shake-big');
+  void m.offsetWidth;
+  m.classList.add(kind);
+}
 function step(path, d){
   const max = get(path+'Max');
-  let v = (get(path)||0) + d;
+  const old = get(path)||0;
+  let v = old + d;
   v = Math.max(0, Math.min(max, v));
   set(path, v); save(); renderCounters();
+  if (v < old && path === 'mech.hp') shake('shake-small');
+  if (v < old && path === 'mech.structure') shake('shake-big');
 }
 function stepOC(d){
   let v = Math.max(0, Math.min(4, (get('mech.overcharge')||0) + d));
