@@ -22,10 +22,6 @@
     }
   },
   "units": {
-    "u001": {
-      "en": "Lancer <span>// Character Tracker</span>",
-      "tag": "h1"
-    },
     "u006": {
       "en": "Mech Name",
       "tag": "label"
@@ -513,10 +509,6 @@
     "u145": {
       "en": "Close",
       "tag": "button"
-    },
-    "u146": {
-      "en": "Mech, pilot, rules. Data is stored only in this browser (localStorage).",
-      "tag": "span"
     },
     "u147": {
       "en": "Frame",
