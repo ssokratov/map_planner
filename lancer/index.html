@@ -159,8 +159,8 @@
   .oc-next { text-align:center; font-size:13px; color:var(--dim); margin-top:4px; }
   .mount { background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px; }
   .mount-head { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .mount-head select { flex:0 0 132px; }
-  .mount-cap { color:var(--dim); font-size:12px; flex:1; }
+  .mount-head select { flex:1 1 auto; min-width:0; }
+  .mount-cap { color:var(--dim); font-size:12px; margin-bottom:8px; }
   .mount-badge { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:28px; padding:0 8px; border-radius:8px; border:1px solid; font-size:14px; line-height:1; flex:0 0 auto; }
   .dbrow { display:flex; gap:8px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
   .dbinfo { flex:1; min-width:0; }
@@ -607,7 +607,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 132</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 133</span>
       </div>
     </div>
   </section>
@@ -1448,8 +1448,8 @@ function renderLists(){
     return `<div class="mount">
       <div class="mount-head"><span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22">${ms.icon}</span>${em ? `<select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
         ${MOUNT_TYPES.map(t=>`<option ${mt.type===t?'selected':''}>${t}</option>`).join('')}</select>` : `<b>${esc(mt.type)}</b>`}
-        ${em ? `<span class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</span>` : ''}
         ${em ? `<button class="btn danger" style="flex:0 0 auto" onclick="delMount(${mi})">✕</button>` : ''}</div>
+      ${em ? `<div class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</div>` : ''}
       ${rows}
       ${em ? `<div class="row"><button class="btn icon" style="flex:0 0 auto" onclick="openSearch('weapon', ${mi})">🔍</button>
         <button class="btn" style="flex:0 0 auto" onclick="openCustomWeaponDlg(${mi})">+ Кастомное Оружие</button></div>` : ''}
