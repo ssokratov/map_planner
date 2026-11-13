@@ -173,11 +173,11 @@
   .cp-info b { color:var(--text); }
   #coreBtn.cp-round { flex-shrink:0; width:120px; height:120px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; background:transparent; border:none; }
   #coreBtn.cp-round svg { width:100%; height:100%; display:block; }
-  /* текст на металлической обводке — золотой с металлическим отблеском (градиент cpGold), сверху ENGAGE/USED, снизу CORE POWER */
+  /* текст на красной обводке — золотой с металлическим отблеском (градиент cpGold), сверху CORE POWER, снизу ENGAGE/USED */
   #coreBtn .cp-label { font-size:10px; letter-spacing:1px; font-weight:700; fill:url(#cpGold); }
   #coreBtn.cp-ready { box-shadow:0 0 0 2px rgba(255,107,107,.25), 0 4px 14px rgba(214,48,48,.45); }
   #coreBtn.cp-ready .cp-core { fill:url(#cpRed); }
-  #coreBtn.cp-ready .cp-rim { stroke:url(#cpMetal); }
+  #coreBtn.cp-ready .cp-rim { stroke:url(#cpRim); }
   #coreBtn.cp-used { box-shadow:inset 0 3px 8px rgba(0,0,0,.5); cursor:default; }
   #coreBtn.cp-used .cp-core { fill:#2c3542; }
   #coreBtn.cp-used .cp-rim { stroke:#3a4556; }
@@ -299,7 +299,7 @@
       <div class="core-power" id="corePanel">
         <div class="cp-top">
           <div class="cp-info"><b>Core Power (CP):</b><br><span data-i18n="u075">1 раз за миссию. Восстанавливается при полном ремонте или в начале миссии.</span></div>
-          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpMetal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f0f3f7"/><stop offset="50%" stop-color="#9aa5b3"/><stop offset="100%" stop-color="#6b7686"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><path id="cpArcTop" d="M 36,18 A 49,49 0 0,1 84,18" fill="none"/><path id="cpArcBottom" d="M 25,95 A 49,49 0 0,0 95,95" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="49" fill="none" stroke="url(#cpMetal)" stroke-width="22"/><circle class="cp-core" cx="60" cy="60" r="38" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text></svg></button>
+          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpRim" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a52a2a"/><stop offset="100%" stop-color="#6e1a1a"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><path id="cpArcTop" d="M 25,25 A 49,49 0 0,1 95,25" fill="none"/><path id="cpArcBottom" d="M 31,111 A 59,59 0 0,0 90,111" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="54" fill="none" stroke="url(#cpRim)" stroke-width="12"/><circle class="cp-core" cx="60" cy="60" r="48" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text></svg></button>
         </div>
         <div class="core-desc">
           <div class="core-name" id="coreNameBox">Hyperspec Fuel Injector</div>
@@ -599,7 +599,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 123</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 124</span>
       </div>
     </div>
   </section>
@@ -1239,8 +1239,8 @@ function renderCounters(){
   const ocNext = document.getElementById('oc-next');
   if (ocNext) ocNext.textContent = L('next_heat') + OC_COSTS[Math.min(oc,3)] + L('heat_unit');
   const cb = document.getElementById('coreBtn');
-  // текст на верхней дуге обводки — всегда по-английски: ENGAGE / USED (v123; нижняя дуга CORE POWER статична)
-  const cpLabel = document.getElementById('cpTopText');
+  // текст на нижней дуге обводки — всегда по-английски: ENGAGE / USED (v124; верхняя дуга CORE POWER статична)
+  const cpLabel = document.getElementById('cpBottomText');
   if (cpLabel) cpLabel.textContent = get('mech.coreUsed') ? 'USED' : 'ENGAGE';
   cb.classList.toggle('cp-ready', !get('mech.coreUsed'));
   cb.classList.toggle('cp-used', !!get('mech.coreUsed'));

@@ -5,23 +5,22 @@
       <stop offset="55%" stop-color="#d63030"/>
       <stop offset="100%" stop-color="#9e1f1f"/>
     </radialGradient>
-    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f0f3f7"/>
-      <stop offset="50%" stop-color="#9aa5b3"/>
-      <stop offset="100%" stop-color="#6b7686"/>
+    <linearGradient id="rimRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a52a2a"/>
+      <stop offset="100%" stop-color="#6e1a1a"/>
     </linearGradient>
     <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#fff3a0"/>
       <stop offset="50%" stop-color="#f5c518"/>
       <stop offset="100%" stop-color="#c9960a"/>
     </linearGradient>
-    <path id="arcTop" d="M 174,113 A 165,165 0 0,1 339,113" fill="none"/>
-    <path id="arcBottom" d="M 174,399 A 165,165 0 0,0 339,399" fill="none"/>
+    <path id="arcTop" d="M 174,114 A 164,164 0 0,1 338,114" fill="none"/>
+    <path id="arcBottom" d="M 160,422 A 192,192 0 0,0 352,422" fill="none"/>
   </defs>
   <rect width="512" height="512" rx="112" fill="#0e1116"/>
-  <circle cx="256" cy="256" r="165" fill="none" stroke="url(#metal)" stroke-width="60"/>
-  <circle cx="256" cy="256" r="135" fill="url(#btn)"/>
-  <path d="M 285 135 L 195 275 L 245 275 L 220 385 L 325 240 L 270 240 Z" fill="#ffe135" transform="translate(256 256) scale(0.8) translate(-256 -256)"/>
-  <text font-size="28" letter-spacing="3" font-weight="700" fill="url(#gold)" font-family="system-ui, sans-serif"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text>
-  <text font-size="28" letter-spacing="3" font-weight="700" fill="url(#gold)" font-family="system-ui, sans-serif"><textPath href="#arcBottom" startOffset="50%" text-anchor="middle">LANCER</textPath></text>
+  <circle cx="256" cy="256" r="177.5" fill="none" stroke="url(#rimRed)" stroke-width="35"/>
+  <circle cx="256" cy="256" r="160" fill="url(#btn)"/>
+  <path d="M 285 135 L 195 275 L 245 275 L 220 385 L 325 240 L 270 240 Z" fill="#ffe135" transform="translate(256 256) scale(0.9) translate(-256 -256)"/>
+  <text font-size="28" letter-spacing="3" font-weight="700" fill="url(#gold)" font-family="system-ui, sans-serif"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">LANCER</textPath></text>
+  <text font-size="28" letter-spacing="3" font-weight="700" fill="url(#gold)" font-family="system-ui, sans-serif"><textPath href="#arcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text>
 </svg>
