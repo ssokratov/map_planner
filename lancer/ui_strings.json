@@ -491,7 +491,8 @@
       "tag": "li"
     },
     "u133": {
-      "ru": "Другие реакции дают системы и таланты.",
+      "ru": "Другие реакции дают системы и таланты — смотри «Твои действия» выше.",
+      "en": "Other reactions come from systems and talents — see “Your actions” above.",
       "tag": "li"
     },
     "u134": {
@@ -862,6 +863,26 @@
     "u228": {
       "ru": "Перераспределение (необязательно, одно за левел ап): все очки таланта — в другой талант; все очки лицензии — в другую лицензию; или заменить Core Bonus. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна. Делается вручную на вкладках.",
       "en": "Reallocation (optional, one per level up): move all talent points to another talent; all license points to another license; or swap a Core Bonus. If reallocating a license loses you a Core Bonus, replacing it is mandatory. Do it manually on the tabs.",
+      "tag": "js"
+    },
+    "u229": {
+      "ru": "Твои действия",
+      "en": "Your actions",
+      "tag": "js"
+    },
+    "u230": {
+      "ru": "Твои реакции",
+      "en": "Your reactions",
+      "tag": "js"
+    },
+    "u231": {
+      "ru": "Твои протоколы",
+      "en": "Your protocols",
+      "tag": "js"
+    },
+    "u232": {
+      "ru": "Дополнительных действий пока нет — они появятся, когда возьмёшь талант или систему, которая их даёт.",
+      "en": "No extra actions yet — they will appear when you take a talent or system that grants one.",
       "tag": "js"
     }
   }
