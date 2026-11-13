@@ -8,21 +8,21 @@
   :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
-  nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+  nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:860px; bottom:0; z-index:50; display:flex; padding:4px 8px calc(4px + env(safe-area-inset-bottom));
     background:
       linear-gradient(180deg, rgba(255,212,59,.10), rgba(255,212,59,0) 30%),
       repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0 2px, transparent 2px 8px),
       linear-gradient(180deg, #2b333f 0%, #1d232d 55%, #14181f 100%);
     box-shadow:0 -6px 20px rgba(0,0,0,.55), 0 -2px 16px rgb(0 0 0 / 18%), inset 0 1px 0 rgba(255,255,255,.07); }
 
-  nav button { position:relative; z-index:1; flex:1; min-height:56px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; -webkit-tap-highlight-color:transparent; }
+  nav button { position:relative; z-index:1; flex:1; min-height:48px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; -webkit-tap-highlight-color:transparent; }
   nav button svg { width:30px; height:30px; display:block; transition:transform .2s ease, filter .2s ease; }
   nav button.active { background:none; color:#5cdf33; }
   nav button.active svg { filter:drop-shadow(0 3px 2px rgba(0,0,0,1)); transform:scale(1.3); }
   /* Линза выбранного таба (v79): прямоугольник на всю кнопку (треть ширины навбара)
      и на всю его высоту; один элемент, честно скользит между кнопками через transform */
   .nav-lens { position:absolute; top:0; bottom:0; left:8px; width:calc((100% - 16px) / 3); background:linear-gradient(180deg, rgb(59 217 30 / 21%) 0%, transparent 45%); box-shadow:0 0 18px rgb(0 0 0 / 39%), inset 0px 1px 0 1px rgb(55 83 1 / 45%); pointer-events:none; z-index:0; transition:transform .25s ease; }
-  main { padding:16px 16px 104px; max-width:860px; margin:0 auto; }
+  main { padding:16px 16px 92px; max-width:860px; margin:0 auto; }
   section.tab { display:none; }
   section.tab.active { display:block; }
   /* Смена вкладок (v78): transform-слайд убран — он ронял навигацию на Android;
@@ -593,7 +593,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 102</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 103</span>
       </div>
     </div>
   </section>
@@ -1137,7 +1137,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u230')) + '</h3><ul>';
     for(const a of myRe){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + esc(en ? a.tr_en : a.tr_ru) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + esc(en ? a.ef_en : a.ef_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + linkTagTerms(esc(en ? a.tr_en : a.tr_ru)) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + linkTagTerms(esc(en ? a.ef_en : a.ef_ru)) + '</li>';
     }
     h += '</ul>';
   }
@@ -1145,7 +1145,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u231')) + '</h3><ul>';
     for(const a of myPr){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + esc(en ? a.tx_en : a.tx_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + '</li>';
     }
     h += '</ul>';
   }
@@ -1623,17 +1623,17 @@ function descBox(key, label, text, ph, saveExpr, editable, alwaysFull){
   const head = label ? `<div class="desc-label">${esc(label)}</div>` : '';
   const CUT = 240;
   if (alwaysFull || t.length <= CUT){
-    return `${head}<div class="desc-text">${esc(t)}</div>
+    return `${head}<div class="desc-text">${linkTagTerms(esc(t))}</div>
     ${editBtn}`;
   }
   if (openDescs.has(key)){
-    return `${head}<div class="desc-text">${esc(t)} <button class="desc-more" onclick="closeDesc('${key}')">${esc(L('desc_less'))}</button></div>
+    return `${head}<div class="desc-text">${linkTagTerms(esc(t))} <button class="desc-more" onclick="closeDesc('${key}')">${esc(L('desc_less'))}</button></div>
     ${editBtn}`;
   }
   let c = t.slice(0, CUT);
   const sp = c.lastIndexOf(' ');
   if (sp > 120) c = c.slice(0, sp);
-  return `${head}<div class="desc-text">${esc(c)}… <button class="desc-more" onclick="openDesc('${key}')">${esc(L('desc_more'))}</button></div>
+  return `${head}<div class="desc-text">${linkTagTerms(esc(c))}… <button class="desc-more" onclick="openDesc('${key}')">${esc(L('desc_more'))}</button></div>
     ${editBtn}`;
 }
 function openDesc(key){ openDescs.add(key); renderLists(); }
@@ -1815,6 +1815,49 @@ function tagLabel(id, val){
   const t = tagd(id);
   if (val === null || val === undefined || val === '') return t.n.replace(' {VAL}', '').replace('{VAL}', '');
   return t.n.replace('{VAL}', String(val));
+}
+// Основа слова для поиска склонённых форм тега в тексте описаний.
+function tagWordStem(name){
+  let n = (name||'').replace(/\s*\{VAL\}.*$/, '').replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase();
+  if (!n) return '';
+  let m = n.match(/^(.*?)(ое|ая|ый|ий|ой)$/);
+  if (m && m[1].length >= 3) return m[1];
+  m = n.match(/^(.*?)(а|я)$/);
+  if (m && m[1].length >= 4) return m[1];
+  return n;
+}
+// Кликабельные теги в тексте описаний: термины вроде ДУГОВОЕ, ОТБРОС 1
+// оборачиваются в чип, открывающий диалог тега. Линкуется только то, что
+// текст сам помечает как игровой термин: слово В ВЕРХНЕМ РЕГИСТРЕ (так
+// в русских описаниях пишутся механики). Точное имя тега НЕ линковать:
+// обычные прилагательные в прозе («надёжный», английское reliable) —
+// это те же слова, что и имена тегов, и их линковка даёт ложные чипы.
+// Число после термина (ОТБРОС 1) уходит в диалог как значение тега.
+function linkTagTerms(html){
+  if (!html || !DB.tags) return html;
+  if (!linkTagTerms._stems){
+    const stems = new Map();
+    for (const id in DB.tags){
+      const t = DB.tags[id];
+      for (const nm of [t.nr, t.n]){
+        const stem = tagWordStem(nm);
+        if (stem && stem.length >= 3 && !stems.has(stem)) stems.set(stem, id);
+      }
+    }
+    linkTagTerms._stems = stems;
+  }
+  const stems = linkTagTerms._stems;
+  return html.replace(/([A-Za-zА-Яа-яЁё]+)(\s+\d+)?/g, (m, w, num)=>{
+    if (!(w.length > 1 && w === w.toUpperCase())) return m;
+    const lw = w.toLowerCase();
+    for (const [stem, id] of stems){
+      if (lw.startsWith(stem) && lw.length - stem.length <= 3){
+        const val = num ? num.trim() : '';
+        return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val)}')">${m}</span>`;
+      }
+    }
+    return m;
+  });
 }
 function tagChips(tg){
   return tg.map(([id, val])=>{
