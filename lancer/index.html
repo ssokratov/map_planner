@@ -416,7 +416,6 @@
     </div>
     <div class="card">
       <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob">🔧</span></button></div>
-      <p class="hint" id="weaponsHint" style="padding:0 0 8px" data-i18n="u066">База: <span id="dbWeaponCount"></span> видов оружия из открытых данных Massif Press (lancer-data). Поиск ищет по названию, маунту (Main, Aux, Heavy), типу, тегам, корпорации (GMS, IPS-N, Horus, Smith-Shimano) и уровню лицензии (LL0–LL3); несколько слов через пробел сужают поиск (например, «IPS-N LL1»).<span id="licNoteW"></span></p>
       <div id="mounts"></div>
       <button class="btn add" id="addMountBtn" onclick="addMount()" data-i18n="u067">+ Маунт</button>
     </div>
@@ -607,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 133</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 134</span>
       </div>
     </div>
   </section>
@@ -1727,7 +1726,7 @@ function syncEditToggles(){
   setTog('editToggleMech', editOn('mech')); setTog('editTogglePilot', editOn('pilot'));
   setTog('editToggleCoreBonuses', editOn('coreBonuses'));
   const show = (id, on)=>{ const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
-  show('weaponsHint', em); show('addMountBtn', em);
+  show('addMountBtn', em);
   show('talentsHint', et); show('talentAddRow', et);
   show('triggerAddRow', eg);
   show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', es); show('spCapRow', es);
