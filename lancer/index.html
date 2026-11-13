@@ -214,7 +214,7 @@
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
   .toggle { width:40px; height:24px; border-radius:0; background:#3a4350; border:1px solid var(--line); box-shadow:inset 0 1px 1px rgba(0,0,0,.65); position:relative; cursor:pointer; padding:0; flex:0 0 auto; }
-  .toggle .knob { position:absolute; top:0; left:0; width:19px; height:22px; border-radius:0; background:linear-gradient(180deg, #ffffff, #d7dde5); box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(0,0,0,.28); transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
+  .toggle .knob { position:absolute; top:0; left:0; width:19px; height:22px; border-radius:0; background:linear-gradient(180deg, #232830, #05070a); box-shadow:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 3px rgba(0,0,0,.5); transition:left .15s ease; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
   .toggle.on { background:var(--hud-amber); border-color:var(--hud-amber); }
   .toggle.on .knob { left:19px; }
   /* Слайдер языка (v75): буквы RUS/ENG внутри пилюли, бегунок — подсветка активной половины */
@@ -387,7 +387,7 @@
     </details>
     </div>
     <div class="card" id="statsCard">
-      <div class="card-head"><h2 data-i18n="u165">Статы</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u165">Статы</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div class="grid">
         <div style="grid-column:1 / -1"><label data-i18n="u006">Имя меха</label><input type="text" data-f="mech.name" placeholder="Имя меха" data-i18n-ph="p001"></div>
         <div style="grid-column:1 / -1"><label data-i18n="u147">Фрейм</label><div class="row" style="margin-bottom:0;align-items:center"><div class="frame-ro" id="mechFrameName" style="flex:1 1 auto">Everest</div><button class="btn icon" id="frameSearchBtn" style="flex:0 0 auto" onclick="openSearch('frame')">🔍</button></div></div>
@@ -415,12 +415,12 @@
       <div class="hint" id="haseHint" data-i18n="u061">На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div id="mounts"></div>
       <button class="btn add" id="addMountBtn" onclick="addMount()" data-i18n="u067">+ Маунт</button>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" id="spCounterRow" style="padding:0 0 8px"><span id="spCounter"></span></p>
       <div class="row" id="spCapRow" style="align-items:center"><label style="flex:1 1 auto">System Points (SP)</label><input type="number" data-f="mech.sp" value="6" style="flex:0 0 90px"></div>
       <p class="hint" id="systemsHint" style="padding:0 0 8px" data-i18n="u070">База: <span id="dbSystemCount"></span> систем из открытых данных Massif Press (lancer-data). Поиск ищет по названию, типу, корпорации и уровню лицензии (LL0–LL3). Выбор подставляет SP и описание с эффектом.<span id="licNoteS"></span></p>
@@ -435,7 +435,7 @@
       <div id="traitsBox"></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" id="talentsHint" style="padding:0 0 8px" data-i18n="u063">На LL0: три таланта ранга I. База: <span id="dbTalentCount"></span> талантов из открытых данных Massif Press (lancer-data). Поиск ищет по названию, описанию и рангам; выбор подставляет описание текущего ранга.</p>
       <div id="talents"></div>
       <div class="row" id="talentAddRow" style="margin-top:10px">
@@ -452,7 +452,7 @@
   <!-- ============ PILOT ============ -->
   <section id="tab-pilot" class="tab">
     <div class="card" id="pilotCard">
-      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle on" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle on" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div class="grid">
         <div><label data-i18n="u082">Имя пилота</label><input type="text" data-f="pilot.name" placeholder="Имя" data-i18n-ph="p006"></div>
         <div><label data-i18n="u083">Позывной / Callsign</label><input type="text" data-f="pilot.callsign" placeholder="Позывной" data-i18n-ph="p007"></div>
@@ -466,7 +466,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u087">На LL0: четыре триггера по +2. При росте LL: +2 к одному триггеру за уровень, максимум +6.</p>
       <div id="triggers" class="trig-table"></div>
       <div class="row" id="triggerAddRow" style="margin-top:10px">
@@ -475,7 +475,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle on" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle on" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <label id="licenseFilterRow" style="display:flex;gap:8px;align-items:center;font-weight:600" data-i18n="u090"><input type="checkbox" id="licenseFilterToggle" onchange="toggleLicenseFilter(this.checked)" style="width:auto"> Фильтровать оружие, системы и фреймы по лицензиям</label>
       <p class="hint" id="licensesHint" style="padding:8px 0" data-i18n="u091">Когда фильтр включён, в поиске видны только GMS (LL0) и снаряжение лицензий пилота; фрейм доступен со II ранга лицензии. Отключи фильтр, чтобы увидеть всю базу.</p>
       <div id="licenses"></div>
@@ -487,7 +487,7 @@
       <p class="hint" style="padding:4px 0 0" id="licensesNote"></p>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u161">Core Bonuses</h2><button type="button" class="toggle on" id="editToggleCoreBonuses" onclick="toggleEdit('coreBonuses')"><span class="knob">🔧</span></button></div>
+      <div class="card-head"><h2 data-i18n="u161">Core Bonuses</h2><button type="button" class="toggle on" id="editToggleCoreBonuses" onclick="toggleEdit('coreBonuses')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u162">Новый бонус — каждые 3 LL (LL3, LL6, LL9). GMS — всегда доступен; для бонуса другого производителя нужно 3 ранга его лицензий (ещё +3 за каждый следующий бонус того же производителя).</p>
       <div id="coreBonuses"></div>
       <div class="row" id="coreBonusAddRow" style="margin-top:10px">
@@ -606,7 +606,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 143</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 144</span>
       </div>
     </div>
   </section>
