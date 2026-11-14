@@ -74,7 +74,17 @@ const ACTIONS_REF = {
      tr_ru:'Тебя или союзного персонажа в пределах сенсоров и линии обзора толкают, тянут, отбрасывают или сбивают с ног.',
      ef_ru:'Получи 2 тепла. Перемещение или статус предотвращаются, и цель получает иммунитет ко всем этим эффектам до начала её следующего хода.',
      tr_en:'You or an allied character within Sensors and line of sight is pushed, pulled, knocked back, or knocked prone.',
-     ef_en:'Take 2 Heat. The movement or status is prevented, and the target gains Immunity to all the above effects until the start of their next turn.'}
+     ef_en:'Take 2 Heat. The movement or status is prevented, and the target gains Immunity to all the above effects until the start of their next turn.'},
+    {key:'turretattack', name:'Turret Attack', ru:'Атака турели', grant:{system:'Turret Drones'}, per:'1/раунд за дрон',
+     tr_ru:'Союзный персонаж в пределах дальности 10 от дрон-турели успешно атакует.',
+     ef_ru:'Дрон-турель наносит 3 кинетического урона его цели, если у него есть линия видимости до цели. Можно использовать один раз за каждую развёрнутую дрон-турель.',
+     tr_en:'An allied character within Range 10 of a turret drone makes a successful attack.',
+     ef_en:'The turret drone deals 3 Kinetic damage to their target, as long as it has line of sight to their target. It can be taken once for each deployed turret drone.'},
+    {key:'areadenial', name:'Area Denial', ru:'Запрет зоны', grant:{system:'Assassin Drone'}, per:'без ограничений',
+     tr_ru:'Враждебный персонаж начинает движение в зоне, на которую нацелен ваш дрон-убийца, или входит в неё.',
+     ef_ru:'Вы можете совершить по нему дальнюю атаку дроном, добавляя свой Grit к броску, и нанести 3 кинетического урона. Можно использовать любое число раз за раунд.',
+     tr_en:'A hostile character starts movement in or enters the area targeted by your assassin drone.',
+     ef_en:'You can make a ranged attack against them with the drone, gaining your Grit as a bonus to its roll, and dealing 3 Kinetic Damage. It can be used any number of times per round.'}
   ],
   protocols: [
     {key:'shepherd', name:'Shepherd', ru:'Пастух', grant:{talent:'Drone Commander', rank:1},
@@ -134,6 +144,20 @@ const ACTIONS_REF = {
     {key:'luciferprotocol', name:'LUCIFER Protocol', ru:'Протокол LUCIFER', grant:{system:'LUCIFER-Class NHP'},
      tx_ru:'Потрать заряд, чтобы твоя следующая дальняя или рукопашная атака в этот ход при попадании наносила бонусный урон, равный твоему текущему теплу после активации протокола, если оружие наносит энергетический урон.',
      tx_en:'Expend a charge to give your next ranged or melee attack this turn bonus damage on hit equal to your current heat after activating this protocol, as long as the weapon deals any energy.'}
+  ],
+  quick: [
+    {key:'activaterestockdrone', name:'Activate Restock Drone', ru:'Активировать дрон снабжения', grant:{system:'Restock Drone'},
+     tx_ru:'Снимите 1d6 тепла и одно состояние и перезарядите одно оружие с Перезарядкой. После активации дрон немедленно распадается.',
+     tx_en:'Clear 1d6 heat and one condition, and reload one Loading weapon. After being activated, the drone immediately disintegrates.'},
+    {key:'detonatebreachingcharge', name:'Detonate', ru:'Подорвать (проломный заряд)', grant:{system:'BB Breach/Blast Charges'},
+     tx_ru:'Персонажи в зоне взрыва 1 должны преуспеть в спасброске ловкости, иначе получат 2d6 бронебойного взрывного урона. При успехе — половину урона. Объекты и местность поражаются автоматически и получают 30 бронебойного взрывного урона.',
+     tx_en:'Characters within a Burst 1 area must succeed on an Agility save or take 2d6 AP explosive damage. On a success, they take half damage. Objects and terrain are hit automatically and take 30 AP explosive damage.'},
+    {key:'moveiceoutdrone', name:'Move ICEOUT Drone', ru:'Переместить дрон ICEOUT', grant:{system:'ICEOUT Drone'},
+     tx_ru:'Дрон ICEOUT можно переместить в любую точку в пределах сенсоров.',
+     tx_en:'The ICEOUT drone can be moved to any point within Sensors.'},
+    {key:'detonategroundingmine', name:'Detonate Grounding Mine', ru:'Подорвать заземляющую мину', grant:{system:'Grounding Charges'},
+     tx_ru:'Подрыв заземляющей мины поражает одного персонажа в пределах дальности 5 от мины: он должен пройти спасбросок корпуса, иначе его притягивает как можно ближе к мине и сбивает с ног. Летающие персонажи, провалившие спасбросок, подвергаются тому же эффекту, но также вынуждены приземлиться (это считается падением, но без урона).',
+     tx_en:'Detonating the Grounding Mine affects a single character within range 5 of the mine: they must succeed on a Hull save or be pulled as far as possible toward the mine and knocked Prone. Flying characters that fail the save are affected the same way, except they are also forced to land (this counts as falling but without damage).'}
   ]
 };
 // Проверка, есть ли у игрока фича, дающая действие (талант с нужным рангом или система).

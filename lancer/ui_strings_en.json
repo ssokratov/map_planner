@@ -856,6 +856,10 @@
     "u234": {
       "en": "Restored by a full repair or at the start of a mission.",
       "tag": "p"
+    },
+    "u235": {
+      "en": "Your quick actions",
+      "tag": "js"
     }
   }
 }

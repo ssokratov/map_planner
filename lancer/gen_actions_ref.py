@@ -101,6 +101,8 @@ def main():
     systems = json.load(open('/home/hatch/workspace/lancer-data-systems.json', encoding='utf-8'))
     sys_reactions = []
     sys_protocols = []
+    dep_reactions = []
+    dep_quick = []
     for s in systems:
         name = s.get('name')
         for a in (s.get('actions') or []):
@@ -128,6 +130,28 @@ def main():
                     'grant': {'system': name},
                     'text': text,
                 })
+        # Действия развёртываемых объектов (v169): они лежат НЕ в actions[] системы,
+        # а в deployables[].actions[] — генератор раньше их не видел (поэтому «Атака турели» пропала).
+        for dep in (s.get('deployables') or []):
+            for a in (dep.get('actions') or []):
+                if not isinstance(a, dict):
+                    continue
+                act = a.get('activation')
+                aname = (a.get('name') or '').strip()
+                if not aname:
+                    continue
+                rec = {
+                    'key': aname.lower().replace(' ', '').replace('-', ''),
+                    'name': aname,
+                    'ru': '',
+                    'grant': {'system': name},
+                    'deployable': dep.get('name'),
+                    'text': (a.get('detail') or ''),
+                }
+                if act == 'Reaction':
+                    dep_reactions.append(rec)
+                elif act == 'Quick':
+                    dep_quick.append(rec)
     print('SYSTEM REACTIONS:', len(sys_reactions))
     for r in sys_reactions:
         print(f"  {r['grant']['system']} -> {r['name']}")
@@ -137,6 +161,16 @@ def main():
     for p in sys_protocols:
         print(f"  {p['grant']['system']} -> {p['name']}")
         print(f"    {p['text'][:180]}")
+    print()
+    print('DEPLOYABLE REACTIONS:', len(dep_reactions))
+    for r in dep_reactions:
+        print(f"  {r['grant']['system']} ({r['deployable']}) -> {r['name']}")
+        print(f"    {r['text'][:180]}")
+    print()
+    print('DEPLOYABLE QUICK ACTIONS:', len(dep_quick))
+    for q in dep_quick:
+        print(f"  {q['grant']['system']} ({q['deployable']}) -> {q['name']}")
+        print(f"    {q['text'][:180]}")
 
 if __name__ == '__main__':
     main()
