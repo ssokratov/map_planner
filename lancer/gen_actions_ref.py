@@ -67,6 +67,26 @@ TALENT_PROTOCOLS = [
     },
 ]
 
+# --- Быстрые действия талантов: сверены с корбуком (v175) ---
+# В отличие от реакций/протоколов талантов, быстрые действия талантов в lancer-data
+# не лежат отдельным списком — они описаны внутри текста ранга («Gain the X Quick Action»).
+# Генератор их не видел, поэтому «Воодушевление» (Drone Commander III) не попадало
+# в «Твои действия». Источник: корбук, раздел талантов.
+TALENT_QUICK_ACTIONS = [
+    {
+        "key": "invigorate", "name": "Invigorate", "ru": "Воодушевление",
+        "grant": {"talent": "Drone Commander", "rank": 3},
+        "tx_en": "As a quick action, you may send a pulse of energy to an allied character (including DRONES) within 3, drawing a LINE to them. You may extend the pulse from your target to another allied character, extending the LINE to them, as long as they are within 3, and you may continue extending the pulse (and LINE) like this as long as you don't target the same character twice. Allied characters in the LINE's path can restore +1d6 HP (rolled once); hostile characters take energy damage equal to the amount rolled.",
+        "tx_ru": "Быстрым действием вы можете послать импульс энергии союзному персонажу (включая дронов) в пределах 3, проведя к нему ЛИНИЮ. Вы можете продлить импульс от вашей цели к другому союзному персонажу, продлив ЛИНИЮ к нему, пока он в пределах 3, и продолжать продлевать импульс (и ЛИНИЮ) так, пока не нацелитесь на одного персонажа дважды. Союзные персонажи на пути ЛИНИИ могут восстановить +1d6 HP (бросок один на всех); враждебные персонажи получают энергетический урон, равный выпавшему числу.",
+    },
+    {
+        "key": "coveringfire", "name": "Covering Fire", "ru": "Прикрывающий огонь",
+        "grant": {"talent": "Heavy Gunner", "rank": 1},
+        "tx_en": "As a quick action, choose a character within Range and line of sight of one of your heavy ranged weapons, and within 10 spaces: they are Impaired until the start of your next turn. For the duration, if your target moves more than 1 space, they clear Impaired, but you may attack them as a reaction with a heavy ranged weapon for half damage, heat, or burn, then this effect ends. You can make this attack at any point during their movement (e.g., waiting until they exit cover). COVERING FIRE can only affect one character at a time \u2013 subsequent uses replace previous ones \u2013 and it immediately ends if your target damages you.",
+        "tx_ru": "Быстрым действием выберите персонажа в пределах дальности и линии видимости одного из ваших тяжёлых дальнобойных оружий и в пределах 10 клеток: он получает Ослабление до начала вашего следующего хода. Пока действует эффект, если ваша цель перемещается больше чем на 1 клетку, она снимает Ослабление, но вы можете атаковать её реакцией из тяжёлого дальнобойного оружия за половину урона, тепла или ожога, после чего эффект заканчивается. Вы можете совершить эту атаку в любой момент её перемещения (например, дождавшись, пока она выйдет из укрытия). ПРИКРЫВАЮЩИЙ ОГОНЬ может действовать только на одного персонажа за раз — повторное использование заменяет предыдущее — и немедленно заканчивается, если ваша цель наносит вам урон.",
+    },
+]
+
 # --- Дефолтные реакции: сверены с корбуком ---
 DEFAULT_REACTIONS = [
     {
@@ -171,6 +191,12 @@ def main():
     for q in dep_quick:
         print(f"  {q['grant']['system']} ({q['deployable']}) -> {q['name']}")
         print(f"    {q['text'][:180]}")
+
+    print()
+    print('TALENT QUICK ACTIONS:', len(TALENT_QUICK_ACTIONS))
+    for q in TALENT_QUICK_ACTIONS:
+        print(f"  {q['grant']['talent']} {q['grant']['rank']} -> {q['name']}")
+        print(f"    {q['tx_en'][:180]}")
 
 if __name__ == '__main__':
     main()
