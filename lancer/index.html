@@ -440,7 +440,7 @@
       <div id="systems"></div>
       <div class="row" id="systemAddRow" style="margin-top:10px">
         <button class="btn add" id="addSystemBtn" style="margin-top:0" onclick="openCustomSystemDlg()" data-i18n="u236">+ КАСТОМ</button>
-        <button class="btn" style="flex:0 0 auto" onclick="openSearch('system')" data-i18n="u237">🔍ПОИСК</button>
+        <button class="btn" onclick="openSearch('system')" data-i18n="u237">🔍ПОИСК</button>
       </div>
     </div>
     <div class="card" id="traitsCard">
@@ -453,7 +453,7 @@
       <div id="talents"></div>
       <div class="row" id="talentAddRow" style="margin-top:10px">
         <button class="btn add" id="addTalentBtn" style="margin-top:0" onclick="addRow('talents','talent')" data-i18n="u236">+ КАСТОМ</button>
-        <button class="btn" style="flex:0 0 auto" onclick="openSearch('talent')" data-i18n="u237">🔍ПОИСК</button>
+        <button class="btn" onclick="openSearch('talent')" data-i18n="u237">🔍ПОИСК</button>
       </div>
     </div>
     <div class="card">
@@ -484,7 +484,7 @@
       <div id="triggers" class="trig-table"></div>
       <div class="row" id="triggerAddRow" style="margin-top:10px">
         <button class="btn add" id="addTriggerBtn" style="margin-top:0" onclick="addRow('triggers','trigger')" data-i18n="u236">+ КАСТОМ</button>
-        <button class="btn" style="flex:0 0 auto" onclick="openSearch('trigger')" data-i18n="u237">🔍ПОИСК</button>
+        <button class="btn" onclick="openSearch('trigger')" data-i18n="u237">🔍ПОИСК</button>
       </div>
     </div>
     <div class="card">
@@ -494,7 +494,7 @@
       <div id="licenses"></div>
       <div class="row" id="licenseAddRow" style="margin-top:10px">
         <button class="btn add" id="addLicenseBtn" style="margin-top:0" onclick="addLicense()" data-i18n="u236">+ КАСТОМ</button>
-        <button class="btn" style="flex:0 0 auto" onclick="openSearch('license')" data-i18n="u237">🔍ПОИСК</button>
+        <button class="btn" onclick="openSearch('license')" data-i18n="u237">🔍ПОИСК</button>
       </div>
       <p class="hint" style="padding:8px 0 0" data-i18n="u093">LL пилота: <span id="licenseLL"></span></p>
       <p class="hint" style="padding:4px 0 0" id="licensesNote"></p>
@@ -619,7 +619,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 170</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 171</span>
       </div>
     </div>
   </section>
@@ -1495,7 +1495,7 @@ function renderLists(){
       ${em ? `<div class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</div>` : ''}
       ${rows}
       ${em ? `<div class="row"><button class="btn" onclick="openCustomWeaponDlg(${mi})">${esc(L('u236'))}</button>
-        <button class="btn" style="flex:0 0 auto" onclick="openSearch('weapon', ${mi})">${esc(L('u237'))}</button></div>` : ''}
+        <button class="btn" onclick="openSearch('weapon', ${mi})">${esc(L('u237'))}</button></div>` : ''}
     </div>`;
   }).join('');
   document.getElementById('systems').innerHTML = S.systems.map((s,i)=>{
