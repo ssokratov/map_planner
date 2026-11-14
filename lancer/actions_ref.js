@@ -85,6 +85,12 @@ const ACTIONS_REF = {
      ef_ru:'Вы можете совершить по нему дальнюю атаку дроном, добавляя свой Grit к броску, и нанести 3 кинетического урона. Можно использовать любое число раз за раунд.',
      tr_en:'A hostile character starts movement in or enters the area targeted by your assassin drone.',
      ef_en:'You can make a ranged attack against them with the drone, gaining your Grit as a bonus to its roll, and dealing 3 Kinetic Damage. It can be used any number of times per round.'}
+,
+    {key:'reactivecode', name:'Reactive Code', ru:'Реактивный код', grant:{frame:'Goblin'},
+     tr_ru:'По тебе попали техатакой.',
+     ef_ru:'1/раунд: ты можешь выполнить любое действие БЫСТРОЙ ТЕХНИКИ против атакующего в качестве реакции.',
+     tr_en:'You are hit by a tech attack.',
+     ef_en:'1/round, you may take any QUICK TECH option against the attacker as a reaction.'}
   ],
   protocols: [
     {key:'shepherd', name:'Shepherd', ru:'Пастух', grant:{talent:'Drone Commander', rank:1},
