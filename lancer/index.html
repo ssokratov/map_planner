@@ -213,6 +213,16 @@
   details.sec ul { margin:4px 0 10px; padding-left:20px; }
   details.sec li { margin-bottom:7px; font-size:14px; line-height:1.5; }
   details.sec p { font-size:14px; line-height:1.5; color:var(--dim); }
+  /* Системы — сворачиваемые карточки (v189): заголовок обычный белый, а не жёлтый;
+     заряды и теги видны и в свёрнутом виде (в шапке), описание — только в развёрнутом. */
+  .sys-head { cursor:pointer; }
+  .sys-head-row { display:flex; align-items:center; gap:8px; }
+  .sys-arrow { color:var(--hud-amber); font-size:12px; line-height:1; transition:transform .15s; flex:0 0 auto; }
+  .sys.open .sys-arrow { transform:rotate(90deg); }
+  .sys-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); text-transform:uppercase; letter-spacing:.08em; }
+  .sys-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
+  .sys-body { display:none; margin-top:10px; }
+  .sys.open .sys-body { display:block; }
   .tbl-row { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:6px 0 8px; background:var(--panel2); font-size:14px; line-height:1.5; }
   .tbl-row > div:first-child { margin-bottom:4px; }
   .tbl-row ul, #haseHint ul { margin:6px 0; padding-left:20px; }
@@ -632,7 +642,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 188</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 189</span>
       </div>
     </div>
   </section>
@@ -1551,14 +1561,18 @@ function renderLists(){
     const descDisp = dbs ? dispVal(s.desc, dbs.x, dbs.xr) : s.desc;
     const meta = inDb ? [sd(dbs).t, sd(dbs).lab].filter(x=>x).join(' · ') : L('u150') + ' · SP ' + sp;
     const ed = editOn('systems');
+    const isOpen = openSys.has(s.name);
     return `
-    <details class="sec" data-sys="${esc(s.name)}" ${openSys.has(s.name) ? 'open' : ''} ontoggle="toggleSysOpen(this)">
-      <summary><span style="display:flex;align-items:center;gap:8px"><span style="flex:1 1 auto">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</span></summary>
-      <div class="wmeta">${esc(meta)}</div>
-      ${stg.length ? `<div class="tags">${tagChips(stg)}</div>` : ''}
-      ${lim ? `<div class="row"><span class="dim">${L('charges').replace('{N}', lim)}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepSysCharges(${i},-1)">−</button><div class="val">${left} <small>/ ${lim}</small></div><button onclick="stepSysCharges(${i},1)">+</button></div></div>` : ''}
-      ${ed ? '' : descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
-    </details>`;
+    <div class="sec sys${isOpen ? ' open' : ''}" data-sys="${esc(s.name)}">
+      <div class="sys-head" onclick="toggleSysCard(this)">
+        <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
+        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="dim" style="font-size:13px">${L('charges').replace('{N}', lim)}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span>` : ''}</div>` : ''}
+      </div>
+      <div class="sys-body">
+        <div class="wmeta">${esc(meta)}</div>
+        ${descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
+      </div>
+    </div>`;
   }).join('');
   updateSpCounter();
   renderStatusTags();
@@ -1866,8 +1880,8 @@ function descBox(key, label, text, ph, saveExpr, editable, alwaysFull){
 }
 function openDesc(key){ openDescs.add(key); renderLists(); }
 function closeDesc(key){ openDescs.delete(key); renderLists(); }
-// Сворачивание систем (v188): состояние хранится по имени системы.
-function toggleSysOpen(el){ const n = el.getAttribute('data-sys'); if(!n) return; if(el.open) openSys.add(n); else openSys.delete(n); }
+// Сворачивание систем (v189, div-based): состояние хранится по имени системы.
+function toggleSysCard(head){ const card = head.closest('.sys'); if(!card) return; const n = card.getAttribute('data-sys'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openSys.add(n); else openSys.delete(n); }
 function editDesc(key){ editingDesc = key; renderLists(); const el = document.getElementById('editingDesc'); if (el && el.focus) el.focus(); }
 function renderDescBoxes(){
   const cb = document.getElementById('coreDescBox');
