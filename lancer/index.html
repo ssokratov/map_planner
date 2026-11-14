@@ -611,7 +611,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 159</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 160</span>
       </div>
     </div>
   </section>
@@ -1765,6 +1765,14 @@ function recalcDerived(){
   if (!F) return;
   const st = F.s;
   const H = +get('pilot.hull')||0, E = +get('pilot.engineering')||0;
+  const A = +get('pilot.agility')||0, Y = +get('pilot.systems')||0;
+  // HASE-зависимые статы: раньше считались только в applyFrame, поэтому при повышении
+  // Agility/Systems Speed и Evasion оставались базовыми значениями фрейма.
+  set('mech.speed', st.speed + Math.floor(A/2));
+  set('mech.evasion', st.evasion + A);
+  set('mech.edef', st.edef + Y);
+  set('mech.tech', (st.tech_attack||0) + Y);
+  set('mech.sp', st.sp + Math.floor(Y/2));
   set('mech.hpMax', st.hp + H*2);
   // Personalizations (GMS, LL0) — единственная система в данных, дающая +2 к максимуму HP.
   if (S.systems.some(s => { const d = findSystem(s.name); return d && d.n === 'Personalizations'; })) set('mech.hpMax', get('mech.hpMax') + 2);
