@@ -125,6 +125,14 @@ def fmt_deployables(deps):
             bits.append(fmt_range(d["range"]))
         if d.get("size") is not None:
             bits.append(f"Size {d['size']}")
+        # Статы развёртываемого объекта (v174): без них непонятно, сколько у него HP
+        # и как по нему попадать — пользователь спросил про дрон-турель (HP 5, Evasion 10, E-Defense 10)
+        if d.get("hp") is not None:
+            bits.append(f"HP {d['hp']}")
+        if d.get("evasion") is not None:
+            bits.append(f"Evasion {d['evasion']}")
+        if d.get("edef") is not None:
+            bits.append(f"E-Defense {d['edef']}")
         if bits:
             head += " (" + ", ".join(bits) + ")"
         detail = clean(d.get("detail") or "")
@@ -265,6 +273,7 @@ def build(local_dir):
             "lic": x.get("license") or "",
             "ll": x.get("license_level") if x.get("license_level") is not None else None,
             "lim": limited_val(x.get("tags")),
+            "tg": [[tg["id"], tg.get("val")] for tg in (x.get("tags") or [])],
             "x": full_desc,
         })
     db_s = []
