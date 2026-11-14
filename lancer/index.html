@@ -249,7 +249,8 @@
   .btn.icon { padding:8px 12px; font-size:18px; line-height:1; }
   /* Плюс в кнопках добавления внутри поисков (v172): жёлтый, шрифт крупнее, а размер кнопки тот же,
      что у обычной .btn (40px) — за счёт меньшего паддинга и line-height:1 */
-  .btn.search-add { color:var(--hud-amber); font-size:22px; line-height:1; padding:8px 10px; }
+  .btn.search-add { color:var(--hud-amber); font-size:22px; line-height:1; padding:8px 10px; border-color:var(--hud-amber-dim); }
+  .btn.search-add:hover { border-color:var(--hud-amber); }
   .sub-h { margin:18px 0 8px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--hud-amber); }
   #wizardOverlay, #luOverlay{ position:fixed; inset:0; z-index:60; display:none; align-items:flex-start; justify-content:center; background:rgba(0,0,0,.65); padding:16px; overflow-y:auto; }
   .wizard-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; width:100%; max-width:560px; margin:24px auto; padding:16px; }
@@ -622,7 +623,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 172</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 173</span>
       </div>
     </div>
   </section>
