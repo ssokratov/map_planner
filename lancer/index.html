@@ -53,7 +53,7 @@
   textarea { min-height:64px; resize:vertical; }
   textarea.autogrow { resize:none; overflow:hidden; }
   .counter { display:flex; align-items:center; gap:8px; }
-  .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; cursor:pointer; flex:none; }
+  .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:0; cursor:pointer; flex:none; }
   .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
   .res-grid { margin-bottom:16px; }
   .res-top { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; margin-bottom:16px; }
@@ -123,7 +123,7 @@
   .status-ref-item.on { border-color:var(--sc); }
   .status-ref-name { font-weight:700; font-size:14px; }
   .status-ref-desc { font-size:13px; color:var(--dim); line-height:1.4; margin-top:2px; }
-  .res { border-top:3px solid var(--rc,#2c3542); border-radius:8px; padding:10px; background:var(--panel2); }
+  .res { border-top:3px solid var(--rc,#2c3542); border-radius:0; padding:10px; background:var(--panel2); }
   .res label { color:var(--text); font-size:14px; font-weight:700; }
   .res label .ico { margin-right:4px; }
   .grid label .ico { margin-right:4px; }
@@ -286,22 +286,22 @@
       </div>
       <div class="status-tags" id="statusTags"></div>
       <div class="grid res-grid">
-        <div class="res" style="--rc:#4dabf7"><label><span class="ico">🛡️</span>Structure</label>
+        <div class="res"><label><span class="ico">🛡️</span>Structure</label>
           <div class="counter"><button onclick="step('mech.structure',-1)">−</button><div class="val" id="v-mech.structure">4</div><button onclick="step('mech.structure',1)">+</button></div>
           <div class="oc-next" id="max-mech.structure">max: 4</div>
           <input type="hidden" data-f="mech.structure" value="4"><input type="hidden" data-f="mech.structureMax" value="4">
         </div>
-        <div class="res" style="--rc:#ffd43b"><label><span class="ico">☢️</span>Stress</label>
+        <div class="res"><label><span class="ico">☢️</span>Stress</label>
           <div class="counter"><button onclick="step('mech.stress',-1)">−</button><div class="val" id="v-mech.stress">4</div><button onclick="step('mech.stress',1)">+</button></div>
           <div class="oc-next" id="max-mech.stress">max: 4</div>
           <input type="hidden" data-f="mech.stress" value="4"><input type="hidden" data-f="mech.stressMax" value="4">
         </div>
-        <div class="res" style="--rc:#51cf66"><label data-i18n="u013"><span class="ico">🔧</span>Repairs</label>
+        <div class="res"><label data-i18n="u013"><span class="ico">🔧</span>Repairs</label>
           <div class="counter"><button onclick="step('mech.repairs',-1)">−</button><div class="val" id="v-mech.repairs">4</div><button onclick="step('mech.repairs',1)">+</button></div>
           <div class="oc-next" id="max-mech.repairs">max: 4</div>
           <input type="hidden" data-f="mech.repairs" value="4"><input type="hidden" data-f="mech.repairsMax" value="4">
         </div>
-        <div class="res" style="--rc:#b197fc"><label><span class="ico">⚡</span>Overcharge</label>
+        <div class="res"><label><span class="ico">⚡</span>Overcharge</label>
           <div class="counter"><button onclick="stepOC(-1)">−</button><div class="val" id="v-mech.overcharge">0</div><button onclick="stepOC(1)">+</button></div>
           <div class="oc-next" id="oc-next">следующий: 1 тепла</div>
         </div>
@@ -608,7 +608,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 152</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 153</span>
       </div>
     </div>
   </section>
