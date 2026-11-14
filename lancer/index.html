@@ -138,6 +138,7 @@
   .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
   .stat-row.cols-2 { grid-template-columns:repeat(2, minmax(0,1fr)); }
   .stat-cell .stat-val { font-size:20px; font-weight:700; text-align:center; }
+  #rulesFrameList { margin-top:10px; }
   .stat-row.res { background:linear-gradient(180deg, rgba(77,171,247,.48), rgba(77,171,247,.24)); }
   .stat-row.res .stat-cell label { color:#a5d8ff; }
   .stat-cell { display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; min-width:0; box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
@@ -631,7 +632,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 180</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 181</span>
       </div>
     </div>
   </section>
@@ -672,7 +673,7 @@
 </dialog>
 <dialog id="searchDlg" onclick="if(event.target===this)closeSearchDlg()">
   <div class="search-dlg">
-    <div class="row" style="margin-bottom:12px">
+    <div class="row" id="searchDlgTop" style="margin-bottom:12px">
       <input type="text" id="searchDlgInput" oninput="renderSearchResults(this.value)">
       <button class="btn danger" style="flex:0 0 auto" onclick="closeSearchDlg()">✕</button>
     </div>
@@ -736,6 +737,10 @@ function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if 
 function renderSearchResults(q){
   frameDetailKey = null;
   frameDetailFrom = 'search';
+  const inp = document.getElementById('searchDlgInput');
+  if (inp) inp.style.display = '';
+  const top = document.getElementById('searchDlgTop');
+  if (top) top.style.justifyContent = '';
   const box = document.getElementById('searchDlgResults');
   if (!box) return;
   if (searchKind === 'weapon') showWeaponResults(searchCtx, q, box);
@@ -1798,6 +1803,12 @@ function showFrameDetail(key, from){
   frameDetailFrom = from || 'search';
   const dlg = document.getElementById('searchDlg');
   if (dlg && dlg.showModal && !dlg.open) dlg.showModal();
+  // На карточке фрейма поле поиска сверху не нужно и сбивает с толку — прячем его,
+  // крестик закрытия остаётся справа.
+  const inp = document.getElementById('searchDlgInput');
+  if (inp) inp.style.display = 'none';
+  const top = document.getElementById('searchDlgTop');
+  if (top) top.style.justifyContent = 'flex-end';
   const box = document.getElementById('searchDlgResults');
   if (!box) return;
   box.innerHTML = frameDetailHtml(key);
