@@ -73,21 +73,23 @@
   .ring-plus { right:15px; padding-right:3px; border-left:1px solid var(--line); }
   .heat-thermo { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; }
   .thermo { position:relative; width:64px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
-  .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; }
+  .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; transform-origin:bottom; }
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
+  /* Пульсация заполнения в Danger Zone (v166): вместо пульсирующего пламени — уровень заполнения
+     слегка ходит вверх-вниз, а цвет немного переливается (та же частота 1.2s, что и у подписей DANGER/ZONE) */
+  .heat-thermo.dz-active .thermo-fill { animation:fillPulse 1.2s ease-in-out infinite; }
+  @keyframes fillPulse { 0%,100% { transform:scaleY(0.97); filter:hue-rotate(0deg); } 50% { transform:scaleY(1.03); filter:hue-rotate(12deg); } }
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
-  /* Пламя бинарное (v108): привязано к Danger Zone — до половины Heat Cap маленькая статичная иконка,
-     в Danger Zone (тепло >= половины максимума) — большое пульсирующее пламя снизу */
+  /* Пламя — маленькая статичная иконка (v166): большое пульсирующее пламя убрано,
+     в Danger Zone вместо него пульсирует уровень заполнения (см. fillPulse выше) */
   /* Подписи DANGER / ZONE вокруг термометра (v108–v109): буквы стоят прямо, одна под другой
      (text-orientation:upright), капс, всегда английский, переливаются между красным и оранжевым.
      Видны только в Danger Zone — вне её термометр чистый. */
   .dz-label { display:none; writing-mode:vertical-rl; text-orientation:upright; font-size:11px; font-weight:800; letter-spacing:2px; color:#ff3b30; animation:dzGlow 1.2s ease-in-out infinite; user-select:none; pointer-events:none; }
   .heat-thermo.dz-active .dz-label { display:block; }
   @keyframes dzGlow { 0%,100% { color:#ff3b30; text-shadow:0 0 6px rgba(255,59,48,.55); } 50% { color:#ff9500; text-shadow:0 0 6px rgba(255,149,0,.55); } }
-  .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; transform-origin:center bottom; }
-  .thermo-ico.crit { bottom:-11px; font-size:56px; animation:flamePulse 1.2s ease-in-out infinite; }
-  @keyframes flamePulse { 0%,100% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.15) rotate(-5deg); } }
+  .thermo-ico { position:absolute; left:0; right:0; bottom:25px; text-align:center; font-size:16px; line-height:1; z-index:0; pointer-events:none; }
   .thermo-max { font-size:11px; color:rgba(255,255,255,.8); text-shadow:0 1px 2px rgba(0,0,0,.8); margin-top:2px; }
   .thermo-plus, .thermo-minus { position:absolute; left:0; right:0; height:34px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:rgba(255,255,255,.8); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   .thermo-plus { top:0; }
@@ -617,7 +619,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 165</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 166</span>
       </div>
     </div>
   </section>
@@ -1203,7 +1205,7 @@ function renderMyActions(){
 }
 
 // Danger Zone (v108): мех в Danger Zone, когда тепло >= половины Heat Cap (корбук).
-// Пламя в термометре и галочка статуса привязаны к этой механике.
+// Пульсация заполнения термометра и галочка статуса привязаны к этой механике (v166: пламя больше не пульсирует).
 function isDangerZone(){
   const m = get('mech.heatMax') || 0;
   return m ? (get('mech.heat') || 0) >= m / 2 : false;
@@ -1249,8 +1251,6 @@ function renderCounters(){
     htFill.classList.toggle('hot', v >= m);
   }
   syncDangerZone();
-  const flame = document.getElementById('heatFlame');
-  if (flame) flame.classList.toggle('crit', isDangerZone());
   const oc = get('mech.overcharge') || 0;
   const ocEl = document.getElementById('v-mech.overcharge');
   if (ocEl) ocEl.textContent = oc >= 4 ? '4+' : oc;
