@@ -105,6 +105,7 @@
   dialog h3 { margin:0 0 8px; font-size:16px; }
   dialog p { font-size:14px; line-height:1.5; color:var(--dim); margin:0 0 12px; }
   .row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .row .val { flex:0 0 48px; text-align:center; }
   .cb-row { cursor:pointer; border-radius:8px; padding:8px; margin:0 -8px 8px; align-items:flex-start; }
   .cb-row:hover { background:var(--panel2); }
   .row > * { flex:1; }
@@ -610,7 +611,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 158</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 159</span>
       </div>
     </div>
   </section>
@@ -2210,7 +2211,7 @@ function wizTalents(){
 }
 function wizTriggers(){
   const rows = S.triggers.map((t,i)=>{
-    return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim">${t.bonus>=0?'+':''}${t.bonus}</span>`
+    return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim val">${t.bonus>=0?'+':''}${t.bonus}</span>`
     + `<button class="btn x" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u205'))}</p>${rows}`
@@ -2385,7 +2386,7 @@ function luTrigger(){
     const isRaised = raised === t.name;
     const isNew = luIsNew('triggers', t.name);
     return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))} +${t.bonus}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
-    + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded ? 'disabled' : ''} onclick="luRaiseTrigger('${esc(t.name)}')">+2</button>`
+    + `<button class="btn ${isRaised ? 'primary' : ''}" style="flex:0 0 auto" ${newAdded ? 'disabled' : ''} onclick="luRaiseTrigger('${esc(t.name)}')">+2</button>`
     + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveTrigger(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u216'))}</p>${rows}`
@@ -2408,7 +2409,7 @@ function luHase(){
     const v = S.pilot[k]||0;
     const picked = luPicked.hase === k;
     return `<div class="row"><span style="flex:1 1 auto">${lab} <b>${v}</b>${picked ? ' ✓' : ''}</span>`
-    + `<button class="btn ${picked ? 'primary' : ''}" onclick="luRaiseHase('${k}')">+1</button></div>`;
+    + `<button class="btn ${picked ? 'primary' : ''}" style="flex:0 0 auto" onclick="luRaiseHase('${k}')">+1</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u217'))}</p>${rows}`;
 }
@@ -2443,7 +2444,7 @@ function luTalent(){
     const isNew = luIsNew('talents', t.name);
     const maxed = (t.rank||1) >= 3;
     return `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)} ${roman}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
-    + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseTalent('${esc(t.name)}')">+1</button>`
+    + `<button class="btn ${isRaised ? 'primary' : ''}" style="flex:0 0 auto" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseTalent('${esc(t.name)}')">+1</button>`
     + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveTalent(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u218'))}</p>${rows}`
@@ -2477,7 +2478,7 @@ function luLicense(){
     const isNew = luIsNew('licenses', l.name);
     const maxed = (l.rank||1) >= 3;
     return `<div class="row"><b style="flex:1 1 auto">${esc(fd(l.name).n)} ${['I','II','III'][l.rank-1]||''}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
-    + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseLicense('${esc(l.name)}')">+1</button>`
+    + `<button class="btn ${isRaised ? 'primary' : ''}" style="flex:0 0 auto" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseLicense('${esc(l.name)}')">+1</button>`
     + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveLicense(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u219'))}</p><p><b>LL: ${calcLL()}</b> · Grit: ${Math.ceil(calcLL()/2)}</p>${rows}`
