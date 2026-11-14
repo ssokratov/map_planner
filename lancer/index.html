@@ -24,7 +24,7 @@
   /* Линза выбранного таба (v79): прямоугольник на всю кнопку (треть ширины навбара)
      и на всю его высоту; один элемент, честно скользит между кнопками через transform */
   .nav-lens { position:absolute; top:0; bottom:0; left:8px; width:calc((100% - 16px) / 3); background:linear-gradient(180deg, rgb(255 176 0 / 21%) 0%, transparent 45%); box-shadow:0 0 18px rgb(0 0 0 / 39%), inset 0 1px 0 0 rgb(255 176 0 / 45%); pointer-events:none; z-index:0; transition:transform .25s ease; }
-  main { padding:0; max-width:450px; margin:0 auto; }
+  main { padding-bottom: 72px; max-width:450px; margin:0 auto; }
   section.tab { display:none; }
   section.tab.active { display:block; }
   /* Смена вкладок (v78): transform-слайд убран — он ронял навигацию на Android;
