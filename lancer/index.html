@@ -212,6 +212,7 @@
   .desc-text { white-space:pre-line; font-size:14px; line-height:1.55; margin:8px 0 4px; overflow-wrap:break-word; }
   .frame-ro { font-size:16px; font-weight:600; padding:9px 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wmeta { color:var(--dim); font-size:13px; margin:2px 0 4px; }
+  .wmeta .wnum { color:var(--accent); font-weight:700; }
   .card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
@@ -608,7 +609,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 153</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 154</span>
       </div>
     </div>
   </section>
@@ -1439,7 +1440,7 @@ function renderLists(){
     <div class="wcard">
       <div class="row"><b style="flex:1 1 auto">${esc(wDisp)}</b>
         ${editOn('mounts') ? `<button class="btn danger" style="flex:0 0 auto" onclick="delWeapon(${mi},${wi})">✕</button>` : ''}</div>
-      ${meta ? `<div class="wmeta">${esc(meta)}</div>` : ''}
+      ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
       <div class="wmeta">${esc(lab)}</div>
       ${wtg.length ? `<div class="tags">${tagChips(wtg)}</div>` : ''}
       ${wlim ? `<div class="row"><span class="dim">${L('charges').replace('{N}', wlim)}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wleft} <small>/ ${wlim}</small></div><button onclick="stepWeapCharges(${mi},${wi},1)">+</button></div></div>` : ''}
