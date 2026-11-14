@@ -632,7 +632,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 187</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 188</span>
       </div>
     </div>
   </section>
@@ -776,6 +776,7 @@ const STR = {"u006": {"ru": "Имя меха", "en": "Mech Name"}, "u007": {"ru"
 // __STR_END__
 // Состояние компонента описания (v17): какие <details> раскрыты, какое правится
 let openDescs = new Set();
+let openSys = new Set(); // открытые (развёрнутые) системы — переживают перерисовку (v188)
 let openSearchDescs = new Set();
 function rerenderSearch(){ const inp = document.getElementById('searchDlgInput'); renderSearchResults(inp ? inp.value : ''); }
 function openSearchDesc(key){ openSearchDescs.add(key); rerenderSearch(); }
@@ -1549,15 +1550,15 @@ function renderLists(){
     const sDisp = dbs ? sd(dbs).n : s.name;
     const descDisp = dbs ? dispVal(s.desc, dbs.x, dbs.xr) : s.desc;
     const meta = inDb ? [sd(dbs).t, sd(dbs).lab].filter(x=>x).join(' · ') : L('u150') + ' · SP ' + sp;
+    const ed = editOn('systems');
     return `
-    <div class="card" style="background:var(--panel2);margin-bottom:8px">
-      <div class="row"><b style="flex:1 1 auto">${esc(sDisp)}</b>
-      ${editOn('systems') ? `<button class="btn x" style="flex:0 0 auto" onclick="delRow('systems',${i})">✕</button>` : ''}</div>
+    <details class="sec" data-sys="${esc(s.name)}" ${openSys.has(s.name) ? 'open' : ''} ontoggle="toggleSysOpen(this)">
+      <summary><span style="display:flex;align-items:center;gap:8px"><span style="flex:1 1 auto">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</span></summary>
       <div class="wmeta">${esc(meta)}</div>
       ${stg.length ? `<div class="tags">${tagChips(stg)}</div>` : ''}
       ${lim ? `<div class="row"><span class="dim">${L('charges').replace('{N}', lim)}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepSysCharges(${i},-1)">−</button><div class="val">${left} <small>/ ${lim}</small></div><button onclick="stepSysCharges(${i},1)">+</button></div></div>` : ''}
-      ${descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
-    </div>`;
+      ${ed ? '' : descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
+    </details>`;
   }).join('');
   updateSpCounter();
   renderStatusTags();
@@ -1865,6 +1866,8 @@ function descBox(key, label, text, ph, saveExpr, editable, alwaysFull){
 }
 function openDesc(key){ openDescs.add(key); renderLists(); }
 function closeDesc(key){ openDescs.delete(key); renderLists(); }
+// Сворачивание систем (v188): состояние хранится по имени системы.
+function toggleSysOpen(el){ const n = el.getAttribute('data-sys'); if(!n) return; if(el.open) openSys.add(n); else openSys.delete(n); }
 function editDesc(key){ editingDesc = key; renderLists(); const el = document.getElementById('editingDesc'); if (el && el.focus) el.focus(); }
 function renderDescBoxes(){
   const cb = document.getElementById('coreDescBox');
