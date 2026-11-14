@@ -405,16 +405,16 @@
           <div class="stat-cell"><label>Engineering</label><input type="number" data-f="pilot.engineering" value="0"></div>
         </div>
         <div class="stat-row cols-4 mid">
-          <div class="stat-cell"><label>Size</label><input type="number" min="1" data-f="mech.size" value="1"></div>
-          <div class="stat-cell"><label>Speed</label><input type="number" data-f="mech.speed" value="4"></div>
-          <div class="stat-cell"><label>Sensors</label><input type="number" data-f="mech.sensors" value="10"></div>
-          <div class="stat-cell"><label>T.Attack</label><input type="number" data-f="mech.tech" value="0"></div>
+          <div class="stat-cell"><label>Size</label><input type="number" min="1" data-f="mech.size" value="1" readonly></div>
+          <div class="stat-cell"><label>Speed</label><input type="number" data-f="mech.speed" value="4" readonly></div>
+          <div class="stat-cell"><label>Sensors</label><input type="number" data-f="mech.sensors" value="10" readonly></div>
+          <div class="stat-cell"><label>T.Attack</label><input type="number" data-f="mech.tech" value="0" readonly></div>
         </div>
         <div class="stat-row cols-4 bot">
-          <div class="stat-cell"><label>Armor</label><input type="number" min="0" max="4" data-f="mech.armor" value="0"></div>
+          <div class="stat-cell"><label>Armor</label><input type="number" min="0" max="4" data-f="mech.armor" value="0" readonly></div>
           <div class="stat-cell grit"><label>Grit</label><input type="number" data-f="pilot.grit" value="0" readonly></div>
-          <div class="stat-cell"><label>Evasion</label><input type="number" data-f="mech.evasion" value="8"></div>
-          <div class="stat-cell"><label>E-Defense</label><input type="number" data-f="mech.edef" value="8"></div>
+          <div class="stat-cell"><label>Evasion</label><input type="number" data-f="mech.evasion" value="8" readonly></div>
+          <div class="stat-cell"><label>E-Defense</label><input type="number" data-f="mech.edef" value="8" readonly></div>
         </div>
       </div>
       <div class="hint" id="haseHint" data-i18n="u061">На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul></div>
@@ -427,7 +427,7 @@
     <div class="card">
       <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8590c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" id="spCounterRow" style="padding:0 0 8px"><span id="spCounter"></span></p>
-      <div class="row" id="spCapRow" style="align-items:center"><label style="flex:1 1 auto">System Points (SP)</label><input type="number" data-f="mech.sp" value="6" style="flex:0 0 90px"></div>
+      <div class="row" id="spCapRow" style="align-items:center"><label style="flex:1 1 auto">System Points (SP)</label><input type="number" data-f="mech.sp" value="6" style="flex:0 0 90px" readonly></div>
       <p class="hint" id="systemsHint" style="padding:0 0 8px" data-i18n="u070">База: <span id="dbSystemCount"></span> систем из открытых данных Massif Press (lancer-data). Поиск ищет по названию, типу, корпорации и уровню лицензии (LL0–LL3). Выбор подставляет SP и описание с эффектом.<span id="licNoteS"></span></p>
       <div id="systems"></div>
       <div class="row" id="systemAddRow" style="margin-top:10px">
@@ -611,7 +611,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 160</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 161</span>
       </div>
     </div>
   </section>
@@ -1766,18 +1766,24 @@ function recalcDerived(){
   const st = F.s;
   const H = +get('pilot.hull')||0, E = +get('pilot.engineering')||0;
   const A = +get('pilot.agility')||0, Y = +get('pilot.systems')||0;
-  // HASE-зависимые статы: раньше считались только в applyFrame, поэтому при повышении
-  // Agility/Systems Speed и Evasion оставались базовыми значениями фрейма.
+  const cbs = S.pilot.coreBonuses || [];
+  // Все производные статы (всё, кроме HASE) считаются сами: фрейм + HASE + кор-бонусы + системы.
+  // Таланты постоянных бонусов к статам меха не дают (проверено по базе 29 талантов);
+  // системы — только Personalizations (+2 HP); кор-бонусы: Reinforced Frame +5 HP,
+  // Superior By Design +2 Heat Cap, Sloped Plating +1 Armor (макс. 4), Full Subjectivity Sync +2 Evasion,
+  // Fomorian Frame Reinforcement +1 Size (макс. 3), Lesson of Disbelief +2 E-Defense.
   set('mech.speed', st.speed + Math.floor(A/2));
-  set('mech.evasion', st.evasion + A);
-  set('mech.edef', st.edef + Y);
+  set('mech.evasion', st.evasion + A + (cbs.includes('Full Subjectivity Sync') ? 2 : 0));
+  set('mech.edef', st.edef + Y + (cbs.includes('The Lesson of Disbelief') ? 2 : 0));
   set('mech.tech', (st.tech_attack||0) + Y);
   set('mech.sp', st.sp + Math.floor(Y/2));
+  set('mech.armor', Math.min(st.armor + (cbs.includes('Sloped Plating') ? 1 : 0), 4));
+  set('mech.size', Math.min(st.size + (cbs.includes('Fomorian Frame Reinforcement') ? 1 : 0), 3));
+  set('mech.sensors', st.sensor_range);
   set('mech.hpMax', st.hp + H*2);
   // Personalizations (GMS, LL0) — единственная система в данных, дающая +2 к максимуму HP.
   if (S.systems.some(s => { const d = findSystem(s.name); return d && d.n === 'Personalizations'; })) set('mech.hpMax', get('mech.hpMax') + 2);
   // Core Bonuses, дающие прямые бонусы к максимумам: Reinforced Frame +5 HP, Superior By Design +2 Heat Cap.
-  const cbs = S.pilot.coreBonuses || [];
   if (cbs.includes('Reinforced Frame')) set('mech.hpMax', get('mech.hpMax') + 5);
   set('mech.heatMax', st.heatcap + E);
   if (cbs.includes('Superior By Design')) set('mech.heatMax', get('mech.heatMax') + 2);
@@ -2080,6 +2086,7 @@ function bind(){
       if (p === 'mech.sp') updateSpCounter();
       if (p === 'pilot.hull' || p === 'pilot.agility' || p === 'pilot.systems' || p === 'pilot.engineering') {
         recalcDerived();
+        syncInputs();
         renderCounters();
       }
       save();
