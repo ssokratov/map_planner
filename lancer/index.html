@@ -147,12 +147,16 @@
   .stat-row.bot .stat-cell label { color:#b8c6d4; }
   .trig-table { display:flex; flex-direction:column; gap:0; margin-top:10px; border:1px solid var(--line); background:var(--panel2); }
   .trig-table:empty { border:none; background:transparent; margin-top:0; }
-  .trig-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:linear-gradient(180deg, rgba(232,89,12,.48), rgba(232,89,12,.24)); box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
+  .trig-row { display:flex; align-items:stretch; gap:0; padding:8px 10px; }
   .trig-row + .trig-row { border-top:1px solid var(--line); }
-  .trig-name { flex:1 1 auto; font-size:15px; font-weight:600; min-width:0; color:#b8c6d4; }
-  .trig-val { flex:0 0 auto; font-size:20px; font-weight:700; min-width:40px; text-align:center; color:#7be495; border-left:2px solid var(--line); padding-left:10px; }
-  input.trig-name, input.trig-val { background:transparent; border-color:transparent; padding:2px 4px; }
+  .trig-name { flex:1 1 auto; min-width:0; padding:8px 12px; font-size:15px; font-weight:600; color:#b8c6d4; background:linear-gradient(180deg, rgba(140,160,180,.48), rgba(140,160,180,.24)); box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
+  .trig-val { flex:0 0 auto; width:44px; min-width:44px; font-size:20px; font-weight:700; text-align:center; color:#fff; background:linear-gradient(180deg, rgba(92,223,51,.40), rgba(92,223,51,.20)); box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); border-left:1px solid var(--line); }
+  span.trig-name, span.trig-val { display:flex; align-items:center; }
+  span.trig-val { justify-content:center; }
+  input.trig-name, input.trig-val { border-color:transparent; padding:2px 4px; }
+  input.trig-name { padding:8px 12px; }
   input.trig-val { width:56px; border-left-color:var(--line); }
+  .trig-row .btn.x { margin-left:8px; }
 
   /* Статы в просмотре (редактирование выкл.): имя и фрейм — в одну строку, компактно */
   #statsCard.view .grid > div { display:flex; align-items:baseline; gap:6px; min-width:0; }
@@ -312,7 +316,7 @@
       <div class="core-power" id="corePanel">
         <div class="cp-top">
           <div class="cp-info"><span data-i18n="u234">Восстанавливается при полном ремонте или в начале миссии.</span></div>
-          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpRim" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a52a2a"/><stop offset="100%" stop-color="#6e1a1a"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><linearGradient id="cpSteel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#eef1f5"/><stop offset="55%" stop-color="#aab2bd"/><stop offset="100%" stop-color="#6b7683"/></linearGradient><path id="cpArcTop" d="M 25,25 A 49,49 0 0,1 95,25" fill="none"/><path id="cpArcBottom" d="M 31,111 A 59,59 0 0,0 90,111" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="54" fill="none" stroke="url(#cpRim)" stroke-width="12"/><circle class="cp-core" cx="60" cy="60" r="48" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text><g><circle cx="6" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="2.2" y1="60" x2="9.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(-12 6 60)"/><circle cx="114" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="110.2" y1="60" x2="117.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(68 114 60)"/></g></svg></button>
+          <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpRim" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a52a2a"/><stop offset="100%" stop-color="#6e1a1a"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><linearGradient id="cpSteel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#eef1f5"/><stop offset="55%" stop-color="#aab2bd"/><stop offset="100%" stop-color="#6b7683"/></linearGradient><path id="cpArcTop" d="M 25,25 A 49,49 0 0,1 95,25" fill="none"/><path id="cpArcBottom" d="M 31.5,109.4 A 57,57 0 0,0 88.5,109.4" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="54" fill="none" stroke="url(#cpRim)" stroke-width="12"/><circle class="cp-core" cx="60" cy="60" r="48" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text><g><circle cx="6" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="2.2" y1="60" x2="9.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(-12 6 60)"/><circle cx="114" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="110.2" y1="60" x2="117.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(68 114 60)"/></g></svg></button>
         </div>
         <div class="core-desc">
           <div class="core-name" id="coreNameBox">Hyperspec Fuel Injector</div>
@@ -611,7 +615,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 163</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 164</span>
       </div>
     </div>
   </section>
