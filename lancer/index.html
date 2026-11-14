@@ -632,7 +632,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 186</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 187</span>
       </div>
     </div>
   </section>
@@ -1204,6 +1204,12 @@ const ACTIONS_REF = {
     {key:'coveringfire', name:'Covering Fire', ru:'Прикрывающий огонь', grant:{talent:'Heavy Gunner', rank:1},
      tx_ru:'Быстрым действием выберите персонажа в пределах дальности и линии видимости одного из ваших тяжёлых дальнобойных оружий и в пределах 10 клеток: он получает Ослабление до начала вашего следующего хода. Пока действует эффект, если ваша цель перемещается больше чем на 1 клетку, она снимает Ослабление, но вы можете атаковать её реакцией из тяжёлого дальнобойного оружия за половину урона, тепла или ожога, после чего эффект заканчивается. Вы можете совершить эту атаку в любой момент её перемещения (например, дождавшись, пока она выйдет из укрытия). ПРИКРЫВАЮЩИЙ ОГОНЬ может действовать только на одного персонажа за раз — повторное использование заменяет предыдущее — и немедленно заканчивается, если ваша цель наносит вам урон.',
      tx_en:'As a quick action, choose a character within Range and line of sight of one of your heavy ranged weapons, and within 10 spaces: they are Impaired until the start of your next turn. For the duration, if your target moves more than 1 space, they clear Impaired, but you may attack them as a reaction with a heavy ranged weapon for half damage, heat, or burn, then this effect ends. You can make this attack at any point during their movement (e.g., waiting until they exit cover). COVERING FIRE can only affect one character at a time \u2013 subsequent uses replace previous ones \u2013 and it immediately ends if your target damages you.'},
+    {key:'balancecontrollockout', name:'Balance Control Lockout', ru:'Блокировка контроля равновесия', grant:{frame:'Chomolungma'},
+     tx_ru:'Опция Вторжения: притяните цель на 2 клетки в любом направлении и сбейте её с ног. Если она уже лежит, она становится обездвиженной до конца своего следующего хода.',
+     tx_en:'Invade option: Pull your target 2 spaces in any direction and knock them Prone. If they are already Prone, they become Immobilized until the end of their next turn.'},
+    {key:'systemcrusher', name:'System Crusher', ru:'Крушитель систем', grant:{frame:'Chomolungma'},
+     tx_ru:'Опция Вторжения: цель получает дополнительно 2 тепла, всего 4 тепла.',
+     tx_en:'Invade option: Your target takes an additional 2 heat, for a total of 4 heat.'}
   ]
 };
 // Проверка, есть ли у игрока фича, дающая действие (талант с нужным рангом или система).

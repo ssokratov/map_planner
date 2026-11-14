@@ -61,6 +61,26 @@ FRAME_REACTIONS = [
     },
 ]
 
+# --- Быстрые действия фреймов: сверены с книгами допов ---
+# Chomolungma (Solstice Rain) — пассив Core Power «Advanced Intrusion Package» даёт
+# две дополнительные опции Вторжения. В трекере Вторжение — одно общее быстрое
+# действие, а опции отдельно не выбираются, поэтому они добавлены как отдельные
+# быстрые действия с grant.frame (v187, по решению пользователя).
+FRAME_QUICK = [
+    {
+        "key": "balancecontrollockout", "name": "Balance Control Lockout", "ru": "Блокировка контроля равновесия",
+        "grant": {"frame": "Chomolungma"},
+        "tx_ru": "Опция Вторжения: притяните цель на 2 клетки в любом направлении и сбейте её с ног. Если она уже лежит, она становится обездвиженной до конца своего следующего хода.",
+        "tx_en": "Invade option: Pull your target 2 spaces in any direction and knock them Prone. If they are already Prone, they become Immobilized until the end of their next turn.",
+    },
+    {
+        "key": "systemcrusher", "name": "System Crusher", "ru": "Крушитель систем",
+        "grant": {"frame": "Chomolungma"},
+        "tx_ru": "Опция Вторжения: цель получает дополнительно 2 тепла, всего 4 тепла.",
+        "tx_en": "Invade option: Your target takes an additional 2 heat, for a total of 4 heat.",
+    },
+]
+
 # --- Протоколы талантов: сверены с корбуком (v107) ---
 # В отличие от реакций талантов, протоколы талантов в lancer-data не лежат
 # отдельным списком — они описаны внутри текста фичи таланта. Источник:
@@ -209,6 +229,12 @@ def main():
     print('TALENT QUICK ACTIONS:', len(TALENT_QUICK_ACTIONS))
     for q in TALENT_QUICK_ACTIONS:
         print(f"  {q['grant']['talent']} {q['grant']['rank']} -> {q['name']}")
+        print(f"    {q['tx_en'][:180]}")
+
+    print()
+    print('FRAME QUICK ACTIONS:', len(FRAME_QUICK))
+    for q in FRAME_QUICK:
+        print(f"  {q['grant']['frame']} -> {q['name']}")
         print(f"    {q['tx_en'][:180]}")
 
 if __name__ == '__main__':
