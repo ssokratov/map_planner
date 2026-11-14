@@ -104,7 +104,7 @@
   dialog::backdrop { background:rgba(0,0,0,.6); }
   dialog h3 { margin:0 0 8px; font-size:16px; }
   dialog p { font-size:14px; line-height:1.5; color:var(--dim); margin:0 0 12px; }
-  .row { display:flex; gap:8px; align-items:flex-end; margin-bottom:8px; }
+  .row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .cb-row { cursor:pointer; border-radius:8px; padding:8px; margin:0 -8px 8px; align-items:flex-start; }
   .cb-row:hover { background:var(--panel2); }
   .row > * { flex:1; }
@@ -112,6 +112,7 @@
   .row select.lic-rank { flex:0 0 84px; }
   .btn { padding:10px 14px; font-size:15px; border-radius:0; border:1px solid var(--line); background:var(--panel2); color:var(--text); cursor:pointer; }
   .btn.danger { border-color:var(--accent); color:var(--accent); padding:6px 10px; font-size:13px; }
+  .btn.x { border-color:transparent; background:transparent; color:var(--accent); padding:6px 10px; font-size:13px; }
   .btn.primary { background:var(--hud-amber); border-color:var(--hud-amber); color:#0e1116; font-weight:700; }
   .add { width:100%; margin-top:4px; }
   .status-tags { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; }
@@ -609,7 +610,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 157</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 158</span>
       </div>
     </div>
   </section>
@@ -1352,7 +1353,7 @@ function renderCoreBonuses(){
     const nameHtml = lang()==='ru' ? `<b>${esc(disp)}</b> <span class="dim">(${esc(cb.n)})</span>` : `<b>${esc(disp)}</b>`;
     return editOn('coreBonuses') ? `
     <div class="row" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div>
-    <button class="btn danger" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>` : `
+    <button class="btn x" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>` : `
     <div class="row" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div></div>`;
   }).join('');
 }
@@ -1405,7 +1406,7 @@ function renderLists(){
   document.getElementById('triggers').innerHTML = S.triggers.map((t,i)=> editOn('triggers') ? `
     <div class="trig-row"><input class="trig-name" type="text" placeholder="${L('ph_trigger')}" value="${esc(trigDisp(t.name))}" onchange="S.triggers[${i}].name=this.value;save()">
     <input class="trig-val" type="number" value="${t.bonus}" onchange="S.triggers[${i}].bonus=+this.value;save()">
-    <button class="btn danger" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>` : `
+    <button class="btn x" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>` : `
     <div class="trig-row"><span class="trig-name">${esc(trigDisp(t.name))}</span><span class="trig-val">${t.bonus>=0?'+':''}${t.bonus}</span></div>`).join('');
   document.getElementById('talents').innerHTML = S.talents.map((t,i)=>{
     const rds = talentRankDesc(t);
@@ -1417,7 +1418,7 @@ function renderLists(){
       ${editOn('talents') ? `<div class="row"><input type="text" placeholder="${L('ph_talent')}" value="${esc(tDisp)}" onchange="fillTalentFromDb(${i},this.value)">
       <select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
-      <button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
+      <button class="btn x" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
       ${rds.length ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px">${rds.map((r, k) => `<b>${['I','II','III'][k]}. ${esc(r.n)}:</b> ${linkTagTerms(esc(r.d))}`).join('\n\n')}</div>` : ''}
     </div>`;
   }).join('');
@@ -1439,7 +1440,7 @@ function renderLists(){
     return `
     <div class="wcard">
       <div class="row"><b style="flex:1 1 auto">${esc(wDisp)}</b>
-        ${editOn('mounts') ? `<button class="btn danger" style="flex:0 0 auto" onclick="delWeapon(${mi},${wi})">✕</button>` : ''}</div>
+        ${editOn('mounts') ? `<button class="btn x" style="flex:0 0 auto" onclick="delWeapon(${mi},${wi})">✕</button>` : ''}</div>
       ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
       <div class="wmeta">${esc(lab)}</div>
       ${wtg.length ? `<div class="tags">${tagChips(wtg)}</div>` : ''}
@@ -1470,7 +1471,7 @@ function renderLists(){
     return `
     <div class="card" style="background:var(--panel2);margin-bottom:8px">
       <div class="row"><b style="flex:1 1 auto">${esc(sDisp)}</b>
-      ${editOn('systems') ? `<button class="btn danger" style="flex:0 0 auto" onclick="delRow('systems',${i})">✕</button>` : ''}</div>
+      ${editOn('systems') ? `<button class="btn x" style="flex:0 0 auto" onclick="delRow('systems',${i})">✕</button>` : ''}</div>
       <div class="wmeta">${esc(meta)}</div>
       ${stg.length ? `<div class="tags">${tagChips(stg)}</div>` : ''}
       ${lim ? `<div class="row"><span class="dim">${L('charges').replace('{N}', lim)}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepSysCharges(${i},-1)">−</button><div class="val">${left} <small>/ ${lim}</small></div><button onclick="stepSysCharges(${i},1)">+</button></div></div>` : ''}
@@ -1485,7 +1486,7 @@ function renderLists(){
     <div class="row"><select style="flex:1 1 auto;min-width:0" onchange="S.pilot.licenses[${i}].name=this.value;save();renderLists()">${licenseNameOptions(l.name)}</select>
     <select class="lic-rank" onchange="S.pilot.licenses[${i}].rank=+this.value;save();renderLists()">
       ${[1,2,3].map(r=>`<option value="${r}" ${l.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
-    <button class="btn danger" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>` : `
+    <button class="btn x" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>` : `
     <div class="row"><b style="flex:1 1 auto">${esc(fd(l.name).n)}${['I','II','III'][l.rank-1] ? ' ' + ['I','II','III'][l.rank-1] : ''}</b></div>`).join('');
   renderCoreBonuses();
   updateLicenseSummary();
@@ -2189,7 +2190,7 @@ function wizLicenses(){
     return `<div class="row"><b style="flex:1 1 auto">${esc(d.n)}</b>`
     + `<select class="lic-rank" onchange="S.pilot.licenses[${i}].rank=+this.value;save();renderLists()">`
     + [1,2,3].map(r=>`<option value="${r}" ${l.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')
-    + `</select><button class="btn danger" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>`;
+    + `</select><button class="btn x" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u203'))}</p><p><b>LL: ${calcLL()}</b> · Grit: ${Math.ceil(calcLL()/2)}</p>${rows}`
   + `<button class="btn primary" onclick="openSearch('license')">＋ ${esc(L('u189'))}</button>`;
@@ -2202,7 +2203,7 @@ function wizTalents(){
     return `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)} ${roman}</b>`
     + `<select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">`
     + [1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')
-    + `</select><button class="btn danger" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>`;
+    + `</select><button class="btn x" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u204'))}</p>${rows}`
   + `<button class="btn primary" onclick="openSearch('talent')">＋ ${esc(L('u190'))}</button>`;
@@ -2210,7 +2211,7 @@ function wizTalents(){
 function wizTriggers(){
   const rows = S.triggers.map((t,i)=>{
     return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim">${t.bonus>=0?'+':''}${t.bonus}</span>`
-    + `<button class="btn danger" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>`;
+    + `<button class="btn x" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u205'))}</p>${rows}`
   + `<button class="btn primary" onclick="openSearch('trigger')">＋ ${esc(L('u191'))}</button>`;
@@ -2245,7 +2246,7 @@ function wizCore(){
   const rows = S.pilot.coreBonuses.map((name,i)=>{
     const cb = findCoreBonus(name);
     const disp = cb ? (isRu() ? (cb.ru||cb.n) : cb.n) : name;
-    return `<div class="row"><b style="flex:1 1 auto">${esc(disp)}</b><button class="btn danger" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>`;
+    return `<div class="row"><b style="flex:1 1 auto">${esc(disp)}</b><button class="btn x" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>`;
   }).join('');
   return `<p class="hint">${esc(L('u209'))}</p><p><b>${esc(L('u196'))}: ${S.pilot.coreBonuses.length} / ${coreBonusSlots()}</b></p>${rows}`
   + `<button class="btn primary" onclick="openCoreBonusPicker()">＋ ${esc(L('u196'))}</button>`;
@@ -2385,7 +2386,7 @@ function luTrigger(){
     const isNew = luIsNew('triggers', t.name);
     return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))} +${t.bonus}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
     + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded ? 'disabled' : ''} onclick="luRaiseTrigger('${esc(t.name)}')">+2</button>`
-    + (isNew ? `<button class="btn danger" style="flex:0 0 auto" onclick="luRemoveTrigger(${i})">✕</button>` : '') + `</div>`;
+    + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveTrigger(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u216'))}</p>${rows}`
   + `<button class="btn primary" ${raised !== null || newAdded ? 'disabled' : ''} onclick="openSearch('trigger')">＋ ${esc(L('u191'))}</button>`;
@@ -2443,7 +2444,7 @@ function luTalent(){
     const maxed = (t.rank||1) >= 3;
     return `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)} ${roman}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
     + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseTalent('${esc(t.name)}')">+1</button>`
-    + (isNew ? `<button class="btn danger" style="flex:0 0 auto" onclick="luRemoveTalent(${i})">✕</button>` : '') + `</div>`;
+    + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveTalent(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u218'))}</p>${rows}`
   + `<button class="btn primary" ${raised !== null || newAdded ? 'disabled' : ''} onclick="openSearch('talent')">＋ ${esc(L('u190'))}</button>`;
@@ -2477,7 +2478,7 @@ function luLicense(){
     const maxed = (l.rank||1) >= 3;
     return `<div class="row"><b style="flex:1 1 auto">${esc(fd(l.name).n)} ${['I','II','III'][l.rank-1]||''}${isRaised ? ' ✓' : ''}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
     + `<button class="btn ${isRaised ? 'primary' : ''}" ${newAdded || maxed ? 'disabled' : ''} onclick="luRaiseLicense('${esc(l.name)}')">+1</button>`
-    + (isNew ? `<button class="btn danger" style="flex:0 0 auto" onclick="luRemoveLicense(${i})">✕</button>` : '') + `</div>`;
+    + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveLicense(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u219'))}</p><p><b>LL: ${calcLL()}</b> · Grit: ${Math.ceil(calcLL()/2)}</p>${rows}`
   + `<button class="btn primary" ${raised !== null || newAdded ? 'disabled' : ''} onclick="openSearch('license')">＋ ${esc(L('u189'))}</button>`;
@@ -2493,7 +2494,7 @@ function luCore(){
     const disp = cb ? (isRu() ? (cb.ru||cb.n) : cb.n) : name;
     const isNew = luIsNew('coreBonuses', name);
     return `<div class="row"><b style="flex:1 1 auto">${esc(disp)}${isNew ? ' (' + esc(L('u225')).toLowerCase() + ')' : ''}</b>`
-    + (isNew ? `<button class="btn danger" style="flex:0 0 auto" onclick="luRemoveCore(${i})">✕</button>` : '') + `</div>`;
+    + (isNew ? `<button class="btn x" style="flex:0 0 auto" onclick="luRemoveCore(${i})">✕</button>` : '') + `</div>`;
   }).join('');
   return `<p class="hint">${esc(L('u220'))}</p><p><b>${esc(L('u196'))}: ${S.pilot.coreBonuses.length} / ${coreBonusSlots()}</b></p>${rows}`
   + `<button class="btn primary" ${newAdded ? 'disabled' : ''} onclick="openCoreBonusPicker()">＋ ${esc(L('u196'))}</button>`;
