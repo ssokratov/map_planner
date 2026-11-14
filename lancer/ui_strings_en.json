@@ -1,873 +1,893 @@
 {
-  "placeholders": {
-    "p001": {
-      "en": "Mech Name",
-      "tag": "input"
-    },
-    "p005": {
-      "en": "Frame traits, tactics, debts…",
-      "tag": "textarea"
-    },
-    "p006": {
-      "en": "Name",
-      "tag": "input"
-    },
-    "p007": {
-      "en": "Callsign",
-      "tag": "input"
-    },
-    "p008": {
-      "en": "E.g.: Colonist",
-      "tag": "input"
-    }
+ "placeholders": {
+  "p001": {
+   "en": "Mech Name",
+   "tag": "input"
   },
-  "units": {
-    "u006": {
-      "en": "Mech Name",
-      "tag": "label"
-    },
-    "u007": {
-      "en": "<span class=\"ico\">📏</span>Size",
-      "tag": "label"
-    },
-    "u008": {
-      "en": "<span class=\"ico\">🏃</span>Speed",
-      "tag": "label"
-    },
-    "u011": {
-      "en": "Combat Resources",
-      "tag": "h2"
-    },
-    "u013": {
-      "en": "<span class=\"ico\">🔧</span>Repairs",
-      "tag": "label"
-    },
-    "u014": {
-      "en": "Full Repair (Rest)",
-      "tag": "button"
-    },
-    "u016": {
-      "en": "Overcharge",
-      "tag": "summary"
-    },
-    "u017": {
-      "en": "Once per turn, you may overcharge your mech and take any quick action as a free action — even one you already took this turn.",
-      "tag": "li"
-    },
-    "u018": {
-      "en": "Heat increases with each use since your last full repair: 1st time — <b>1 heat</b>; 2nd — <b>1d3</b>; 3rd — <b>1d6</b>; 4th and later — <b>1d6+4</b>.",
-      "tag": "li"
-    },
-    "u019": {
-      "en": "The counter resets <b>only by a full repair</b> (not at the end of a scene!). A Stunned mech cannot overcharge. After Brace, you cannot overcharge on your next turn.",
-      "tag": "li"
-    },
-    "u020": {
-      "en": "Heat is taken immediately, and the action is taken immediately — you can't \"save\" the quick action you gained for later.",
-      "tag": "li"
-    },
-    "u021": {
-      "en": "Structure Damage",
-      "tag": "summary"
-    },
-    "u022": {
-      "en": "When a mech with Structure reaches 0 HP: it loses 1 Structure, rolls on the table, and restores HP to maximum; excess damage carries over. At 0 Structure the mech is destroyed. Roll: 1d6 for each marked unit of Structure (including the one just marked), take the lowest result.",
-      "tag": "p"
-    },
-    "u026": {
-      "en": "<b>Glancing Blow</b>",
-      "tag": "span"
-    },
-    "u027": {
-      "en": "Emergency systems stabilize the mech, but it is Impaired until the end of your next turn.",
-      "tag": "div"
-    },
-    "u028": {
-      "en": "<b>System Trauma</b>",
-      "tag": "span"
-    },
-    "u029": {
-      "en": "Parts of the mech are torn off. Roll 1d6:<ul><li>1–3 — all weapons on one mount of your choice are destroyed</li><li>4–6 — one system of your choice is destroyed</li></ul>If no valid options of one kind remain, take the other result; if neither weapons nor systems remain, this becomes a Direct Hit.",
-      "tag": "div"
-    },
-    "u030": {
-      "en": "<b>Direct Hit</b>",
-      "tag": "span"
-    },
-    "u031": {
-      "en": "<ul><li>3+ Structure: the mech is Stunned until the end of your next turn.</li><li>2 Structure: Hull check — success: Stunned until the end of your next turn, failure: the mech is destroyed.</li><li>1 Structure: the mech is destroyed.</li></ul>",
-      "tag": "div"
-    },
-    "u032": {
-      "en": "multiple 1s",
-      "tag": "span"
-    },
-    "u033": {
-      "en": "<b>Crushing Hit</b>",
-      "tag": "span"
-    },
-    "u034": {
-      "en": "The mech is damaged beyond repair — it is destroyed. You can exit it as normal.",
-      "tag": "div"
-    },
-    "u035": {
-      "en": "Reactor Overheat",
-      "tag": "summary"
-    },
-    "u036": {
-      "en": "When a mech takes heat beyond its Heat Cap: it loses 1 Stress, rolls on the table, and clears all heat; excess heat carries over. At 0 Stress the mech suffers a reactor meltdown at the end of its next turn. Sitting exactly at Heat Cap is safe. Roll: 1d6 for each marked unit of Stress (including the one just marked), take the lowest result.",
-      "tag": "p"
-    },
-    "u040": {
-      "en": "<b>Emergency Shunt</b>",
-      "tag": "span"
-    },
-    "u041": {
-      "en": "Cooling systems contain the heat, but the mech is Impaired until the end of your next turn.",
-      "tag": "div"
-    },
-    "u042": {
-      "en": "<b>Destabilized Power Plant</b>",
-      "tag": "span"
-    },
-    "u043": {
-      "en": "<ul><li>The power plant is unstable, venting jets of plasma.</li><li>The mech becomes Exposed (all kinetic, explosive, and energy damage against it is doubled) until the status is cleared.</li></ul>",
-      "tag": "div"
-    },
-    "u044": {
-      "en": "<b>Meltdown</b>",
-      "tag": "span"
-    },
-    "u045": {
-      "en": "<ul><li>3+ Stress: the mech becomes Exposed.</li><li>2 Stress: Engineering check — success: Exposed, failure: reactor meltdown in 1d6 of your turns (the GM rolls); it can be prevented by a repeated Engineering check as a full action.</li><li>1 Stress: reactor meltdown at the end of your next turn.</li></ul>",
-      "tag": "div"
-    },
-    "u046": {
-      "en": "multiple 1s",
-      "tag": "span"
-    },
-    "u047": {
-      "en": "<b>Irreversible Meltdown</b>",
-      "tag": "span"
-    },
-    "u048": {
-      "en": "The reactor is out of control — meltdown at the end of your next turn.",
-      "tag": "div"
-    },
-    "u049": {
-      "en": "<b>Reactor meltdown:</b> the pilot inside dies immediately, the mech vaporizes. Burst 2: all characters in the area make an Agility save or take 4d6 explosive damage (half on success). The wreckage is completely destroyed.",
-      "tag": "p"
-    },
-    "u050": {
-      "en": "Rest & Full Repair",
-      "tag": "summary"
-    },
-    "u051": {
-      "en": "Rest (1 hour, uninterrupted)",
-      "tag": "h3"
-    },
-    "u052": {
-      "en": "Clear all heat; clear all statuses and conditions; the pilot recovers half HP and clears Down and Out.",
-      "tag": "li"
-    },
-    "u053": {
-      "en": "You may spend repairs: <b>1 Repair</b> — full HP or repair a destroyed weapon/system; <b>2 Repairs</b> — 1 Structure or 1 Stress; <b>4 Repairs</b> — repair a destroyed mech (1 Structure, 1 Stress, full HP).",
-      "tag": "li"
-    },
-    "u054": {
-      "en": "Rest does <b>not</b> reset the overcharge counter and does <b>not</b> restore Core Power.",
-      "tag": "li"
-    },
-    "u055": {
-      "en": "Full Repair (10+ hours in a safe place)",
-      "tag": "h3"
-    },
-    "u056": {
-      "en": "Pilot: HP to maximum, Down and Out cleared. Mech: HP, Stress, and Structure to maximum.",
-      "tag": "li"
-    },
-    "u057": {
-      "en": "All statuses and conditions cleared; destroyed weapons and systems repaired.",
-      "tag": "li"
-    },
-    "u058": {
-      "en": "Core Power restored; all repairs and Limited weapon/system charges restored; heat cleared; overcharge counter reset.",
-      "tag": "li"
-    },
-    "u060": {
-      "en": "<span class=\"ico\">🛡️</span>Armor (max 4)",
-      "tag": "label"
-    },
-    "u061": {
-      "en": "At the start: 2 points, then +1 point per level.<ul><li>Hull: +2 HP/point, +1 Repair Cap per 2 points.</li><li>Agility: +1 Evasion/point, +1 Speed per 2.</li><li>Systems: +1 Tech Attack and E-Defense/point, +1 SP per 2.</li><li>Engineering: +1 Heat Cap/point, +1 to limited gear per 2.</li></ul>",
-      "tag": "div",
-      "ru": "На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul>"
-    },
-    "u062": {
-      "en": "Talents",
-      "tag": "h2"
-    },
-    "u063": {
-      "en": "At LL0: three rank I talents. Database: <span id=\"dbTalentCount\"></span> talents from Massif Press open data (lancer-data). Search matches name, description, and ranks; selecting one fills in the description of its current rank.",
-      "tag": "p"
-    },
-    "u064": {
-      "en": "+ Custom Talent",
-      "tag": "button"
-    },
-    "u065": {
-      "en": "Mounts & Weapons",
-      "tag": "h2"
-    },
-    "u066": {
-      "en": "Database: <span id=\"dbWeaponCount\"></span> weapons from Massif Press open data (lancer-data). Search matches name, mount (Main, Aux, Heavy), type, tags, manufacturer (GMS, IPS-N, Horus, Smith-Shimano), and license level (LL0–LL3); multiple words separated by spaces narrow the search (e.g., \"IPS-N LL1\").<span id=\"licNoteW\"></span>",
-      "tag": "p"
-    },
-    "u067": {
-      "en": "+ Mount",
-      "tag": "button"
-    },
-    "u068": {
-      "en": "Systems",
-      "tag": "h2"
-    },
-    "u070": {
-      "en": "Database: <span id=\"dbSystemCount\"></span> systems from Massif Press open data (lancer-data). Search matches name, type, manufacturer, and license level (LL0–LL3). Selecting one fills in its SP and description with effect.<span id=\"licNoteS\"></span>",
-      "tag": "p"
-    },
-    "u071": {
-      "en": "+ Custom System",
-      "tag": "button"
-    },
-    "u072": {
-      "en": "Name",
-      "tag": "label"
-    },
-    "u073": {
-      "en": "Description",
-      "tag": "label"
-    },
-    "u074": {
-      "en": "Not Used",
-      "tag": "button"
-    },
-    "u075": {
-      "en": "1 CP, once per mission. Restored by a full repair or at the start of a mission.",
-      "tag": "p"
-    },
-    "u076": {
-      "en": "Frame Traits",
-      "tag": "label"
-    },
-    "u077": {
-      "en": "Statuses & Conditions",
-      "tag": "h2"
-    },
-    "u078": {
-      "en": "Status descriptions — expand",
-      "tag": "summary"
-    },
-    "u079": {
-      "en": "Burn is not a status but a damage type: it ignores Armor. At the end of its turn, the target makes an Engineering check (difficulty 10): on a failure, it takes the Burn damage again; on a success, all Burn is cleared.",
-      "tag": "p"
-    },
-    "u080": {
-      "en": "Notes",
-      "tag": "h2"
-    },
-    "u081": {
-      "en": "Pilot",
-      "tag": "h2"
-    },
-    "u082": {
-      "en": "Pilot Name",
-      "tag": "label"
-    },
-    "u083": {
-      "en": "Callsign",
-      "tag": "label"
-    },
-    "u084": {
-      "en": "Grit (½ LL)",
-      "tag": "label"
-    },
-    "u085": {
-      "en": "Pilot HP (max 6)",
-      "tag": "label"
-    },
-    "u086": {
-      "en": "Triggers",
-      "tag": "h2"
-    },
-    "u087": {
-      "en": "At LL0: four triggers at +2. As LL increases: +2 to one trigger per level, maximum +6.",
-      "tag": "p"
-    },
-    "u088": {
-      "en": "+ Custom Trigger",
-      "tag": "button"
-    },
-    "u089": {
-      "en": "Licenses",
-      "tag": "h2"
-    },
-    "u090": {
-      "en": "<input type=\"checkbox\" id=\"licenseFilterToggle\" onchange=\"toggleLicenseFilter(this.checked)\" style=\"width:auto\"> Filter weapons, systems and frames by licenses",
-      "tag": "label"
-    },
-    "u091": {
-      "en": "When the filter is on, search shows only GMS (LL0) and gear from the pilot's licenses; a frame is available from rank II of its license. Turn the filter off to see the whole database.",
-      "tag": "p"
-    },
-    "u092": {
-      "en": "+ Custom License",
-      "tag": "button"
-    },
-    "u093": {
-      "en": "Pilot's LL: <span id=\"licenseLL\"></span>",
-      "tag": "p"
-    },
-    "u097": {
-      "en": "Turn Structure",
-      "tag": "summary"
-    },
-    "u098": {
-      "en": "On your turn: <b>1 standard move</b> (up to your Speed) and either <b>2 quick actions</b> or <b>1 full action</b>.",
-      "tag": "li"
-    },
-    "u099": {
-      "en": "The same action cannot be repeated in a turn — except Quick Tech (a different option each time) and free actions.",
-      "tag": "li"
-    },
-    "u100": {
-      "en": "<b>Reaction:</b> 1 per turn (yours or anyone else's), any number per round; each specific reaction — 1/round, refreshed at the start of your next turn.",
-      "tag": "li"
-    },
-    "u101": {
-      "en": "<b>Free actions:</b> any number on your turn, but only the ones granted to you (protocols, overcharge, etc.).",
-      "tag": "li"
-    },
-    "u102": {
-      "en": "An action can be taken in the middle of a move, but it must be fully resolved before the move ends.",
-      "tag": "li"
-    },
-    "u103": {
-      "en": "Quick Actions",
-      "tag": "summary"
-    },
-    "u104": {
-      "en": "<b>Boost</b> — an extra move up to your Speed, beyond the standard move.",
-      "tag": "li"
-    },
-    "u105": {
-      "en": "<b>Skirmish</b> — attack with one weapon against a target within range (or threat). You may add an Aux weapon from the same mount (without bonus damage). Superheavy weapons can't fire this way — only in a Barrage.",
-      "tag": "li"
-    },
-    "u106": {
-      "en": "<b>Ram</b> — a melee attack against an adjacent target of the same size or smaller. On a hit, the target falls Prone and you may push it 1 space away from you.",
-      "tag": "li"
-    },
-    "u107": {
-      "en": "<b>Grapple</b> — a melee attack against an adjacent target. On a hit, both become Engaged; neither can Boost or take reactions while the grapple lasts; the smaller becomes Immobilized and moves with the larger. The grapple ends when adjacency is broken, the attacker releases it (a free action), or the defender breaks free (a Hull contest as a quick action).",
-      "tag": "li"
-    },
-    "u108": {
-      "en": "<b>Hide</b> — gain Hidden. Requirements: not Engaged and out of enemies' line of sight, behind sufficient cover or Invisible.",
-      "tag": "li"
-    },
-    "u109": {
-      "en": "<b>Search</b> — find a hidden character: choose a character within Sensors, a Systems vs. their Agility contest. On success, the target loses Hidden.",
-      "tag": "li"
-    },
-    "u110": {
-      "en": "<b>Activate</b> — use a system or gear that requires a quick action.",
-      "tag": "li"
-    },
-    "u111": {
-      "en": "Quick Tech — Options",
-      "tag": "h3"
-    },
-    "u112": {
-      "en": "<b>Bolster</b> — a character within Sensors gains +2 Accuracy on their next check or save until the end of their next turn.",
-      "tag": "li"
-    },
-    "u113": {
-      "en": "<b>Lock On</b> — a target within Sensors and line of sight gains the Lock On condition.",
-      "tag": "li"
-    },
-    "u114": {
-      "en": "<b>Scan</b> — learn about an object or character within Sensors and line of sight: weapons, systems, and full stats; or one hidden fact; or general information. The GM answers honestly.",
-      "tag": "li"
-    },
-    "u115": {
-      "en": "<b>Invade</b> — a tech attack against the target's E-Defense within Sensors and line of sight. On success, the target takes 2 heat, and you choose an invade option. The basic one — Fragment Signal: the target is Impaired and Slowed until the end of its next turn. Invading a willing ally automatically succeeds, doesn't count as an attack, and deals no heat.",
-      "tag": "li"
-    },
-    "u116": {
-      "en": "Full Actions",
-      "tag": "summary"
-    },
-    "u117": {
-      "en": "<b>Barrage</b> — attack with two weapons or one superheavy weapon, against one or different targets. You may add an Aux weapon from each mount used. Superheavy weapons — only this way.",
-      "tag": "li"
-    },
-    "u118": {
-      "en": "<b>Disengage</b> — until the end of your turn, ignore engagement; movement doesn't provoke reactions.",
-      "tag": "li"
-    },
-    "u119": {
-      "en": "<b>Full Tech</b> — two Quick Tech options (the same one twice is allowed) or one system/tech option that requires Full Tech.",
-      "tag": "li"
-    },
-    "u120": {
-      "en": "<b>Improvised Attack</b> — a melee attack against an adjacent target with an improvised object: on success, 1d6 kinetic damage.",
-      "tag": "li"
-    },
-    "u121": {
-      "en": "<b>Stabilize</b> — choose one: (a) clear all heat and remove Exposed; (b) spend 1 Repair and restore all HP. Plus one of: reload all weapons with Loading; clear Burn; clear a condition not caused by your own systems/talents; clear a condition on an adjacent ally.",
-      "tag": "li"
-    },
-    "u122": {
-      "en": "<b>Boot Up</b> — power up the mech, clear Shut Down.",
-      "tag": "li"
-    },
-    "u123": {
-      "en": "<b>Skill Check</b> — an action with a target and a chance of failure, not covered by other actions (the GM sets the parameters).",
-      "tag": "li"
-    },
-    "u124": {
-      "en": "Other Actions",
-      "tag": "summary"
-    },
-    "u125": {
-      "en": "<b>Mount / Dismount</b> — quick or full; to mount, you must be standing next to the mech.",
-      "tag": "li"
-    },
-    "u126": {
-      "en": "<b>Eject</b> — quick; fly 6 spaces in any direction. One-time: the mech becomes Impaired, and you can only repeat it after a full repair.",
-      "tag": "li"
-    },
-    "u127": {
-      "en": "<b>Prepare</b> — quick; prepare another quick action with a trigger \"when X, then Y\". Before your next turn starts, when it triggers you take it as a reaction. After preparing, you can't move or take other actions/reactions until it triggers or your next turn starts.",
-      "tag": "li"
-    },
-    "u128": {
-      "en": "<b>Self-Destruct</b> — quick; at the end of your next turn (or one of your turns within two rounds) the mech explodes as in a reactor meltdown: Burst 2, 4d6 explosive damage, Agility save for half.",
-      "tag": "li"
-    },
-    "u129": {
-      "en": "<b>Shut Down</b> — quick; the mech powers down and gains Shut Down (see statuses).",
-      "tag": "li"
-    },
-    "u130": {
-      "en": "Reactions",
-      "tag": "summary"
-    },
-    "u131": {
-      "en": "<b>Overwatch (1/round)</b> — trigger: a hostile character starts moving within the Threat of one of your weapons. Effect: immediately Skirmish that weapon at them, before they move.",
-      "tag": "li"
-    },
-    "u132": {
-      "en": "<b>Brace (1/round)</b> — trigger: you were hit and damage has already been rolled. Effect: resistance to all damage, heat, and Burn from that attack; until the end of your next turn, all other attacks against you are made with +1 Difficulty. Cost: you can't take reactions until the end of your next turn, and this turn you get only one quick action (no overcharge, movement, full or free actions).",
-      "tag": "li"
-    },
-    "u133": {
-      "en": "Other reactions come from systems and talents — see “Your actions” above.",
-      "tag": "li"
-    },
-    "u136": {
-      "en": "Pilot Actions (on Foot)",
-      "tag": "summary"
-    },
-    "u137": {
-      "en": "<b>Fight (full)</b> — attack with one weapon within range and line of sight.",
-      "tag": "li"
-    },
-    "u138": {
-      "en": "<b>Jockey (full)</b> — next to a mech, a skill contest (Grit or a trigger) against the mech's Hull. On success, you climb onto it and choose: Distract (the mech is Impaired and Slowed until the end of its next turn), Shred (2 heat to the mech), or Damage (4 kinetic damage).",
-      "tag": "li"
-    },
-    "u139": {
-      "en": "<b>Reload (quick)</b> — reload one of the pilot's weapons with Loading.",
-      "tag": "li"
-    },
-    "u140": {
-      "en": "On foot, the pilot can also: Boost, Hide, Search, Activate, Skill Check, Disengage, Prepare, Mount, Overwatch.",
-      "tag": "li"
-    },
-    "u141": {
-      "en": "Export JSON",
-      "tag": "button"
-    },
-    "u142": {
-      "en": "Import JSON",
-      "tag": "button"
-    },
-    "u143": {
-      "en": "Reset All",
-      "tag": "button"
-    },
-    "u145": {
-      "en": "Close",
-      "tag": "button"
-    },
-    "u147": {
-      "en": "Frame",
-      "tag": "label"
-    },
-    "u149": {
-      "en": "Custom Weapon",
-      "tag": "h3"
-    },
-    "u150": {
-      "en": "Custom System",
-      "tag": "h3"
-    },
-    "u151": {
-      "en": "Add",
-      "tag": "button"
-    },
-    "u152": {
-      "en": "Cancel",
-      "tag": "button"
-    },
-    "u154": {
-      "en": "Charges (Limited)",
-      "tag": "label"
-    },
-    "u155": {
-      "en": "Damage",
-      "tag": "label"
-    },
-    "u156": {
-      "en": "Range",
-      "tag": "label"
-    },
-    "u161": {
-      "tag": "h2",
-      "en": "Core Bonuses"
-    },
-    "u162": {
-      "tag": "p",
-      "en": "A new bonus every 3 LL (LL3, LL6, LL9). GMS is always available; for a bonus from another manufacturer you need 3 ranks of its licenses (+3 more for each further bonus from the same manufacturer)."
-    },
-    "u163": {
-      "tag": "button",
-      "en": "+ Core Bonus"
-    },
-    "u164": {
-      "tag": "h3",
-      "en": "Pick a Core Bonus"
-    },
-    "u165": {
-      "en": "Stats",
-      "tag": "h2"
-    },
-    "u166": {
-      "en": "Level Up (gaining LL)",
-      "tag": "summary"
-    },
-    "u167": {
-      "en": "After each mission — success or failure, it doesn't matter — the pilot's LL rises by 1 (max LL12). At each level up, gain:",
-      "tag": "p"
-    },
-    "u168": {
-      "en": "<b>+2 to a trigger:</b> +2 to an existing trigger, or a new trigger at +2.",
-      "tag": "li"
-    },
-    "u169": {
-      "en": "<b>+1 to a mech skill (HASE):</b> Hull, Agility, Systems, or Engineering.",
-      "tag": "li"
-    },
-    "u170": {
-      "en": "<b>+1 talent rank:</b> a new talent at rank I, or +1 to an existing talent (max III).",
-      "tag": "li"
-    },
-    "u171": {
-      "en": "<b>+1 license rank:</b> a new license at rank I, or +1 to an existing license (max III).",
-      "tag": "li"
-    },
-    "u172": {
-      "en": "<b>GRIT rises on its own:</b> GRIT = ½ LL, rounded up (first point at LL1).",
-      "tag": "li"
-    },
-    "u173": {
-      "en": "<b>At every 3rd LL (3, 6, 9, 12):</b> +1 Core Bonus.",
-      "tag": "li"
-    },
-    "u174": {
-      "en": "Reallocation (optional, one per level up)",
-      "tag": "h3"
-    },
-    "u175": {
-      "en": "Move all points from one talent to another talent.",
-      "tag": "li"
-    },
-    "u176": {
-      "en": "Move all points from one license to another license.",
-      "tag": "li"
-    },
-    "u177": {
-      "en": "Replace one Core Bonus with another one you qualify for.",
-      "tag": "li"
-    },
-    "u178": {
-      "en": "If reallocating a license leaves you without a Core Bonus you qualified for, you must replace it with one you now qualify for.",
-      "tag": "li"
-    },
-    "u179": {
-      "en": "Totals by LL (sheet check)",
-      "tag": "h3"
-    },
-    "u180": {
-      "en": "<b>LL0:</b> GRIT 0 · Skills 2 · Licenses 0 · Talents 3 · Core 0 · Triggers 8",
-      "tag": "js"
-    },
-    "u181": {
-      "en": "<b>LL1:</b> GRIT 1 · Skills 3 · Licenses 1 · Talents 4 · Core 0 · Triggers 10",
-      "tag": "js"
-    },
-    "u182": {
-      "en": "<b>LL3:</b> GRIT 2 · Skills 5 · Licenses 3 · Talents 6 · Core 1 · Triggers 14",
-      "tag": "js"
-    },
-    "u183": {
-      "en": "<b>LL6:</b> GRIT 3 · Skills 8 · Licenses 6 · Talents 9 · Core 2 · Triggers 20",
-      "tag": "js"
-    },
-    "u184": {
-      "en": "<b>LL9:</b> GRIT 5 · Skills 11 · Licenses 9 · Talents 12 · Core 3 · Triggers 26",
-      "tag": "js"
-    },
-    "u185": {
-      "en": "<b>LL12:</b> GRIT 6 · Skills 14 · Licenses 12 · Talents 15 · Core 4 · Triggers 32",
-      "tag": "js"
-    },
-    "u186": {
-      "ru": "Мастер сборки",
-      "en": "Build Wizard",
-      "tag": "span"
-    },
-    "u187": {
-      "ru": "Мастер создания персонажа",
-      "en": "Character Creation Wizard",
-      "tag": "js"
-    },
-    "u188": {
-      "ru": "Пилот",
-      "en": "Pilot",
-      "tag": "js"
-    },
-    "u189": {
-      "ru": "Лицензии",
-      "en": "Licenses",
-      "tag": "js"
-    },
-    "u190": {
-      "ru": "Таланты",
-      "en": "Talents",
-      "tag": "js"
-    },
-    "u191": {
-      "ru": "Триггеры",
-      "en": "Triggers",
-      "tag": "js"
-    },
-    "u192": {
-      "ru": "Навыки меха",
-      "en": "Mech Skills",
-      "tag": "js"
-    },
-    "u193": {
-      "ru": "Фрейм",
-      "en": "Frame",
-      "tag": "js"
-    },
-    "u194": {
-      "ru": "Мех",
-      "en": "Mech",
-      "tag": "js"
-    },
-    "u196": {
-      "ru": "Core Bonuses",
-      "en": "Core Bonuses",
-      "tag": "js"
-    },
-    "u197": {
-      "ru": "Готово",
-      "en": "Done",
-      "tag": "js"
-    },
-    "u198": {
-      "ru": "Назад",
-      "en": "Back",
-      "tag": "js"
-    },
-    "u199": {
-      "ru": "Далее",
-      "en": "Next",
-      "tag": "js"
-    },
-    "u200": {
-      "ru": "Завершить",
-      "en": "Finish",
-      "tag": "js"
-    },
-    "u201": {
-      "ru": "Добавить",
-      "en": "Add",
-      "tag": "js"
-    },
-    "u202": {
-      "ru": "Имя, позывной и предыстория пилота. Всё можно поменять позже на вкладке «Пилот».",
-      "en": "Pilot's name, callsign and background. You can change all of this later on the Pilot tab.",
-      "tag": "js"
-    },
-    "u203": {
-      "ru": "LL — сумма рангов лицензий. На старте (LL0) лицензий нет: только снаряжение GMS и фрейм Эверест.",
-      "en": "LL is the sum of license ranks. At LL0 you have no licenses: GMS gear only and the Everest frame.",
-      "tag": "js"
-    },
-    "u204": {
-      "ru": "На старте (LL0) — три таланта ранга I. Новые ранги и таланты — при левел апе.",
-      "en": "At LL0, pick three rank I talents. New ranks and talents come with level ups.",
-      "tag": "js"
-    },
-    "u205": {
-      "ru": "На старте (LL0) — четыре триггера на +2.",
-      "en": "At LL0, pick four triggers at +2.",
-      "tag": "js"
-    },
-    "u206": {
-      "ru": "На старте (LL0) — +2 к одному навыку или +1 к двум. Максимумы ресурсов пересчитаются сами.",
-      "en": "At LL0, +2 to one mech skill or +1 to two. Resource maximums recalculate automatically.",
-      "tag": "js"
-    },
-    "u207": {
-      "ru": "На старте (LL0) — фрейм Эверест. Фреймы других производителей требуют лицензию ранга II.",
-      "en": "At LL0, the Everest frame. Other manufacturers' frames need a rank II license.",
-      "tag": "js"
-    },
-    "u209": {
-      "ru": "Core Bonuses открываются на LL3: один слот за каждые 3 LL.",
-      "en": "Core Bonuses unlock at LL3: one slot per 3 LL.",
-      "tag": "js"
-    },
-    "u210": {
-      "ru": "Персонаж собран. Всё можно поправить на вкладках — мастер открывается снова из подвала страницы.",
-      "en": "Your character is ready. Everything can be changed on the tabs — the wizard can be reopened from the page footer.",
-      "tag": "js"
-    },
-    "u212": {
-      "ru": "Имя меха. Оружие и системы — на вкладке «Мех», в обычном режиме.",
-      "en": "Mech name. Weapons and systems are on the Mech tab, in the normal view.",
-      "tag": "js"
-    },
-    "u213": {
-      "ru": "Левел ап",
-      "en": "Level Up",
-      "tag": "button"
-    },
-    "u215": {
-      "ru": "После миссии LL растёт на 1. Пройди шаги и собери всё, что полагается за новый LL.",
-      "en": "After a mission, LL grows by 1. Walk through the steps and collect everything the new LL grants.",
-      "tag": "js"
-    },
-    "u216": {
-      "ru": "+2 к триггеру или новый триггер на +2.",
-      "en": "+2 to a trigger or a new trigger at +2.",
-      "tag": "js"
-    },
-    "u217": {
-      "ru": "+1 к навыку меха.",
-      "en": "+1 to a mech skill.",
-      "tag": "js"
-    },
-    "u218": {
-      "ru": "+1 ранг таланта или новый талант на I.",
-      "en": "+1 talent rank or a new talent at I.",
-      "tag": "js"
-    },
-    "u219": {
-      "ru": "+1 ранг лицензии или новая лицензия на I.",
-      "en": "+1 license rank or a new license at I.",
-      "tag": "js"
-    },
-    "u220": {
-      "ru": "Новый слот Core Bonus.",
-      "en": "A new Core Bonus slot.",
-      "tag": "js"
-    },
-    "u221": {
-      "ru": "Пропустить",
-      "en": "Skip",
-      "tag": "js"
-    },
-    "u222": {
-      "ru": "Применить",
-      "en": "Apply",
-      "tag": "js"
-    },
-    "u224": {
-      "ru": "Существующий",
-      "en": "Existing",
-      "tag": "js"
-    },
-    "u225": {
-      "ru": "Новый",
-      "en": "New",
-      "tag": "js"
-    },
-    "u226": {
-      "ru": "Выбери…",
-      "en": "Choose…",
-      "tag": "js"
-    },
-    "u227": {
-      "ru": "Нет перераспределения",
-      "en": "No reallocation",
-      "tag": "js"
-    },
-    "u228": {
-      "ru": "Перераспределение (необязательно, одно за левел ап): все очки таланта — в другой талант; все очки лицензии — в другую лицензию; или заменить Core Bonus. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна. Делается вручную на вкладках.",
-      "en": "Reallocation (optional, one per level up): move all talent points to another talent; all license points to another license; or swap a Core Bonus. If reallocating a license loses you a Core Bonus, replacing it is mandatory. Do it manually on the tabs.",
-      "tag": "js"
-    },
-    "u229": {
-      "en": "Your actions",
-      "tag": "js"
-    },
-    "u230": {
-      "en": "Your reactions",
-      "tag": "js"
-    },
-    "u231": {
-      "en": "Your protocols",
-      "tag": "js"
-    },
-    "u232": {
-      "en": "No extra actions yet — they will appear when you take a talent or system that grants one.",
-      "tag": "js"
-    },
-    "u233": {
-      "en": "Statuses",
-      "tag": "h3"
-    },
-    "u234": {
-      "en": "Restored by a full repair or at the start of a mission.",
-      "tag": "p"
-    },
-    "u235": {
-      "en": "Your quick actions",
-      "tag": "js"
-    },
-    "u236": {
-      "en": "+ CUSTOM",
-      "tag": "js"
-    },
-    "u237": {
-      "en": "🔍SEARCH",
-      "tag": "js"
-    }
+  "p005": {
+   "en": "Frame traits, tactics, debts…",
+   "tag": "textarea"
+  },
+  "p006": {
+   "en": "Name",
+   "tag": "input"
+  },
+  "p007": {
+   "en": "Callsign",
+   "tag": "input"
+  },
+  "p008": {
+   "en": "E.g.: Colonist",
+   "tag": "input"
   }
+ },
+ "units": {
+  "u006": {
+   "en": "Mech Name",
+   "tag": "label"
+  },
+  "u007": {
+   "en": "<span class=\"ico\">📏</span>Size",
+   "tag": "label"
+  },
+  "u008": {
+   "en": "<span class=\"ico\">🏃</span>Speed",
+   "tag": "label"
+  },
+  "u011": {
+   "en": "Combat Resources",
+   "tag": "h2"
+  },
+  "u013": {
+   "en": "<span class=\"ico\">🔧</span>Repairs",
+   "tag": "label"
+  },
+  "u014": {
+   "en": "Full Repair (Rest)",
+   "tag": "button"
+  },
+  "u016": {
+   "en": "Overcharge",
+   "tag": "summary"
+  },
+  "u017": {
+   "en": "Once per turn, you may overcharge your mech and take any quick action as a free action — even one you already took this turn.",
+   "tag": "li"
+  },
+  "u018": {
+   "en": "Heat increases with each use since your last full repair: 1st time — <b>1 heat</b>; 2nd — <b>1d3</b>; 3rd — <b>1d6</b>; 4th and later — <b>1d6+4</b>.",
+   "tag": "li"
+  },
+  "u019": {
+   "en": "The counter resets <b>only by a full repair</b> (not at the end of a scene!). A Stunned mech cannot overcharge. After Brace, you cannot overcharge on your next turn.",
+   "tag": "li"
+  },
+  "u020": {
+   "en": "Heat is taken immediately, and the action is taken immediately — you can't \"save\" the quick action you gained for later.",
+   "tag": "li"
+  },
+  "u021": {
+   "en": "Structure Damage",
+   "tag": "summary"
+  },
+  "u022": {
+   "en": "When a mech with Structure reaches 0 HP: it loses 1 Structure, rolls on the table, and restores HP to maximum; excess damage carries over. At 0 Structure the mech is destroyed. Roll: 1d6 for each marked unit of Structure (including the one just marked), take the lowest result.",
+   "tag": "p"
+  },
+  "u026": {
+   "en": "<b>Glancing Blow</b>",
+   "tag": "span"
+  },
+  "u027": {
+   "en": "Emergency systems stabilize the mech, but it is Impaired until the end of your next turn.",
+   "tag": "div"
+  },
+  "u028": {
+   "en": "<b>System Trauma</b>",
+   "tag": "span"
+  },
+  "u029": {
+   "en": "Parts of the mech are torn off. Roll 1d6:<ul><li>1–3 — all weapons on one mount of your choice are destroyed</li><li>4–6 — one system of your choice is destroyed</li></ul>If no valid options of one kind remain, take the other result; if neither weapons nor systems remain, this becomes a Direct Hit.",
+   "tag": "div"
+  },
+  "u030": {
+   "en": "<b>Direct Hit</b>",
+   "tag": "span"
+  },
+  "u031": {
+   "en": "<ul><li>3+ Structure: the mech is Stunned until the end of your next turn.</li><li>2 Structure: Hull check — success: Stunned until the end of your next turn, failure: the mech is destroyed.</li><li>1 Structure: the mech is destroyed.</li></ul>",
+   "tag": "div"
+  },
+  "u032": {
+   "en": "multiple 1s",
+   "tag": "span"
+  },
+  "u033": {
+   "en": "<b>Crushing Hit</b>",
+   "tag": "span"
+  },
+  "u034": {
+   "en": "The mech is damaged beyond repair — it is destroyed. You can exit it as normal.",
+   "tag": "div"
+  },
+  "u035": {
+   "en": "Reactor Overheat",
+   "tag": "summary"
+  },
+  "u036": {
+   "en": "When a mech takes heat beyond its Heat Cap: it loses 1 Stress, rolls on the table, and clears all heat; excess heat carries over. At 0 Stress the mech suffers a reactor meltdown at the end of its next turn. Sitting exactly at Heat Cap is safe. Roll: 1d6 for each marked unit of Stress (including the one just marked), take the lowest result.",
+   "tag": "p"
+  },
+  "u040": {
+   "en": "<b>Emergency Shunt</b>",
+   "tag": "span"
+  },
+  "u041": {
+   "en": "Cooling systems contain the heat, but the mech is Impaired until the end of your next turn.",
+   "tag": "div"
+  },
+  "u042": {
+   "en": "<b>Destabilized Power Plant</b>",
+   "tag": "span"
+  },
+  "u043": {
+   "en": "<ul><li>The power plant is unstable, venting jets of plasma.</li><li>The mech becomes Exposed (all kinetic, explosive, and energy damage against it is doubled) until the status is cleared.</li></ul>",
+   "tag": "div"
+  },
+  "u044": {
+   "en": "<b>Meltdown</b>",
+   "tag": "span"
+  },
+  "u045": {
+   "en": "<ul><li>3+ Stress: the mech becomes Exposed.</li><li>2 Stress: Engineering check — success: Exposed, failure: reactor meltdown in 1d6 of your turns (the GM rolls); it can be prevented by a repeated Engineering check as a full action.</li><li>1 Stress: reactor meltdown at the end of your next turn.</li></ul>",
+   "tag": "div"
+  },
+  "u046": {
+   "en": "multiple 1s",
+   "tag": "span"
+  },
+  "u047": {
+   "en": "<b>Irreversible Meltdown</b>",
+   "tag": "span"
+  },
+  "u048": {
+   "en": "The reactor is out of control — meltdown at the end of your next turn.",
+   "tag": "div"
+  },
+  "u049": {
+   "en": "<b>Reactor meltdown:</b> the pilot inside dies immediately, the mech vaporizes. Burst 2: all characters in the area make an Agility save or take 4d6 explosive damage (half on success). The wreckage is completely destroyed.",
+   "tag": "p"
+  },
+  "u050": {
+   "en": "Rest & Full Repair",
+   "tag": "summary"
+  },
+  "u051": {
+   "en": "Rest (1 hour, uninterrupted)",
+   "tag": "h3"
+  },
+  "u052": {
+   "en": "Clear all heat; clear all statuses and conditions; the pilot recovers half HP and clears Down and Out.",
+   "tag": "li"
+  },
+  "u053": {
+   "en": "You may spend repairs: <b>1 Repair</b> — full HP or repair a destroyed weapon/system; <b>2 Repairs</b> — 1 Structure or 1 Stress; <b>4 Repairs</b> — repair a destroyed mech (1 Structure, 1 Stress, full HP).",
+   "tag": "li"
+  },
+  "u054": {
+   "en": "Rest does <b>not</b> reset the overcharge counter and does <b>not</b> restore Core Power.",
+   "tag": "li"
+  },
+  "u055": {
+   "en": "Full Repair (10+ hours in a safe place)",
+   "tag": "h3"
+  },
+  "u056": {
+   "en": "Pilot: HP to maximum, Down and Out cleared. Mech: HP, Stress, and Structure to maximum.",
+   "tag": "li"
+  },
+  "u057": {
+   "en": "All statuses and conditions cleared; destroyed weapons and systems repaired.",
+   "tag": "li"
+  },
+  "u058": {
+   "en": "Core Power restored; all repairs and Limited weapon/system charges restored; heat cleared; overcharge counter reset.",
+   "tag": "li"
+  },
+  "u060": {
+   "en": "<span class=\"ico\">🛡️</span>Armor (max 4)",
+   "tag": "label"
+  },
+  "u061": {
+   "en": "At the start: 2 points, then +1 point per level.<ul><li>Hull: +2 HP/point, +1 Repair Cap per 2 points.</li><li>Agility: +1 Evasion/point, +1 Speed per 2.</li><li>Systems: +1 Tech Attack and E-Defense/point, +1 SP per 2.</li><li>Engineering: +1 Heat Cap/point, +1 to limited gear per 2.</li></ul>",
+   "tag": "div",
+   "ru": "На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul>"
+  },
+  "u062": {
+   "en": "Talents",
+   "tag": "h2"
+  },
+  "u063": {
+   "en": "At LL0: three rank I talents. Database: <span id=\"dbTalentCount\"></span> talents from Massif Press open data (lancer-data). Search matches name, description, and ranks; selecting one fills in the description of its current rank.",
+   "tag": "p"
+  },
+  "u064": {
+   "en": "+ Custom Talent",
+   "tag": "button"
+  },
+  "u065": {
+   "en": "Mounts & Weapons",
+   "tag": "h2"
+  },
+  "u066": {
+   "en": "Database: <span id=\"dbWeaponCount\"></span> weapons from Massif Press open data (lancer-data). Search matches name, mount (Main, Aux, Heavy), type, tags, manufacturer (GMS, IPS-N, Horus, Smith-Shimano), and license level (LL0–LL3); multiple words separated by spaces narrow the search (e.g., \"IPS-N LL1\").<span id=\"licNoteW\"></span>",
+   "tag": "p"
+  },
+  "u067": {
+   "en": "+ Mount",
+   "tag": "button"
+  },
+  "u068": {
+   "en": "Systems",
+   "tag": "h2"
+  },
+  "u070": {
+   "en": "Database: <span id=\"dbSystemCount\"></span> systems from Massif Press open data (lancer-data). Search matches name, type, manufacturer, and license level (LL0–LL3). Selecting one fills in its SP and description with effect.<span id=\"licNoteS\"></span>",
+   "tag": "p"
+  },
+  "u071": {
+   "en": "+ Custom System",
+   "tag": "button"
+  },
+  "u072": {
+   "en": "Name",
+   "tag": "label"
+  },
+  "u073": {
+   "en": "Description",
+   "tag": "label"
+  },
+  "u074": {
+   "en": "Not Used",
+   "tag": "button"
+  },
+  "u075": {
+   "en": "1 CP, once per mission. Restored by a full repair or at the start of a mission.",
+   "tag": "p"
+  },
+  "u076": {
+   "en": "Frame Traits",
+   "tag": "label"
+  },
+  "u077": {
+   "en": "Statuses & Conditions",
+   "tag": "h2"
+  },
+  "u078": {
+   "en": "Status descriptions — expand",
+   "tag": "summary"
+  },
+  "u079": {
+   "en": "Burn is not a status but a damage type: it ignores Armor. At the end of its turn, the target makes an Engineering check (difficulty 10): on a failure, it takes the Burn damage again; on a success, all Burn is cleared.",
+   "tag": "p"
+  },
+  "u080": {
+   "en": "Notes",
+   "tag": "h2"
+  },
+  "u081": {
+   "en": "Pilot",
+   "tag": "h2"
+  },
+  "u082": {
+   "en": "Pilot Name",
+   "tag": "label"
+  },
+  "u083": {
+   "en": "Callsign",
+   "tag": "label"
+  },
+  "u084": {
+   "en": "Grit (½ LL)",
+   "tag": "label"
+  },
+  "u085": {
+   "en": "Pilot HP (max 6)",
+   "tag": "label"
+  },
+  "u086": {
+   "en": "Triggers",
+   "tag": "h2"
+  },
+  "u087": {
+   "en": "At LL0: four triggers at +2. As LL increases: +2 to one trigger per level, maximum +6.",
+   "tag": "p"
+  },
+  "u088": {
+   "en": "+ Custom Trigger",
+   "tag": "button"
+  },
+  "u089": {
+   "en": "Licenses",
+   "tag": "h2"
+  },
+  "u090": {
+   "en": "<input type=\"checkbox\" id=\"licenseFilterToggle\" onchange=\"toggleLicenseFilter(this.checked)\" style=\"width:auto\"> Filter weapons, systems and frames by licenses",
+   "tag": "label"
+  },
+  "u091": {
+   "en": "When the filter is on, search shows only GMS (LL0) and gear from the pilot's licenses; a frame is available from rank II of its license. Turn the filter off to see the whole database.",
+   "tag": "p"
+  },
+  "u092": {
+   "en": "+ Custom License",
+   "tag": "button"
+  },
+  "u093": {
+   "en": "Pilot's LL: <span id=\"licenseLL\"></span>",
+   "tag": "p"
+  },
+  "u097": {
+   "en": "Turn Structure",
+   "tag": "summary"
+  },
+  "u098": {
+   "en": "On your turn: <b>1 standard move</b> (up to your Speed) and either <b>2 quick actions</b> or <b>1 full action</b>.",
+   "tag": "li"
+  },
+  "u099": {
+   "en": "The same action cannot be repeated in a turn — except Quick Tech (a different option each time) and free actions.",
+   "tag": "li"
+  },
+  "u100": {
+   "en": "<b>Reaction:</b> 1 per turn (yours or anyone else's), any number per round; each specific reaction — 1/round, refreshed at the start of your next turn.",
+   "tag": "li"
+  },
+  "u101": {
+   "en": "<b>Free actions:</b> any number on your turn, but only the ones granted to you (protocols, overcharge, etc.).",
+   "tag": "li"
+  },
+  "u102": {
+   "en": "An action can be taken in the middle of a move, but it must be fully resolved before the move ends.",
+   "tag": "li"
+  },
+  "u103": {
+   "en": "Quick Actions",
+   "tag": "summary"
+  },
+  "u104": {
+   "en": "<b>Boost</b> — an extra move up to your Speed, beyond the standard move.",
+   "tag": "li"
+  },
+  "u105": {
+   "en": "<b>Skirmish</b> — attack with one weapon against a target within range (or threat). You may add an Aux weapon from the same mount (without bonus damage). Superheavy weapons can't fire this way — only in a Barrage.",
+   "tag": "li"
+  },
+  "u106": {
+   "en": "<b>Ram</b> — a melee attack against an adjacent target of the same size or smaller. On a hit, the target falls Prone and you may push it 1 space away from you.",
+   "tag": "li"
+  },
+  "u107": {
+   "en": "<b>Grapple</b> — a melee attack against an adjacent target. On a hit, both become Engaged; neither can Boost or take reactions while the grapple lasts; the smaller becomes Immobilized and moves with the larger. The grapple ends when adjacency is broken, the attacker releases it (a free action), or the defender breaks free (a Hull contest as a quick action).",
+   "tag": "li"
+  },
+  "u108": {
+   "en": "<b>Hide</b> — gain Hidden. Requirements: not Engaged and out of enemies' line of sight, behind sufficient cover or Invisible.",
+   "tag": "li"
+  },
+  "u109": {
+   "en": "<b>Search</b> — find a hidden character: choose a character within Sensors, a Systems vs. their Agility contest. On success, the target loses Hidden.",
+   "tag": "li"
+  },
+  "u110": {
+   "en": "<b>Activate</b> — use a system or gear that requires a quick action.",
+   "tag": "li"
+  },
+  "u111": {
+   "en": "Quick Tech — Options",
+   "tag": "h3"
+  },
+  "u112": {
+   "en": "<b>Bolster</b> — a character within Sensors gains +2 Accuracy on their next check or save until the end of their next turn.",
+   "tag": "li"
+  },
+  "u113": {
+   "en": "<b>Lock On</b> — a target within Sensors and line of sight gains the Lock On condition.",
+   "tag": "li"
+  },
+  "u114": {
+   "en": "<b>Scan</b> — learn about an object or character within Sensors and line of sight: weapons, systems, and full stats; or one hidden fact; or general information. The GM answers honestly.",
+   "tag": "li"
+  },
+  "u115": {
+   "en": "<b>Invade</b> — a tech attack against the target's E-Defense within Sensors and line of sight. On success, the target takes 2 heat, and you choose an invade option. The basic one — Fragment Signal: the target is Impaired and Slowed until the end of its next turn. Invading a willing ally automatically succeeds, doesn't count as an attack, and deals no heat.",
+   "tag": "li"
+  },
+  "u116": {
+   "en": "Full Actions",
+   "tag": "summary"
+  },
+  "u117": {
+   "en": "<b>Barrage</b> — attack with two weapons or one superheavy weapon, against one or different targets. You may add an Aux weapon from each mount used. Superheavy weapons — only this way.",
+   "tag": "li"
+  },
+  "u118": {
+   "en": "<b>Disengage</b> — until the end of your turn, ignore engagement; movement doesn't provoke reactions.",
+   "tag": "li"
+  },
+  "u119": {
+   "en": "<b>Full Tech</b> — two Quick Tech options (the same one twice is allowed) or one system/tech option that requires Full Tech.",
+   "tag": "li"
+  },
+  "u120": {
+   "en": "<b>Improvised Attack</b> — a melee attack against an adjacent target with an improvised object: on success, 1d6 kinetic damage.",
+   "tag": "li"
+  },
+  "u121": {
+   "en": "<b>Stabilize</b> — choose one: (a) clear all heat and remove Exposed; (b) spend 1 Repair and restore all HP. Plus one of: reload all weapons with Loading; clear Burn; clear a condition not caused by your own systems/talents; clear a condition on an adjacent ally.",
+   "tag": "li"
+  },
+  "u122": {
+   "en": "<b>Boot Up</b> — power up the mech, clear Shut Down.",
+   "tag": "li"
+  },
+  "u123": {
+   "en": "<b>Skill Check</b> — an action with a target and a chance of failure, not covered by other actions (the GM sets the parameters).",
+   "tag": "li"
+  },
+  "u124": {
+   "en": "Other Actions",
+   "tag": "summary"
+  },
+  "u125": {
+   "en": "<b>Mount / Dismount</b> — quick or full; to mount, you must be standing next to the mech.",
+   "tag": "li"
+  },
+  "u126": {
+   "en": "<b>Eject</b> — quick; fly 6 spaces in any direction. One-time: the mech becomes Impaired, and you can only repeat it after a full repair.",
+   "tag": "li"
+  },
+  "u127": {
+   "en": "<b>Prepare</b> — quick; prepare another quick action with a trigger \"when X, then Y\". Before your next turn starts, when it triggers you take it as a reaction. After preparing, you can't move or take other actions/reactions until it triggers or your next turn starts.",
+   "tag": "li"
+  },
+  "u128": {
+   "en": "<b>Self-Destruct</b> — quick; at the end of your next turn (or one of your turns within two rounds) the mech explodes as in a reactor meltdown: Burst 2, 4d6 explosive damage, Agility save for half.",
+   "tag": "li"
+  },
+  "u129": {
+   "en": "<b>Shut Down</b> — quick; the mech powers down and gains Shut Down (see statuses).",
+   "tag": "li"
+  },
+  "u130": {
+   "en": "Reactions",
+   "tag": "summary"
+  },
+  "u131": {
+   "en": "<b>Overwatch (1/round)</b> — trigger: a hostile character starts moving within the Threat of one of your weapons. Effect: immediately Skirmish that weapon at them, before they move.",
+   "tag": "li"
+  },
+  "u132": {
+   "en": "<b>Brace (1/round)</b> — trigger: you were hit and damage has already been rolled. Effect: resistance to all damage, heat, and Burn from that attack; until the end of your next turn, all other attacks against you are made with +1 Difficulty. Cost: you can't take reactions until the end of your next turn, and this turn you get only one quick action (no overcharge, movement, full or free actions).",
+   "tag": "li"
+  },
+  "u133": {
+   "en": "Other reactions come from systems and talents — see “Your actions” above.",
+   "tag": "li"
+  },
+  "u136": {
+   "en": "Pilot Actions (on Foot)",
+   "tag": "summary"
+  },
+  "u137": {
+   "en": "<b>Fight (full)</b> — attack with one weapon within range and line of sight.",
+   "tag": "li"
+  },
+  "u138": {
+   "en": "<b>Jockey (full)</b> — next to a mech, a skill contest (Grit or a trigger) against the mech's Hull. On success, you climb onto it and choose: Distract (the mech is Impaired and Slowed until the end of its next turn), Shred (2 heat to the mech), or Damage (4 kinetic damage).",
+   "tag": "li"
+  },
+  "u139": {
+   "en": "<b>Reload (quick)</b> — reload one of the pilot's weapons with Loading.",
+   "tag": "li"
+  },
+  "u140": {
+   "en": "On foot, the pilot can also: Boost, Hide, Search, Activate, Skill Check, Disengage, Prepare, Mount, Overwatch.",
+   "tag": "li"
+  },
+  "u141": {
+   "en": "Export JSON",
+   "tag": "button"
+  },
+  "u142": {
+   "en": "Import JSON",
+   "tag": "button"
+  },
+  "u143": {
+   "en": "Reset All",
+   "tag": "button"
+  },
+  "u145": {
+   "en": "Close",
+   "tag": "button"
+  },
+  "u147": {
+   "en": "Frame",
+   "tag": "label"
+  },
+  "u149": {
+   "en": "Custom Weapon",
+   "tag": "h3"
+  },
+  "u150": {
+   "en": "Custom System",
+   "tag": "h3"
+  },
+  "u151": {
+   "en": "Add",
+   "tag": "button"
+  },
+  "u152": {
+   "en": "Cancel",
+   "tag": "button"
+  },
+  "u154": {
+   "en": "Charges (Limited)",
+   "tag": "label"
+  },
+  "u155": {
+   "en": "Damage",
+   "tag": "label"
+  },
+  "u156": {
+   "en": "Range",
+   "tag": "label"
+  },
+  "u161": {
+   "tag": "h2",
+   "en": "Core Bonuses"
+  },
+  "u162": {
+   "tag": "p",
+   "en": "A new bonus every 3 LL (LL3, LL6, LL9). GMS is always available; for a bonus from another manufacturer you need 3 ranks of its licenses (+3 more for each further bonus from the same manufacturer)."
+  },
+  "u163": {
+   "tag": "button",
+   "en": "+ Core Bonus"
+  },
+  "u164": {
+   "tag": "h3",
+   "en": "Pick a Core Bonus"
+  },
+  "u165": {
+   "en": "Stats",
+   "tag": "h2"
+  },
+  "u166": {
+   "en": "Level Up (gaining LL)",
+   "tag": "summary"
+  },
+  "u167": {
+   "en": "After each mission — success or failure, it doesn't matter — the pilot's LL rises by 1 (max LL12). At each level up, gain:",
+   "tag": "p"
+  },
+  "u168": {
+   "en": "<b>+2 to a trigger:</b> +2 to an existing trigger, or a new trigger at +2.",
+   "tag": "li"
+  },
+  "u169": {
+   "en": "<b>+1 to a mech skill (HASE):</b> Hull, Agility, Systems, or Engineering.",
+   "tag": "li"
+  },
+  "u170": {
+   "en": "<b>+1 talent rank:</b> a new talent at rank I, or +1 to an existing talent (max III).",
+   "tag": "li"
+  },
+  "u171": {
+   "en": "<b>+1 license rank:</b> a new license at rank I, or +1 to an existing license (max III).",
+   "tag": "li"
+  },
+  "u172": {
+   "en": "<b>GRIT rises on its own:</b> GRIT = ½ LL, rounded up (first point at LL1).",
+   "tag": "li"
+  },
+  "u173": {
+   "en": "<b>At every 3rd LL (3, 6, 9, 12):</b> +1 Core Bonus.",
+   "tag": "li"
+  },
+  "u174": {
+   "en": "Reallocation (optional, one per level up)",
+   "tag": "h3"
+  },
+  "u175": {
+   "en": "Move all points from one talent to another talent.",
+   "tag": "li"
+  },
+  "u176": {
+   "en": "Move all points from one license to another license.",
+   "tag": "li"
+  },
+  "u177": {
+   "en": "Replace one Core Bonus with another one you qualify for.",
+   "tag": "li"
+  },
+  "u178": {
+   "en": "If reallocating a license leaves you without a Core Bonus you qualified for, you must replace it with one you now qualify for.",
+   "tag": "li"
+  },
+  "u179": {
+   "en": "Totals by LL (sheet check)",
+   "tag": "h3"
+  },
+  "u180": {
+   "en": "<b>LL0:</b> GRIT 0 · Skills 2 · Licenses 0 · Talents 3 · Core 0 · Triggers 8",
+   "tag": "js"
+  },
+  "u181": {
+   "en": "<b>LL1:</b> GRIT 1 · Skills 3 · Licenses 1 · Talents 4 · Core 0 · Triggers 10",
+   "tag": "js"
+  },
+  "u182": {
+   "en": "<b>LL3:</b> GRIT 2 · Skills 5 · Licenses 3 · Talents 6 · Core 1 · Triggers 14",
+   "tag": "js"
+  },
+  "u183": {
+   "en": "<b>LL6:</b> GRIT 3 · Skills 8 · Licenses 6 · Talents 9 · Core 2 · Triggers 20",
+   "tag": "js"
+  },
+  "u184": {
+   "en": "<b>LL9:</b> GRIT 5 · Skills 11 · Licenses 9 · Talents 12 · Core 3 · Triggers 26",
+   "tag": "js"
+  },
+  "u185": {
+   "en": "<b>LL12:</b> GRIT 6 · Skills 14 · Licenses 12 · Talents 15 · Core 4 · Triggers 32",
+   "tag": "js"
+  },
+  "u186": {
+   "ru": "Мастер сборки",
+   "en": "Build Wizard",
+   "tag": "span"
+  },
+  "u187": {
+   "ru": "Мастер создания персонажа",
+   "en": "Character Creation Wizard",
+   "tag": "js"
+  },
+  "u188": {
+   "ru": "Пилот",
+   "en": "Pilot",
+   "tag": "js"
+  },
+  "u189": {
+   "ru": "Лицензии",
+   "en": "Licenses",
+   "tag": "js"
+  },
+  "u190": {
+   "ru": "Таланты",
+   "en": "Talents",
+   "tag": "js"
+  },
+  "u191": {
+   "ru": "Триггеры",
+   "en": "Triggers",
+   "tag": "js"
+  },
+  "u192": {
+   "ru": "Навыки меха",
+   "en": "Mech Skills",
+   "tag": "js"
+  },
+  "u193": {
+   "ru": "Фрейм",
+   "en": "Frame",
+   "tag": "js"
+  },
+  "u194": {
+   "ru": "Мех",
+   "en": "Mech",
+   "tag": "js"
+  },
+  "u196": {
+   "ru": "Core Bonuses",
+   "en": "Core Bonuses",
+   "tag": "js"
+  },
+  "u197": {
+   "ru": "Готово",
+   "en": "Done",
+   "tag": "js"
+  },
+  "u198": {
+   "ru": "Назад",
+   "en": "Back",
+   "tag": "js"
+  },
+  "u199": {
+   "ru": "Далее",
+   "en": "Next",
+   "tag": "js"
+  },
+  "u200": {
+   "ru": "Завершить",
+   "en": "Finish",
+   "tag": "js"
+  },
+  "u201": {
+   "ru": "Добавить",
+   "en": "Add",
+   "tag": "js"
+  },
+  "u202": {
+   "ru": "Имя, позывной и предыстория пилота. Всё можно поменять позже на вкладке «Пилот».",
+   "en": "Pilot's name, callsign and background. You can change all of this later on the Pilot tab.",
+   "tag": "js"
+  },
+  "u203": {
+   "ru": "LL — сумма рангов лицензий. На старте (LL0) лицензий нет: только снаряжение GMS и фрейм Эверест.",
+   "en": "LL is the sum of license ranks. At LL0 you have no licenses: GMS gear only and the Everest frame.",
+   "tag": "js"
+  },
+  "u204": {
+   "ru": "На старте (LL0) — три таланта ранга I. Новые ранги и таланты — при левел апе.",
+   "en": "At LL0, pick three rank I talents. New ranks and talents come with level ups.",
+   "tag": "js"
+  },
+  "u205": {
+   "ru": "На старте (LL0) — четыре триггера на +2.",
+   "en": "At LL0, pick four triggers at +2.",
+   "tag": "js"
+  },
+  "u206": {
+   "ru": "На старте (LL0) — +2 к одному навыку или +1 к двум. Максимумы ресурсов пересчитаются сами.",
+   "en": "At LL0, +2 to one mech skill or +1 to two. Resource maximums recalculate automatically.",
+   "tag": "js"
+  },
+  "u207": {
+   "ru": "На старте (LL0) — фрейм Эверест. Фреймы других производителей требуют лицензию ранга II.",
+   "en": "At LL0, the Everest frame. Other manufacturers' frames need a rank II license.",
+   "tag": "js"
+  },
+  "u209": {
+   "ru": "Core Bonuses открываются на LL3: один слот за каждые 3 LL.",
+   "en": "Core Bonuses unlock at LL3: one slot per 3 LL.",
+   "tag": "js"
+  },
+  "u210": {
+   "ru": "Персонаж собран. Всё можно поправить на вкладках — мастер открывается снова из подвала страницы.",
+   "en": "Your character is ready. Everything can be changed on the tabs — the wizard can be reopened from the page footer.",
+   "tag": "js"
+  },
+  "u212": {
+   "ru": "Имя меха. Оружие и системы — на вкладке «Мех», в обычном режиме.",
+   "en": "Mech name. Weapons and systems are on the Mech tab, in the normal view.",
+   "tag": "js"
+  },
+  "u213": {
+   "ru": "Левел ап",
+   "en": "Level Up",
+   "tag": "button"
+  },
+  "u215": {
+   "ru": "После миссии LL растёт на 1. Пройди шаги и собери всё, что полагается за новый LL.",
+   "en": "After a mission, LL grows by 1. Walk through the steps and collect everything the new LL grants.",
+   "tag": "js"
+  },
+  "u216": {
+   "ru": "+2 к триггеру или новый триггер на +2.",
+   "en": "+2 to a trigger or a new trigger at +2.",
+   "tag": "js"
+  },
+  "u217": {
+   "ru": "+1 к навыку меха.",
+   "en": "+1 to a mech skill.",
+   "tag": "js"
+  },
+  "u218": {
+   "ru": "+1 ранг таланта или новый талант на I.",
+   "en": "+1 talent rank or a new talent at I.",
+   "tag": "js"
+  },
+  "u219": {
+   "ru": "+1 ранг лицензии или новая лицензия на I.",
+   "en": "+1 license rank or a new license at I.",
+   "tag": "js"
+  },
+  "u220": {
+   "ru": "Новый слот Core Bonus.",
+   "en": "A new Core Bonus slot.",
+   "tag": "js"
+  },
+  "u221": {
+   "ru": "Пропустить",
+   "en": "Skip",
+   "tag": "js"
+  },
+  "u222": {
+   "ru": "Применить",
+   "en": "Apply",
+   "tag": "js"
+  },
+  "u224": {
+   "ru": "Существующий",
+   "en": "Existing",
+   "tag": "js"
+  },
+  "u225": {
+   "ru": "Новый",
+   "en": "New",
+   "tag": "js"
+  },
+  "u226": {
+   "ru": "Выбери…",
+   "en": "Choose…",
+   "tag": "js"
+  },
+  "u227": {
+   "ru": "Нет перераспределения",
+   "en": "No reallocation",
+   "tag": "js"
+  },
+  "u228": {
+   "ru": "Перераспределение (необязательно, одно за левел ап): все очки таланта — в другой талант; все очки лицензии — в другую лицензию; или заменить Core Bonus. Если перераспределение лицензии лишило тебя Core Bonus — его замена обязательна. Делается вручную на вкладках.",
+   "en": "Reallocation (optional, one per level up): move all talent points to another talent; all license points to another license; or swap a Core Bonus. If reallocating a license loses you a Core Bonus, replacing it is mandatory. Do it manually on the tabs.",
+   "tag": "js"
+  },
+  "u229": {
+   "en": "Your actions",
+   "tag": "js"
+  },
+  "u230": {
+   "en": "Your reactions",
+   "tag": "js"
+  },
+  "u231": {
+   "en": "Your protocols",
+   "tag": "js"
+  },
+  "u232": {
+   "en": "No extra actions yet — they will appear when you take a talent or system that grants one.",
+   "tag": "js"
+  },
+  "u233": {
+   "en": "Statuses",
+   "tag": "h3"
+  },
+  "u234": {
+   "en": "Restored by a full repair or at the start of a mission.",
+   "tag": "p"
+  },
+  "u235": {
+   "en": "Your quick actions",
+   "tag": "js"
+  },
+  "u236": {
+   "en": "+ CUSTOM",
+   "tag": "js"
+  },
+  "u237": {
+   "en": "🔍SEARCH",
+   "tag": "js"
+  },
+  "u238": {
+   "en": "← Back",
+   "tag": "js"
+  },
+  "u239": {
+   "en": "Pick this frame",
+   "tag": "js"
+  },
+  "u240": {
+   "en": "Stats",
+   "tag": "js"
+  },
+  "u241": {
+   "en": "Traits",
+   "tag": "js"
+  },
+  "u242": {
+   "en": "Mounts",
+   "tag": "js"
+  }
+ }
 }
