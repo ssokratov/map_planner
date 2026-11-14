@@ -217,10 +217,13 @@
      заряды и теги видны и в свёрнутом виде (в шапке), описание — только в развёрнутом. */
   .sys-head { cursor:pointer; }
   .sys-head-row { display:flex; align-items:center; gap:8px; }
-  .sys-arrow { color:var(--hud-amber); font-size:12px; line-height:1; transition:transform .15s; flex:0 0 auto; }
+  .sys-arrow { color:var(--text); font-size:12px; line-height:1; transition:transform .15s; flex:0 0 auto; }
   .sys.open .sys-arrow { transform:rotate(90deg); }
   .sys-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); text-transform:uppercase; letter-spacing:.08em; }
   .sys-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
+  .sys-charges { display:inline-flex; align-items:center; gap:6px; }
+  .sys-head .wmeta { padding-left:20px; margin-top:4px; }
+  .sec.sys { margin-bottom:16px; }
   .sys-body { display:none; margin-top:10px; }
   .sys.open .sys-body { display:block; }
   .tbl-row { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:6px 0 8px; background:var(--panel2); font-size:14px; line-height:1.5; }
@@ -642,7 +645,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 189</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 190</span>
       </div>
     </div>
   </section>
@@ -1566,10 +1569,10 @@ function renderLists(){
     <div class="sec sys${isOpen ? ' open' : ''}" data-sys="${esc(s.name)}">
       <div class="sys-head" onclick="toggleSysCard(this)">
         <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
-        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="dim" style="font-size:13px">${L('charges').replace('{N}', lim)}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span>` : ''}</div>` : ''}
+        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
+        <div class="wmeta">${esc(meta)}</div>
       </div>
       <div class="sys-body">
-        <div class="wmeta">${esc(meta)}</div>
         ${descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
       </div>
     </div>`;
