@@ -137,6 +137,8 @@
   .stat-row + .stat-row { border-top:1px solid var(--line); }
   .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
   .stat-cell .stat-val { font-size:20px; font-weight:700; text-align:center; }
+  .stat-row.res .stat-cell { background:linear-gradient(180deg, rgba(77,171,247,.48), rgba(77,171,247,.24)); }
+  .stat-row.res .stat-cell label { color:#a5d8ff; }
   .stat-cell { display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; min-width:0; box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
   .stat-cell + .stat-cell { border-left:1px solid var(--line); }
   .stat-cell label { font-size:10px; color:var(--dim); font-weight:700; margin-bottom:4px; text-align:center; line-height:1.2; text-transform:uppercase; letter-spacing:.04em; }
@@ -626,7 +628,7 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <div class="row" style="margin-top:12px">
         <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-        <span class="dim" style="margin-left:12px">Версия трекера: 177</span>
+        <span class="dim" style="margin-left:12px">Версия трекера: 178</span>
       </div>
     </div>
   </section>
@@ -1764,14 +1766,17 @@ function frameDetailHtml(key){
     + statRow('mid', [['Size', st.size], ['Speed', st.speed], ['Sensors', st.sensor_range], ['Tech Attack', st.tech_attack]])
     + statRow('bot', [['Armor', st.armor], ['Evasion', st.evasion], ['E-Defense', st.edef], ['Save', st.save]])
     + statRow('hase', [['HP', st.hp], ['Structure', st.structure], ['Stress', st.stress], ['Heat Cap', st.heatcap]])
-    + statRow('hase', [['Repair Cap', st.repcap], ['SP', st.sp]])
+    + statRow('res', [['Repair Cap', st.repcap], ['SP', st.sp]])
     + `</div>`;
   const traits = (d.t||'').split(/\n\n+/).map(p=>{
     const i = p.indexOf(': ');
     if (i < 0) return `<p>${esc(p)}</p>`;
     return `<p><b>${esc(p.slice(0,i))}:</b> ${linkTagTerms(esc(p.slice(i+2)))}</p>`;
   }).join('');
-  const mounts = (F.m||[]).map(m=>`<span class="tag">${esc(m)}</span>`).join(' ');
+  const mounts = (F.m||[]).map(m=>{
+    const ms = MOUNT_STYLE[m] || MOUNT_STYLE['Main'];
+    return `<span class="mount-badge" title="${esc(m)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span><span class="mb-name">${esc(m)}</span></span>`;
+  }).join(' ');
   return `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
