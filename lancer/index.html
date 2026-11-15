@@ -1078,10 +1078,11 @@ function save(){
 function get(path){ return path.split('.').reduce((o,k)=>o&&o[k], S); }
 function set(path, v){ const ks = path.split('.'); let o = S; for (let i=0;i<ks.length-1;i++) o = o[ks[i]]; o[ks[ks.length-1]] = v; }
 let curTab = 'mech';
+const tabScrollPositions = {mech:0, pilot:0, rules:0};
 function showTab(t){
   const changed = t !== curTab;
+  if (changed) tabScrollPositions[curTab] = window.scrollY || document.documentElement.scrollTop || 0;
   curTab = t;
-  if (window.scrollTo) window.scrollTo(0,0); // каждая вкладка начинается сверху
   // снимаем active и fade-in со всех вкладок по id (querySelectorAll в smoke-стабе пуст)
   ['mech','pilot','rules'].forEach(k=>{
     const s = document.getElementById('tab-'+k);
@@ -1100,6 +1101,11 @@ function showTab(t){
   document.getElementById('tabPilotBtn').classList.toggle('active', t==='pilot');
   document.getElementById('tabRulesBtn').classList.toggle('active', t==='rules');
   autoGrowNotes();
+  // Восстанавливаем позицию после показа вкладки и перерасчёта её высоты.
+  if (changed && window.scrollTo) {
+    const y = tabScrollPositions[t] || 0;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+  }
 }
 // Свайпы для переключения вкладок на телефоне (v74): свайп влево — следующая вкладка,
 // свайп вправо — предыдущая; вертикальный свайп — обычная прокрутка, не трогаем.
