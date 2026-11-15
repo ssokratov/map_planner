@@ -128,9 +128,92 @@
   .status-ref-item.on { border-color:var(--sc); }
   .status-ref-name { font-weight:700; font-size:14px; }
   .status-ref-desc { font-size:13px; color:var(--dim); line-height:1.4; margin-top:2px; }
-  .res { border-top:1px solid var(--rc,#2c3542); border-radius:0; background:var(--panel2); }
+  .res {  }
   .res label { display:block; text-align:center; color:var(--text); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
   .res label .ico { margin-right:4px; }
+  
+	/* Stack each resource onto its own full-width line */
+	.res-grid.single-col {
+	  display: grid;
+	  grid-template-columns: 1fr;
+	  gap: 8px;
+	}
+
+	.res-head {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  margin-bottom: 5px;
+	}
+
+	.res-head label {
+	  margin: 0;
+	}
+
+	/* Keep JS data elements in DOM without displaying them */
+	.sr-val {
+	  display: none !important;
+	}
+
+	.seg-bar {
+	  display: flex;
+	  gap: 6px;
+	  height: 28px;
+	  width: 100%;
+	}
+
+	.seg-pip {
+	  flex: 1;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  background: rgba(255, 255, 255, 0.05);
+	  border: 1px solid rgba(255, 255, 255, 0.14);
+	  border-radius: 3px;
+	  cursor: pointer;
+	  padding: 0;
+	  font-size: 0.95rem;
+	  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+	}
+
+	/* Dim icons inside empty/spent pips */
+	.seg-pip .pip-ico {
+	  opacity: 0.25;
+	  filter: grayscale(100%);
+	  transition: opacity 0.15s ease, filter 0.15s ease;
+	}
+
+	.seg-pip.filled .pip-ico {
+	  opacity: 1;
+	  filter: none;
+	}
+
+	.seg-pip:hover {
+	  border-color: rgba(255, 255, 255, 0.45);
+	  transform: translateY(-1px);
+	}
+
+	.seg-pip:hover .pip-ico {
+	  opacity: 0.7;
+	}
+
+	/* Active fill colors */
+	[data-bar="mech.structure"] .seg-pip.filled {
+	  background: rgba(56, 189, 248, 0.25);
+	  border-color: #38bdf8;
+	}
+	[data-bar="mech.stress"] .seg-pip.filled {
+	  background: rgba(245, 158, 11, 0.25);
+	  border-color: #f59e0b;
+	}
+	[data-bar="mech.repairs"] .seg-pip.filled {
+	  background: rgba(148, 163, 184, 0.25);
+	  border-color: #cbd5e1;
+	}
+	[data-bar="mech.overcharge"] .seg-pip.filled {
+	  background: rgba(239, 68, 68, 0.25);
+	  border-color: #ef4444;
+	}
   .grid label .ico { margin-right:4px; }
   /* Таблица статов: настоящая сетка — без зазоров и скруглений, ячейки вплотную, название сверху, значение снизу */
   .stat-table { display:flex; flex-direction:column; gap:0; margin-top:10px; border:1px solid var(--line); background:var(--panel2); }
@@ -317,27 +400,50 @@
         </div>
       </div>
       <div class="status-tags" id="statusTags"></div>
-      <div class="grid res-grid">
-        <div class="res"><label><span class="ico">🛡️</span>Structure</label>
-          <div class="counter"><button onclick="step('mech.structure',-1)">−</button><div class="val" id="v-mech.structure">4</div><button onclick="step('mech.structure',1)">+</button></div>
-          <div class="oc-next" id="max-mech.structure">max: 4</div>
-          <input type="hidden" data-f="mech.structure" value="4"><input type="hidden" data-f="mech.structureMax" value="4">
-        </div>
-        <div class="res"><label><span class="ico">☢️</span>Stress</label>
-          <div class="counter"><button onclick="step('mech.stress',-1)">−</button><div class="val" id="v-mech.stress">4</div><button onclick="step('mech.stress',1)">+</button></div>
-          <div class="oc-next" id="max-mech.stress">max: 4</div>
-          <input type="hidden" data-f="mech.stress" value="4"><input type="hidden" data-f="mech.stressMax" value="4">
-        </div>
-        <div class="res"><label data-i18n="u013"><span class="ico">🔧</span>Repairs</label>
-          <div class="counter"><button onclick="step('mech.repairs',-1)">−</button><div class="val" id="v-mech.repairs">4</div><button onclick="step('mech.repairs',1)">+</button></div>
-          <div class="oc-next" id="max-mech.repairs">max: 4</div>
-          <input type="hidden" data-f="mech.repairs" value="4"><input type="hidden" data-f="mech.repairsMax" value="4">
-        </div>
-        <div class="res"><label><span class="ico">⚡</span>Overcharge</label>
-          <div class="counter"><button onclick="stepOC(-1)">−</button><div class="val" id="v-mech.overcharge">0</div><button onclick="stepOC(1)">+</button></div>
-          <div class="oc-next" id="oc-next">следующий: 1 тепла</div>
-        </div>
-      </div>
+		<div class="grid res-grid single-col">
+		  <div class="res" data-bar="mech.structure" data-ico="🛡️">
+			<div class="res-head">
+			  <label>Structure</label>
+			</div>
+			<div class="seg-bar"></div>
+			<span class="val sr-val" id="v-mech.structure">4</span>
+			<span class="oc-next sr-val" id="max-mech.structure">max: 4</span>
+			<input type="hidden" data-f="mech.structure" value="4">
+			<input type="hidden" data-f="mech.structureMax" value="4">
+		  </div>
+
+		  <div class="res" data-bar="mech.stress" data-ico="☢️">
+			<div class="res-head">
+			  <label>Stress</label>
+			</div>
+			<div class="seg-bar"></div>
+			<span class="val sr-val" id="v-mech.stress">4</span>
+			<span class="oc-next sr-val" id="max-mech.stress">max: 4</span>
+			<input type="hidden" data-f="mech.stress" value="4">
+			<input type="hidden" data-f="mech.stressMax" value="4">
+		  </div>
+
+		  <div class="res" data-bar="mech.repairs" data-ico="🔧">
+			<div class="res-head">
+			  <label>Repairs</label>
+			</div>
+			<div class="seg-bar"></div>
+			<span class="val sr-val" id="v-mech.repairs">5</span>
+			<span class="oc-next sr-val" id="max-mech.repairs">max: 5</span>
+			<input type="hidden" data-f="mech.repairs" value="4">
+			<input type="hidden" data-f="mech.repairsMax" value="4">
+		  </div>
+
+		  <div class="res" data-bar="mech.overcharge" data-ico="⚡" data-fixed-max="4">
+			<div class="res-head">
+			  <label>Overcharge</label>
+			  <span class="oc-next" id="oc-next">следующий: 1 тепла</span>
+			</div>
+			<div class="seg-bar"></div>
+			<span class="val sr-val" id="v-mech.overcharge">0</span>
+		  </div>
+		</div>
+
       <div class="core-power" id="corePanel">
         <button class="cp-round" id="coreBtn" onclick="toggleCore()" aria-label="Core Power"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="cpRed" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#d63030"/><stop offset="100%" stop-color="#9e1f1f"/></radialGradient><linearGradient id="cpRim" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a52a2a"/><stop offset="100%" stop-color="#6e1a1a"/></linearGradient><linearGradient id="cpGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="50%" stop-color="#f5c518"/><stop offset="100%" stop-color="#c9960a"/></linearGradient><linearGradient id="cpSteel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#eef1f5"/><stop offset="55%" stop-color="#aab2bd"/><stop offset="100%" stop-color="#6b7683"/></linearGradient><path id="cpArcTop" d="M 25,25 A 49,49 0 0,1 95,25" fill="none"/><path id="cpArcBottom" d="M 31.5,109.4 A 57,57 0 0,0 88.5,109.4" fill="none"/></defs><circle class="cp-rim" cx="60" cy="60" r="54" fill="none" stroke="url(#cpRim)" stroke-width="12"/><circle class="cp-core" cx="60" cy="60" r="48" fill="url(#cpRed)"/><text class="cp-label" letter-spacing="1"><textPath id="cpTopText" href="#cpArcTop" startOffset="50%" text-anchor="middle">CORE POWER</textPath></text><text class="cp-label" letter-spacing="1"><textPath id="cpBottomText" href="#cpArcBottom" startOffset="50%" text-anchor="middle">ENGAGE</textPath></text><g><circle cx="6" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="2.2" y1="60" x2="9.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(-12 6 60)"/><circle cx="114" cy="60" r="5.5" fill="url(#cpSteel)" stroke="#4a5158" stroke-width="0.75"/><line x1="110.2" y1="60" x2="117.8" y2="60" stroke="#3a3f46" stroke-width="1.6" stroke-linecap="round" transform="rotate(68 114 60)"/></g></svg></button>
         <div class="core-desc">
@@ -2709,6 +2815,51 @@ bind(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); appl
 <script>
 // PWA (v122): регистрация service worker'а — network-first, чтобы свайп вниз всегда давал свежую версию, а кэш работал только офлайн.
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+</script>
+<script>
+document.querySelectorAll('.res[data-bar]').forEach(card => {
+  const key = card.dataset.bar;
+  const ico = card.dataset.ico || '';
+  const bar = card.querySelector('.seg-bar');
+  const valEl = card.querySelector('.val');
+  const maxEl = card.querySelector('.oc-next');
+  const fixedMax = parseInt(card.dataset.fixedMax, 10);
+
+  function renderBar() {
+    const cur = parseInt(valEl.textContent, 10) || 0;
+    const maxMatch = maxEl.textContent.match(/\d+/);
+    const max = fixedMax || (maxMatch ? parseInt(maxMatch, 10) : 4);
+
+    bar.innerHTML = '';
+    for (let i = 1; i <= max; i++) {
+      const pip = document.createElement('button');
+      pip.type = 'button';
+      pip.className = 'seg-pip' + (i <= cur ? ' filled' : '');
+      pip.title = `${i} / ${max}`;
+      pip.innerHTML = `<span class="pip-ico">${ico}</span>`;
+
+      pip.addEventListener('click', () => {
+        const target = (i === cur) ? i - 1 : i;
+        const delta = target - cur;
+        if (delta === 0) return;
+
+        if (key === 'mech.overcharge') {
+          stepOC(delta);
+        } else {
+          step(key, delta);
+        }
+      });
+
+      bar.appendChild(pip);
+    }
+  }
+
+  const observer = new MutationObserver(renderBar);
+  observer.observe(valEl, { childList: true, characterData: true, subtree: true });
+  observer.observe(maxEl, { childList: true, characterData: true, subtree: true });
+
+  renderBar();
+});
 </script>
 </body>
 </html>
