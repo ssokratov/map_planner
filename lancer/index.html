@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>Lancer — Трекер персонажа</title>
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root { --bg:#0e1116; --panel:#171c24; --panel2:#1e2530; --line:#2c3542; --text:#e8ecf1; --dim:#9aa7b5; --accent:#e8590c; --accent2:#4dabf7; --good:#51cf66; --bad:#ff6b6b; --hud-amber:#ffb000; --hud-amber-dim:rgba(255,176,0,.45); --hud-grid:rgba(255,255,255,.028); }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -380,6 +381,13 @@
   .wizard-progress{ color:var(--dim); font-size:13px; white-space:nowrap; }
   .wizard-body{ min-height:180px; }
   .wizard-foot{ display:flex; justify-content:space-between; gap:8px; margin-top:16px; }
+  dialog#profilesDlg { width:calc(100% - 24px); max-width:450px; max-height:85vh; border:1px solid var(--line); border-top:2px solid var(--hud-amber); background:var(--panel); color:var(--text); padding:16px; }
+  dialog#profilesDlg::backdrop { background:rgba(0,0,0,.7); }
+  .profile-list { display:grid; gap:8px; margin:12px 0; }
+  .profile-item { display:flex; align-items:center; gap:8px; padding:10px; border:1px solid var(--line); background:var(--panel2); }
+  .profile-item > span { flex:1; min-width:0; overflow-wrap:anywhere; }
+  .profile-status { color:var(--dim); font-size:12px; }
+  .profile-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -753,6 +761,7 @@
       <div id="rulesFrameList"></div>
     </details>
     <div class="rules-foot">
+      <button class="btn" onclick="openProfiles()">Профили / Google Drive</button>
       <button class="btn primary" onclick="exportJSON()" data-i18n="u141">Экспорт JSON</button>
       <button class="btn" onclick="document.getElementById('importFile').click()" data-i18n="u142">Импорт JSON</button>
       <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
@@ -813,6 +822,14 @@
     <button class="btn danger" style="flex:0 0 auto" onclick="document.getElementById('cbDlg').close()">✕</button>
   </div>
   <div id="cbList"></div>
+</dialog>
+<dialog id="profilesDlg" onclick="if(event.target===this)this.close()">
+  <div class="row" style="margin-bottom:12px"><h3 style="flex:1;margin:0">Профили пилота</h3><button class="btn danger" onclick="document.getElementById('profilesDlg').close()">✕</button></div>
+  <div class="profile-actions"><button class="btn primary" onclick="connectDrive()">Подключить Google Drive</button><button class="btn" onclick="syncDriveProfiles()">Обновить список</button></div>
+  <p id="driveStatus" class="profile-status">Профиль хранится локально на этом устройстве.</p>
+  <div id="profileList" class="profile-list"></div>
+  <div class="profile-actions"><button class="btn" onclick="saveProfileToDrive()">Сохранить текущий в Drive</button><button class="btn" onclick="createDriveProfile()">Новый профиль</button></div>
+  <p class="profile-status">Профили Drive хранятся в папке «Lancer Tracker» в вашем Google Drive. Активный профиль также сохраняется локально.</p>
 </dialog>
 
 <div id="wizardOverlay">
@@ -1032,6 +1049,16 @@ function parseLicensesText(t){
   return {list, rest: rest.join('; ')};
 }
 let S = load();
+const PROFILE_KEY = 'lancer-tracker-profiles-v1';
+const GOOGLE_CLIENT_ID = '550439140448-tbqqfhj98r2la4cengse1u78hmm6lqee.apps.googleusercontent.com';
+let profileCatalog = (()=>{ try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch(e) { return {}; } })();
+if (!profileCatalog.active || !Array.isArray(profileCatalog.profiles)) {
+  profileCatalog = { active:'local-main', profiles:[{id:'local-main',name:(S.pilot.callsign||S.pilot.name||'Мой профиль'),driveFileId:null}] };
+}
+let driveAccessToken = null, driveFolderId = null, driveSaveTimer = null;
+function persistProfileCatalog(){ localStorage.setItem(PROFILE_KEY, JSON.stringify(profileCatalog)); }
+function activeProfile(){ return profileCatalog.profiles.find(p=>p.id===profileCatalog.active) || profileCatalog.profiles[0]; }
+function profileDisplayName(){ const p=activeProfile(); return p ? p.name : 'Мой профиль'; }
 
 function migrate(d){
   if (!d.mech) d.mech = {};
@@ -1088,7 +1115,103 @@ function load(){
 }
 function save(){
   localStorage.setItem(KEY, JSON.stringify(S));
+  if (driveAccessToken && activeProfile() && activeProfile().driveFileId) {
+    clearTimeout(driveSaveTimer);
+    driveSaveTimer = setTimeout(()=>uploadActiveProfile().catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message)), 1200);
+  }
   const sv = document.getElementById('saved'); if (sv) sv.textContent = L('saved') + new Date().toLocaleTimeString();
+}
+function openProfiles(){
+  renderProfileList();
+  const dlg=document.getElementById('profilesDlg'); if(dlg&&!dlg.open) dlg.showModal();
+  if(driveAccessToken) setDriveStatus('Google Drive подключён до закрытия страницы.');
+}
+function setDriveStatus(text){ const el=document.getElementById('driveStatus'); if(el) el.textContent=text; }
+function connectDrive(){
+  const start=()=>{
+    if(!window.google?.accounts?.oauth2){ setDriveStatus('Не удалось загрузить Google Identity Services. Проверьте соединение и перезагрузите страницу.'); return; }
+    const client=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:'https://www.googleapis.com/auth/drive.file',callback:async response=>{
+      if(response.error){ setDriveStatus('Google не выдал доступ: '+response.error); return; }
+      driveAccessToken=response.access_token;
+      try { await syncDriveProfiles(); setDriveStatus('Google Drive подключён. Профиль сохраняется автоматически.'); }
+      catch(e){ setDriveStatus('Не удалось открыть папку профилей: '+e.message); }
+    }});
+    client.requestAccessToken({prompt:''});
+  };
+  if(window.google?.accounts?.oauth2) start();
+  else { setDriveStatus('Загружаю подключение Google…'); const t=setInterval(()=>{ if(window.google?.accounts?.oauth2){clearInterval(t);start();} },200); setTimeout(()=>clearInterval(t),10000); }
+}
+async function driveRequest(url, options={}){
+  const response=await fetch(url,{...options,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
+  if(!response.ok){ const body=await response.text(); if(response.status===401) driveAccessToken=null; throw new Error('Drive '+response.status+(body?': '+body.slice(0,180):'')); }
+  if(response.status===204) return null;
+  return response.json();
+}
+async function ensureDriveFolder(){
+  if(driveFolderId) return driveFolderId;
+  const q=encodeURIComponent("name='Lancer Tracker' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+  const found=await driveRequest('https://www.googleapis.com/drive/v3/files?q='+q+'&spaces=drive&fields=files(id,name)');
+  if(found.files?.length) driveFolderId=found.files[0].id;
+  else { const folder=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id,name',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Lancer Tracker',mimeType:'application/vnd.google-apps.folder'})}); driveFolderId=folder.id; }
+  return driveFolderId;
+}
+async function syncDriveProfiles(){
+  if(!driveAccessToken){ setDriveStatus('Сначала подключите Google Drive.'); return; }
+  const folder=await ensureDriveFolder();
+  const q=encodeURIComponent("'"+folder+"' in parents and trashed=false");
+  const data=await driveRequest('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,modifiedTime,appProperties)&pageSize=100');
+  const cloud=(data.files||[]).filter(f=>f.appProperties?.lancerTrackerProfile==='1').map(f=>({id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||f.name.replace(/\.json$/,''),driveFileId:f.id,modifiedTime:f.modifiedTime}));
+  profileCatalog.profiles=profileCatalog.profiles.filter(p=>!p.driveFileId).concat(cloud);
+  if(!profileCatalog.profiles.some(p=>p.id===profileCatalog.active)) profileCatalog.active=profileCatalog.profiles[0]?.id||'local-main';
+  persistProfileCatalog(); renderProfileList();
+  setDriveStatus(`Найдено профилей в Google Drive: ${cloud.length}. Активный: ${profileDisplayName()}.`);
+}
+function renderProfileList(){
+  const host=document.getElementById('profileList'); if(!host) return;
+  const list=profileCatalog.profiles||[];
+  host.innerHTML=list.map(p=>`<div class="profile-item"><span><b>${esc(p.name)}</b><br><small class="profile-status">${p.driveFileId?'Google Drive':'Только на этом устройстве'}${p.id===profileCatalog.active?' · активный':''}</small></span>${p.driveFileId&&p.id!==profileCatalog.active?`<button class="btn small" onclick="switchDriveProfile('${esc(p.id)}')">Открыть</button>`:''}</div>`).join('')||'<p class="profile-status">Профили не найдены.</p>';
+}
+function profilePayload(){ return JSON.stringify({format:'lancer-tracker-profile-v1',profileId:activeProfile().id,name:activeProfile().name,data:S},null,2); }
+async function uploadActiveProfile(){
+  if(!driveAccessToken) return;
+  const p=activeProfile(); if(!p) return;
+  const folder=await ensureDriveFolder();
+  if(!p.driveFileId){
+    const meta=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Lancer - '+p.name+'.json',mimeType:'application/json',parents:[folder],appProperties:{lancerTrackerProfile:'1',profileId:p.id,profileName:p.name}})});
+    p.driveFileId=meta.id; persistProfileCatalog();
+  }
+  const body=profilePayload();
+  await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(p.driveFileId)+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+  setDriveStatus('Синхронизировано с Google Drive · '+new Date().toLocaleTimeString());
+  renderProfileList();
+}
+async function saveProfileToDrive(){
+  if(!driveAccessToken){ setDriveStatus('Сначала подключите Google Drive.'); return; }
+  const p=activeProfile();
+  if(!p.driveFileId){ const suggested=S.pilot.callsign||S.pilot.name||p.name; const name=prompt('Название профиля в Google Drive:',suggested); if(name===null) return; p.name=name.trim()||suggested; }
+  try { await uploadActiveProfile(); await syncDriveProfiles(); } catch(e){ setDriveStatus('Не удалось сохранить: '+e.message); }
+}
+async function createDriveProfile(){
+  if(!driveAccessToken){ setDriveStatus('Сначала подключите Google Drive.'); return; }
+  const name=prompt('Название нового профиля:'); if(name===null||!name.trim()) return;
+  try {
+    await uploadActiveProfile();
+    const id='profile-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+    const profile={id,name:name.trim(),driveFileId:null}; profileCatalog.profiles.push(profile); profileCatalog.active=id; persistProfileCatalog();
+    S=JSON.parse(JSON.stringify(DEFAULTS)); S.pilot.name=name.trim();
+    localStorage.setItem(KEY,JSON.stringify(S));
+    await uploadActiveProfile(); renderLists(); renderCounters(); applyLang(); renderProfileList();
+  } catch(e){ setDriveStatus('Не удалось создать профиль: '+e.message); }
+}
+async function switchDriveProfile(id){
+  const target=profileCatalog.profiles.find(p=>p.id===id); if(!target?.driveFileId||!driveAccessToken) return;
+  try {
+    await uploadActiveProfile();
+    const data=await driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(target.driveFileId)+'?alt=media');
+    const payload=data.data?data.data:data; migrate(payload); S=payload;
+    profileCatalog.active=id; persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
+    renderLists(); renderCounters(); applyLang(); renderProfileList(); setDriveStatus('Открыт профиль «'+target.name+'».');
+  } catch(e){ setDriveStatus('Не удалось открыть профиль: '+e.message); }
 }
 function get(path){ return path.split('.').reduce((o,k)=>o&&o[k], S); }
 function set(path, v){ const ks = path.split('.'); let o = S; for (let i=0;i<ks.length-1;i++) o = o[ks[i]]; o[ks[ks.length-1]] = v; }
