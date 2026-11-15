@@ -1564,8 +1564,8 @@ function renderLists(){
     <div class="sec sys${isOpen ? ' open' : ''}" data-sys="${esc(s.name)}">
       <div class="sys-head" onclick="toggleSysCard(this)">
         <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
-        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
         <div class="wmeta">${esc(meta)}</div>
+        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
       </div>
       <div class="sys-body">
         ${descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
