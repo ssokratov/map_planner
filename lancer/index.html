@@ -72,13 +72,13 @@
   .ring-minus { left:15px; padding-left:3px; border-right:1px solid var(--line); }
   .ring-plus { right:15px; padding-right:3px; border-left:1px solid var(--line); }
   .heat-thermo { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; }
-  .thermo { position:relative; width:64px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
+  .thermo { position:relative; width:58px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
   .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; transform-origin:bottom; }
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
   /* Пульсация заполнения в Danger Zone (v166): вместо пульсирующего пламени — уровень заполнения
      слегка ходит вверх-вниз, а цвет немного переливается (та же частота 1.2s, что и у подписей DANGER/ZONE) */
   .heat-thermo.dz-active .thermo-fill { animation:fillPulse 1.2s ease-in-out infinite; }
-  @keyframes fillPulse { 0%,100% { transform:scaleY(0.97); filter:hue-rotate(0deg); } 50% { transform:scaleY(1.03); filter:hue-rotate(12deg); } }
+  @keyframes fillPulse { 0%,100% { transform:scaleY(1.01); filter:hue-rotate(0deg); } 50% { transform:scaleY(1.03); filter:hue-rotate(12deg); } }
   .thermo-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1; pointer-events:none; }
   .thermo-val .val { font-size:36px; font-weight:800; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.85); }
   /* Пламя — маленькая статичная иконка (v166): большое пульсирующее пламя убрано,
