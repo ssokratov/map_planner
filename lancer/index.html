@@ -1885,7 +1885,7 @@ function renderDescBoxes(){
   if (cn) cn.textContent = dispField('mech.coreSystem') || '';
   if (cb) cb.innerHTML = descBox('coreDesc', '', dispField('mech.coreDesc') || '', '', "set('mech.coreDesc', this.value);save()", false);
   const tb = document.getElementById('traitsBox');
-  if (tb) tb.innerHTML = descBox('traits', '', dispField('mech.traits') || '', L('p004'), "set('mech.traits', this.value);save()", editOn('core'), true);
+  if (tb) tb.innerHTML = descBox('traits', '', dispField('mech.traits') || '', L('p004'), "set('mech.traits', this.value);save()", false, true);
 }
 function licenseNameOptions(current){
   const keys = Object.keys(DB.frames).filter(k=>k!=='Everest');
