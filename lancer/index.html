@@ -868,7 +868,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 205</span>
+      <span class="dim global-version">Версия трекера: 206</span>
     </div>
   </div>
 </main>
@@ -1045,8 +1045,8 @@ function licenseMatches(lic, q){
   for (const r of [1, 2, 3]){
     for (const g of (lic.ranks[r] || [])){
       if (g.kind === 'frame'){ const F = DB.frames[g.key]; hay.push(g.key, F.nr || ''); }
-      else if (g.kind === 'weapon'){ const w = DB.weapons[g.key]; hay.push(w.n, w.nr || ''); }
-      else { const s = DB.systems[g.key]; hay.push(s.n, s.nr || ''); }
+      else if (g.kind === 'weapon'){ const w = findWeapon(g.key); hay.push(g.key, w ? (w.nr || '') : ''); }
+      else { const s = findSystem(g.key); hay.push(g.key, s ? (s.nr || '') : ''); }
     }
   }
   const h = hay.join(' ').toLowerCase();
@@ -1063,7 +1063,7 @@ function showLicenseResults(q, box){
   box.innerHTML = lics.map(lic=>{
     const fk = licenseFrameKey(lic.name);
     const F = fk ? DB.frames[fk] : null;
-    const dispName = fk ? fd(fk).n : lic.name;
+    const dispName = licenseDispName(lic);
     return `
     <div class="dbrow">
       <div class="dbinfo"><b>${esc(dispName)}</b><span>${esc(F ? frameLabel(F) : lic.src)}</span><span class="dim">${esc(licenseRankSummary(lic))}</span></div>
@@ -2173,7 +2173,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u235')) + '</h3><ul>';
     for(const a of myQk){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + '</li>';
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
     }
     h += '</ul>';
   }
@@ -2181,7 +2181,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u230')) + '</h3><ul>';
     for(const a of myRe){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + linkTagTerms(esc(en ? a.tr_en : a.tr_ru)) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + linkTagTerms(esc(en ? a.ef_en : a.ef_ru)) + '</li>';
+      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + linkTagTerms(esc(en ? a.tr_en : a.tr_ru)) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + linkTagTerms(esc(en ? a.ef_en : a.ef_ru)) + actionSource(a) + '</li>';
     }
     h += '</ul>';
   }
@@ -2189,7 +2189,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u231')) + '</h3><ul>';
     for(const a of myPr){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + '</li>';
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
     }
     h += '</ul>';
   }
@@ -2419,6 +2419,7 @@ function renderLists(){
     const dtn = findTalent(t.name);
     const tDisp = dtn ? td(dtn).n : t.name;
     const rankRoman = ['I','II','III'][t.rank-1] || '';
+    const tg = grantsChipsHtml('talent', t.name, t.rank);
     return `
     <div style="margin-bottom:8px">
       ${editOn('talents') ? `<div class="row"><input type="text" placeholder="${L('ph_talent')}" value="${esc(tDisp)}" onchange="fillTalentFromDb(${i},this.value)">
@@ -2426,6 +2427,7 @@ function renderLists(){
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
       <button class="btn x" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>` : `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)}${rankRoman ? ' ' + esc(rankRoman) : ''}</b></div>`}
       ${rds.length ? `<div class="hint" style="white-space:pre-line;padding:0 0 4px">${rds.map((r, k) => `<b>${['I','II','III'][k]}. ${esc(r.n)}:</b> ${linkTagTerms(esc(r.d))}`).join('\n\n')}</div>` : ''}
+      ${tg ? `<div class="tags" style="margin-top:2px">${tg}</div>` : ''}
     </div>`;
   }).join('');
   document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>{
@@ -2475,6 +2477,7 @@ function renderLists(){
     const descDisp = dbs ? dispVal(s.desc, dbs.x, dbs.xr) : s.desc;
     const meta = inDb ? [sd(dbs).t, sd(dbs).lab].filter(x=>x).join(' · ') : L('u150') + ' · SP ' + sp;
     const ed = editOn('systems');
+    const sysGrants = grantsChipsHtml('system', s.name, 0, true);
     const isOpen = openSys.has(s.name);
     return `
     <div class="sec sys${isOpen ? ' open' : ''}" data-sys="${esc(s.name)}">
@@ -2482,6 +2485,7 @@ function renderLists(){
         <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
         <div class="wmeta">${esc(meta)}</div>
         ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
+        ${sysGrants ? `<div class="sys-head-sub"><span class="tags" style="display:inline-flex">${sysGrants}</span></div>` : ''}
       </div>
       <div class="sys-body">
         ${descBox('s-'+i, '', descDisp, L('ph_sysdesc'), "S.systems["+i+"].desc=this.value;save()", false)}
@@ -2838,8 +2842,10 @@ function licenseData(){
     L.ranks[r].push({kind, key});
   };
   for (const [k, F] of Object.entries(DB.frames)) put(F.lic, F.src, 'frame', k, F.ll);
-  for (const [k, W] of Object.entries(DB.weapons)) put(W.lic, null, 'weapon', k, W.ll);
-  for (const [k, S] of Object.entries(DB.systems)) put(S.lic, null, 'system', k, S.ll);
+  // Оружие/системы — массивы, ключи — имена: findWeapon/findSystem ищут по имени,
+  // поэтому ключ гранта — имя (W.n/S.n), а не индекс массива (v205 клал индекс).
+  for (const W of DB.weapons) put(W.lic, null, 'weapon', W.n, W.ll);
+  for (const S of DB.systems) put(S.lic, null, 'system', S.n, S.ll);
   return Object.values(map).sort((a, b)=>a.name.localeCompare(b.name));
 }
 function licenseFrameKey(lic){
@@ -2849,6 +2855,14 @@ function licenseFrameKey(lic){
   if (!L) return null;
   const f = (L.ranks[2] || []).find(g=>g.kind === 'frame');
   return f ? f.key : null;
+}
+function licenseDispName(lic){
+  // Имя для показа: у лицензии с одним фреймом — его локализованное имя
+  // (как раньше); если фреймов 0 или 2+ (варианты из дополнений — например,
+  // второй фрейм Минотавра) — имя самой лицензии.
+  const frames = (lic.ranks[2] || []).filter(g=>g.kind === 'frame');
+  if (frames.length !== 1) return lic.name;
+  return fd(frames[0].key).n;
 }
 function plural(n, ru, en){
   // ru: [1 система, 2 системы, 5 систем]; en: singular, +s во мн. числе
@@ -2883,7 +2897,7 @@ function renderRulesLicenseList(){
     const fk = licenseFrameKey(lic.name);
     const F = fk ? DB.frames[fk] : null;
     const sub = F ? frameLabel(F) : lic.src;
-    const dispName = fk ? fd(fk).n : lic.name;
+    const dispName = licenseDispName(lic);
     return `
     <div class="dbrow">
       <div class="dbinfo"><b>${esc(dispName)}</b><span>${esc(sub)}</span><span class="dim">${esc(licenseRankSummary(lic))}</span></div>
@@ -2903,7 +2917,7 @@ function licenseDetailHtml(name){
   let h = `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="licenseDetailBack()">${esc(L('u238'))}</button>
-    <b style="flex:1 1 auto">${esc(fk ? fd(fk).n : name)}</b>
+    <b style="flex:1 1 auto">${esc(licenseDispName(lic))}</b>
   </div>
   <div class="wmeta" style="margin-bottom:10px">${esc(F ? frameLabel(F) : lic.src)}</div>`;
   if (owned) h += `<p class="hint">${esc(L('u247'))}: ${esc(L('u245'))} ${esc(rn[(owned.rank || 1) - 1])}</p>`;
@@ -2911,7 +2925,7 @@ function licenseDetailHtml(name){
     const g = lic.ranks[r] || [];
     if (!g.length) continue;
     h += `<h3 style="margin:10px 0 6px">${esc(L('u245'))} ${rn[r-1]}</h3><div class="tags">` + g.map(gr=>{
-      const label = gr.kind === 'frame' ? fd(gr.key).n : gr.kind === 'weapon' ? wd(DB.weapons[gr.key]).n : sd(DB.systems[gr.key]).n;
+      const label = itemDispName(gr.kind, gr.key);
       return refChip(gr.kind, gr.key, label);
     }).join('') + `</div>`;
   }
@@ -2944,19 +2958,86 @@ function licenseDetailBack(){
 const MECHANICS_REF = {
   leadership: { talent: 'Leader' } // текст берётся из таланта Leader (ранги I–III)
 };
-function refChip(kind, key, label){
-  return `<span class="tag" onclick="showRef('${esc(kind)}','${esc(key)}')">${esc(label)}</span>`;
+function refChip(kind, key, label, stop){
+  // stop — для чипов внутри сворачиваемой шапки карточки: тап не должен
+  // сворачивать/разворачивать карточку (toggleSysCard).
+  const pre = stop ? 'event.stopPropagation();' : '';
+  return `<span class="tag" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${esc(label)}</span>`;
 }
 function grantLabel(g){
   if (!g) return '';
-  if (g.system && DB.systems[g.system]) return sd(DB.systems[g.system]).n;
-  if (g.system) return g.system;
+  if (g.system){ const s = findSystem(g.system); return s ? sd(s).n : g.system; }
   if (g.frame) return fd(g.frame).n;
   if (g.talent){
     const t = findTalent(g.talent);
     return (t ? td(t).n : g.talent) + ' ' + ['I', 'II', 'III'][(g.rank || 1) - 1];
   }
   return '';
+}
+// v206: обратный индекс «фича → что она даёт». Строится из грантов
+// ACTIONS_REF (система/талант/фрейм → действие) + встроенного оружия
+// фреймов (iw) + ручных связей TALENT_GRANTS (талант → система/оружие/
+// механика). Чип только ПОКАЗЫВАЕТ, не добавляет.
+const TALENT_GRANTS = {
+  // Проверено по текстам талантов в базе:
+  // Leader I — «Gain 3 Leadership Dice… and gain the Issue Order Free Action»
+  // (сам Issue Order — жёсткий пробел, его пока нет в «Твоих действиях»).
+  Leader: [{kind:'mechanic', key:'leadership', rank:1}],
+  // Nuclear Cavalier III — «Gain the Fuel Rod Gun integrated weapon.»
+  'Nuclear Cavalier': [{kind:'weapon', key:'Fuel Rod Gun', rank:3}],
+  // Technophile I — «…your mech to gain the Servant-Class NHP System»;
+  // II — «Replace your mech’s Servant-Class NHP with the Student-Class NHP».
+  Technophile: [
+    {kind:'system', key:'Servant-Class NHP', rank:1},
+    {kind:'system', key:'Student-Class NHP', rank:2}
+  ]
+};
+function actionLabel(key){
+  const a = [...(ACTIONS_REF.reactions || []), ...(ACTIONS_REF.protocols || []), ...(ACTIONS_REF.quick || [])].find(x=>x.key === key);
+  if (!a) return key;
+  return lang() === 'en' ? a.name : (a.ru || a.name);
+}
+function itemDispName(kind, key){
+  if (kind === 'frame') return fd(key).n;
+  if (kind === 'weapon'){ const w = findWeapon(key); return w ? wd(w).n : key; }
+  if (kind === 'system'){ const s = findSystem(key); return s ? sd(s).n : key; }
+  if (kind === 'talent'){ const t = findTalent(key); return t ? td(t).n : key; }
+  if (kind === 'mechanic' && key === 'leadership') return L('u250');
+  return key;
+}
+function grantItemLabel(g){
+  if (g.kind === 'action') return actionLabel(g.key);
+  return itemDispName(g.kind, g.key);
+}
+function grantsOf(kind, key, rank){
+  const out = [];
+  for (const list of [ACTIONS_REF.reactions, ACTIONS_REF.protocols, ACTIONS_REF.quick]){
+    for (const a of (list || [])){
+      const g = a.grant; if (!g) continue;
+      if (kind === 'system' && g.system === key) out.push({kind:'action', key:a.key});
+      if (kind === 'talent' && g.talent === key && (g.rank || 1) <= (rank || 1)) out.push({kind:'action', key:a.key});
+      if (kind === 'frame' && g.frame === key) out.push({kind:'action', key:a.key});
+    }
+  }
+  if (kind === 'frame'){
+    const F = DB.frames[key];
+    if (F && Array.isArray(F.iw)) for (const w of F.iw) out.push({kind:'weapon', key:w});
+  }
+  if (kind === 'talent'){
+    for (const tg of (TALENT_GRANTS[key] || [])){
+      if ((tg.rank || 1) <= (rank || 1)) out.push(tg);
+    }
+  }
+  return out;
+}
+function grantsChipsHtml(kind, key, rank, stop){
+  const gs = grantsOf(kind, key, rank);
+  if (!gs.length) return '';
+  return `<span class="dim">${esc(L('u246'))}</span> ` + gs.map(g=>refChip(g.kind, g.key, grantItemLabel(g), stop)).join(' ');
+}
+function actionSource(a){
+  const g = grantLabel(a.grant);
+  return g ? ` <span class="dim">(${esc(L('u246'))} ${esc(g)})</span>` : '';
 }
 function showRef(kind, key){
   if (kind === 'frame'){ showFrameDetail(key); return; }
@@ -2978,11 +3059,11 @@ function showRef(kind, key){
     const grant = grantLabel(a.grant);
     if (grant) body = L('u246') + ' ' + grant + '\n\n' + body;
   } else if (kind === 'system'){
-    const s = DB.systems[key]; if (!s) return;
+    const s = findSystem(key); if (!s) return;
     const d = sd(s); name = d.n;
     body = [d.lab, d.x].filter(Boolean).join('\n\n');
   } else if (kind === 'weapon'){
-    const w = DB.weapons[key]; if (!w) return;
+    const w = findWeapon(key); if (!w) return;
     const d = wd(w); name = d.n;
     body = [d.lab, [d.d, d.r].filter(Boolean).join(', '), d.x].filter(Boolean).join('\n\n');
   } else if (kind === 'talent'){
@@ -3005,6 +3086,7 @@ function frameDetailHtml(key){
   const F = DB.frames[key];
   if (!F) return '';
   const d = fd(key);
+  const fg = grantsChipsHtml('frame', key);
   const st = F.s || {};
   // Статы — той же таблицей, что на вкладке Мех (.stat-table/.stat-row/.stat-cell):
   // mid (зелёный): Size/Speed/Sensors/Tech; bot (сталь): Armor/Evasion/E-Defense/Save;
@@ -3035,6 +3117,7 @@ function frameDetailHtml(key){
   ${statsHtml}
   ${mounts ? `<h3 style="margin:10px 0 6px">${esc(L('u242'))}</h3><div class="tags">${mounts}</div>` : ''}
   ${traits ? `<h3 style="margin:10px 0 6px">${esc(L('u241'))}</h3><div class="hint" style="white-space:pre-line">${traits}</div>` : ''}
+  ${fg ? `<div class="tags" style="margin-top:8px">${fg}</div>` : ''}
   ${d.c ? `<h3 style="margin:10px 0 6px">Core Power: ${esc(d.c)}</h3><div class="hint" style="white-space:pre-line">${linkTagTerms(esc(d.cd||''))}</div>` : ''}
   <div class="row" style="margin-top:14px"><button class="btn primary" style="flex:1 1 auto" onclick="pickFrame('${esc(key)}');closeSearchDlg()">＋ ${esc(L('u239'))}</button></div>`;
 }
@@ -3098,7 +3181,11 @@ function renderDescBoxes(){
   if (cn) cn.textContent = dispField('mech.coreSystem') || '';
   if (cb) cb.innerHTML = descBox('coreDesc', '', dispField('mech.coreDesc') || '', '', "set('mech.coreDesc', this.value);save()", false);
   const tb = document.getElementById('traitsBox');
-  if (tb) tb.innerHTML = descBox('traits', '', dispField('mech.traits') || '', L('p004'), "set('mech.traits', this.value);save()", false, true);
+  if (tb){
+    const fg = grantsChipsHtml('frame', get('mech.frame'));
+    tb.innerHTML = descBox('traits', '', dispField('mech.traits') || '', L('p004'), "set('mech.traits', this.value);save()", false, true)
+      + (fg ? `<div class="tags" style="margin-top:6px">${fg}</div>` : '');
+  }
 }
 function licenseNameOptions(current){
   const keys = Object.keys(DB.frames).filter(k=>k!=='Everest');
