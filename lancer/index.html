@@ -872,7 +872,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 214</span>
+      <span class="dim global-version">Версия трекера: 215</span>
     </div>
   </div>
 </main>
@@ -2675,6 +2675,7 @@ function renderLists(){
     const em = editOn('mounts');
     const rows = mt.weapons.map((w,wi)=>{
     const wlim = weapLim(w);
+    const wlimU = weapLimUnknown(w);
     const wleft = weapLeft(w);
     const wtg = weapTags(w);
     const dbw = findWeapon(w.name);
@@ -2691,7 +2692,7 @@ function renderLists(){
       ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
       <div class="wmeta">${esc(lab)}</div>
       ${wtg.length ? `<div class="tags">${tagChips(wtg)}</div>` : ''}
-      ${wlim ? `<div class="row"><span class="dim">${L('charges').replace('{N}', wlim)}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wleft} <small>/ ${wlim}</small></div><button onclick="stepWeapCharges(${mi},${wi},1)">+</button></div></div>` : ''}
+      ${(wlim || wlimU) ? `<div class="row"><span class="dim">${L('charges')}</span><div class="counter small" style="flex:0 0 auto"><button onclick="stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="stepWeapCharges(${mi},${wi},1)">+</button></div></div>` : ''}
       ${em ? descBox('w-'+mi+'-'+wi, '', descDisp, L('ph_weapdesc'), "S.mounts["+mi+"].weapons["+wi+"].desc=this.value;save()", false) : ''}
     </div>`;
     }).join('');
@@ -2707,6 +2708,7 @@ function renderLists(){
   }).join('');
   document.getElementById('systems').innerHTML = S.systems.map((s,i)=>{
     const lim = sysLim(s);
+    const limU = sysLimUnknown(s);
     const left = sysLeft(s);
     const sp = sysSp(s);
     const dbs = findSystem(s.name);
@@ -2723,7 +2725,7 @@ function renderLists(){
       <div class="sys-head" onclick="toggleSysCard(this)">
         <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
         <div class="wmeta">${esc(meta)}</div>
-        ${(stg.length || lim) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${lim ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${left} <small>/ ${lim}</small></span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
+        ${(stg.length || lim || limU) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${(lim || limU) ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${lim ? `${left} <small>/ ${lim}</small>` : `${left}`}</span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
         ${sysGrants ? `<div class="sys-head-sub"><span class="tags" style="display:inline-flex">${sysGrants}</span></div>` : ''}
       </div>
       <div class="sys-body">
@@ -3599,11 +3601,24 @@ function updateSpCounter(){
 }
 // Бонус к Limited от Engineering (корбук, HASE): +1 к максимуму использований любого лимитного снаряжения за каждые 2 очка.
 function limBonus(){ return Math.floor((+get('pilot.engineering')||0) / 2); }
+// v215: Limited без числового максимума — у прототип-оружия Инженера максимум
+// определяется броском («1d6+2», «2d6»), угадывать число нельзя. Такие заряды
+// трекаются только текущим значением, без максимума и без верхней границы.
+function limTagVal(tags){
+  const t = (tags || []).find(x=>x[0] === 'tg_limited');
+  return t ? t[1] : undefined;
+}
+function limUnknown(tags){
+  const v = limTagVal(tags);
+  return v !== undefined && v !== null && v !== '' && typeof v !== 'number';
+}
+function sysLimUnknown(s){ return limUnknown(sysTags(s)); }
+function weapLimUnknown(w){ return limUnknown(weapTags(w)); }
 function sysLim(s){ let base; if (typeof s.lim === 'number') base = s.lim; else { const d = findSystem(s.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
-function sysLeft(s){ const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
+function sysLeft(s){ if (sysLimUnknown(s)) return Math.max((typeof s.left === 'number' ? s.left : 0), 0); const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
 function sysSp(s){ const d = findSystem(s.name); return d ? (d.p||0) : (+s.sp||0); }
 function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
-function weapLeft(w){ const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
+function weapLeft(w){ if (weapLimUnknown(w)) return Math.max((typeof w.left === 'number' ? w.left : 0), 0); const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
 function sysTags(s){ if (Array.isArray(s.tg) && s.tg.length) return s.tg; const d = findSystem(s.name); return d ? (d.tg||[]) : []; }
 function tagLabel(id, val){
@@ -3752,8 +3767,8 @@ function fillTalentFromDb(i, name){
   S.talents[i].name = t ? t.n : name;
   save(); renderLists();
 }
-function stepSysCharges(i, d){ const s = S.systems[i]; s.left = Math.min(Math.max(sysLeft(s)+d, 0), sysLim(s)); save(); renderLists(); }
-function stepWeapCharges(mi, wi, d){ const w = S.mounts[mi].weapons[wi]; w.left = Math.min(Math.max(weapLeft(w)+d, 0), weapLim(w)); save(); renderLists(); }
+function stepSysCharges(i, d){ const s = S.systems[i]; s.left = sysLimUnknown(s) ? Math.max(sysLeft(s)+d, 0) : Math.min(Math.max(sysLeft(s)+d, 0), sysLim(s)); save(); renderLists(); }
+function stepWeapCharges(mi, wi, d){ const w = S.mounts[mi].weapons[wi]; w.left = weapLimUnknown(w) ? Math.max(weapLeft(w)+d, 0) : Math.min(Math.max(weapLeft(w)+d, 0), weapLim(w)); save(); renderLists(); }
 // v112: статусы — теги вместо чекбоксов. Danger Zone в теги и референс не попадает
 // (у него свой индикатор — термометр, а галочка ставится/снимается сама по нагреву).
 function statusLabel(name){
@@ -4209,8 +4224,8 @@ function resetAll(){
 function fullRepair(){
   ['mech.hp','mech.structure','mech.stress','mech.heat','mech.repairs'].forEach(p=>set(p, get(p+'Max')));
   set('mech.heat', 0); set('mech.coreUsed', 0); set('mech.overcharge', 0); S.statuses = [];
-  S.systems.forEach(s=>{ const lim = sysLim(s); if (lim > 0) s.left = lim; });
-  S.mounts.forEach(m=>m.weapons.forEach(w=>{ const lim = weapLim(w); if (lim > 0) w.left = lim; }));
+  S.systems.forEach(s=>{ const lim = sysLim(s); if (lim > 0) s.left = lim; else if (sysLimUnknown(s)) s.left = 0; });
+  S.mounts.forEach(m=>m.weapons.forEach(w=>{ const lim = weapLim(w); if (lim > 0) w.left = lim; else if (weapLimUnknown(w)) w.left = 0; }));
   save(); renderCounters(); renderLists();
 }
 
