@@ -940,6 +940,18 @@
     "u255": {
       "en": "Unloaded",
       "tag": "js"
+    },
+    "u256": {
+      "en": "Perform a full repair? The mech will be fully restored; heat, overcharge and conditions will reset.",
+      "tag": "js"
+    },
+    "u257": {
+      "en": "Apply status",
+      "tag": "js"
+    },
+    "u258": {
+      "en": "Remove status",
+      "tag": "js"
     }
   }
 }

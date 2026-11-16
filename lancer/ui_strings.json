@@ -967,6 +967,21 @@
       "ru": "Разряжено",
       "en": "Unloaded",
       "tag": "js"
+    },
+    "u256": {
+      "ru": "Сделать полный ремонт? Мех восстановится полностью, а тепло, оверчардж и статусы сбросятся.",
+      "en": "Perform a full repair? The mech will be fully restored; heat, overcharge and conditions will reset.",
+      "tag": "js"
+    },
+    "u257": {
+      "ru": "Наложить статус",
+      "en": "Apply status",
+      "tag": "js"
+    },
+    "u258": {
+      "ru": "Снять статус",
+      "en": "Remove status",
+      "tag": "js"
     }
   }
 }
