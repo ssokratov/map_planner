@@ -323,7 +323,7 @@
   .sys-head-row { display:flex; align-items:center; gap:8px; }
   .sys-arrow { color:var(--text); font-size:12px; line-height:1; transition:transform .15s; flex:0 0 auto; }
   .sys.open .sys-arrow { transform:rotate(90deg); }
-  .sys-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); text-transform:uppercase; letter-spacing:.08em; }
+  .sys-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); }
   .sys-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
   .sys-charges { display:inline-flex; align-items:center; gap:6px; }
   .sys-head .wmeta { padding-left:20px; margin-top:4px; }
@@ -361,6 +361,10 @@
   .pilot-equip-item:first-child { border-top:0; }
   .pilot-equip-main { flex:1 1 auto; min-width:0; }
   .pilot-equip-meta { color:var(--dim); font-size:13px; margin-top:3px; }
+  .pilot-equip-meta .wnum { color:var(--accent); font-weight:700; }
+  .pilot-equip-tags { margin:5px 0 0; }
+  .pilot-equip-charges { display:flex; align-items:center; gap:6px; margin-top:5px; color:var(--dim); font-size:13px; }
+  .pilot-equip-charges .counter.small { color:var(--text); }
   .pilot-equip-desc { color:var(--dim); font-size:13px; line-height:1.45; margin-top:5px; }
   .pilot-equip-add { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
   .pilot-equip-add .btn { min-width:0; padding:8px 5px; font-size:12px; }
@@ -859,7 +863,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 202</span>
+      <span class="dim global-version">Версия трекера: 203</span>
     </div>
   </div>
 </main>
@@ -1160,6 +1164,8 @@ STR.pilot_equip_empty = {ru:'Снаряжение пилота не импорт
 STR.pilot_equip_uses = {ru:'Использовано: {C} / {M}', en:'Uses: {C} / {M}'};
 STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
 STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
+STR.pilot_spend_charge = {ru:'Потратить заряд', en:'Spend a charge'};
+STR.pilot_restore_charge = {ru:'Восстановить заряд', en:'Restore a charge'};
 STR.pilot_add_armor = {ru:'＋ Броня', en:'+ Armor'};
 STR.pilot_add_weapon = {ru:'＋ Оружие', en:'+ Weapon'};
 STR.pilot_add_gear = {ru:'＋ Снаряжение', en:'+ Gear'};
@@ -2501,6 +2507,35 @@ function removePilotEquipment(key,index){
 }
 function pilotDamageType(type){ return ({Kinetic:'кинетический',Explosive:'взрывной',Energy:'энергетический',Burn:'ожог',variable:'выбранный'})[type]||type; }
 function pilotRangeType(type){ return ({Range:'Дальность',Threat:'Угроза',Blast:'Взрыв',Burst:'Радиус'})[type]||type; }
+function pilotEquipmentTags(data){
+  const tags=Array.isArray(data?.tags)?data.tags:(Array.isArray(data?.tg)?data.tg:[]);
+  return tags.map(tag=>Array.isArray(tag)?{id:tag[0],val:tag[1]}:tag).filter(tag=>tag&&tag.id);
+}
+function pilotEquipmentTagChips(tags){
+  const fallback={
+    tg_gear:{ru:'Снаряжение',en:'Gear'},tg_pilot_weapon:{ru:'Оружие пилота',en:'Pilot Weapon'},
+    tg_personal_armor:{ru:'Личная броня',en:'Personal Armor'},tg_archaic:{ru:'Архаичное',en:'Archaic'},
+    tg_sidearm:{ru:'Компактное',en:'Sidearm'},tg_grenade:{ru:'Граната',en:'Grenade'}
+  };
+  return tags.map(tag=>{
+    const known=!!DB.tags[tag.id], val=tag.val??'';
+    const label=known?tagLabel(tag.id,val):fallback[tag.id]?.[lang()]||tag.id.replace(/^tg_/,'').replace(/_/g,' ')+(val!==''?' '+val:'');
+    const click=known?` onclick="showTag('${tag.id}','${encodeURIComponent(String(val))}')"`:'';
+    return `<span class="tag"${click}>${esc(label)}</span>`;
+  }).join('');
+}
+function pilotEquipmentMaxUses(item,data=item?.data||item){
+  const limited=pilotEquipmentTags(data).find(tag=>tag.id==='tg_limited');
+  return Math.max(0,+(item?.maxUses||limited?.val||0));
+}
+function stepPilotEquipmentCharges(key,index,delta){
+  const loadouts=S.pilot.loadouts||[], loadout=loadouts[Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0))];
+  const item=loadout?.[key]?.[index]; if(!item) return;
+  const max=pilotEquipmentMaxUses(item), used=Math.max(0,Math.min(max,+item.currentUses||0));
+  if(!max) return;
+  item.currentUses=Math.max(0,Math.min(max,used+delta));
+  save(); renderPilotEquipment();
+}
 function selectPilotEquipmentLoadout(value){
   const loadouts=S.pilot.loadouts||[]; if(!loadouts.length) return;
   S.pilot.activeLoadout=Math.max(0,Math.min(loadouts.length-1,+value||0));
@@ -2513,29 +2548,28 @@ function renderPilotEquipment(){
   const index=loadouts.length?Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0)):0;
   const loadout=loadouts[index]||{};
   const select=loadouts.length>1?`<label class="dim">${esc(L('pilot_loadout'))}<select class="pilot-equipment-select" onchange="selectPilotEquipmentLoadout(this.value)">${loadouts.map((item,i)=>`<option value="${i}" ${i===index?'selected':''}>${esc(item.name||`${L('pilot_loadout')} ${i+1}`)}</option>`).join('')}</select></label>`:'';
-  const renderItem=(item,remove='')=>{
+  const renderItem=(item,remove='',chargeKey=null,chargeIndex=-1)=>{
     if(!item) return '';
     const data=item.data||item, db=findPilotGear(item,data), ru=isRu();
     const name=item.flavorName||((db&&(ru?db.ru?.name:db.name))||data.name||item.name||item.id||String(item));
     const effect=item.flavorDescription||(db?(ru?db.ru?.effect||data.effect:db.effect):data.effect)||'';
     const flavor=db?(ru?db.ru?.description||data.description:db.description):data.description;
     const description=[effect,flavor].filter(Boolean).join('\n\n').replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/gi,' ');
-    const meta=[];
-    if(Array.isArray(data.damage)&&data.damage.length) meta.push(data.damage.map(x=>[x.val,ru?pilotDamageType(x.type):x.type].filter(Boolean).join(' ')).join(', '));
-    if(Array.isArray(data.range)&&data.range.length) meta.push(data.range.map(x=>[ru?pilotRangeType(x.type):x.type,x.val].filter(v=>v!==undefined&&v!=='').join(' ')).join(', '));
-    if(Array.isArray(data.bonuses)&&data.bonuses.length) meta.push(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · '));
-    const max=+(item.maxUses||0), used=+(item.currentUses||0);
-    if(max>0) meta.push(L('pilot_equip_uses').replace('{C}',used).replace('{M}',max));
-    if(item.destroyed) meta.push(L('pilot_equip_destroyed'));
-    if(item.isUsed) meta.push(L('pilot_equip_used'));
-    if(item.note) meta.push(item.note);
-    return `<div class="pilot-equip-item"><div class="pilot-equip-main"><b>${esc(name)}</b>${meta.length?`<div class="pilot-equip-meta">${esc(meta.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>${remove?`<button type="button" class="btn x" aria-label="Remove ${esc(name)}" onclick="${remove}">✕</button>`:''}</div>`;
+    const stats=[];
+    if(Array.isArray(data.damage)) data.damage.forEach(x=>{ if(x?.val!==undefined&&x.val!=='') stats.push(`<span><span class="wnum">${esc(x.val)}</span> ${esc(ru?pilotDamageType(x.type):x.type||'')}</span>`); });
+    if(Array.isArray(data.range)) data.range.forEach(x=>{ if(x?.val!==undefined&&x.val!==null&&x.val!=='') stats.push(`<span>${esc(ru?pilotRangeType(x.type):x.type||'')} <span class="wnum">${esc(x.val)}</span></span>`); });
+    if(Array.isArray(data.bonuses)&&data.bonuses.length) stats.push(esc(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · ')));
+    const status=[item.destroyed?L('pilot_equip_destroyed'):'',item.isUsed?L('pilot_equip_used'):'',item.note||''].filter(Boolean);
+    const tags=pilotEquipmentTags(data), tagHtml=tags.length?`<div class="tags pilot-equip-tags">${pilotEquipmentTagChips(tags)}</div>`:'';
+    const max=pilotEquipmentMaxUses(item,data), used=Math.max(0,Math.min(max,+item.currentUses||0)), remaining=max-used;
+    const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
+    return `<div class="pilot-equip-item"><div class="pilot-equip-main"><b>${esc(name)}</b>${stats.length?`<div class="pilot-equip-meta">${stats.join(' · ')}</div>`:''}${tagHtml}${charges}${status.length?`<div class="pilot-equip-meta">${esc(status.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>${remove?`<button type="button" class="btn x" aria-label="Remove ${esc(name)}" onclick="${remove}">✕</button>`:''}</div>`;
   };
   const groups=[['armor','pilot_armor'],['weapons','pilot_weapons'],['gear','pilot_gear']];
   let content='';
   groups.forEach(([key,label])=>{
     const rows=Array.isArray(loadout[key])?loadout[key].filter(Boolean):[];
-    if(rows.length) content+=`<div class="pilot-equip-category">${esc(L(label))}</div>${rows.map((item,i)=>renderItem(item,editOn('pilot')?`removePilotEquipment('${key}',${i})`:'' )).join('')}`;
+    if(rows.length) content+=`<div class="pilot-equip-category">${esc(L(label))}</div>${rows.map((item,i)=>renderItem(item,editOn('pilot')?`removePilotEquipment('${key}',${i})`:'' ,key,i)).join('')}`;
   });
   const extras=Object.entries(special).flatMap(([category,rows])=>Array.isArray(rows)?rows.map(item=>({item,category})):[]);
   if(extras.length) content+=`<div class="pilot-equip-category">${esc(L('pilot_special'))}</div>${extras.map(({item,category})=>renderItem(item&&typeof item==='object'?item:{name:String(item),note:category})).join('')}`;
