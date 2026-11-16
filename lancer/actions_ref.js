@@ -1,8 +1,9 @@
-// v64: справочник действий. Реакции и протоколы, которые дают таланты и системы.
-// Источники: корбук (реакции по умолчанию и талантов — сверены), lancer-data systems.json
-// (какая система даёт какое действие) + ru_systems (русский текст), корбук (тексты реакций).
+// Справочник действий (копия из index.html; авторитетна копия в index.html).
+// Синхронизировано с index.html (v210): ACTIONS_REF + actionGranted + renderMyActions.
+// Реакции и протоколы, которые дают таланты, системы, фреймы, оружие и Core Bonus.
 // Показ: только если у игрока есть фича, которая даёт действие (grant).
 // Порядок: свои действия — выше дефолтных (в секции «Твои действия» на вкладке «Правила»).
+
 const ACTIONS_REF = {
   reactions: [
     {key:'brace', name:'Brace', ru:'Стойка', def:true,
@@ -91,6 +92,59 @@ const ACTIONS_REF = {
      ef_ru:'1/раунд: ты можешь выполнить любое действие БЫСТРОЙ ТЕХНИКИ против атакующего в качестве реакции.',
      tr_en:'You are hit by a tech attack.',
      ef_en:'1/round, you may take any QUICK TECH option against the attacker as a reaction.'}
+,
+    // v210 (Б1): реакции фреймов — Defensive Pulse дословно из БД; Tactical Simulation:
+    // EN из корбука, RU — черновой перевод. Условие (активный щит/протокол) — пометкой
+    // в тексте, actionGranted состояний не знает.
+    {key:'defensivepulse', name:'Defensive Pulse', ru:'Защитный импульс', grant:{frame:'Saladin'},
+     tr_ru:'Ваша цель атакована.',
+     ef_ru:'Вы усиливаете её тахионный щит импульсом энергии. Она получает сопротивление всему урону от атаки, а если атака промахивается, вы можете заставить атакующего перебросить её против персонажа или объекта по вашему выбору, проверяя прямую видимость и дальность от вашей цели вместо атакующего. Если атака была частью области эффекта, новая цель должна находиться внутри той же области эффекта исходной атаки. Только пока активен тахионный щит.',
+     tr_en:'Your target is attacked.',
+     ef_en:'You empower their tachyon shield with a pulse of energy. They gain Resistance to all damage from the attack, and if the attack misses, you may force the attacker to reroll it against a character or object of your choice, checking line of sight and Range from your target instead of from the attacker. If the attack was part of an area of effect, the new target must be inside the same area of effect from the original attack instead. Only while Tachyon Shield is active.'},
+    {key:'tacticalsimulation', name:'Tactical Simulation', ru:'Тактическое моделирование', grant:{frame:'Swallowtail'},
+     tr_ru:'Союзный персонаж в линии видимости получает урон от другого персонажа в линии видимости.',
+     ef_ru:'Бросьте 1d6. При 4+ атака на самом деле была симуляцией, предсказанной вашим процессором: ваш союзник получает сопротивление всему урону от атаки и может телепортироваться на расстояние до 3 клеток, что представляет его «истинное» местоположение. При 3 и меньше — сбой: ваш союзник не получает сопротивление, но может телепортироваться на расстояние до 6 клеток. Только пока активно «Пророческое вмешательство».',
+     tr_en:'An allied character in line of sight is damaged by another character in line of sight.',
+     ef_en:'Roll 1d6. On 4+, the attack was actually a simulation predicted by your processor — your ally gains RESISTANCE to all damage dealt by the attack and may teleport up to 3 spaces, representing their "true" location. On 3 or less, there’s a glitch — your ally doesn’t gain RESISTANCE, but can teleport up to 6 spaces. Only while Prophetic Interjection is active.'}
+,
+    // v210 (Б1): реакции оружия — дословно из БД; грант {weapon:...} — новая ветка actionGranted.
+    {key:'autonomousassault', name:'Autonomous Assault', ru:'Автономная атака', grant:{weapon:'Autopod'},
+     tr_ru:'Другой персонаж атакует цель в пределах дальности 15 от вас и расходует захват цели.',
+     ef_ru:'Вы автоматически попадаете по его цели из автопода.',
+     tr_en:'Another character attacks a target within range 15 of you and consumes Lock On',
+     ef_en:'You may automatically hit their target with the Autopod.'},
+    {key:'snickersnack', name:'Snicker-Snack', ru:'Хруп-хруп', grant:{weapon:'Vorpal Gun'},
+     tr_ru:'Враждебный персонаж в пределах дальности вопальной пушки и в линии видимости наносит урон союзному персонажу.',
+     ef_ru:'Вы можете совершить атаку по враждебному персонажу из вопальной пушки.',
+     tr_en:'A hostile character within Range of the Vorpal Gun and line of sight deals damage to an allied character.',
+     ef_en:'You may make an attack against the hostile character with the Vorpal Gun.'}
+,
+    // v210 (Б1): реакция Core Bonus — дословно из CORE_BONUSES; грант {coreBonus:...} —
+    // новая ветка actionGranted (проверка по S.pilot.coreBonuses).
+    {key:'heldimage', name:'The Lesson of the Held Image', ru:'Урок удерживаемого образа', grant:{coreBonus:'The Lesson of the Held Image'},
+     tr_ru:'Начало хода союзного персонажа.',
+     ef_ru:'Вы можете попытаться наложить LOCK ON на любого персонажа в пределах сенсоров.',
+     tr_en:'An allied character’s turn starts.',
+     ef_en:'You may attempt to LOCK ON to any character within Sensors.'}
+,
+    // v210 (Б1): реакции дронов OROCHI (Hydra) — EN из корбука, RU — черновой перевод.
+    // per '1/раунд на персонажа': в книге лимита 1/раунд нет, ограничение — в триггере
+    // (впервые за раунд на каждого персонажа). Действуют только пока дрон развёрнут.
+    {key:'orochisnare', name:'Snare Drone', ru:'Дрон-ловушка', grant:{frame:'Hydra'}, per:'1/раунд на персонажа',
+     tr_ru:'Персонаж начинает свой ход рядом с этим дроном или впервые за раунд перемещается рядом с ним.',
+     ef_ru:'Вы можете заставить его совершить спасбросок ловкости. При провале он становится обездвиженным. Он перестаёт быть обездвиженным, только когда дрон уничтожен, больше не рядом с ним или когда персонаж преуспевает в спасброске ловкости как быстрое действие. Только пока этот дрон развёрнут.',
+     tr_en:'A character starts their turn adjacent to this drone, or moves adjacent to it for the first time in a round.',
+     ef_en:'You may force them to make an AGILITY save. On a failure, they become IMMOBILIZED. They only cease to be IMMOBILIZED when the drone is destroyed or no longer adjacent, or they succeed on an AGILITY save as a quick action. Only while this drone is deployed.'},
+    {key:'orochishredder', name:'Shredder Drone', ru:'Дрон-шинковщик', grant:{frame:'Hydra'}, per:'1/раунд на персонажа',
+     tr_ru:'Персонаж начинает свой ход рядом с этим дроном или впервые за раунд перемещается рядом с ним.',
+     ef_ru:'Вы можете заставить его совершить спасбросок корпуса. При провале он получает 1 энергетического урона и становится изорванным до конца своего следующего хода. Только пока этот дрон развёрнут.',
+     tr_en:'A character starts their turn adjacent to this drone, or moves adjacent to it for the first time in a round.',
+     ef_en:'You may force them to make a HULL save. On a failure, they take 1 Energy damage and become SHREDDED until the end of their next turn. Only while this drone is deployed.'},
+    {key:'orochihunted', name:'Hunted Drone', ru:'Дрон-загонщик', grant:{frame:'Hydra'}, per:'1/раунд на персонажа',
+     tr_ru:'Персонаж начинает свой ход рядом с этим дроном или впервые за раунд перемещается рядом с ним.',
+     ef_ru:'Вы можете заставить его совершить спасбросок систем. При провале он получает захват цели. Только пока этот дрон развёрнут.',
+     tr_en:'A character starts their turn adjacent to this drone, or moves adjacent to it for the first time in a round.',
+     ef_en:'You may force them to make a SYSTEMS save. On a failure, they receive LOCK ON. Only while this drone is deployed.'}
   ],
   protocols: [
     {key:'shepherd', name:'Shepherd', ru:'Пастух', grant:{talent:'Drone Commander', rank:1},
@@ -175,11 +229,100 @@ const ACTIONS_REF = {
      tx_ru:'Опция Вторжения: притяните цель на 2 клетки в любом направлении и сбейте её с ног. Если она уже лежит, она становится обездвиженной до конца своего следующего хода.',
      tx_en:'Invade option: Pull your target 2 spaces in any direction and knock them Prone. If they are already Prone, they become Immobilized until the end of their next turn.'},
     {key:'systemcrusher', name:'System Crusher', ru:'Крушитель систем', grant:{frame:'Chomolungma'},
-     tx_ru:'Опция Вторжения: цель получает дополнительно 2 тепла, всего 4 тепла.',
-     tx_en:'Invade option: Your target takes an additional 2 heat, for a total of 4 heat.'}
+     tx_ru:'Опция Вторжения: цель получает дополнительно 2 тепла, всего 4 тепла. Если это приводит к превышению максимального уровня тепла, цель также получает 4 единицы ожога. Можно использовать только 1 раз за сцену на каждом персонаже.',
+     tx_en:'Invade option: Your target takes an additional 2 heat, for a total of 4 heat. If this Invade causes them to exceed their Heat Cap, they take 4 burn as well. This can only be used 1/scene on each character.'}
+,
+    // v210 (Б1): 16 опций Вторжения из 8 систем — дословно из БД (x/xr систем).
+    {key:'shrikecode', name:'Shrike Code', ru:'Код «Сорокопут»', grant:{system:'Neurospike'},
+     tx_ru:'Опция Вторжения: до конца следующего хода цели всякий раз, когда она атакует, она сначала получает 2 тепла.',
+     tx_en:'Invade option: Until the end of the target’s next turn, they first take 2 heat whenever they attack.'},
+    {key:'mirage', name:'Mirage', ru:'Мираж', grant:{system:'Neurospike'},
+     tx_ru:'Опция Вторжения: выберите себя или союзного персонажа: ваши системы передают размытые, иллюзорные образы поверх их реального силуэта. Ваша цель считает вас или выбранного вами персонажа невидимым до конца своего следующего хода.',
+     tx_en:'Invade option: Choose yourself or an allied character: your systems relay blurred, illusory images over their actual silhouette. Your target treats you, or the character you chose, as Invisible until the end of their next turn.'},
+    {key:'stalkprey', name:'Stalk Prey', ru:'Выследить добычу', grant:{system:'Hunter Logic Suite'},
+     tx_ru:'Опция Вторжения: вы заражаете цель вирусным кодом, который стирает ваш образ с её сенсоров. Она считает вас невидимым, пока не получит от вас урон. Одновременно может действовать только на одну цель.',
+     tx_en:'Invade option: You infect the target with a viral logic that wipes your image from their sensors. They treat you as Invisible until you next take damage from them. This can only affect one target at a time.'},
+    {key:'terrify', name:'Terrify', ru:'Устрашить', grant:{system:'Hunter Logic Suite'},
+     tx_ru:'Опция Вторжения: вы заражаете цель вирусным кодом, из-за которого ваш мех кажется ей ужасающим. До конца её следующего хода она становится ослабленной и не может совершать добровольные перемещения, приближающие её к вам.',
+     tx_en:'Invade option: You infect the target with a viral logic that makes your mech appear horrifying. Until the end of their next turn, they become Impaired and cannot make any voluntary movements that bring them closer to you.'},
+    {key:'puppetsystem', name:'Puppet System', ru:'Система «Марионетка»', grant:{system:'H0R_OS System Upgrade I'},
+     tx_ru:'Опция Вторжения: цель перемещается на максимальную скорость в выбранном вами направлении. Её можно переместить в опасные области и на другие препятствия, но на неё по-прежнему действуют сложная местность, препятствия и так далее. Это перемещение недобровольное, но провоцирует реакции и вовлечённость как обычно и не считается отбрасыванием, толканием или притягиванием.',
+     tx_en:'Invade option: Your target moves its maximum Speed in a direction of your choice. They can be moved into hazardous areas and other obstacles, but are still affected by difficult terrain, obstructions, and so on. This movement is involuntary, but provokes reactions and Engagement as normal and doesn’t count as Knockback, pushing, or pulling.'},
+    {key:'ejectpowercores', name:'Eject Power Cores', ru:'Сброс энергоядер', grant:{system:'H0R_OS System Upgrade I'},
+     tx_ru:'Опция Вторжения: цель становится заглушенной до конца своего следующего хода: вы временно нарушаете работу её систем, сбрасывая магазины с боеприпасами и охлаждающие стержни. Персонажи, соседние с целью, получают 2 ед. энергетического урона. Можно использовать 1 раз за сцену на каждого персонажа.',
+     tx_en:'Invade option: Your target becomes Jammed until the end of their next turn as you temporarily disrupt their systems, ejecting ammo magazines and cooling rods. Characters adjacent to your target take 2 energy damage. This can only be used 1/scene on each character.'},
+    {key:'dimensionalemblems', name:'Dimensional Emblems', ru:'Измерение эмблем', grant:{system:'H0R_OS System Upgrade III'},
+     tx_ru:'Опция Вторжения: вы создаёте три конструкта данных размера 1 в свободных пространствах, соседних с вашей целью, но не соседних друг с другом. Когда персонаж проходит сквозь один из конструктов, он получает 2 тепла, а конструкт исчезает. Они существуют до конца сцены или пока не будут уничтожены, пока вы снова не используете это действие или не удалите их свободным действием. Конструкт может быть уничтожен соседним персонажем при успешной проверке навыка систем быстрым действием.',
+     tx_en:'Invade option: You create three Size 1 data constructs in free spaces adjacent to your target, but not adjacent to each other. When a character passes through one of the constructs, they take 2 heat and the construct disappears. They last for the rest of the scene or until either they are destroyed, you take this action again, or you delete them as a free action. A construct can be destroyed by an adjacent character with a successful Systems skill check as a quick action.'},
+    {key:'celestialshackles', name:'Celestial Shackles', ru:'Небесные оковы', grant:{system:'H0R_OS System Upgrade III'},
+     tx_ru:'Опция Вторжения: отметьте пространство, которое сейчас занимает ваша цель. Если она покинет отмеченное пространство, один раз в любой момент вашего хода вы можете свободным действием телепортировать её обратно в это пространство или как можно ближе к нему, прекращая этот эффект. Пострадавший персонаж может попытаться пройти спасбросок систем быстрым действием, чтобы прекратить эффект, иначе он длится до конца сцены.',
+     tx_en:'Invade option: Mark a space your target currently occupies. If they leave the affected space, once at any point during your turn, you may take a free action to teleport them back to that space, or as close as possible, ending this effect. An affected character can attempt to succeed on a Systems save as a quick action to end the effect, otherwise it lasts until the end of the scene.'},
+    {key:'beckon', name:'Beckon', ru:'Зов', grant:{system:'Beckoner'},
+     tx_ru:'Опция Вторжения: Вы получаете 1к6+2 бронебойного энергетического урона и меняетесь местами с целью — оба персонажа телепортируются на позиции друг друга. Ваша цель должна быть мехом того же размера, что и вы, или больше, иначе действие не удаётся. Персонажей можно менять местами только на пространства, где они обычно могли бы стоять или перемещаться (т.е. если персонаж не может летать, его нельзя поменять местами в воздухе).',
+     tx_en:'Invade option: You take 1d6+2 AP energy damage and swap places with your target, both characters teleporting to the other’s position. Your target must be a Mech and be the same Size as you or larger, or this action fails. Characters can only be swapped to spaces they could normally stand or move on (i.e., if a character cannot fly it can’t be swapped midair).'},
+    {key:'summon', name:'Summon', ru:'Призыв', grant:{system:'Beckoner'},
+     tx_ru:'Опция Вторжения: Все персонажи в пределах дальности 3 от вашей цели притягиваются вплотную к ней или как можно ближе.',
+     tx_en:'Invade option: All characters within range 3 of your target are pulled adjacent to them, or as close as possible.'},
+    {key:'smite', name:'Smite', ru:'Кара', grant:{system:'Smite'},
+     tx_ru:'Опция Вторжения: вы получаете 1d6 бронебойного энергетического урона, а ваша цель должна преуспеть в спасброске систем, иначе становится оглушённой до конца своего следующего хода. Каждый персонаж может быть оглушён этим эффектом только один раз за сцену.',
+     tx_en:'Invade option: You take 1d6 AP energy damage and your target must succeed on a Systems save or become Stunned until the end of their next turn. Each character can only be Stunned by this effect once per scene.'},
+    {key:'sear', name:'Sear', ru:'Ожог', grant:{system:'Smite'},
+     tx_ru:'Опция Вторжения: вы получаете 1d6 бронебойного энергетического урона и наносите 2 тепла вашей цели за каждого другого персонажа размера 1 или больше, находящегося в сцеплении с ней или рядом с ней — включая вас, — до максимума в 6 тепла.',
+     tx_en:'Invade option: You take 1d6 AP energy damage and you deal 2 heat to your target for each other character of Size 1 or larger that is Engaged with or adjacent to them – including you – up to a maximum of 6 heat.'},
+    {key:'logicbomb', name:'Logic Bomb', ru:'Логическая бомба', grant:{system:'Viral Logic Suite'},
+     tx_ru:'Опция Вторжения: все персонажи по вашему выбору в пределах вспышки 2 от вашей цели должны преуспеть в спасброске систем, иначе становятся замедленными, пока не завершат один из своих ходов, не находясь рядом ни с одним персонажем.',
+     tx_en:'Invade option: All characters of your choice within burst 2 of your target must succeed on a Systems save or become Slowed until they end one of their turns not adjacent to any character.'},
+    {key:'banish', name:'Banish', ru:'Изгнание', grant:{system:'Viral Logic Suite'},
+     tx_ru:'Опция Вторжения: до конца следующего хода вашей цели она получает 2 тепла за каждую клетку, на которую добровольно перемещается, до максимума в 6 тепла.',
+     tx_en:'Invade option: Until the end of your target’s next turn, they take 2 heat for every space they voluntarily move, up to a maximum of 6 heat.'},
+    {key:'ophidiantrek', name:'Ophidian Trek', ru:'Змеиная тропа', grant:{system:'Metafold Carver'},
+     tx_ru:'Опция Вторжения: ваша цель телепортируется на 1d6+1 клеток прямо к вам или как можно ближе. Если этот эффект переместил бы её в пространство, занятое персонажем, объектом или элементом местности, телепортация не срабатывает.',
+     tx_en:'Invade option: Your target is teleported 1d6+1 spaces directly toward you, or as close as possible. If this effect would move them to a space occupied by a character, object, or piece of terrain, the teleport fails.'},
+    {key:'foldspace', name:'Fold Space', ru:'Сложить пространство', grant:{system:'Metafold Carver'},
+     tx_ru:'Опция Вторжения: ваша цель исчезает с поля боя до начала своего следующего хода. Она возвращается в то же пространство, из которого исчезла, или в свободное пространство по своему выбору как можно ближе к нему.',
+     tx_en:'Invade option: Your target disappears from the battlefield until the start of its next turn. It returns in the same space they disappeared from, or in a free space of their choice as close as possible.'}
+,
+    // v210 (Б1): опции Hacker II — EN из корбука, RU — черновой перевод (проверить).
+    {key:'jamcockpit', name:'Jam Cockpit', ru:'Заклинить кабину', grant:{talent:'Hacker', rank:2},
+     tx_ru:'Опция Вторжения: персонажи не могут садиться в мех цели или покидать его, пока кабина не будет починена успешной проверкой инженерии как полное действие.',
+     tx_en:'Invade option: Characters may not MOUNT or DISMOUNT your target until the cockpit is fixed with a successful ENGINEERING check as a full action.'},
+    {key:'disablelifesupport', name:'Disable Life Support', ru:'Отключить жизнеобеспечение', grant:{talent:'Hacker', rank:2},
+     tx_ru:'Опция Вторжения: ваша цель получает +1 к сложности всех спасбросков, пока система жизнеобеспечения не будет перезапущена успешной проверкой систем как быстрое действие.',
+     tx_en:'Invade option: Your target receives +1 Difficulty on all saves until the life-support system is rebooted with a successful SYSTEMS check as a quick action.'},
+    {key:'hackslash', name:'Hack./Slash', ru:'Взлом/Резня', grant:{talent:'Hacker', rank:2},
+     tx_ru:'Опция Вторжения: ваша цель не может получать выгоду от быстрых или полных техдействий и совершать их, пока мех не будет выключен или его центральный компьютер не будет перезагружен успешной проверкой систем как быстрое действие.',
+     tx_en:'Invade option: Your target cannot benefit from or take QUICK OR FULL TECH actions until the mech is either SHUT DOWN or its core computer is rebooted with a successful SYSTEMS check as a quick action.'}
+,
+    // v210 (Б1): действия талантов — Jackhammer и Bentham/Foucault дословно из БД.
+    {key:'jackhammer', name:'Jackhammer', ru:'Отбойный молоток', grant:{talent:'Siege Specialist', rank:1},
+     tx_ru:'Если у вас есть пушка, быстрым действием вы можете выстрелить отбойным снарядом из подствольного гранатомёта, автоматически нанося 10 бронебойного кинетического урона секции размера 1 любого объекта в пределах дальности (например, укрытия, развёртываемого оборудования, зданий или местности). Любые персонажи, соседние с вашей целью, отбрасываются от неё на 2 клетки и получают 2 кинетического урона.',
+     tx_en:'If you have a Cannon, as a quick action, you can fire a jackhammer round from an underslung launcher, automatically dealing 10 AP Kinetic damage to a Size 1 section of any object within Range (e.g., cover, deployable equipment, buildings, or terrain). Any characters adjacent to your target are knocked back from it by 2 spaces and take 2 Kinetic damage.'},
+    {key:'benthamfoucault', name:'Bentham/Foucault Elimination', ru:'Ликвидация Бентама/Фуко', grant:{talent:'Spotter', rank:3},
+     tx_ru:'Быстрым действием, когда вы совершаете захват цели, вы можете назначить союзного персонажа рядом с вами: он может немедленно совершить любое быстрое действие реакцией, тратя состояние захвата цели вашей цели. Его действие не обязано быть атакой, но он получает выгоду от траты состояния захвата цели, если решает атаковать.',
+     tx_en:'As a quick action when you Lock On, you may nominate an allied character adjacent to you: they may immediately make any quick action as a reaction, consuming your target’s Lock On condition. Their action does not need to be an attack, but they benefit from consuming the Lock On condition if they do choose to attack.'}
+,
+    // v210 (Б1): действия фреймов и Hacker III / Issue Order — списков Full Tech / Full Action /
+    // Free Action в ACTIONS_REF нет, поэтому кладутся в quick с префиксом типа в тексте
+    // (как «Опция Вторжения:» у Чомолунгмы). RU у Hologram Teleport, Blinkspace Jump,
+    // Last Argument и Issue Order — черновой перевод (проверить).
+    {key:'hologramteleport', name:'Hologram Teleport', ru:'Голографическая телепортация', grant:{frame:'Dusk Wing'},
+     tx_ru:'Быстрое действие: вы можете мгновенно телепортироваться к любой голограмме в пределах дальности 50. Когда вы это делаете, все существующие голограммы детонируют, создавая взрывы вспышкой 1 с тем же эффектом, что выше, — и вы не можете создавать новые голограммы до начала своего следующего хода.',
+     tx_en:'Quick Action: You may instantly teleport to the location of any hologram within Range 50. When you do so, all extant holograms detonate – creating Burst 1 explosions with the same effect as above – and you may not create any new holograms until the start of your next turn.'},
+    {key:'fulldeployment', name:'Full Deployment', ru:'Полное развёртывание', grant:{frame:'Hydra'},
+     tx_ru:'Активное (1 CP): Все четыре дрона OROCHI развёртываются в отдельные точки в пределах сенсоров; они остаются активными до конца сцены. Вы можете отозвать или повторно развернуть любое их число за раз.',
+     tx_en:'Active (1 CP): All four OROCHI drones are deployed to separate points within Sensors; they remain active for the rest of the scene. You may recall or redeploy any number of them at a time.'},
+    {key:'lastargumentofkings', name:'Last Argument of Kings', ru:'Последний довод королей', grant:{talent:'Hacker', rank:3},
+     tx_ru:'Полная техника: совершите техатаку по цели в пределах сенсоров и в линии видимости. При успехе вы внедряете вирус, вызывающий небольшой расплав реактора цели: она немедленно получает ожог, равный её текущему теплу. Если это действие заставляет цель перегреться, оно разрешается до того, как она сбросит свой предел тепла.',
+     tx_en:'Full Tech: Make a tech attack against a target within SENSORS and line of sight. On a success, you implant a virus that triggers a minor meltdown in your target’s reactor: they immediately take BURN equal to their current HEAT. If this action causes your target to overheat, it resolves before they reset their HEAT CAP.'},
+    {key:'blinkspacejump', name:'Blinkspace Jump', ru:'Блинк-прыжок', grant:{frame:'Mourning Cloak'},
+     tx_ru:'Полное действие: вы телепортируетесь в клетку в пределах дальности 3d6. Прямая видимость не требуется, но попытка телепортироваться в занятую клетку приводит к тому, что вы остаётесь на месте и теряете это действие. Если на всех трёх костях выпало одинаковое число, вы исчезаете, пока ваша группа не отдохнёт, после чего появляетесь рядом.',
+     tx_en:'Full Action: You teleport to a space within Range 3d6. You don’t require line of sight, but attempts to teleport to occupied spaces cause you to remain stationary and lose this action. If you roll the same number on all three dice, you disappear until your group rests, at which point you reappear nearby.'},
+    {key:'issueorder', name:'Issue Order', ru:'Отдать приказ', grant:{talent:'Leader', rank:1},
+     tx_ru:'Свободное действие: один раз в свой ход вы можете отдать приказ союзному пилоту, с которым можете общаться, описав ход действий, и дать ему кость лидерства. Он может либо потратить кость лидерства, чтобы получить +1 к точности на любое действие, непосредственно следующее из этого приказа, либо вернуть её вам свободным действием. У союзников может быть только одна кость лидерства за раз, она действует, пока не использована или до конца текущей сцены. На ранге II вы также можете отдавать приказ реакцией в начале хода любого другого игрока, любое количество раз за раунд.',
+     tx_en:'Free Action: Once on your turn, you may give an order to an allied PC you can communicate with, describing a course of action, and give them a LEADERSHIP DIE. They may either expend the LEADERSHIP DIE to gain +1 Accuracy on any action that directly follows from that order, or they may return it to you as a free action. Allies can have one LEADERSHIP DIE at a time, which lasts until used or until the end of the current scene. At rank II, you may also issue a command as a reaction at the start of any other player’s turn, any number of times per round.'}
   ]
 };
-// Проверка, есть ли у игрока фича, дающая действие (талант с нужным рангом или система).
+
 function actionGranted(a){
   if(!a.grant) return true;
   if(a.grant.talent){
@@ -189,26 +332,45 @@ function actionGranted(a){
   if(a.grant.system){
     return (S.systems||[]).some(x=>x.name===a.grant.system);
   }
+  if(a.grant.frame){
+    return frameKey(S.mech && S.mech.frame) === a.grant.frame;
+  }
+  if(a.grant.weapon){
+    // v210 (Б1): действие даёт оружие — оно должно стоять на маунте меха.
+    return (S.mounts||[]).some(m=>(m.weapons||[]).some(w=>w.name===a.grant.weapon));
+  }
+  if(a.grant.coreBonus){
+    // v210 (Б1): действие даёт Core Bonus — он должен быть взят пилотом.
+    return (S.pilot && S.pilot.coreBonuses||[]).includes(a.grant.coreBonus);
+  }
   return true;
 }
-// Рендер секции «Твои действия» на вкладке «Правила»: свои реакции и протоколы —
-// только те, что даёт твоя сборка; они выводятся выше дефолтных.
+
 function renderMyActions(){
   const box = document.getElementById('myActions');
   if(!box) return;
   const en = lang()==='en';
+  const myQk = (ACTIONS_REF.quick||[]).filter(a=>actionGranted(a));
   const myRe = ACTIONS_REF.reactions.filter(a=>!a.def && actionGranted(a));
   const myPr = ACTIONS_REF.protocols.filter(a=>actionGranted(a));
-  if(!myRe.length && !myPr.length){
+  if(!myQk.length && !myRe.length && !myPr.length){
     box.innerHTML = '<p class="hint">' + esc(L('u232')) + '</p>';
     return;
   }
   let h = '';
+  if(myQk.length){
+    h += '<h3>' + esc(L('u235')) + '</h3><ul>';
+    for(const a of myQk){
+      const nm = en ? a.name : (a.ru || a.name);
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
+    }
+    h += '</ul>';
+  }
   if(myRe.length){
     h += '<h3>' + esc(L('u230')) + '</h3><ul>';
     for(const a of myRe){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b> — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + esc(en ? a.tr_en : a.tr_ru) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + esc(en ? a.ef_en : a.ef_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + linkTagTerms(esc(en ? a.tr_en : a.tr_ru)) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + linkTagTerms(esc(en ? a.ef_en : a.ef_ru)) + actionSource(a) + '</li>';
     }
     h += '</ul>';
   }
@@ -216,7 +378,7 @@ function renderMyActions(){
     h += '<h3>' + esc(L('u231')) + '</h3><ul>';
     for(const a of myPr){
       const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b> — ' + esc(en ? a.tx_en : a.tx_ru) + '</li>';
+      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
     }
     h += '</ul>';
   }
