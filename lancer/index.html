@@ -380,6 +380,8 @@
   .frame-ro { font-size:16px; font-weight:600; padding:9px 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wmeta { color:var(--dim); font-size:13px; margin:2px 0 4px; }
   .wmeta .wnum { color:var(--accent); font-weight:700; }
+  /* v207: числа подсвечиваются везде, не только в карточках пушек */
+  .wnum { color:var(--accent); font-weight:700; }
   .card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .card-head h2 { margin:0; }
   .btn.small { padding:6px 10px; font-size:13px; }
@@ -868,7 +870,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 206</span>
+      <span class="dim global-version">Версия трекера: 207</span>
     </div>
   </div>
 </main>
@@ -3418,6 +3420,18 @@ function tagWordStem(name){
 // из текста; скобочная аббревиатура из подписи убирается —
 // «Бронебойное (AP)» показывается как «Бронебойное», а уточнения
 // вроде «(цель)»/«(себе)» остаются, они различают теги.
+// v207: подсветка чисел — как в карточках пушек (.wnum): кубики (1d3+2)
+// и числа (+2, 3, 4) — везде, где текст показывается через linkTagTerms
+// и в диалоге справки. Применяется ПОСЛЕ linkTagTerms, чтобы не ломать
+// чипы тегов (у них число — часть подписи); HTML-теги и атрибуты
+// не трогаются (разбивка по <...>). Буквы рядом с числом (LL0) — не число.
+function highlightNums(html){
+  if (!html) return html;
+  return String(html).split(/(<[^>]*>)/g).map(part=>{
+    if (!part || part.startsWith('<')) return part;
+    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d])[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d])/g, '<span class="wnum">$&</span>');
+  }).join('');
+}
 function linkTagTerms(html){
   if (!html || !DB.tags) return html;
   if (!linkTagTerms._stems){
@@ -3437,7 +3451,7 @@ function linkTagTerms(html){
     linkTagTerms._stems = stems;
   }
   const stems = linkTagTerms._stems;
-  return html.replace(/([A-Za-zА-Яа-яЁё]+)(\s+\d+)?/g, (m, w, num)=>{
+  return highlightNums(html.replace(/([A-Za-zА-Яа-яЁё]+)(\s+\d+)?/g, (m, w, num)=>{
     if (!(w.length > 1 && w === w.toUpperCase())) return m;
     const wstem = tagWordStem(w);
     if (!wstem) return m;
@@ -3449,7 +3463,7 @@ function linkTagTerms(html){
       }
     }
     return m;
-  });
+  }));
 }
 function tagChips(tg){
   return tg.map(([id, val])=>{
@@ -3457,12 +3471,16 @@ function tagChips(tg){
     return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val ?? '')}')">${esc(tagLabel(id, val))}</span>`;
   }).join('');
 }
+// v207: описание в диалоге справки — с той же подсветкой чисел
+function setTagDlgDesc(text){
+  document.getElementById('tagDlgDesc').innerHTML = highlightNums(esc(text));
+}
 function showTag(id, encVal){
   if (!DB.tags[id]) return;
   const t = tagd(id);
   const val = (!encVal) ? null : decodeURIComponent(encVal);
   document.getElementById('tagDlgName').textContent = tagLabel(id, val);
-  document.getElementById('tagDlgDesc').textContent = (t.d || '').replace(/\{VAL\}/g, val === null ? '' : String(val));
+  setTagDlgDesc((t.d || '').replace(/\{VAL\}/g, val === null ? '' : String(val)));
   document.getElementById('tagDialog').showModal();
 }
 // Фичи таланта аддитивные: на ранге III видны фичи I, II и III (а не только III)
@@ -3563,7 +3581,7 @@ function showStatus(name){
   const info = STATUS_INFO[name];
   if (!info) return;
   document.getElementById('tagDlgName').textContent = statusLabel(name);
-  document.getElementById('tagDlgDesc').textContent = statusDesc(name);
+  setTagDlgDesc(statusDesc(name));
   document.getElementById('tagDialog').showModal();
 }
 const STAT_REFERENCES = {
@@ -3598,14 +3616,14 @@ function showStatRef(key){
     : key === 'heat' ? get('mech.heat') + '/' + get('mech.heatMax')
     : ['attack','tech'].includes(key) && +value >= 0 ? '+' + value : value;
   document.getElementById('tagDlgName').textContent = name + ' · ' + shownValue;
-  document.getElementById('tagDlgDesc').textContent = desc + '\n\n' + (ref.formulaLabel === false ? formula : (lang()==='ru' ? 'Формула: ' : 'Formula: ') + formula);
+  setTagDlgDesc(desc + '\n\n' + (ref.formulaLabel === false ? formula : (lang()==='ru' ? 'Формула: ' : 'Formula: ') + formula));
   document.getElementById('tagDialog').showModal();
 }
 function showOverchargeRef(){
   const rules = ['u017','u018','u019','u020'].map(k=>L(k).replace(/<\/?b>/g,'')).join('\n\n');
   const count = get('mech.overcharge')||0;
   document.getElementById('tagDlgName').textContent = L('u016') + ' · ' + (count >= 4 ? '4+' : count);
-  document.getElementById('tagDlgDesc').textContent = rules;
+  setTagDlgDesc(rules);
   document.getElementById('tagDialog').showModal();
 }
 function showStatRefIfView(key){
