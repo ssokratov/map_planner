@@ -859,7 +859,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 201</span>
+      <span class="dim global-version">Версия трекера: 202</span>
     </div>
   </div>
 </main>
@@ -1208,7 +1208,7 @@ profileCatalog.profiles.forEach(p=>{ if(!p.localModifiedAt) p.localModifiedAt=Da
 const DRIVE_REMEMBER_KEY = 'lancer-tracker-drive-linked-v1';
 const DRIVE_SYNC_KEY = 'lancer-tracker-drive-last-sync-v1';
 let driveAccessToken = null, driveFolderId = null, driveUploadQueue = Promise.resolve();
-const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map();
+const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map(), queuedDriveSnapshots=new Map();
 const driveInFlightUploads=new Map();
 let driveConflictResolver=null;
 const driveLocalRevisionChains=new Map();
@@ -1624,6 +1624,10 @@ function updateProfileDriveRevision(snapshot,fileId,meta,data=snapshot.data){
   return p;
 }
 async function useRemoteConflictVersion(snapshot,fileId){
+  const saveTimer=driveSaveTimers.get(snapshot.profileId);
+  if(saveTimer){ clearTimeout(saveTimer); driveSaveTimers.delete(snapshot.profileId); }
+  pendingDriveSnapshots.delete(snapshot.profileId);
+  queuedDriveSnapshots.delete(snapshot.profileId);
   const {payload,meta}=await downloadDriveProfileSnapshot(fileId);
   driveLocalRevisionChains.delete(fileId);
   const p=updateProfileDriveRevision(snapshot,fileId,meta,payload);
@@ -1696,11 +1700,31 @@ async function performProfileUpload(snapshot){
 }
 async function uploadActiveProfile(snapshot=makeDriveSnapshot()){
   if(!driveAccessToken||!snapshot) return;
-  const upload=()=>performProfileUpload(snapshot);
+  const profileId=snapshot.profileId;
+  const existing=driveInFlightUploads.get(profileId);
+  if(existing){ queuedDriveSnapshots.set(profileId,snapshot); return existing; }
+  const upload=async()=>{
+    let current=snapshot;
+    while(current){
+      await performProfileUpload(current);
+      current=queuedDriveSnapshots.get(profileId)||null;
+      if(current){
+        queuedDriveSnapshots.delete(profileId);
+        const profile=profileCatalog.profiles.find(p=>p.id===profileId);
+        if(profile){
+          current.profile=profile;
+          current.driveFileId=profile.driveFileId||current.driveFileId;
+          current.driveVersion=profile.localBaseDriveVersion||profile.driveVersion||null;
+          current.modifiedTime=profile.localBaseModifiedTime||profile.modifiedTime||null;
+          current.baseDataHash=profile.localBaseDataHash||profileDataFingerprint(snapshot.data);
+        }
+      }
+    }
+  };
   const pending=driveUploadQueue.then(upload,upload);
   driveUploadQueue=pending.catch(()=>{});
-  driveInFlightUploads.set(snapshot.profileId,pending);
-  pending.then(()=>{if(driveInFlightUploads.get(snapshot.profileId)===pending) driveInFlightUploads.delete(snapshot.profileId);},()=>{if(driveInFlightUploads.get(snapshot.profileId)===pending) driveInFlightUploads.delete(snapshot.profileId);});
+  driveInFlightUploads.set(profileId,pending);
+  pending.then(()=>{if(driveInFlightUploads.get(profileId)===pending) driveInFlightUploads.delete(profileId);},()=>{queuedDriveSnapshots.delete(profileId);if(driveInFlightUploads.get(profileId)===pending) driveInFlightUploads.delete(profileId);});
   return pending;
 }
 async function flushPendingDriveSave(profileId){
