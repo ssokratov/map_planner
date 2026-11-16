@@ -393,6 +393,10 @@
   dialog#profilesDlg::backdrop { background:rgba(0,0,0,.7); }
   dialog#driveResumeDlg { width:calc(100% - 24px); max-width:420px; border:1px solid var(--line); border-top:2px solid var(--hud-amber); background:var(--panel); color:var(--text); padding:16px; }
   dialog#driveResumeDlg::backdrop { background:rgba(0,0,0,.72); }
+  dialog#driveConflictDlg { width:calc(100% - 24px); max-width:420px; border:1px solid var(--line); border-top:2px solid var(--hud-amber); background:var(--panel); color:var(--text); padding:16px; }
+  dialog#driveConflictDlg::backdrop { background:rgba(0,0,0,.76); }
+  .drive-conflict-actions { display:grid; gap:8px; margin-top:16px; }
+  .drive-conflict-actions .btn { width:100%; }
   .drive-resume-actions { display:grid; gap:8px; margin-top:14px; }
   .drive-resume-actions .btn { width:100%; }
   .drive-resume-remove { margin-top:18px; padding-top:12px; border-top:1px solid var(--line); text-align:right; }
@@ -807,7 +811,7 @@
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 195</span>
+      <span class="dim global-version">Версия трекера: 196</span>
     </div>
   </div>
 </main>
@@ -869,6 +873,14 @@
     <button class="btn" onclick="closeDriveResumePrompt()">Позже</button>
   </div>
   <div class="drive-resume-remove"><button class="btn danger" onclick="forgetDriveReminder()">Удалить запомненное подключение</button></div>
+</dialog>
+<dialog id="driveConflictDlg" oncancel="event.preventDefault()">
+  <h3 style="margin:0 0 8px">Профиль изменён в Google Drive</h3>
+  <p id="driveConflictMessage">Выберите, какую версию профиля оставить.</p>
+  <div class="drive-conflict-actions">
+    <button class="btn primary" onclick="resolveDriveConflict('local')">Использовать локальную</button>
+    <button class="btn" onclick="resolveDriveConflict('remote')">Загрузить из Drive</button>
+  </div>
 </dialog>
 <dialog id="profilesDlg" onclick="if(event.target===this)this.close()">
   <div class="row profile-dialog-head" style="margin-bottom:12px"><h3 style="margin:0">Профили пилота</h3><button class="btn danger profile-close" onclick="document.getElementById('profilesDlg').close()">✕</button></div>
@@ -1106,7 +1118,11 @@ if (!profileCatalog.active || !Array.isArray(profileCatalog.profiles)) {
 profileCatalog.profiles.forEach(p=>{ if(!p.localModifiedAt) p.localModifiedAt=Date.now(); });
 const DRIVE_REMEMBER_KEY = 'lancer-tracker-drive-linked-v1';
 const DRIVE_SYNC_KEY = 'lancer-tracker-drive-last-sync-v1';
-let driveAccessToken = null, driveFolderId = null, driveSaveTimer = null, driveUploadQueue = Promise.resolve();
+let driveAccessToken = null, driveFolderId = null, driveUploadQueue = Promise.resolve();
+const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map();
+const driveInFlightUploads=new Map();
+let driveConflictResolver=null;
+const driveLocalRevisionChains=new Map();
 let driveRemembered = localStorage.getItem(DRIVE_REMEMBER_KEY)==='1';
 let driveResumePromptShown = false;
 let driveLastSyncedAt = Number(localStorage.getItem(DRIVE_SYNC_KEY)) || 0;
@@ -1115,6 +1131,28 @@ let profileIdentityTimer = null, profileIdentityBootstrapped = true;
 function persistProfileCatalog(){ localStorage.setItem(PROFILE_KEY, JSON.stringify(profileCatalog)); }
 function activeProfile(){ return profileCatalog.profiles.find(p=>p.id===profileCatalog.active) || profileCatalog.profiles[0]; }
 function profileDisplayName(){ const p=activeProfile(); return p ? p.name : 'Мой профиль'; }
+function profileBaseRevision(profile){ return profile?.localBaseDriveVersion||profile?.localBaseModifiedTime||profile?.driveVersion||profile?.modifiedTime||null; }
+function makeDriveSnapshot(profile=activeProfile(),data=S){
+  if(!profile) return null;
+  return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,data:JSON.parse(JSON.stringify(data))};
+}
+function updatePendingDriveSnapshot(profile){
+  const oldId=profile.id, snapshot=pendingDriveSnapshots.get(oldId);
+  if(!snapshot) return;
+  const current=activeProfile();
+  if(!current) return;
+  snapshot.profile=current;
+  snapshot.profileId=current.id;
+  snapshot.name=current.name;
+  snapshot.driveFileId=current.driveFileId||null;
+  snapshot.driveVersion=current.localBaseDriveVersion||current.driveVersion||null;
+  snapshot.modifiedTime=current.localBaseModifiedTime||current.modifiedTime||null;
+  if(oldId!==current.id){
+    pendingDriveSnapshots.delete(oldId); pendingDriveSnapshots.set(current.id,snapshot);
+    const timer=driveSaveTimers.get(oldId);
+    if(timer){ driveSaveTimers.delete(oldId); driveSaveTimers.set(current.id,timer); }
+  }
+}
 function currentProfileName(data=S){
   const pilotName=String(data?.pilot?.name||'').trim(), callsign=String(data?.pilot?.callsign||'').trim();
   const pilot=pilotName?(callsign&&callsign!==pilotName?pilotName+' ('+callsign+')':pilotName):(callsign||'Пилот без имени');
@@ -1185,8 +1223,15 @@ function save(){
     persistProfileCatalog();
   }
   if (driveAccessToken && activeProfile()) {
-    clearTimeout(driveSaveTimer);
-    driveSaveTimer = setTimeout(()=>uploadActiveProfile().catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message)), 1200);
+    const profile=activeProfile(), profileId=profile.id;
+    clearTimeout(driveSaveTimers.get(profileId));
+    pendingDriveSnapshots.set(profileId,makeDriveSnapshot(profile,S));
+    const timer=setTimeout(()=>{
+      driveSaveTimers.delete(profileId);
+      const snapshot=pendingDriveSnapshots.get(profileId); pendingDriveSnapshots.delete(profileId);
+      if(snapshot) uploadActiveProfile(snapshot).catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message));
+    },1200);
+    driveSaveTimers.set(profileId,timer);
   }
   const sv = document.getElementById('saved'); if (sv) sv.textContent = L('saved') + new Date().toLocaleTimeString();
 }
@@ -1198,6 +1243,7 @@ function updateProfileIdentity(){
     const next={id:'profile-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name:nextName,driveFileId:null,localModifiedAt:now};
     profileCatalog.profiles.push(next); profileCatalog.active=next.id;
   } else { current.name=nextName; current.localModifiedAt=now; }
+  updatePendingDriveSnapshot(current);
   persistProfileCatalog(); renderProfileList();
 }
 function openProfiles(){
@@ -1311,13 +1357,13 @@ async function syncDriveProfiles(){
     await withDriveLoading('Загружаю профили из Google Drive…',async()=>{
       const folder=await ensureDriveFolder();
       const q=encodeURIComponent("'"+folder+"' in parents and trashed=false");
-      const data=await driveRequest('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,modifiedTime,appProperties)&pageSize=100');
+      const data=await driveRequest('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,modifiedTime,version,appProperties)&pageSize=100');
       if(!data||!Array.isArray(data.files)) throw new Error('Google Drive вернул список профилей в неизвестном формате.');
       const knownByFile=new Map(profileCatalog.profiles.filter(p=>p.driveFileId).map(p=>[p.driveFileId,p]));
       const cloud=data.files.filter(f=>f?.appProperties?.lancerTrackerProfile==='1').map(f=>{
         const old=knownByFile.get(f.id);
         const fileName=String(f.name||'').replace(/^Lancer - /,'').replace(/\.json$/,'');
-        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,localModifiedAt:old?.localModifiedAt||Date.now()};
+        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null),localBaseDriveVersion:old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null),localModifiedAt:old?.localModifiedAt||Date.now()};
       });
       driveLastSyncedAt=Date.now(); localStorage.setItem(DRIVE_SYNC_KEY,String(driveLastSyncedAt)); renderDriveLastSynced();
       profileCatalog.profiles=profileCatalog.profiles.filter(p=>!p.driveFileId).concat(cloud);
@@ -1407,28 +1453,125 @@ async function downloadDriveProfile(fileId){
   if(!payload.pilot||!payload.mech) throw new Error('В файле не хватает данных пилота или меха.');
   return payload;
 }
-async function uploadActiveProfile(){
-  if(!driveAccessToken) return;
-  const p=activeProfile(); if(!p) return;
-  // Freeze the identity and payload before any network wait. The active profile or S
-  // may change while a Drive request is in flight.
-  const snapshot={id:p.id,name:p.name,data:JSON.parse(JSON.stringify(S))};
-  const body=profilePayload(snapshot,snapshot.data);
-  const upload=()=>withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
+function driveRevision(meta){ return meta?.version!=null?String(meta.version):(meta?.modifiedTime||null); }
+function sameDriveRevision(a,b){ return !!driveRevision(a)&&driveRevision(a)===driveRevision(b); }
+async function getDriveProfileMeta(fileId){
+  return driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?fields=id,name,modifiedTime,version,appProperties');
+}
+async function downloadDriveProfileSnapshot(fileId){
+  for(let attempt=0;attempt<3;attempt++){
+    const before=await getDriveProfileMeta(fileId);
+    const payload=await downloadDriveProfile(fileId);
+    const after=await getDriveProfileMeta(fileId);
+    if(sameDriveRevision(before,after)) return {payload,meta:after};
+  }
+  throw new Error('Файл несколько раз менялся во время загрузки. Обновите список и попробуйте ещё раз.');
+}
+function askDriveConflict(snapshot,remoteMeta){
+  const dlg=document.getElementById('driveConflictDlg');
+  const msg=document.getElementById('driveConflictMessage');
+  if(!dlg||!msg) return Promise.reject(new Error('Не удалось открыть окно выбора версии профиля.'));
+  msg.textContent='«'+snapshot.name+'» изменён в Google Drive после последней синхронизации. «Использовать локальную» перезапишет файл в Drive; «Загрузить из Drive» заменит локальные данные этой версией.';
+  return new Promise(resolve=>{ driveConflictResolver=resolve; dlg.showModal(); });
+}
+function resolveDriveConflict(choice){
+  const dlg=document.getElementById('driveConflictDlg');
+  const resolve=driveConflictResolver; driveConflictResolver=null;
+  if(dlg?.open) dlg.close();
+  if(resolve) resolve(choice);
+}
+function updateProfileDriveRevision(snapshot,fileId,meta){
+  const p=profileCatalog.profiles.find(x=>x.id===snapshot.profileId&&x.driveFileId===fileId)||snapshot.profile;
+  p.driveFileId=fileId;
+  p.modifiedTime=meta?.modifiedTime||new Date().toISOString();
+  p.driveVersion=meta?.version||null;
+  p.localBaseModifiedTime=p.modifiedTime;
+  p.localBaseDriveVersion=p.driveVersion;
+  p.localModifiedAt=Date.now();
+  persistProfileCatalog(); renderProfileList();
+  return p;
+}
+async function useRemoteConflictVersion(snapshot,fileId){
+  const {payload,meta}=await downloadDriveProfileSnapshot(fileId);
+  driveLocalRevisionChains.delete(fileId);
+  const p=updateProfileDriveRevision(snapshot,fileId,meta);
+  p.name=currentProfileName(payload);
+  if(activeProfile()?.id===snapshot.profileId){
+    S=payload; localStorage.setItem(KEY,JSON.stringify(S));
+    renderLists(); renderCounters(); applyLang();
+  }
+  persistProfileCatalog(); renderProfileList();
+  setDriveStatus(activeProfile()?.id===snapshot.profileId?'Загружена версия профиля из Google Drive.':'Оставлена версия из Google Drive для профиля «'+p.name+'».');
+}
+async function performProfileUpload(snapshot){
+  return withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
+    const p=snapshot.profile;
+    const body=profilePayload({id:snapshot.profileId,name:snapshot.name},snapshot.data);
     const folder=await ensureDriveFolder();
-    let fileId=p.driveFileId;
+    let fileId=p.driveFileId||snapshot.driveFileId;
+    let created=false;
+    let writeBaseMeta=null;
     if(!fileId){
-      const meta=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(snapshot.name),mimeType:'application/json',parents:[folder],appProperties:{lancerTrackerProfile:'1',profileId:snapshot.id,profileName:snapshot.name}})});
-      fileId=meta.id; p.driveFileId=fileId; persistProfileCatalog();
-    } else await driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?fields=id,name,appProperties',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(snapshot.name),appProperties:{lancerTrackerProfile:'1',profileId:snapshot.id,profileName:snapshot.name}})});
-    await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-    p.modifiedTime=new Date().toISOString(); p.localModifiedAt=Date.now(); persistProfileCatalog();
+      const meta=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(snapshot.name),mimeType:'application/json',parents:[folder],appProperties:{lancerTrackerProfile:'1',profileId:snapshot.profileId,profileName:snapshot.name}})});
+      fileId=meta.id; created=true; p.driveFileId=fileId; persistProfileCatalog();
+    }
+    if(created) writeBaseMeta=await getDriveProfileMeta(fileId);
+    else {
+      let remoteMeta=await getDriveProfileMeta(fileId);
+      let baseRevision=snapshot.driveVersion||snapshot.modifiedTime||null;
+      const remoteRevision=driveRevision(remoteMeta);
+      const chain=driveLocalRevisionChains.get(fileId);
+      const chainBase=baseRevision||'__unversioned__';
+      const isOwnQueuedUpload=!!chain&&chain.to===remoteRevision&&chain.froms.has(chainBase);
+      if(!baseRevision||remoteRevision!==String(baseRevision)){
+        if(isOwnQueuedUpload){
+          snapshot.driveVersion=remoteMeta.version||null;
+          snapshot.modifiedTime=remoteMeta.modifiedTime||null;
+          baseRevision=remoteRevision;
+        } else {
+        while(true){
+          const choice=await askDriveConflict(snapshot,remoteMeta);
+          if(choice==='remote'){ await useRemoteConflictVersion(snapshot,fileId); return; }
+          const latest=await getDriveProfileMeta(fileId);
+          if(!sameDriveRevision(latest,remoteMeta)){ remoteMeta=latest; continue; }
+          break;
+        }
+        }
+      }
+      writeBaseMeta=remoteMeta;
+    }
+    const saved=await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+    const resultMeta=saved?.version? saved : await getDriveProfileMeta(fileId);
+    const previousChain=driveLocalRevisionChains.get(fileId);
+    const writeBase=driveRevision(writeBaseMeta);
+    const froms=previousChain?.to===writeBase?new Set(previousChain.froms):new Set();
+    froms.add(snapshot.driveVersion||snapshot.modifiedTime||'__unversioned__');
+    if(writeBase) froms.add(writeBase);
+    driveLocalRevisionChains.set(fileId,{to:driveRevision(resultMeta),froms});
+    updateProfileDriveRevision(snapshot,fileId,resultMeta);
     setDriveStatus('Синхронизировано с Google Drive · '+new Date().toLocaleTimeString());
-    renderProfileList();
   });
+}
+async function uploadActiveProfile(snapshot=makeDriveSnapshot()){
+  if(!driveAccessToken||!snapshot) return;
+  const upload=()=>performProfileUpload(snapshot);
   const pending=driveUploadQueue.then(upload,upload);
   driveUploadQueue=pending.catch(()=>{});
+  driveInFlightUploads.set(snapshot.profileId,pending);
+  pending.then(()=>{if(driveInFlightUploads.get(snapshot.profileId)===pending) driveInFlightUploads.delete(snapshot.profileId);},()=>{if(driveInFlightUploads.get(snapshot.profileId)===pending) driveInFlightUploads.delete(snapshot.profileId);});
   return pending;
+}
+async function flushPendingDriveSave(profileId){
+  const timer=driveSaveTimers.get(profileId);
+  if(timer){ clearTimeout(timer); driveSaveTimers.delete(profileId); }
+  const snapshot=pendingDriveSnapshots.get(profileId);
+  if(snapshot){
+    pendingDriveSnapshots.delete(profileId);
+    await uploadActiveProfile(snapshot);
+  } else {
+    const inFlight=driveInFlightUploads.get(profileId);
+    if(inFlight) await inFlight;
+  }
 }
 async function saveProfileToDrive(profileId){
   if(profileId&&profileId!==profileCatalog.active) return;
@@ -1439,12 +1582,12 @@ async function switchDriveProfile(id){
   const target=profileCatalog.profiles.find(p=>p.id===id); if(!target?.driveFileId||!driveAccessToken) return;
   return withDriveLoading('Загружаю профиль «'+target.name+'»…',async()=>{
   try {
-    clearTimeout(driveSaveTimer); driveSaveTimer=null;
     clearTimeout(profileIdentityTimer); profileIdentityTimer=null;
     updateProfileIdentity();
-    await uploadActiveProfile();
-    const payload=await downloadDriveProfile(target.driveFileId); S=payload;
-    profileCatalog.active=id; target.name=currentProfileName(S); target.localModifiedAt=Date.now(); persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
+    const outgoing=activeProfile();
+    if(outgoing) await flushPendingDriveSave(outgoing.id);
+    const {payload,meta}=await downloadDriveProfileSnapshot(target.driveFileId); S=payload;
+    profileCatalog.active=id; target.name=currentProfileName(S); target.modifiedTime=meta.modifiedTime; target.driveVersion=meta.version||null; target.localBaseModifiedTime=meta.modifiedTime; target.localBaseDriveVersion=meta.version||null; target.localModifiedAt=Date.now(); persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
     renderLists(); renderCounters(); applyLang(); renderProfileList(); setDriveStatus('Открыт профиль «'+target.name+'».');
   } catch(e){ setDriveStatus('Не удалось открыть профиль: '+e.message); }
   });
