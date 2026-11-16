@@ -1242,6 +1242,15 @@ function makeDriveSnapshot(profile=activeProfile(),data=S){
   if(!profile) return null;
   return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,baseDataHash:profile.localBaseDataHash||null,data:JSON.parse(JSON.stringify(data))};
 }
+function scheduleDriveSnapshotUpload(profileId,delay=1200){
+  clearTimeout(driveSaveTimers.get(profileId));
+  const timer=setTimeout(()=>{
+    driveSaveTimers.delete(profileId);
+    const snapshot=pendingDriveSnapshots.get(profileId); pendingDriveSnapshots.delete(profileId);
+    if(snapshot) uploadActiveProfile(snapshot).catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message));
+  },delay);
+  driveSaveTimers.set(profileId,timer);
+}
 function updatePendingDriveSnapshot(profile){
   const oldId=profile.id, snapshot=pendingDriveSnapshots.get(oldId);
   if(!snapshot) return;
@@ -1256,8 +1265,8 @@ function updatePendingDriveSnapshot(profile){
   snapshot.baseDataHash=current.localBaseDataHash||null;
   if(oldId!==current.id){
     pendingDriveSnapshots.delete(oldId); pendingDriveSnapshots.set(current.id,snapshot);
-    const timer=driveSaveTimers.get(oldId);
-    if(timer){ driveSaveTimers.delete(oldId); driveSaveTimers.set(current.id,timer); }
+    const hadTimer=driveSaveTimers.has(oldId);
+    if(hadTimer){ clearTimeout(driveSaveTimers.get(oldId)); driveSaveTimers.delete(oldId); scheduleDriveSnapshotUpload(current.id); }
   }
 }
 function currentProfileName(data=S){
@@ -1337,14 +1346,8 @@ function save(){
   }
   if (driveAccessToken && activeProfile()) {
     const profile=activeProfile(), profileId=profile.id;
-    clearTimeout(driveSaveTimers.get(profileId));
     pendingDriveSnapshots.set(profileId,makeDriveSnapshot(profile,S));
-    const timer=setTimeout(()=>{
-      driveSaveTimers.delete(profileId);
-      const snapshot=pendingDriveSnapshots.get(profileId); pendingDriveSnapshots.delete(profileId);
-      if(snapshot) uploadActiveProfile(snapshot).catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message));
-    },1200);
-    driveSaveTimers.set(profileId,timer);
+    scheduleDriveSnapshotUpload(profileId);
   }
   const sv = document.getElementById('saved'); if (sv) sv.textContent = L('saved') + new Date().toLocaleTimeString();
 }
@@ -1475,8 +1478,9 @@ async function syncDriveProfiles(){
       const knownByFile=new Map(profileCatalog.profiles.filter(p=>p.driveFileId).map(p=>[p.driveFileId,p]));
       const cloud=data.files.filter(f=>f?.appProperties?.lancerTrackerProfile==='1').map(f=>{
         const old=knownByFile.get(f.id);
+        const busy=old&&(driveSaveTimers.has(old.id)||pendingDriveSnapshots.has(old.id)||driveInFlightUploads.has(old.id)||queuedDriveSnapshots.has(old.id));
         const fileName=String(f.name||'').replace(/^Lancer - /,'').replace(/\.json$/,'');
-        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null),localBaseDriveVersion:old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null),localBaseDataHash:old?.localBaseDataHash||null,localModifiedAt:old?.localModifiedAt||Date.now()};
+        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:busy?old.localBaseModifiedTime:(old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null)),localBaseDriveVersion:busy?old.localBaseDriveVersion:(old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null)),localBaseDataHash:busy?old.localBaseDataHash:(old?.localBaseDataHash||null),localModifiedAt:old?.localModifiedAt||Date.now()};
       });
       const activeBeforeSync=activeProfile();
       const activeRemote=activeBeforeSync?.driveFileId&&cloud.find(p=>p.driveFileId===activeBeforeSync.driveFileId);
@@ -1648,7 +1652,13 @@ async function useRemoteConflictVersion(snapshot,fileId){
 }
 async function performProfileUpload(snapshot){
   return withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
-    const p=snapshot.profile;
+    const liveProfile=profileCatalog.profiles.find(x=>x.id===snapshot.profileId)||snapshot.profile;
+    snapshot.profile=liveProfile;
+    snapshot.driveFileId=liveProfile.driveFileId||snapshot.driveFileId;
+    snapshot.driveVersion=liveProfile.localBaseDriveVersion??liveProfile.driveVersion??snapshot.driveVersion;
+    snapshot.modifiedTime=liveProfile.localBaseModifiedTime??liveProfile.modifiedTime??snapshot.modifiedTime;
+    snapshot.baseDataHash=liveProfile.localBaseDataHash??snapshot.baseDataHash;
+    const p=liveProfile;
     const body=profilePayload({id:snapshot.profileId,name:snapshot.name},snapshot.data);
     const folder=await ensureDriveFolder();
     let fileId=p.driveFileId||snapshot.driveFileId;
@@ -1693,8 +1703,8 @@ async function performProfileUpload(snapshot){
       }
       writeBaseMeta=remoteMeta;
     }
-    await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-    const resultMeta=await getDriveProfileMeta(fileId);
+    let resultMeta=await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+    if(!resultMeta?.version) resultMeta=await getDriveProfileMeta(fileId);
     const previousChain=driveLocalRevisionChains.get(fileId);
     const writeBase=driveRevision(writeBaseMeta);
     const froms=previousChain?.to===writeBase?new Set(previousChain.froms):new Set();
