@@ -932,6 +932,14 @@
     "u253": {
       "en": "Weapon",
       "tag": "js"
+    },
+    "u254": {
+      "en": "Loaded",
+      "tag": "js"
+    },
+    "u255": {
+      "en": "Unloaded",
+      "tag": "js"
     }
   }
 }
