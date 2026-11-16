@@ -848,7 +848,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 198</span>
+      <span class="dim global-version">Версия трекера: 199</span>
     </div>
   </div>
 </main>
@@ -1194,6 +1194,17 @@ function persistProfileCatalog(){ localStorage.setItem(PROFILE_KEY, JSON.stringi
 function activeProfile(){ return profileCatalog.profiles.find(p=>p.id===profileCatalog.active) || profileCatalog.profiles[0]; }
 function profileDisplayName(){ const p=activeProfile(); return p ? p.name : 'Мой профиль'; }
 function profileBaseRevision(profile){ return profile?.localBaseDriveVersion||profile?.localBaseModifiedTime||profile?.driveVersion||profile?.modifiedTime||null; }
+function stableProfileJson(value){
+  if(value===null||typeof value!=='object') return JSON.stringify(value);
+  if(Array.isArray(value)) return '['+value.map(stableProfileJson).join(',')+']';
+  return '{'+Object.keys(value).filter(k=>value[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+stableProfileJson(value[k])).join(',')+'}';
+}
+function profileDataFingerprint(data=S){
+  const text=stableProfileJson(data);
+  let hash=14695981039346656037n;
+  for(let i=0;i<text.length;i++){ hash^=BigInt(text.charCodeAt(i)); hash=BigInt.asUintN(64,hash*1099511628211n); }
+  return hash.toString(16);
+}
 function makeDriveSnapshot(profile=activeProfile(),data=S){
   if(!profile) return null;
   return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,data:JSON.parse(JSON.stringify(data))};
@@ -1430,8 +1441,33 @@ async function syncDriveProfiles(){
       const cloud=data.files.filter(f=>f?.appProperties?.lancerTrackerProfile==='1').map(f=>{
         const old=knownByFile.get(f.id);
         const fileName=String(f.name||'').replace(/^Lancer - /,'').replace(/\.json$/,'');
-        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null),localBaseDriveVersion:old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null),localModifiedAt:old?.localModifiedAt||Date.now()};
+        return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null),localBaseDriveVersion:old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null),localBaseDataHash:old?.localBaseDataHash||null,localModifiedAt:old?.localModifiedAt||Date.now()};
       });
+      const activeBeforeSync=activeProfile();
+      const activeRemote=activeBeforeSync?.driveFileId&&cloud.find(p=>p.driveFileId===activeBeforeSync.driveFileId);
+      if(activeRemote){
+        const baseRevision=profileBaseRevision(activeBeforeSync), remoteRevision=driveRevision(activeRemote);
+        const hasPendingSave=driveSaveTimers.has(activeBeforeSync.id)||pendingDriveSnapshots.has(activeBeforeSync.id)||driveInFlightUploads.has(activeBeforeSync.id);
+        const knownBaseHash=activeBeforeSync.localBaseDataHash||null;
+        const revisionChanged=!!remoteRevision&&remoteRevision!==String(baseRevision||'');
+        if(!hasPendingSave&&(revisionChanged||!knownBaseHash)){
+          const localHash=profileDataFingerprint(S);
+          const {payload,meta}=await downloadDriveProfileSnapshot(activeRemote.driveFileId);
+          const remoteHash=profileDataFingerprint(payload);
+          const canAdoptRemote=localHash===remoteHash||(knownBaseHash&&localHash===knownBaseHash);
+          if(canAdoptRemote){
+            if(revisionChanged){ S=payload; localStorage.setItem(KEY,JSON.stringify(S)); renderLists(); renderCounters(); applyLang(); }
+            activeRemote.name=currentProfileName(payload);
+            activeRemote.modifiedTime=meta.modifiedTime||activeRemote.modifiedTime;
+            activeRemote.driveVersion=meta.version||activeRemote.driveVersion;
+            activeRemote.localBaseModifiedTime=meta.modifiedTime||null;
+            activeRemote.localBaseDriveVersion=meta.version||null;
+            activeRemote.localBaseDataHash=remoteHash;
+            activeRemote.localModifiedAt=Date.now();
+            if(revisionChanged) setDriveStatus('Активный профиль обновлён из Google Drive.');
+          }
+        }
+      }
       driveLastSyncedAt=Date.now(); localStorage.setItem(DRIVE_SYNC_KEY,String(driveLastSyncedAt)); renderDriveLastSynced();
       profileCatalog.profiles=profileCatalog.profiles.filter(p=>!p.driveFileId).concat(cloud);
       if(!profileCatalog.profiles.some(p=>p.id===profileCatalog.active)){
@@ -1547,13 +1583,14 @@ function resolveDriveConflict(choice){
   if(dlg?.open) dlg.close();
   if(resolve) resolve(choice);
 }
-function updateProfileDriveRevision(snapshot,fileId,meta){
+function updateProfileDriveRevision(snapshot,fileId,meta,data=snapshot.data){
   const p=profileCatalog.profiles.find(x=>x.id===snapshot.profileId&&x.driveFileId===fileId)||snapshot.profile;
   p.driveFileId=fileId;
   p.modifiedTime=meta?.modifiedTime||new Date().toISOString();
   p.driveVersion=meta?.version||null;
   p.localBaseModifiedTime=p.modifiedTime;
   p.localBaseDriveVersion=p.driveVersion;
+  p.localBaseDataHash=profileDataFingerprint(data);
   p.localModifiedAt=Date.now();
   persistProfileCatalog(); renderProfileList();
   return p;
@@ -1561,7 +1598,7 @@ function updateProfileDriveRevision(snapshot,fileId,meta){
 async function useRemoteConflictVersion(snapshot,fileId){
   const {payload,meta}=await downloadDriveProfileSnapshot(fileId);
   driveLocalRevisionChains.delete(fileId);
-  const p=updateProfileDriveRevision(snapshot,fileId,meta);
+  const p=updateProfileDriveRevision(snapshot,fileId,meta,payload);
   p.name=currentProfileName(payload);
   if(activeProfile()?.id===snapshot.profileId){
     S=payload; localStorage.setItem(KEY,JSON.stringify(S));
@@ -1654,7 +1691,7 @@ async function switchDriveProfile(id){
     const outgoing=activeProfile();
     if(outgoing) await flushPendingDriveSave(outgoing.id);
     const {payload,meta}=await downloadDriveProfileSnapshot(target.driveFileId); S=payload;
-    profileCatalog.active=id; target.name=currentProfileName(S); target.modifiedTime=meta.modifiedTime; target.driveVersion=meta.version||null; target.localBaseModifiedTime=meta.modifiedTime; target.localBaseDriveVersion=meta.version||null; target.localModifiedAt=Date.now(); persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
+    profileCatalog.active=id; target.name=currentProfileName(S); target.modifiedTime=meta.modifiedTime; target.driveVersion=meta.version||null; target.localBaseModifiedTime=meta.modifiedTime; target.localBaseDriveVersion=meta.version||null; target.localBaseDataHash=profileDataFingerprint(S); target.localModifiedAt=Date.now(); persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
     renderLists(); renderCounters(); applyLang(); renderProfileList(); setDriveStatus('Открыт профиль «'+target.name+'».');
   } catch(e){ setDriveStatus('Не удалось открыть профиль: '+e.message); }
   });
