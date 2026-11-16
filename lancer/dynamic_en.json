@@ -226,5 +226,25 @@
   "del_mount_confirm": {
     "ru": "Удалить маунт «{M}» вместе со всем оружием на нём?",
     "en": "Delete the «{M}» mount with all weapons on it?"
+  },
+  "pilot_add_armor": {
+    "ru": "＋ Броня",
+    "en": "+ Armor"
+  },
+  "pilot_add_weapon": {
+    "ru": "＋ Оружие",
+    "en": "+ Weapon"
+  },
+  "pilot_add_gear": {
+    "ru": "＋ Снаряжение",
+    "en": "+ Gear"
+  },
+  "pilot_gear_search": {
+    "ru": "Найти снаряжение: название или описание…",
+    "en": "Search pilot equipment by name or description…"
+  },
+  "pilot_gear_title": {
+    "ru": "Снаряжение из базы",
+    "en": "Pilot equipment database"
   }
 }

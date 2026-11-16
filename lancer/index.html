@@ -357,10 +357,13 @@
   .export-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
   .pilot-equipment-select { width:100%; margin:0 0 12px; }
   .pilot-equip-category { margin:14px 0 6px; color:var(--hud-amber); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
-  .pilot-equip-item { padding:9px 0; border-top:1px solid var(--line); }
+  .pilot-equip-item { display:flex; gap:8px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line); }
   .pilot-equip-item:first-child { border-top:0; }
+  .pilot-equip-main { flex:1 1 auto; min-width:0; }
   .pilot-equip-meta { color:var(--dim); font-size:13px; margin-top:3px; }
   .pilot-equip-desc { color:var(--dim); font-size:13px; line-height:1.45; margin-top:5px; }
+  .pilot-equip-add { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
+  .pilot-equip-add .btn { min-width:0; padding:8px 5px; font-size:12px; }
   .global-version-row { margin:0; justify-content:space-between; }
   .global-version-row > #langToggle { flex:0 0 86px; }
   .global-version-row > .global-version { flex:0 0 auto; margin-left:auto; text-align:right; }
@@ -395,6 +398,8 @@
   .dlg-fields > div { margin-bottom:10px; }
   dialog#searchDlg { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; border:none; border-radius:0; background:var(--bg); color:var(--text); padding:16px; }
   dialog#searchDlg::backdrop { background:rgba(0,0,0,.6); }
+  dialog#pilotGearDlg { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; border:none; border-radius:0; background:var(--bg); color:var(--text); padding:16px; }
+  dialog#pilotGearDlg::backdrop { background:rgba(0,0,0,.6); }
   .search-dlg { max-width:450px; margin:0 auto; }
   .btn.icon { padding:8px 12px; font-size:18px; line-height:1; }
   /* Плюс в кнопках добавления внутри поисков (v172): жёлтый, шрифт крупнее, а размер кнопки тот же,
@@ -403,11 +408,17 @@
   .btn.search-add:hover { border-color:var(--hud-amber); }
   .sub-h { margin:18px 0 8px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--hud-amber); }
   #wizardOverlay, #luOverlay{ position:fixed; inset:0; z-index:60; display:none; align-items:flex-start; justify-content:center; background:rgba(0,0,0,.65); padding:16px; overflow-y:auto; }
-  .wizard-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; width:100%; max-width:450px; margin:24px auto; padding:16px; }
-  .wizard-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
-  .wizard-head h3{ flex:1 1 auto; margin:0; font-size:17px; }
-  .wizard-progress{ color:var(--dim); font-size:13px; white-space:nowrap; }
-  .wizard-body{ min-height:180px; }
+  .wizard-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; width:min(100%,450px); min-width:0; max-width:450px; margin:24px auto; padding:16px; }
+  .wizard-head{ display:flex; align-items:center; gap:8px; min-width:0; margin-bottom:12px; }
+  .wizard-head h3{ flex:1 1 auto; min-width:0; margin:0; font-size:17px; line-height:1.25; overflow-wrap:anywhere; }
+  .wizard-progress{ flex:0 0 auto; color:var(--dim); font-size:13px; white-space:nowrap; }
+  .wizard-head > .btn{ flex:0 0 40px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0; }
+  .wizard-body{ min-width:0; min-height:180px; }
+  .wizard-hase-hint{ margin:0 0 12px; padding:0 0 12px; border-bottom:1px solid var(--line); line-height:1.4; }
+  .wizard-hase-hint ul{ margin:8px 0 0; padding-left:20px; }
+  .wizard-hase-row{ display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; width:100%; min-width:0; }
+  .wizard-hase-row > span{ min-width:0; overflow-wrap:anywhere; }
+  .wizard-hase-row .counter.small{ flex:0 0 auto; min-width:0; }
   .wizard-foot{ display:flex; justify-content:space-between; gap:8px; margin-top:16px; }
   dialog#profilesDlg { width:calc(100% - 24px); max-width:450px; max-height:85vh; border:1px solid var(--line); border-top:2px solid var(--hud-amber); background:var(--panel); color:var(--text); padding:16px; }
   dialog#profilesDlg::backdrop { background:rgba(0,0,0,.7); }
@@ -848,7 +859,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 200</span>
+      <span class="dim global-version">Версия трекера: 201</span>
     </div>
   </div>
 </main>
@@ -893,6 +904,16 @@
       <button class="btn danger" style="flex:0 0 auto" onclick="closeSearchDlg()">✕</button>
     </div>
     <div id="searchDlgResults"></div>
+  </div>
+</dialog>
+<dialog id="pilotGearDlg" onclick="if(event.target===this)closePilotGearPicker()">
+  <div class="search-dlg">
+    <h3 id="pilotGearTitle" style="margin:0 0 12px">Снаряжение из базы</h3>
+    <div class="row" style="margin-bottom:12px">
+      <input type="text" id="pilotGearSearch" oninput="renderPilotGearResults(this.value)">
+      <button class="btn danger" style="flex:0 0 auto" onclick="closePilotGearPicker()">✕</button>
+    </div>
+    <div id="pilotGearResults"></div>
   </div>
 </dialog>
 <dialog id="cbDlg" onclick="if(event.target===this)this.close()">
@@ -958,6 +979,7 @@
   </div>
 </div>
 <script src="./db.js"></script>
+<script src="./pilot_gear_db.js"></script>
 <script>// Единая модалка поиска (v25): полноэкранный поиск вместо встроенных полей.
 // kind: weapon (ctx = индекс маунта), system, talent, trigger, license, frame.
 let searchKind = null, searchCtx = null;
@@ -1138,6 +1160,11 @@ STR.pilot_equip_empty = {ru:'Снаряжение пилота не импорт
 STR.pilot_equip_uses = {ru:'Использовано: {C} / {M}', en:'Uses: {C} / {M}'};
 STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
 STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
+STR.pilot_add_armor = {ru:'＋ Броня', en:'+ Armor'};
+STR.pilot_add_weapon = {ru:'＋ Оружие', en:'+ Weapon'};
+STR.pilot_add_gear = {ru:'＋ Снаряжение', en:'+ Gear'};
+STR.pilot_gear_search = {ru:'Найти снаряжение: название или описание…', en:'Search pilot equipment by name or description…'};
+STR.pilot_gear_title = {ru:'Снаряжение из базы', en:'Pilot equipment database'};
 
 const DEFAULTS = {
   pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{}, compconSource:null, compconSelectedMechId:'' },
@@ -2402,6 +2429,54 @@ function addMount(){ S.mounts.push({type:'Flex', weapons:[]}); save(); renderLis
 function delMount(mi){ const m = S.mounts[mi]; if (!m) return; if (!confirm(L('del_mount_confirm').replace('{M}', m.type))) return; S.mounts.splice(mi,1); save(); renderLists(); }
 function delWeapon(mi,wi){ S.mounts[mi].weapons.splice(wi,1); save(); renderLists(); }
 function normFrame(s){ return (s||'').toLowerCase().replace(/[’‘`]/g, "'").trim(); }
+let pilotGearPickerType='Gear';
+function findPilotGear(item,data=item?.data||item){
+  const id=String(item?.id||data?.id||'').trim(), name=String(data?.name||item?.name||'').trim();
+  return PILOT_GEAR_DB.find(x=>(id&&x.id===id)||(name&&(x.name===name||x.ru?.name===name)))||null;
+}
+function openPilotGearPicker(type){
+  pilotGearPickerType=type;
+  const input=document.getElementById('pilotGearSearch'), dlg=document.getElementById('pilotGearDlg');
+  if(input){ input.value=''; input.placeholder=L('pilot_gear_search'); }
+  const title=document.getElementById('pilotGearTitle');
+  if(title) title.textContent=L('pilot_gear_title')+' · '+L(type==='Armor'?'pilot_armor':type==='Weapon'?'pilot_weapons':'pilot_gear');
+  renderPilotGearResults('');
+  if(dlg?.showModal) dlg.showModal();
+  if(document.activeElement?.blur) document.activeElement.blur();
+}
+function closePilotGearPicker(){ const dlg=document.getElementById('pilotGearDlg'); if(dlg?.close) dlg.close(); }
+function renderPilotGearResults(query=''){
+  const box=document.getElementById('pilotGearResults'); if(!box) return;
+  const q=String(query||'').trim().toLowerCase();
+  const items=PILOT_GEAR_DB.filter(x=>x.type===pilotGearPickerType&&(!q||[x.name,x.ru?.name,x.description,x.effect,x.ru?.description,x.ru?.effect].filter(Boolean).join(' ').toLowerCase().includes(q)));
+  box.innerHTML=items.map(item=>{
+    const name=isRu()?item.ru?.name||item.name:item.name;
+    const detail=isRu()?(item.ru?.effect||item.ru?.description||''):(item.effect||item.description||'');
+    const stats=[];
+    if(item.damage?.length) stats.push(item.damage.map(x=>[x.val,isRu()?pilotDamageType(x.type):x.type].filter(Boolean).join(' ')).join(', '));
+    if(item.range?.length) stats.push(item.range.map(x=>[isRu()?pilotRangeType(x.type):x.type,x.val].filter(Boolean).join(' ')).join(', '));
+    return `<div class="dbrow"><div class="dbinfo"><b>${esc(name)}</b>${stats.length?`<span>${esc(stats.join(' · '))}</span>`:''}${detail?`<span class="dim">${esc(detail.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim())}</span>`:''}</div><button class="btn search-add" style="flex:0 0 auto" onclick="addPilotGear('${esc(item.id)}')">＋</button></div>`;
+  }).join('')||(q?`<div class="dbmore">${esc(L('not_found'))}</div>`:'');
+}
+function addPilotGear(id){
+  const item=PILOT_GEAR_DB.find(x=>x.id===id); if(!item) return;
+  if(!Array.isArray(S.pilot.loadouts)) S.pilot.loadouts=[];
+  if(!S.pilot.loadouts.length) S.pilot.loadouts.push({id:compconUUID(),name:'Primary',armor:[],weapons:[],gear:[]});
+  const index=Math.max(0,Math.min(S.pilot.loadouts.length-1,+S.pilot.activeLoadout||0)), loadout=S.pilot.loadouts[index];
+  const key=item.type==='Armor'?'armor':item.type==='Weapon'?'weapons':'gear';
+  if(!Array.isArray(loadout[key])) loadout[key]=[];
+  const data=compconCopy(item); delete data.ru;
+  const maxUses=(data.tags||[]).find(t=>t.id==='tg_limited')?.val||0;
+  loadout[key].push({id:item.id,instanceId:compconUUID(),type:item.type==='Armor'?'PilotArmor':item.type==='Weapon'?'PilotWeapon':'PilotGear',note:'',data,flavorName:'',flavorDescription:'',maxUses,currentUses:0,destroyed:false,isUsed:false});
+  save(); renderPilotEquipment(); closePilotGearPicker();
+}
+function removePilotEquipment(key,index){
+  const loadouts=S.pilot.loadouts||[], loadout=loadouts[Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0))];
+  if(!loadout||!Array.isArray(loadout[key])) return;
+  loadout[key].splice(index,1); save(); renderPilotEquipment();
+}
+function pilotDamageType(type){ return ({Kinetic:'кинетический',Explosive:'взрывной',Energy:'энергетический',Burn:'ожог',variable:'выбранный'})[type]||type; }
+function pilotRangeType(type){ return ({Range:'Дальность',Threat:'Угроза',Blast:'Взрыв',Burst:'Радиус'})[type]||type; }
 function selectPilotEquipmentLoadout(value){
   const loadouts=S.pilot.loadouts||[]; if(!loadouts.length) return;
   S.pilot.activeLoadout=Math.max(0,Math.min(loadouts.length-1,+value||0));
@@ -2414,30 +2489,34 @@ function renderPilotEquipment(){
   const index=loadouts.length?Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0)):0;
   const loadout=loadouts[index]||{};
   const select=loadouts.length>1?`<label class="dim">${esc(L('pilot_loadout'))}<select class="pilot-equipment-select" onchange="selectPilotEquipmentLoadout(this.value)">${loadouts.map((item,i)=>`<option value="${i}" ${i===index?'selected':''}>${esc(item.name||`${L('pilot_loadout')} ${i+1}`)}</option>`).join('')}</select></label>`:'';
-  const renderItem=item=>{
+  const renderItem=(item,remove='')=>{
     if(!item) return '';
-    const data=item.data||item, name=item.flavorName||data.name||item.name||item.id||String(item);
-    const description=String(item.flavorDescription||data.effect||data.description||'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/gi,' ');
+    const data=item.data||item, db=findPilotGear(item,data), ru=isRu();
+    const name=item.flavorName||((db&&(ru?db.ru?.name:db.name))||data.name||item.name||item.id||String(item));
+    const effect=item.flavorDescription||(db?(ru?db.ru?.effect||data.effect:db.effect):data.effect)||'';
+    const flavor=db?(ru?db.ru?.description||data.description:db.description):data.description;
+    const description=[effect,flavor].filter(Boolean).join('\n\n').replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/gi,' ');
     const meta=[];
-    if(Array.isArray(data.damage)&&data.damage.length) meta.push(data.damage.map(x=>[x.val,x.type].filter(Boolean).join(' ')).join(', '));
-    if(Array.isArray(data.range)&&data.range.length) meta.push(data.range.map(x=>[x.type,x.val].filter(v=>v!==undefined&&v!=='').join(' ')).join(', '));
-    if(Array.isArray(data.bonuses)&&data.bonuses.length) meta.push(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · '));
+    if(Array.isArray(data.damage)&&data.damage.length) meta.push(data.damage.map(x=>[x.val,ru?pilotDamageType(x.type):x.type].filter(Boolean).join(' ')).join(', '));
+    if(Array.isArray(data.range)&&data.range.length) meta.push(data.range.map(x=>[ru?pilotRangeType(x.type):x.type,x.val].filter(v=>v!==undefined&&v!=='').join(' ')).join(', '));
+    if(Array.isArray(data.bonuses)&&data.bonuses.length) meta.push(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · '));
     const max=+(item.maxUses||0), used=+(item.currentUses||0);
     if(max>0) meta.push(L('pilot_equip_uses').replace('{C}',used).replace('{M}',max));
     if(item.destroyed) meta.push(L('pilot_equip_destroyed'));
     if(item.isUsed) meta.push(L('pilot_equip_used'));
     if(item.note) meta.push(item.note);
-    return `<div class="pilot-equip-item"><b>${esc(name)}</b>${meta.length?`<div class="pilot-equip-meta">${esc(meta.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>`;
+    return `<div class="pilot-equip-item"><div class="pilot-equip-main"><b>${esc(name)}</b>${meta.length?`<div class="pilot-equip-meta">${esc(meta.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>${remove?`<button type="button" class="btn x" aria-label="Remove ${esc(name)}" onclick="${remove}">✕</button>`:''}</div>`;
   };
   const groups=[['armor','pilot_armor'],['weapons','pilot_weapons'],['gear','pilot_gear']];
   let content='';
   groups.forEach(([key,label])=>{
     const rows=Array.isArray(loadout[key])?loadout[key].filter(Boolean):[];
-    if(rows.length) content+=`<div class="pilot-equip-category">${esc(L(label))}</div>${rows.map(renderItem).join('')}`;
+    if(rows.length) content+=`<div class="pilot-equip-category">${esc(L(label))}</div>${rows.map((item,i)=>renderItem(item,editOn('pilot')?`removePilotEquipment('${key}',${i})`:'' )).join('')}`;
   });
   const extras=Object.entries(special).flatMap(([category,rows])=>Array.isArray(rows)?rows.map(item=>({item,category})):[]);
   if(extras.length) content+=`<div class="pilot-equip-category">${esc(L('pilot_special'))}</div>${extras.map(({item,category})=>renderItem(item&&typeof item==='object'?item:{name:String(item),note:category})).join('')}`;
-  root.innerHTML=select+(content||`<p class="hint">${esc(L('pilot_equip_empty'))}</p>`);
+  const add=editOn('pilot')?`<div class="pilot-equip-add"><button class="btn add" onclick="openPilotGearPicker('Armor')">${esc(L('pilot_add_armor'))}</button><button class="btn add" onclick="openPilotGearPicker('Weapon')">${esc(L('pilot_add_weapon'))}</button><button class="btn add" onclick="openPilotGearPicker('Gear')">${esc(L('pilot_add_gear'))}</button></div>`:'';
+  root.innerHTML=select+(content||`<p class="hint">${esc(L('pilot_equip_empty'))}</p>`)+add;
 }
 function hasLicense(name, rank){
   if (!name || name === 'GMS') return true;
@@ -3588,10 +3667,10 @@ function wizHase(){
   const hase = [['hull','Hull'], ['agility','Agility'], ['systems','Systems'], ['engineering','Engineering']];
   const rows = hase.map(([k,lab])=>{
     const v = S.pilot[k]||0;
-    return `<div class="row"><span style="flex:1 1 auto">${lab}</span>`
+    return `<div class="row wizard-hase-row"><span>${lab}</span>`
     + `<div class="counter small" style="flex:0 0 auto"><button onclick="wizStepHase('${k}',-1)">−</button><div class="val">${v}</div><button onclick="wizStepHase('${k}',1)">+</button></div></div>`;
   }).join('');
-  return `<div class="hint">${L('u061')}</div>${rows}`;
+  return `<div class="hint wizard-hase-hint">${L('u061')}</div>${rows}`;
 }
 function wizFrame(){
   const f = fd(S.mech.frame);
