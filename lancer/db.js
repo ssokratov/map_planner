@@ -392,7 +392,7 @@ const DB = {
       "tg": [
         [
           "tg_overkill",
-          null
+          1
         ]
       ],
       "lab": "GMS · LL0 · Aux",
@@ -1047,7 +1047,7 @@ const DB = {
         ],
         [
           "tg_overkill",
-          null
+          1
         ]
       ],
       "lab": "IPS-N · Vlad · LL3 · Superheavy",
@@ -1100,7 +1100,7 @@ const DB = {
         ],
         [
           "tg_overkill",
-          null
+          1
         ],
         [
           "tg_heat_self",
@@ -2126,7 +2126,7 @@ const DB = {
       "tg": [
         [
           "tg_overkill",
-          null
+          1
         ],
         [
           "tg_heat_self",
@@ -2192,7 +2192,7 @@ const DB = {
         ],
         [
           "tg_overkill",
-          null
+          1
         ],
         [
           "tg_set_max_uses",
@@ -2231,7 +2231,7 @@ const DB = {
         ],
         [
           "tg_overkill",
-          null
+          1
         ],
         [
           "tg_set_max_uses",
@@ -2270,7 +2270,7 @@ const DB = {
         ],
         [
           "tg_overkill",
-          null
+          1
         ],
         [
           "tg_set_max_uses",
