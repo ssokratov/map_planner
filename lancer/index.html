@@ -807,7 +807,7 @@
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 194</span>
+      <span class="dim global-version">Версия трекера: 195</span>
     </div>
   </div>
 </main>
@@ -1106,7 +1106,7 @@ if (!profileCatalog.active || !Array.isArray(profileCatalog.profiles)) {
 profileCatalog.profiles.forEach(p=>{ if(!p.localModifiedAt) p.localModifiedAt=Date.now(); });
 const DRIVE_REMEMBER_KEY = 'lancer-tracker-drive-linked-v1';
 const DRIVE_SYNC_KEY = 'lancer-tracker-drive-last-sync-v1';
-let driveAccessToken = null, driveFolderId = null, driveSaveTimer = null;
+let driveAccessToken = null, driveFolderId = null, driveSaveTimer = null, driveUploadQueue = Promise.resolve();
 let driveRemembered = localStorage.getItem(DRIVE_REMEMBER_KEY)==='1';
 let driveResumePromptShown = false;
 let driveLastSyncedAt = Number(localStorage.getItem(DRIVE_SYNC_KEY)) || 0;
@@ -1321,7 +1321,11 @@ async function syncDriveProfiles(){
       });
       driveLastSyncedAt=Date.now(); localStorage.setItem(DRIVE_SYNC_KEY,String(driveLastSyncedAt)); renderDriveLastSynced();
       profileCatalog.profiles=profileCatalog.profiles.filter(p=>!p.driveFileId).concat(cloud);
-      if(!profileCatalog.profiles.some(p=>p.id===profileCatalog.active)) profileCatalog.active=profileCatalog.profiles[0]?.id||'local-main';
+      if(!profileCatalog.profiles.some(p=>p.id===profileCatalog.active)){
+        const recovered={id:'local-recovery-'+Date.now().toString(36),name:currentProfileName(S),driveFileId:null,localModifiedAt:Date.now()};
+        profileCatalog.profiles.unshift(recovered);
+        profileCatalog.active=recovered.id;
+      }
       persistProfileCatalog(); renderProfileList();
       setDriveStatus('');
     });
@@ -1390,7 +1394,7 @@ async function deleteDriveProfile(profileId){
     } catch(e){ setDriveStatus('Не удалось удалить профиль: '+e.message); }
   });
 }
-function profilePayload(){ return JSON.stringify({format:'lancer-tracker-profile-v1',profileId:activeProfile().id,name:activeProfile().name,data:S},null,2); }
+function profilePayload(profile=activeProfile(),data=S){ return JSON.stringify({format:'lancer-tracker-profile-v1',profileId:profile.id,name:profile.name,data},null,2); }
 async function downloadDriveProfile(fileId){
   let file;
   try { file=await driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?alt=media'); }
@@ -1405,19 +1409,26 @@ async function downloadDriveProfile(fileId){
 }
 async function uploadActiveProfile(){
   if(!driveAccessToken) return;
-  return withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
   const p=activeProfile(); if(!p) return;
-  const folder=await ensureDriveFolder();
-  if(!p.driveFileId){
-    const meta=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(p.name),mimeType:'application/json',parents:[folder],appProperties:{lancerTrackerProfile:'1',profileId:p.id,profileName:p.name}})});
-    p.driveFileId=meta.id; persistProfileCatalog();
-  } else await driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(p.driveFileId)+'?fields=id,name,appProperties',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(p.name),appProperties:{lancerTrackerProfile:'1',profileId:p.id,profileName:p.name}})});
-  const body=profilePayload();
-  await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(p.driveFileId)+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-  p.modifiedTime=new Date().toISOString(); p.localModifiedAt=Date.now(); persistProfileCatalog();
-  setDriveStatus('Синхронизировано с Google Drive · '+new Date().toLocaleTimeString());
-  renderProfileList();
+  // Freeze the identity and payload before any network wait. The active profile or S
+  // may change while a Drive request is in flight.
+  const snapshot={id:p.id,name:p.name,data:JSON.parse(JSON.stringify(S))};
+  const body=profilePayload(snapshot,snapshot.data);
+  const upload=()=>withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
+    const folder=await ensureDriveFolder();
+    let fileId=p.driveFileId;
+    if(!fileId){
+      const meta=await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(snapshot.name),mimeType:'application/json',parents:[folder],appProperties:{lancerTrackerProfile:'1',profileId:snapshot.id,profileName:snapshot.name}})});
+      fileId=meta.id; p.driveFileId=fileId; persistProfileCatalog();
+    } else await driveRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?fields=id,name,appProperties',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:driveFileTitle(snapshot.name),appProperties:{lancerTrackerProfile:'1',profileId:snapshot.id,profileName:snapshot.name}})});
+    await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+    p.modifiedTime=new Date().toISOString(); p.localModifiedAt=Date.now(); persistProfileCatalog();
+    setDriveStatus('Синхронизировано с Google Drive · '+new Date().toLocaleTimeString());
+    renderProfileList();
   });
+  const pending=driveUploadQueue.then(upload,upload);
+  driveUploadQueue=pending.catch(()=>{});
+  return pending;
 }
 async function saveProfileToDrive(profileId){
   if(profileId&&profileId!==profileCatalog.active) return;
@@ -1428,6 +1439,9 @@ async function switchDriveProfile(id){
   const target=profileCatalog.profiles.find(p=>p.id===id); if(!target?.driveFileId||!driveAccessToken) return;
   return withDriveLoading('Загружаю профиль «'+target.name+'»…',async()=>{
   try {
+    clearTimeout(driveSaveTimer); driveSaveTimer=null;
+    clearTimeout(profileIdentityTimer); profileIdentityTimer=null;
+    updateProfileIdentity();
     await uploadActiveProfile();
     const payload=await downloadDriveProfile(target.driveFileId); S=payload;
     profileCatalog.active=id; target.name=currentProfileName(S); target.localModifiedAt=Date.now(); persistProfileCatalog(); localStorage.setItem(KEY,JSON.stringify(S));
