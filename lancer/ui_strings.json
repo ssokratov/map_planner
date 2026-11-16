@@ -942,6 +942,21 @@
       "ru": "Кости лидерства",
       "en": "Leadership Dice",
       "tag": "js"
+    },
+    "u251": {
+      "ru": "Фрейм",
+      "en": "Frame",
+      "tag": "js"
+    },
+    "u252": {
+      "ru": "Система",
+      "en": "System",
+      "tag": "js"
+    },
+    "u253": {
+      "ru": "Оружие",
+      "en": "Weapon",
+      "tag": "js"
     }
   }
 }

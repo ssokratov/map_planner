@@ -920,6 +920,18 @@
     "u250": {
       "en": "Leadership Dice",
       "tag": "js"
+    },
+    "u251": {
+      "en": "Frame",
+      "tag": "js"
+    },
+    "u252": {
+      "en": "System",
+      "tag": "js"
+    },
+    "u253": {
+      "en": "Weapon",
+      "tag": "js"
     }
   }
 }
