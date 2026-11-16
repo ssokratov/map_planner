@@ -1214,7 +1214,8 @@ profileCatalog.profiles.forEach(p=>{ if(!p.localModifiedAt) p.localModifiedAt=Da
 const DRIVE_REMEMBER_KEY = 'lancer-tracker-drive-linked-v1';
 const DRIVE_SYNC_KEY = 'lancer-tracker-drive-last-sync-v1';
 let driveAccessToken = null, driveFolderId = null, driveUploadQueue = Promise.resolve();
-const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map(), queuedDriveSnapshots=new Map();
+const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map(), queuedDriveSnapshots=new Map(), driveSaveFirstQueuedAt=new Map();
+let drivePageIsHiding=false;
 const driveInFlightUploads=new Map();
 let driveConflictResolver=null;
 const driveLocalRevisionChains=new Map();
@@ -1242,13 +1243,15 @@ function makeDriveSnapshot(profile=activeProfile(),data=S){
   if(!profile) return null;
   return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,baseDataHash:profile.localBaseDataHash||null,data:JSON.parse(JSON.stringify(data))};
 }
-function scheduleDriveSnapshotUpload(profileId,delay=1200){
+function scheduleDriveSnapshotUpload(profileId,delay=12000){
+  if(!driveSaveFirstQueuedAt.has(profileId)) driveSaveFirstQueuedAt.set(profileId,Date.now());
   clearTimeout(driveSaveTimers.get(profileId));
+  const wait=Math.max(0,Math.min(delay,45000-(Date.now()-driveSaveFirstQueuedAt.get(profileId))));
   const timer=setTimeout(()=>{
     driveSaveTimers.delete(profileId);
     const snapshot=pendingDriveSnapshots.get(profileId); pendingDriveSnapshots.delete(profileId);
     if(snapshot) uploadActiveProfile(snapshot).catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message));
-  },delay);
+  },wait);
   driveSaveTimers.set(profileId,timer);
 }
 function updatePendingDriveSnapshot(profile){
@@ -1266,6 +1269,8 @@ function updatePendingDriveSnapshot(profile){
   if(oldId!==current.id){
     pendingDriveSnapshots.delete(oldId); pendingDriveSnapshots.set(current.id,snapshot);
     const hadTimer=driveSaveTimers.has(oldId);
+    const firstQueuedAt=driveSaveFirstQueuedAt.get(oldId);
+    if(firstQueuedAt!==undefined){driveSaveFirstQueuedAt.delete(oldId);driveSaveFirstQueuedAt.set(current.id,firstQueuedAt);}
     if(hadTimer){ clearTimeout(driveSaveTimers.get(oldId)); driveSaveTimers.delete(oldId); scheduleDriveSnapshotUpload(current.id); }
   }
 }
@@ -1346,8 +1351,16 @@ function save(){
   }
   if (driveAccessToken && activeProfile()) {
     const profile=activeProfile(), profileId=profile.id;
-    pendingDriveSnapshots.set(profileId,makeDriveSnapshot(profile,S));
-    scheduleDriveSnapshotUpload(profileId);
+    const fingerprint=profileDataFingerprint(S), baseHash=profile.localBaseDataHash||null;
+    const queued=queuedDriveSnapshots.get(profileId);
+    const hasQueuedChange=!!queued&&profileDataFingerprint(queued.data)!==baseHash;
+    if(profile.driveFileId&&baseHash&&fingerprint===baseHash&&!hasQueuedChange&&!driveInFlightUploads.has(profileId)){
+      clearTimeout(driveSaveTimers.get(profileId)); driveSaveTimers.delete(profileId);
+      pendingDriveSnapshots.delete(profileId); driveSaveFirstQueuedAt.delete(profileId);
+    } else {
+      pendingDriveSnapshots.set(profileId,makeDriveSnapshot(profile,S));
+      scheduleDriveSnapshotUpload(profileId);
+    }
   }
   const sv = document.getElementById('saved'); if (sv) sv.textContent = L('saved') + new Date().toLocaleTimeString();
 }
@@ -1454,7 +1467,9 @@ function disconnectDrive(){
   });
 }
 async function driveRequest(url, options={}){
-  const response=await fetch(url,{...options,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
+  const bodySize=typeof options.body==='string'?new Blob([options.body]).size:0;
+  const allowKeepalive=(options.keepalive??drivePageIsHiding)&&bodySize<60000;
+  const response=await fetch(url,{...options,keepalive:allowKeepalive,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
   if(!response.ok){ const body=await response.text(); if(response.status===401){ driveAccessToken=null; updateDriveAuthButton(); } throw new Error('Drive '+response.status+(body?': '+body.slice(0,180):'')); }
   if(response.status===204) return null;
   return response.json();
@@ -1469,6 +1484,7 @@ async function ensureDriveFolder(){
 }
 async function syncDriveProfiles(){
   if(!driveAccessToken){ setDriveStatus('Сначала подключите Google Drive.'); return; }
+  const isProfileSyncBusy=id=>driveSaveTimers.has(id)||pendingDriveSnapshots.has(id)||driveInFlightUploads.has(id)||queuedDriveSnapshots.has(id);
   try {
     await withDriveLoading('Загружаю профили из Google Drive…',async()=>{
       const folder=await ensureDriveFolder();
@@ -1478,7 +1494,7 @@ async function syncDriveProfiles(){
       const knownByFile=new Map(profileCatalog.profiles.filter(p=>p.driveFileId).map(p=>[p.driveFileId,p]));
       const cloud=data.files.filter(f=>f?.appProperties?.lancerTrackerProfile==='1').map(f=>{
         const old=knownByFile.get(f.id);
-        const busy=old&&(driveSaveTimers.has(old.id)||pendingDriveSnapshots.has(old.id)||driveInFlightUploads.has(old.id)||queuedDriveSnapshots.has(old.id));
+        const busy=old&&isProfileSyncBusy(old.id);
         const fileName=String(f.name||'').replace(/^Lancer - /,'').replace(/\.json$/,'');
         return {id:f.appProperties.profileId||f.id,name:f.appProperties.profileName||fileName,driveFileId:f.id,modifiedTime:f.modifiedTime,driveVersion:f.version||null,localBaseModifiedTime:busy?old.localBaseModifiedTime:(old&&Object.prototype.hasOwnProperty.call(old,'localBaseModifiedTime')?old.localBaseModifiedTime:(old?.modifiedTime||null)),localBaseDriveVersion:busy?old.localBaseDriveVersion:(old&&Object.prototype.hasOwnProperty.call(old,'localBaseDriveVersion')?old.localBaseDriveVersion:(old?.driveVersion||null)),localBaseDataHash:busy?old.localBaseDataHash:(old?.localBaseDataHash||null),localModifiedAt:old?.localModifiedAt||Date.now()};
       });
@@ -1486,7 +1502,7 @@ async function syncDriveProfiles(){
       const activeRemote=activeBeforeSync?.driveFileId&&cloud.find(p=>p.driveFileId===activeBeforeSync.driveFileId);
       if(activeRemote){
         const baseRevision=profileBaseRevision(activeBeforeSync), remoteRevision=driveRevision(activeRemote);
-        const hasPendingSave=driveSaveTimers.has(activeBeforeSync.id)||pendingDriveSnapshots.has(activeBeforeSync.id)||driveInFlightUploads.has(activeBeforeSync.id);
+        const hasPendingSave=isProfileSyncBusy(activeBeforeSync.id);
         const knownBaseHash=activeBeforeSync.localBaseDataHash||null;
         const revisionChanged=!!remoteRevision&&remoteRevision!==String(baseRevision||'');
         if(!hasPendingSave&&(revisionChanged||!knownBaseHash)){
@@ -1637,6 +1653,7 @@ function updateProfileDriveRevision(snapshot,fileId,meta,data=snapshot.data){
 async function useRemoteConflictVersion(snapshot,fileId){
   const saveTimer=driveSaveTimers.get(snapshot.profileId);
   if(saveTimer){ clearTimeout(saveTimer); driveSaveTimers.delete(snapshot.profileId); }
+  driveSaveFirstQueuedAt.delete(snapshot.profileId);
   pendingDriveSnapshots.delete(snapshot.profileId);
   queuedDriveSnapshots.delete(snapshot.profileId);
   const {payload,meta}=await downloadDriveProfileSnapshot(fileId);
@@ -1653,11 +1670,12 @@ async function useRemoteConflictVersion(snapshot,fileId){
 async function performProfileUpload(snapshot){
   return withDriveLoading('Сохраняю профиль в Google Drive…',async()=>{
     const liveProfile=profileCatalog.profiles.find(x=>x.id===snapshot.profileId)||snapshot.profile;
+    driveSaveFirstQueuedAt.delete(snapshot.profileId);
     snapshot.profile=liveProfile;
     snapshot.driveFileId=liveProfile.driveFileId||snapshot.driveFileId;
     snapshot.driveVersion=liveProfile.localBaseDriveVersion??liveProfile.driveVersion??snapshot.driveVersion;
     snapshot.modifiedTime=liveProfile.localBaseModifiedTime??liveProfile.modifiedTime??snapshot.modifiedTime;
-    snapshot.baseDataHash=liveProfile.localBaseDataHash??snapshot.baseDataHash;
+    snapshot.baseDataHash=liveProfile.localBaseDataHash??null;
     const p=liveProfile;
     const body=profilePayload({id:snapshot.profileId,name:snapshot.name},snapshot.data);
     const folder=await ensureDriveFolder();
@@ -1703,8 +1721,7 @@ async function performProfileUpload(snapshot){
       }
       writeBaseMeta=remoteMeta;
     }
-    let resultMeta=await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-    if(!resultMeta?.version) resultMeta=await getDriveProfileMeta(fileId);
+    const resultMeta=await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
     const previousChain=driveLocalRevisionChains.get(fileId);
     const writeBase=driveRevision(writeBaseMeta);
     const froms=previousChain?.to===writeBase?new Set(previousChain.froms):new Set();
@@ -1712,6 +1729,7 @@ async function performProfileUpload(snapshot){
     if(writeBase) froms.add(writeBase);
     driveLocalRevisionChains.set(fileId,{to:driveRevision(resultMeta),froms});
     updateProfileDriveRevision(snapshot,fileId,resultMeta);
+    if(!driveSaveTimers.has(snapshot.profileId)&&!pendingDriveSnapshots.has(snapshot.profileId)&&!queuedDriveSnapshots.has(snapshot.profileId)) driveSaveFirstQueuedAt.delete(snapshot.profileId);
     setDriveStatus('Синхронизировано с Google Drive · '+new Date().toLocaleTimeString());
   });
 }
@@ -1756,6 +1774,16 @@ async function flushPendingDriveSave(profileId){
     if(inFlight) await inFlight;
   }
 }
+async function flushAllPendingDriveSaves(){
+  const ids=new Set([...driveSaveTimers.keys(),...pendingDriveSnapshots.keys(),...queuedDriveSnapshots.keys(),...driveInFlightUploads.keys()]);
+  await Promise.allSettled([...ids].map(id=>flushPendingDriveSave(id)));
+}
+document.addEventListener('visibilitychange',()=>{
+  drivePageIsHiding=document.visibilityState==='hidden';
+  if(drivePageIsHiding) flushAllPendingDriveSaves();
+});
+window.addEventListener('pagehide',()=>{ drivePageIsHiding=true; flushAllPendingDriveSaves(); });
+window.addEventListener('pageshow',()=>{ drivePageIsHiding=false; });
 async function saveProfileToDrive(profileId){
   if(profileId&&profileId!==profileCatalog.active) return;
   if(!driveAccessToken){ setDriveStatus('Сначала подключите Google Drive.'); return; }
