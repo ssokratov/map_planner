@@ -196,7 +196,7 @@ function actionGranted(a){
 function renderMyActions(){
   const box = document.getElementById('myActions');
   if(!box) return;
-  const en = (typeof LANG!=='undefined' && LANG==='en');
+  const en = lang()==='en';
   const myRe = ACTIONS_REF.reactions.filter(a=>!a.def && actionGranted(a));
   const myPr = ACTIONS_REF.protocols.filter(a=>actionGranted(a));
   if(!myRe.length && !myPr.length){

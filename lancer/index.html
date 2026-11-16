@@ -348,6 +348,13 @@
   .import-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
   .import-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
   .import-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
+  .export-dropdown { position:relative; min-width:0; }
+  .export-dropdown > .btn { width:100%; }
+  .export-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% + 4px); display:none; gap:2px; padding:4px 0; background:var(--panel); box-shadow:0 6px 16px #0008; }
+  .export-dropdown.open .export-dropdown-menu { display:grid; }
+  .export-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
+  .export-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
+  .export-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
   .pilot-equipment-select { width:100%; margin:0 0 12px; }
   .pilot-equip-category { margin:14px 0 6px; color:var(--hud-amber); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
   .pilot-equip-item { padding:9px 0; border-top:1px solid var(--line); }
@@ -821,7 +828,13 @@
       <button class="btn" onclick="resetAll()" data-i18n="u143">Сбросить всё</button>
       <button class="btn" onclick="openLevelUp()" data-i18n="u213">Левел ап</button>
       <button class="btn primary" onclick="openWizard()" data-i18n="u186">Мастер сборки</button>
-      <button class="btn" onclick="exportJSON()" data-i18n="u141">Экспорт JSON</button>
+      <div class="export-dropdown" id="exportDropdown">
+        <button class="btn" type="button" onclick="toggleExportMenu(event)" aria-haspopup="true" aria-expanded="false"><span data-i18n="u141">Экспорт JSON</span> <span aria-hidden="true">▴</span></button>
+        <div class="export-dropdown-menu" role="menu">
+          <button class="btn" type="button" role="menuitem" onclick="exportJSON()" data-i18n="export_tracker">Экспорт JSON</button>
+          <button class="btn" type="button" role="menuitem" onclick="exportCompconJSON()" data-i18n="export_compcon">Экспорт COMP/CON</button>
+        </div>
+      </div>
       <div class="import-dropdown" id="importDropdown">
         <button class="btn" type="button" onclick="toggleImportMenu(event)" aria-haspopup="true" aria-expanded="false"><span data-i18n="u142">Импорт JSON</span> <span aria-hidden="true">▴</span></button>
         <div class="import-dropdown-menu" role="menu">
@@ -835,7 +848,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 197</span>
+      <span class="dim global-version">Версия трекера: 198</span>
     </div>
   </div>
 </main>
@@ -1111,6 +1124,10 @@ STR.import_pick_mech = {ru:'В файле несколько мехов. Вве�
 STR.import_bad_mech = {ru:'Указан неверный номер меха.', en:'The mech number is invalid.'};
 STR.import_unknown_frame = {ru:'Фрейм не найден в базе трекера: ', en:'Frame not found in the tracker database: '};
 STR.import_done = {ru:'Пилот и мех COMP/CON импортированы.', en:'COMP/CON pilot and mech imported.'};
+STR.export_tracker = {ru:'Экспорт JSON', en:'Export Tracker JSON'};
+STR.export_compcon = {ru:'Экспорт COMP/CON', en:'Export COMP/CON'};
+STR.export_compcon_no_frame = {ru:'Не удалось подготовить фрейм для экспорта в COMP/CON.', en:'Could not prepare the frame for COMP/CON export.'};
+STR.export_compcon_failed = {ru:'Не удалось подготовить экспорт COMP/CON', en:'Could not prepare COMP/CON export'};
 STR.pilot_equipment = {ru:'Снаряжение пилота', en:'Pilot Equipment'};
 STR.pilot_loadout = {ru:'Набор снаряжения', en:'Loadout'};
 STR.pilot_armor = {ru:'Броня', en:'Armor'};
@@ -1123,7 +1140,7 @@ STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
 STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
 
 const DEFAULTS = {
-  pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{} },
+  pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{}, compconSource:null, compconSelectedMechId:'' },
   mech: { name:'', frame:'Everest', size:1, speed:4, hp:10, hpMax:10, structure:4, structureMax:4, stress:4, stressMax:4, heat:0, heatMax:6, repairs:5, repairsMax:5, overcharge:0, coreUsed:0, armor:0, evasion:8, edef:8, sensors:10, attack:0, saveTarget:10, tech:0, sp:6, coreSystem:'Hyperspec Fuel Injector', coreDesc:'Active — Power Up (Protocol, Encounter): For the rest of this scene, you gain +1 Accuracy on all attacks, checks, and saves; additionally, 1/turn, you can Boost as a free action.', traits:'Initiative: 1/scene the Everest may take any quick action as a free action.\n\nReplaceable Parts: While resting, the Everest can be repaired at a rate of 1 Repair per 1 structure damage, instead of 2 Repairs.', notes:'' },
   triggers: [],
   talents: [],
@@ -1214,6 +1231,8 @@ function migrate(d){
   if (!Array.isArray(d.pilot.loadouts)) d.pilot.loadouts = [];
   if (!Number.isInteger(d.pilot.activeLoadout) || d.pilot.activeLoadout < 0 || d.pilot.activeLoadout >= d.pilot.loadouts.length) d.pilot.activeLoadout = 0;
   if (!isPlainObject(d.pilot.specialEquipment)) d.pilot.specialEquipment = {};
+  if (!isPlainObject(d.pilot.compconSource)) d.pilot.compconSource = null;
+  if (typeof d.pilot.compconSelectedMechId !== 'string') d.pilot.compconSelectedMechId = '';
   // v55: LL считается из лицензий — сохранённое поле ll больше не используется
   if ('ll' in d.pilot) delete d.pilot.ll;
   // v8: лицензии из свободной строки -> структурированный список
@@ -1927,7 +1946,7 @@ function actionHeatBadge(a){
 function renderMyActions(){
   const box = document.getElementById('myActions');
   if(!box) return;
-  const en = (typeof LANG!=='undefined' && LANG==='en');
+  const en = lang()==='en';
   const myQk = (ACTIONS_REF.quick||[]).filter(a=>actionGranted(a));
   const myRe = ACTIONS_REF.reactions.filter(a=>!a.def && actionGranted(a));
   const myPr = ACTIONS_REF.protocols.filter(a=>actionGranted(a));
@@ -3054,14 +3073,28 @@ function bind(){
   });
 }
 function exportJSON(){
+  closeExportMenu();
   const blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'lancer-' + (S.pilot.callsign || 'pilot') + '.json';
   a.click();
 }
+function toggleExportMenu(ev){
+  ev.stopPropagation();
+  closeImportMenu();
+  const box=document.getElementById('exportDropdown'); if(!box) return;
+  const open=box.classList.toggle('open');
+  const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded',String(open));
+}
+function closeExportMenu(){
+  const box=document.getElementById('exportDropdown'); if(!box) return;
+  box.classList.remove('open');
+  const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded','false');
+}
 function toggleImportMenu(ev){
   ev.stopPropagation();
+  closeExportMenu();
   const box=document.getElementById('importDropdown'); if(!box) return;
   const open=box.classList.toggle('open');
   const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded',String(open));
@@ -3072,7 +3105,7 @@ function closeImportMenu(){
   const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded','false');
 }
 function chooseImportFile(id){ closeImportMenu(); const input=document.getElementById(id); if(input) input.click(); }
-document.addEventListener('click',ev=>{ if(!ev.target.closest('#importDropdown')) closeImportMenu(); });
+document.addEventListener('click',ev=>{ if(!ev.target.closest('#importDropdown')) closeImportMenu(); if(!ev.target.closest('#exportDropdown')) closeExportMenu(); });
 function isPlainObject(value){ return !!value && typeof value==='object' && !Array.isArray(value); }
 function readImportFile(ev,handler){
   const input=ev.target, file=input.files&&input.files[0]; if(!file) return;
@@ -3129,6 +3162,144 @@ function compconRankRows(rows,list){
     return {name:db?db.n:name,rank:Math.max(1,Math.min(3,+row?.rank||1))};
   }).filter(row=>row.name);
 }
+function compconCopy(value){ return value===undefined?undefined:JSON.parse(JSON.stringify(value)); }
+function compconUUID(){ return crypto.randomUUID(); }
+function compconSlug(value){ return String(value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,''); }
+function compconFrameId(name){ const key=frameKey(name); return key==='Everest'?'mf_standard_pattern_i_everest':'mf_'+compconSlug(key); }
+function compconTags(rows){ return (rows||[]).map(tag=>Array.isArray(tag)?{id:tag[0],...(tag[1]!==null&&tag[1]!==undefined?{val:tag[1]}:{})}:{id:tag.id,...(tag.val!==undefined?{val:tag.val}:{})}); }
+function compconFindSource(rows,name){
+  const key=String(name||'').trim().toLowerCase();
+  return (rows||[]).find(row=>[row?.flavorName,row?.data?.name,row?.name].some(n=>String(n||'').trim().toLowerCase()===key));
+}
+function compconRuntimeItem(row,old,type){
+  const item=compconCopy(old)||{}, oldData=item.data||{}, db=type==='system'?findSystem(row.name):findWeapon(row.name);
+  const id=String(item.id||oldData.id||`${type==='system'?'ms':'mw'}_${compconSlug(row.name)}`);
+  let data=compconCopy(oldData);
+  if(!data||!Object.keys(data).length){
+    if(type==='system') data={id,name:row.name,sp:+(db?.p||row.sp||0),type:db?.t||'',tags:compconTags(db?.tg),source:db?.lic||'GMS',license:db?.lic||'GMS',license_level:db?.ll||0,description:row.desc||db?.x||''};
+    else {
+      const damage=String(row.dmg||db?.d||'').split(/,\s*/).map(part=>{const m=part.match(/(\d+d\d+(?:[+-]\d+)?|\d+)\s*(.*)/i);return m?{type:(m[2]||'Kinetic').trim(),val:m[1]}:null;}).filter(Boolean);
+      const ranges=String(row.range||db?.r||'').split(/,\s*/).map(part=>{const m=part.match(/^(Range|Threat)\s*(\d+(?:\.\d+)?)$/i);return m?{type:m[1],val:+m[2]}:null;}).filter(Boolean);
+      data={id,name:row.name,mount:db?.m||'Main',type:db?.t||'',damage,range:ranges,tags:compconTags(db?.tg),source:db?.lic||'GMS',license:db?.lic||'GMS',license_level:db?.ll||0,description:row.desc||db?.x||''};
+    }
+  }
+  item.id=id; item.instanceId=item.instanceId||compconUUID(); item.data=data;
+  item.note=item.note||''; item.flavorName=item.flavorName||''; item.flavorDescription=item.flavorDescription||'';
+  const limit=+(row.lim||db?.lim||item.maxUses||0), total=limit+limBonus(), left=row.left===undefined?total:+row.left;
+  item.maxUses=limit; item.currentUses=Math.max(0,total-left); item.destroyed=!!item.destroyed; item.isUsed=!!item.isUsed;
+  if(type==='weapon'){ item.selectedProfile=Number(item.selectedProfile)||0; item.maxUseOverride=Number(item.maxUseOverride)||0; }
+  return item;
+}
+function compconWeaponSize(row,mountType){
+  const item=findWeapon(row.name); let size=item?.m||'Main';
+  if(size==='Flex') size=mountType==='Heavy'?'Heavy':'Main';
+  if(size==='Aux') return 'Auxiliary';
+  return size;
+}
+function compconBuildMounts(sourceMounts){
+  const mounts=[], integrated=[];
+  (S.mounts||[]).forEach((mount,index)=>{
+    const type=mount.type||'Main', old=(sourceMounts||[]).find(m=>m.mount_type===type);
+    const oldItems=[...(old?.slots||[]).map(s=>s.weapon),...(old?.extra||[]).map(s=>s.weapon)].filter(Boolean);
+    const rows=(mount.weapons||[]).map(row=>compconRuntimeItem(row,compconFindSource(oldItems,row.name),'weapon'));
+    if(type==='Integrated') { rows.forEach(weapon=>integrated.push({weapon,source:'Lancer Tracker'})); return; }
+    const primarySize=type==='Aux/Aux'?'Auxiliary':type==='Main/Aux'?'Main':type==='Superheavy'?'Superheavy':type==='Heavy'?'Heavy':type==='Main'?'Main':null;
+    const slots=[],extra=[];
+    rows.forEach((weapon,i)=>{
+      const matched=compconFindSource(oldItems,weapon.data?.name||weapon.flavorName||weapon.data?.id);
+      const oldSlot=(old?.slots||[]).find(s=>s.weapon===matched),oldExtra=(old?.extra||[]).find(s=>s.weapon===matched);
+      const size=oldSlot?.size||oldExtra?.size||compconWeaponSize(mount.weapons[i],type)||primarySize||'Main';
+      const slot={size,weapon}; if(i===0) slots.push(slot); else extra.push(slot);
+    });
+    if(!slots.length) slots.push({size:primarySize||'Main',weapon:null});
+    mounts.push({mount_type:type,lock:!!old?.lock,slots,extra,bonus_effects:compconCopy(old?.bonus_effects)||[]});
+  });
+  return {mounts,integratedMounts:integrated};
+}
+function compconFrameSnapshot(name,oldFrame){
+  const key=frameKey(name),def=DB.frames[key]; if(!def) throw new Error(L('export_compcon_no_frame'));
+  const id=compconFrameId(key);
+  if(oldFrame&&oldFrame.id===id) return compconCopy(oldFrame);
+  return {id,license_level:def.ll||0,source:def.src||'GMS',name:key,mechtype:compconCopy(def.role)||[],y_pos:25,description:'',mounts:compconCopy(def.m)||[],stats:compconCopy(def.s)||{},traits:[],core_system:{name:def.c||'',active_name:'',active_effect:def.cd||'',use:'Encounter',frequency:'1/scene',activation:'Protocol',active_actions:[],active_bonuses:[]},image_url:'',license_id:id};
+}
+function compconMechStats(sourceStats){
+  const prior=compconCopy(sourceStats)||{}, max=prior.max||{},current=prior.current||{};
+  Object.assign(max,{hp:S.mech.hpMax,structure:S.mech.structureMax,stress:S.mech.stressMax,heat:S.mech.heatMax,repairs:S.mech.repairsMax,size:S.mech.size,armor:S.mech.armor,speed:S.mech.speed,evasion:S.mech.evasion,edef:S.mech.edef,sensorRange:S.mech.sensors,saveTarget:S.mech.saveTarget,techAttack:S.mech.tech,sp:S.mech.sp});
+  Object.assign(current,{hp:S.mech.hp,structure:S.mech.structure,stress:S.mech.stress,heat:S.mech.heat,repairs:S.mech.repairs,overcharge:S.mech.overcharge,armor:S.mech.armor,speed:S.mech.speed,evasion:S.mech.evasion,edef:S.mech.edef,sensorRange:S.mech.sensors,saveTarget:S.mech.saveTarget,techAttack:S.mech.tech});
+  return {stats:prior.stats||{},max,current,stat_version:prior.stat_version||1,user_added_keys:prior.user_added_keys||[]};
+}
+function compconBuildMech(sourceMech){
+  const mech=compconCopy(sourceMech)||{}, oldFrame=mech.frameData;
+  const frameId=compconFrameId(S.mech.frame);
+  mech.id=mech.id||compconUUID(); mech.name=S.mech.name||S.mech.frame; mech.notes=S.mech.notes||''; mech.frame=frameId;
+  mech.frameData=compconFrameSnapshot(S.mech.frame,oldFrame);
+  const loadouts=Array.isArray(mech.loadouts)?mech.loadouts:[], active=loadouts.length?Math.max(0,Math.min(loadouts.length-1,+mech.active_loadout_index||0)):0;
+  const oldLoadout=compconCopy(loadouts[active])||{id:compconUUID(),name:'Primary'};
+  const oldSystems=[...(oldLoadout.systems||[]),...(oldLoadout.integratedSystems||[])];
+  oldLoadout.systems=(S.systems||[]).map(row=>compconRuntimeItem(row,compconFindSource(oldSystems,row.name),'system'));
+  oldLoadout.integratedSystems=[];
+  const built=compconBuildMounts(oldLoadout.mounts||[]);
+  oldLoadout.mounts=built.mounts; oldLoadout.integratedMounts=built.integratedMounts;
+  oldLoadout.id=oldLoadout.id||compconUUID(); oldLoadout.name=oldLoadout.name||'Primary';
+  oldLoadout.improved_armament=oldLoadout.improved_armament||{mount_type:'Flex',lock:false,slots:[{size:'Main',weapon:null}],extra:[{size:'Auxiliary',weapon:null}],bonus_effects:[]};
+  oldLoadout.integratedWeapon=oldLoadout.integratedWeapon||{mount_type:'Aux',lock:false,slots:[{size:'Auxiliary',weapon:null}],extra:[],bonus_effects:[]};
+  oldLoadout.superheavy_mounting=oldLoadout.superheavy_mounting||{mount_type:'Superheavy',lock:false,slots:[{size:'Superheavy',weapon:null}],extra:[],bonus_effects:[]};
+  if(loadouts.length) loadouts[active]=oldLoadout; else loadouts.push(oldLoadout);
+  mech.loadouts=loadouts; mech.active_loadout_index=active; mech.stats=compconMechStats(mech.stats);
+  mech.counters=mech.counters||{counter_data:[],custom_counters:[]}; mech.statuses=mech.statuses||[]; mech.customStatuses=mech.customStatuses||[]; mech.resistances=mech.resistances||[];
+  return mech;
+}
+function compconReuseRows(rows,sourceRows,list,prefix,makeData){
+  return rows.map(row=>{
+    const name=row.name, found=(sourceRows||[]).find(x=>normFrame(compconItemName(x))===normFrame(name)||normFrame(x?.stub?.name)===normFrame(name));
+    const item=compconCopy(found)||{}, db=list.find(x=>x.n===name||x.nr===name), id=String(item.id||db?.id||prefix+compconSlug(name));
+    item.id=id; item.rank=row.rank;
+    if(!item.data) item.data=makeData(id,name,db);
+    return item;
+  });
+}
+function buildCompconPilotData(){
+  const data=compconCopy(S.pilot.compconSource)||{itemType:'pilot',id:compconUUID(),is_instance:false,instanceId:'',originId:'',le:false,level:0,callsign:'',name:'',player_name:'',status:'Active',text_appearance:'',notes:'',history:'',quirks:[],background:'',mechs:[],special_equipment:{PilotGear:[],Frames:[],MechWeapons:[],WeaponMods:[],MechSystems:[]},sortIndex:0,config:{},favorite_mech:'',save:{},cloud:{},skills:[],talents:[],mechSkills:[0,0,0,0],core_bonuses:[],licenses:[],reserves:[],orgs:[],bond:{xp:0,stress:0,isBroken:false,burdens:[],bondPowers:[],powerSelections:0,maxStress:8,bondAnswers:['',''],minorIdeal:'',clocks:[],force:false},img:{},loadouts:[],active_index:0,stats:{stats:{},max:{hp:6},current:{hp:S.pilot.hp},stat_version:1,user_added_keys:[]},counters:{counter_data:[],custom_counters:[]},statuses:[],customStatuses:[],resistances:[],isInSelfDestruct:false,reactorDestroyed:false,isDead:false,reactionsUsed:[],extraActionsUsed:[],combatActions:[],actionUses:{},usedActions:[],cover:0,mounted:false,overwatch:false,braced:false,braceGranted:false,prepared:false,disengaged:false,boostBonus:0,carrying:false,coreActive:false,corePower:false,aiControl:false,rechargeRolledRound:0,combat_log:[],round:0,turn:0,pending_checks:[],timed_effects:[],brews:[]};
+  const sourceMechs=Array.isArray(data.mechs)?data.mechs:[];
+  let mechIndex=sourceMechs.findIndex(m=>m.id===S.pilot.compconSelectedMechId);
+  if(mechIndex<0) mechIndex=sourceMechs.findIndex(m=>m.id===data.favorite_mech);
+  if(mechIndex<0) mechIndex=0;
+  const previousMech=sourceMechs[mechIndex];
+  const mech=compconBuildMech(previousMech);
+  if(sourceMechs.length) sourceMechs[mechIndex]=mech; else sourceMechs.push(mech);
+  data.mechs=sourceMechs;
+  data.itemType='pilot'; data.level=calcLL(); data.name=S.pilot.name; data.callsign=S.pilot.callsign; data.background=S.pilot.background;
+  data.mechSkills=[S.pilot.hull,S.pilot.agility,S.pilot.systems,S.pilot.engineering];
+  data.skills=compconReuseRows((S.triggers||[]).map(t=>({name:t.name,rank:Math.max(1,Math.min(3,Math.round((+t.bonus||0)/2)))})),data.skills,TRIGGERS,'sk_',(_id,name)=>({id:_id,name,description:name,detail:name}));
+  data.talents=compconReuseRows(S.talents||[],data.talents,DB.talents,'t_',(_id,name,db)=>({id:_id,name,terse:db?.t||'',description:Array.isArray(db?.d)?db.d[0]:'',ranks:Array.isArray(db?.r)?db.r.map((rank,i)=>({name:rank,description:db.d?.[i]||''})):[]}));
+  data.licenses=compconReuseRows(S.pilot.licenses||[],data.licenses,[],'mf_',(_id,name)=>({id:_id,name,source:DB.frames[frameKey(name)]?.src||'',frameName:name}));
+  data.licenses=(S.pilot.licenses||[]).map(license=>{
+    const source=(data.licenses||[]).find(item=>frameKey(item.stub?.name||item.stub?.frameName||item.data?.name||item.id?.replace(/^mf_/,''))===frameKey(license.name));
+    const id=String(source?.id||compconFrameId(license.name)),stub=source?.stub||{id,name:license.name,source:DB.frames[frameKey(license.name)]?.src||'',frameName:frameKey(license.name).toLowerCase(),brew:{LcpId:'',LcpName:'Lancer Core Book',LcpVersion:'',Website:'',Status:'OK',V3:true}};
+    return {id,rank:license.rank,stub};
+  });
+  data.core_bonuses=(S.pilot.coreBonuses||[]).map(name=>{
+    const original=(data.core_bonuses||[]).find(id=>CORE_BONUSES.find(cb=>cb.n===name&&('cb_'+compconSlug(cb.n))===id));
+    return original||'cb_'+compconSlug(name);
+  });
+  data.loadouts=compconCopy(S.pilot.loadouts)||[];
+  if(!data.loadouts.length) data.loadouts=[{id:compconUUID(),name:'Primary',armor:[],weapons:[],gear:[]}];
+  data.active_index=Math.max(0,Math.min(data.loadouts.length-1,+S.pilot.activeLoadout||0));
+  data.special_equipment=compconCopy(S.pilot.specialEquipment)||{PilotGear:[],Frames:[],MechWeapons:[],WeaponMods:[],MechSystems:[]};
+  data.favorite_mech=mech.id;
+  data.stats=data.stats||{stats:{},max:{},current:{},stat_version:1,user_added_keys:[]};
+  data.stats.max=data.stats.max||{}; data.stats.current=data.stats.current||{};
+  data.stats.max.hp=S.pilot.hpMax; data.stats.current.hp=S.pilot.hp;
+  return data;
+}
+function exportCompconJSON(){
+  closeExportMenu();
+  try{
+    const pilot=buildCompconPilotData(), payload={EXPORT_TYPE:'Save Pilot',data:pilot};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='compcon-'+(S.pilot.callsign||S.pilot.name||'pilot')+'.json'; a.click();
+  }catch(e){ alert(e?.message===L('export_compcon_no_frame')?e.message:L('export_compcon_failed')+(e?.message?': '+e.message:'')); }
+}
 function convertCompconPilot(parsed,mechIndex){
   const pilot=parsed?.data||parsed;
   if(!isPlainObject(pilot)||pilot.itemType!=='pilot'||!Array.isArray(pilot.mechs)) throw new Error(L('import_invalid_compcon'));
@@ -3159,6 +3330,8 @@ function convertCompconPilot(parsed,mechIndex){
   next.pilot.loadouts=JSON.parse(JSON.stringify(pilotLoadouts));
   next.pilot.activeLoadout=Math.max(0,Math.min(next.pilot.loadouts.length-1,Number.isInteger(pilot.active_index)?pilot.active_index:0));
   next.pilot.specialEquipment=JSON.parse(JSON.stringify(pilot.special_equipment||{}));
+  next.pilot.compconSource=JSON.parse(JSON.stringify(pilot));
+  next.pilot.compconSelectedMechId=String(sourceMech.id||'');
   next.pilot.hp=pilotStats.hp!==undefined&&pilotStats.hp!==null&&Number.isFinite(+pilotStats.hp)?+pilotStats.hp:(Number.isFinite(+pilot.current_hp)?+pilot.current_hp:next.pilot.hp);
   next.pilot.hull=+(pilot.mechSkills?.[0]||0); next.pilot.agility=+(pilot.mechSkills?.[1]||0);
   next.pilot.systems=+(pilot.mechSkills?.[2]||0); next.pilot.engineering=+(pilot.mechSkills?.[3]||0);
