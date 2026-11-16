@@ -341,6 +341,19 @@
   .global-action-grid .btn svg { width:23px; height:23px; flex:0 0 auto; }
   .global-action-grid .drive-action { gap:5px; }
   .global-action-grid .drive-action svg { width:20px; height:20px; }
+  .import-dropdown { position:relative; min-width:0; }
+  .import-dropdown > .btn { width:100%; }
+  .import-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% + 4px); display:none; gap:2px; padding:4px 0; background:var(--panel); box-shadow:0 6px 16px #0008; }
+  .import-dropdown.open .import-dropdown-menu { display:grid; }
+  .import-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
+  .import-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
+  .import-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
+  .pilot-equipment-select { width:100%; margin:0 0 12px; }
+  .pilot-equip-category { margin:14px 0 6px; color:var(--hud-amber); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+  .pilot-equip-item { padding:9px 0; border-top:1px solid var(--line); }
+  .pilot-equip-item:first-child { border-top:0; }
+  .pilot-equip-meta { color:var(--dim); font-size:13px; margin-top:3px; }
+  .pilot-equip-desc { color:var(--dim); font-size:13px; line-height:1.45; margin-top:5px; }
   .global-version-row { margin:0; justify-content:space-between; }
   .global-version-row > #langToggle { flex:0 0 86px; }
   .global-version-row > .global-version { flex:0 0 auto; margin-left:auto; text-align:right; }
@@ -691,6 +704,10 @@
       </div>
       <p class="hint" style="padding:8px 0 0" id="cbSummary"></p>
     </div>
+    <div class="card" id="pilotEquipmentCard">
+      <div class="card-head"><h2 data-i18n="pilot_equipment">Снаряжение пилота</h2></div>
+      <div id="pilotEquipment"></div>
+    </div>
   </section>
 
   <!-- ============ RULES ============ -->
@@ -805,13 +822,20 @@
       <button class="btn" onclick="openLevelUp()" data-i18n="u213">Левел ап</button>
       <button class="btn primary" onclick="openWizard()" data-i18n="u186">Мастер сборки</button>
       <button class="btn" onclick="exportJSON()" data-i18n="u141">Экспорт JSON</button>
-      <button class="btn" onclick="document.getElementById('importFile').click()" data-i18n="u142">Импорт JSON</button>
+      <div class="import-dropdown" id="importDropdown">
+        <button class="btn" type="button" onclick="toggleImportMenu(event)" aria-haspopup="true" aria-expanded="false"><span data-i18n="u142">Импорт JSON</span> <span aria-hidden="true">▴</span></button>
+        <div class="import-dropdown-menu" role="menu">
+          <button class="btn" type="button" role="menuitem" onclick="chooseImportFile('importFile')" data-i18n="import_tracker">Импорт JSON трекера</button>
+          <button class="btn" type="button" role="menuitem" onclick="chooseImportFile('compconImportFile')" data-i18n="import_compcon">Импорт COMP/CON</button>
+        </div>
+      </div>
       <button class="btn drive-action" type="button" onclick="openProfiles()" title="Google Drive" aria-label="Профили / Google Drive"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00832d" d="M8.4 3h5.2L5.3 17H.1z"/><path fill="#ffba00" d="M13.6 3 23 19h-5.7L8.4 3z"/><path fill="#0066da" d="M5.3 14h14.2l3.3 5H2z"/></svg><span>Google Drive</span></button>
     </div>
-    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
+    <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importJSON(event)">
+    <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 196</span>
+      <span class="dim global-version">Версия трекера: 197</span>
     </div>
   </div>
 </main>
@@ -1077,8 +1101,29 @@ const MOUNT_STYLE = {
 const MOUNT_MAP_OLD = {Aux:'Aux', Main:'Main', Heavy:'Heavy', Superheavy:'Superheavy', Flex:'Flex', Integrated:'Integrated'};
 const CORE_BONUSES = [{"n": "Auto-Stabilizing Hardpoints", "corp": "GMS", "ru": "Автостабилизирующие крепления", "d": "Выберите одно крепление. Оружие на этом креплении получает +1 к точности.", "de": "Choose one mount. Weapons on this mount gain +1 Accuracy."}, {"n": "Overpower Caliber", "corp": "GMS", "ru": "Усиленный калибр", "d": "Выберите одно оружие. 1/раунд, при попадании, оно наносит +1d6 бонусного урона.", "de": "Choose one weapon. 1/round, when you hit with it, it deals +1d6 bonus damage."}, {"n": "Improved Armament", "corp": "GMS", "ru": "Улучшенное вооружение", "d": "Если у вашего меха меньше трёх креплений (не считая встроенных), он получает дополнительное ГИБКОЕ крепление.", "de": "If your mech has fewer than three mounts (excluding integrated mounts), it gains an additional FLEXIBLE mount."}, {"n": "Integrated Weapon", "corp": "GMS", "ru": "Встроенное оружие", "d": "Ваш мех получает новое встроенное крепление для одного ВСПОМОГАТЕЛЬНОГО оружия. Его можно выстрелить 1/раунд свободным действием, когда вы стреляете из любого другого оружия. Его нельзя модифицировать.", "de": "Your mech gains a new integrated mount for one AUXILIARY weapon. It can be fired 1/round as a free action when you fire any other weapon on your mech. It can't be modified."}, {"n": "Mount Retrofitting", "corp": "GMS", "ru": "Переоборудование креплений", "d": "Замените одно крепление на крепление ГЛАВНОЕ/ВСПОМОГАТЕЛЬНОЕ.", "de": "Replace one mount with a MAIN/AUX mount."}, {"n": "Universal Compatibility", "corp": "GMS", "ru": "Универсальная совместимость", "d": "Когда вы активируете CORE SYSTEM, вы также можете свободным действием восстановить всё HP, охладить всё ТЕПЛО и бросить 1d20: при 20+ восстановить 1 CP.", "de": "Any time you activate a CORE SYSTEM, you may also take a free action to restore all HP, cool all HEAT, and roll 1d20: on 20+, regain 1 CP."}, {"n": "Briareos Frame Reinforcement", "corp": "IPS-N", "ru": "Усиление каркаса «Бриарей»", "d": "Пока у меха не больше 1 STRUCTURE, вы получаете СОПРОТИВЛЕНИЕ всему урону. При 0 HP и 0 STRUCTURE мех не уничтожается: делайте проверку повреждения структуры каждый раз при получении урона. В этом состоянии HP не восстанавливается до отдыха или ПОЛНОГО РЕМОНТА.", "de": "As long as your mech has no more than 1 STRUCTURE, you gain RESISTANCE to all damage. When reduced to 0 HP and 0 STRUCTURE, it is not destroyed: instead, you must make a structure damage check each time it takes damage. While in this state, your mech cannot regain HP until you rest or perform a FULL REPAIR."}, {"n": "Fomorian Frame Reinforcement", "corp": "IPS-N", "ru": "Усиление каркаса «Фомор»", "d": "Увеличьте РАЗМЕР меха на одну ступень (макс. 3). Вас нельзя сбить с ног (PRONE), притянуть или отбросить меньшим персонажам.", "de": "Increase your mech's SIZE by one increment (up to a maximum of 3 SIZE). You can't be knocked PRONE, pulled, or knocked back by smaller characters."}, {"n": "Gyges Frame Reinforcement", "corp": "IPS-N", "ru": "Усиление каркаса «Гиг»", "d": "Ваш мех получает +1 к точности всех проверок и спасбросков HULL и +1 УГРОЗУ всем оружием ближнего боя.", "de": "Your mech gains +1 Accuracy on all HULL checks and saves and +1 THREAT with all melee weapons."}, {"n": "Reinforced Frame", "corp": "IPS-N", "ru": "Усиленный каркас", "d": "Ваш мех получает +5 HP.", "de": "Your mech gains +5 HP."}, {"n": "Sloped Plating", "corp": "IPS-N", "ru": "Наклонная броня", "d": "Ваш мех получает +1 БРОНИ (макс. +4).", "de": "Your mech gains +1 ARMOR, up to the maximum (+4)."}, {"n": "Titanomachy Mesh", "corp": "IPS-N", "ru": "Сетка «Титаномахия»", "d": "1/раунд, при успешном ТАРАНЕ или ЗАХВАТЕ вы можете сделать ещё один ТАРАН или ЗАХВАТ свободным действием. Атаками ближнего боя вы отбрасываете цели на 1 клетку дальше.", "de": "1/round, when you successfully RAM or GRAPPLE a mech, you can RAM or GRAPPLE again as a free action. Additionally, when you knock targets back with melee attacks, you knock them back an additional 1 space."}, {"n": "All-Theater Movement Suite", "corp": "SSC", "ru": "Комплекс перемещения для любого театра", "d": "Вы можете летать, когда делаете BOOST или стандартное перемещение; в конце каждого хода, в котором вы летели так, вы получаете 1 ТЕПЛА.", "de": "You can fly when you BOOST or make a standard move; however, you take 1 Heat at the end of each of your turns in which you fly this way."}, {"n": "Full Subjectivity Sync", "corp": "SSC", "ru": "Полная субъективная синхронизация", "d": "Вы получаете +2 УКЛОНЕНИЯ.", "de": "You gain +2 EVASION."}, {"n": "Ghostweave", "corp": "SSC", "ru": "Призрачная ткань", "d": "Во время вашего хода вы НЕВИДИМЫ. Если вы не совершаете действий, кроме стандартного перемещения, СКРЫТИЯ и BOOST, вы остаётесь НЕВИДИМЫМ до начала следующего хода. Вы перестаёте быть НЕВИДИМЫМ, когда совершаете реакцию.", "de": "During your turn, you are INVISIBLE. If you take no actions on your turn other than your standard move, HIDE, and BOOST, you remain INVISIBLE until the start of your next turn. You immediately cease to be INVISIBLE when you take a reaction."}, {"n": "Integrated Nerveweave", "corp": "SSC", "ru": "Встроенная нервная ткань", "d": "Вы перемещаетесь на 2 клетки дальше, когда делаете BOOST.", "de": "You may move an additional 2 spaces when you BOOST."}, {"n": "Kai Bioplating", "corp": "SSC", "ru": "Биопластины «Кай»", "d": "Вы получаете +1 к точности всех проверок и спасбросков AGILITY; вы лазаете и плаваете с нормальной скоростью, игнорируете труднопроходимую местность, а при стандартном перемещении можете прыгать горизонтально на полную СКОРОСТЬ и вверх на половину СКОРОСТИ.", "de": "You gain +1 Accuracy on all AGILITY checks and saves; additionally, you climb and swim at normal speed, ignore difficult terrain, and when making a standard move, can jump horizontally up to your full SPEED and upwards up to half your SPEED (in any combination)."}, {"n": "Neurolink Targeting", "corp": "SSC", "ru": "Нейролинк-наведение", "d": "Ваше дальнобойное оружие получает +3 ДАЛЬНОСТИ.", "de": "Your ranged weapons gain +3 RANGE."}, {"n": "The Lesson of Disbelief", "corp": "HORUS", "ru": "Урок неверия", "d": "Ваш мех получает +1 к точности проверок и спасбросков SYSTEMS и +2 E-DEFENSE.", "de": "Your mech gains +1 Accuracy on SYSTEMS checks and saves, and +2 E-DEFENSE."}, {"n": "The Lesson of the Open Door", "corp": "HORUS", "ru": "Урок открытой двери", "d": "Ваш SAVE TARGET увеличивается на +2; дополнительно, 1/раунд, когда персонаж проваливает спасбросок против вас, он получает 2 ТЕПЛА.", "de": "Your SAVE TARGET increases by +2; additionally, 1/round, when a character fails a save against you, they take 2 Heat."}, {"n": "The Lesson of the Held Image", "corp": "HORUS", "ru": "Урок удерживаемого образа", "d": "1/раунд, реакцией в начале хода союзного персонажа, вы можете попытаться наложить LOCK ON на любого персонажа в пределах SENSORS.", "de": "1/round, as a reaction at the start of an allied character's turn, you may attempt to LOCK ON to any character within SENSORS."}, {"n": "The Lesson of Thinking-Tomorrow's-Thought", "corp": "HORUS", "ru": "Урок мысли о завтрашнем дне", "d": "Когда вы попадаете тех-атакой, ваша следующая атака ближнего боя по той же цели получает +1 к точности, и её урон нельзя уменьшить никаким образом.", "de": "When you hit with a tech attack, your next melee attack against the same target gains +1 Accuracy, and its damage can't be reduced in any way."}, {"n": "The Lesson of Transubstantiation", "corp": "HORUS", "ru": "Урок пресуществления", "d": "Каждый раз, когда вы получаете повреждение структуры, вы исчезаете в непространство и перестаёте быть допустимой целью. Вы появляетесь в том же месте в начале следующего хода. Если это место занято, вы появляетесь в ближайшем свободном месте (на ваш выбор).", "de": "Any time you take structure damage, you disappear into a non-space and cease to be a valid target. You reappear in the same space at the start of your next turn. If that space is occupied, you reappear in the nearest available free space (chosen by you)."}, {"n": "The Lesson of Shaping", "corp": "HORUS", "ru": "Урок формовки", "d": "Вы можете установить дополнительный ИИ в свой мех. Если один войдёт в каскад, другой не даст ему взять управление мехом. Вы теряете управление, только если оба ИИ войдут в каскад.", "de": "You may install an additional AI in your mech. If one enters cascade (or becomes unshackled narratively), the other prevents it from taking control of your mech. You only lose control of your mech if both AI-tagged systems or equipment enter cascade."}, {"n": "Adaptive Reactor", "corp": "HA", "ru": "Адаптивный реактор", "d": "Когда вы делаете STABILIZE и выбираете охлаждение, вы можете потратить 2 REPAIRS, чтобы снять 1 повреждение стресса.", "de": "When you STABILIZE and choose to cool your mech, you may spend 2 REPAIRS to clear 1 stress damage."}, {"n": "Armory-Sculpted Chassis", "corp": "HA", "ru": "Шасси ручной работы Арсенала", "d": "Вы получаете +1 к точности всех проверок и спасбросков ENGINEERING. Когда вы делаете OVERCHARGE, вы получаете мягкое укрытие до начала следующего хода.", "de": "You gain +1 Accuracy on all ENGINEERING checks and saves. When you OVERCHARGE, you gain soft cover until the start of your next turn."}, {"n": "Heatfall Coolant System", "corp": "HA", "ru": "Система охлаждения «Теплопад»", "d": "Ваша цена за OVERCHARGE никогда не превышает 1d6 ТЕПЛА.", "de": "Your cost for OVERCHARGE never goes past 1d6 Heat."}, {"n": "Integrated Ammo Feeds", "corp": "HA", "ru": "Встроенные подачи боеприпасов", "d": "Все системы и оружие с LIMITED получают дополнительно два заряда.", "de": "All LIMITED systems and weapons gain an additional two charges."}, {"n": "Stasis Shielding", "corp": "HA", "ru": "Стазисная защита", "d": "Каждый раз, когда вы получаете повреждение стресса, вы получаете СОПРОТИВЛЕНИЕ всему урону до начала следующего хода.", "de": "Whenever you take stress damage, you gain RESISTANCE to all damage until the start of your next turn."}, {"n": "Superior By Design", "corp": "HA", "ru": "Превосходство конструкции", "d": "Вы получаете ИММУНИТЕТ к IMPAIRED и +2 Heat Cap.", "de": "You gain IMMUNITY to IMPAIRED and gain +2 Heat Cap."}];
 const CORP_NAMES = {GMS:'GMS','IPS-N':'IPS-N',SSC:'Smith-Shimano',HORUS:'HORUS',HA:'Harrison Armory'};
+STR.import_tracker = {ru:'Импорт JSON', en:'Import JSON'};
+STR.import_compcon = {ru:'Импорт COMP/CON', en:'Import COMP/CON'};
+STR.import_failed = {ru:'Не удалось импортировать файл', en:'Could not import file'};
+STR.import_invalid_tracker = {ru:'Это не JSON трекера: нужны объекты pilot и mech.', en:'This is not Tracker JSON: pilot and mech objects are required.'};
+STR.import_invalid_compcon = {ru:'Не удалось распознать экспорт COMP/CON. Ожидался JSON пилота COMP/CON.', en:'Could not recognize COMP/CON export. Expected a COMP/CON pilot JSON.'};
+STR.import_no_mechs = {ru:'В файле COMP/CON нет мехов для импорта.', en:'The COMP/CON file contains no mechs to import.'};
+STR.import_pick_mech = {ru:'В файле несколько мехов. Введите номер меха для импорта:', en:'This file has multiple mechs. Enter the number of the mech to import:'};
+STR.import_bad_mech = {ru:'Указан неверный номер меха.', en:'The mech number is invalid.'};
+STR.import_unknown_frame = {ru:'Фрейм не найден в базе трекера: ', en:'Frame not found in the tracker database: '};
+STR.import_done = {ru:'Пилот и мех COMP/CON импортированы.', en:'COMP/CON pilot and mech imported.'};
+STR.pilot_equipment = {ru:'Снаряжение пилота', en:'Pilot Equipment'};
+STR.pilot_loadout = {ru:'Набор снаряжения', en:'Loadout'};
+STR.pilot_armor = {ru:'Броня', en:'Armor'};
+STR.pilot_weapons = {ru:'Оружие пилота', en:'Pilot Weapons'};
+STR.pilot_gear = {ru:'Снаряжение', en:'Gear'};
+STR.pilot_special = {ru:'Особое снаряжение', en:'Special Equipment'};
+STR.pilot_equip_empty = {ru:'Снаряжение пилота не импортировано.', en:'No pilot equipment imported.'};
+STR.pilot_equip_uses = {ru:'Использовано: {C} / {M}', en:'Uses: {C} / {M}'};
+STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
+STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
+
 const DEFAULTS = {
-  pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[] },
+  pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{} },
   mech: { name:'', frame:'Everest', size:1, speed:4, hp:10, hpMax:10, structure:4, structureMax:4, stress:4, stressMax:4, heat:0, heatMax:6, repairs:5, repairsMax:5, overcharge:0, coreUsed:0, armor:0, evasion:8, edef:8, sensors:10, attack:0, saveTarget:10, tech:0, sp:6, coreSystem:'Hyperspec Fuel Injector', coreDesc:'Active — Power Up (Protocol, Encounter): For the rest of this scene, you gain +1 Accuracy on all attacks, checks, and saves; additionally, 1/turn, you can Boost as a free action.', traits:'Initiative: 1/scene the Everest may take any quick action as a free action.\n\nReplaceable Parts: While resting, the Everest can be repaired at a rate of 1 Repair per 1 structure damage, instead of 2 Repairs.', notes:'' },
   triggers: [],
   talents: [],
@@ -1166,6 +1211,9 @@ function migrate(d){
   if (typeof d.mech.overcharge !== 'number') d.mech.overcharge = 0;
   if (!d.pilot) d.pilot = {};
   if (!Array.isArray(d.pilot.coreBonuses)) d.pilot.coreBonuses = [];
+  if (!Array.isArray(d.pilot.loadouts)) d.pilot.loadouts = [];
+  if (!Number.isInteger(d.pilot.activeLoadout) || d.pilot.activeLoadout < 0 || d.pilot.activeLoadout >= d.pilot.loadouts.length) d.pilot.activeLoadout = 0;
+  if (!isPlainObject(d.pilot.specialEquipment)) d.pilot.specialEquipment = {};
   // v55: LL считается из лицензий — сохранённое поле ll больше не используется
   if ('ll' in d.pilot) delete d.pilot.ll;
   // v8: лицензии из свободной строки -> структурированный список
@@ -2223,6 +2271,7 @@ function renderLists(){
   syncEditToggles();
   if (typeof wizardOpen !== 'undefined' && wizardOpen) wizardRenderStep();
   if (typeof luOpen !== 'undefined' && luOpen) luRenderStep();
+  renderPilotEquipment();
   const licNote = S.settings.licenseFilter ? L('lic_filter_on') : '';
   ['licNoteW','licNoteS'].forEach(id=>{ const el = document.getElementById(id); if (el) el.textContent = licNote; });
   renderCounters();
@@ -2286,6 +2335,43 @@ function addMount(){ S.mounts.push({type:'Flex', weapons:[]}); save(); renderLis
 function delMount(mi){ const m = S.mounts[mi]; if (!m) return; if (!confirm(L('del_mount_confirm').replace('{M}', m.type))) return; S.mounts.splice(mi,1); save(); renderLists(); }
 function delWeapon(mi,wi){ S.mounts[mi].weapons.splice(wi,1); save(); renderLists(); }
 function normFrame(s){ return (s||'').toLowerCase().replace(/[’‘`]/g, "'").trim(); }
+function selectPilotEquipmentLoadout(value){
+  const loadouts=S.pilot.loadouts||[]; if(!loadouts.length) return;
+  S.pilot.activeLoadout=Math.max(0,Math.min(loadouts.length-1,+value||0));
+  save(); renderPilotEquipment();
+}
+function renderPilotEquipment(){
+  const root=document.getElementById('pilotEquipment'); if(!root) return;
+  const loadouts=Array.isArray(S.pilot.loadouts)?S.pilot.loadouts:[];
+  const special=S.pilot.specialEquipment||{};
+  const index=loadouts.length?Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0)):0;
+  const loadout=loadouts[index]||{};
+  const select=loadouts.length>1?`<label class="dim">${esc(L('pilot_loadout'))}<select class="pilot-equipment-select" onchange="selectPilotEquipmentLoadout(this.value)">${loadouts.map((item,i)=>`<option value="${i}" ${i===index?'selected':''}>${esc(item.name||`${L('pilot_loadout')} ${i+1}`)}</option>`).join('')}</select></label>`:'';
+  const renderItem=item=>{
+    if(!item) return '';
+    const data=item.data||item, name=item.flavorName||data.name||item.name||item.id||String(item);
+    const description=String(item.flavorDescription||data.effect||data.description||'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/gi,' ');
+    const meta=[];
+    if(Array.isArray(data.damage)&&data.damage.length) meta.push(data.damage.map(x=>[x.val,x.type].filter(Boolean).join(' ')).join(', '));
+    if(Array.isArray(data.range)&&data.range.length) meta.push(data.range.map(x=>[x.type,x.val].filter(v=>v!==undefined&&v!=='').join(' ')).join(', '));
+    if(Array.isArray(data.bonuses)&&data.bonuses.length) meta.push(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · '));
+    const max=+(item.maxUses||0), used=+(item.currentUses||0);
+    if(max>0) meta.push(L('pilot_equip_uses').replace('{C}',used).replace('{M}',max));
+    if(item.destroyed) meta.push(L('pilot_equip_destroyed'));
+    if(item.isUsed) meta.push(L('pilot_equip_used'));
+    if(item.note) meta.push(item.note);
+    return `<div class="pilot-equip-item"><b>${esc(name)}</b>${meta.length?`<div class="pilot-equip-meta">${esc(meta.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>`;
+  };
+  const groups=[['armor','pilot_armor'],['weapons','pilot_weapons'],['gear','pilot_gear']];
+  let content='';
+  groups.forEach(([key,label])=>{
+    const rows=Array.isArray(loadout[key])?loadout[key].filter(Boolean):[];
+    if(rows.length) content+=`<div class="pilot-equip-category">${esc(L(label))}</div>${rows.map(renderItem).join('')}`;
+  });
+  const extras=Object.entries(special).flatMap(([category,rows])=>Array.isArray(rows)?rows.map(item=>({item,category})):[]);
+  if(extras.length) content+=`<div class="pilot-equip-category">${esc(L('pilot_special'))}</div>${extras.map(({item,category})=>renderItem(item&&typeof item==='object'?item:{name:String(item),note:category})).join('')}`;
+  root.innerHTML=select+(content||`<p class="hint">${esc(L('pilot_equip_empty'))}</p>`);
+}
 function hasLicense(name, rank){
   if (!name || name === 'GMS') return true;
   const key = frameKey(name);
@@ -2974,11 +3060,177 @@ function exportJSON(){
   a.download = 'lancer-' + (S.pilot.callsign || 'pilot') + '.json';
   a.click();
 }
+function toggleImportMenu(ev){
+  ev.stopPropagation();
+  const box=document.getElementById('importDropdown'); if(!box) return;
+  const open=box.classList.toggle('open');
+  const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded',String(open));
+}
+function closeImportMenu(){
+  const box=document.getElementById('importDropdown'); if(!box) return;
+  box.classList.remove('open');
+  const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded','false');
+}
+function chooseImportFile(id){ closeImportMenu(); const input=document.getElementById(id); if(input) input.click(); }
+document.addEventListener('click',ev=>{ if(!ev.target.closest('#importDropdown')) closeImportMenu(); });
+function isPlainObject(value){ return !!value && typeof value==='object' && !Array.isArray(value); }
+function readImportFile(ev,handler){
+  const input=ev.target, file=input.files&&input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{ try { handler(JSON.parse(reader.result)); } catch(e){ alert(L('import_failed')+': '+(e&&e.message?e.message:L('json_read_fail'))); } finally { input.value=''; } };
+  reader.onerror=()=>{ alert(L('import_failed')+': '+L('json_read_fail')); input.value=''; };
+  reader.readAsText(file);
+}
+function commitImportedProfile(next,notice){
+  const previous=S, previousRaw=localStorage.getItem(KEY);
+  try {
+    migrate(next);
+    Object.values(EDIT_KEYS).forEach(key=>{ next.settings[key]=false; });
+    localStorage.setItem(KEY,JSON.stringify(next));
+    S=next;
+    save();
+    syncInputs(); renderLists(); renderCounters(); applyLang();
+    if(notice) alert(notice);
+  } catch(e) { S=previous; if(previousRaw===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY,previousRaw); throw e; }
+}
 function importJSON(ev){
-  const f = ev.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ()=>{ try { S = JSON.parse(r.result); migrate(S); save(); location.reload(); } catch(e){ alert(L('json_read_fail')); } };
-  r.readAsText(f);
+  readImportFile(ev,parsed=>{
+    if(!isPlainObject(parsed)||!isPlainObject(parsed.pilot)||!isPlainObject(parsed.mech)) throw new Error(L('import_invalid_tracker'));
+    if((parsed.settings!==undefined&&!isPlainObject(parsed.settings))||
+      ['name','callsign','background'].some(k=>parsed.pilot[k]!==undefined&&typeof parsed.pilot[k]!=='string')||
+      ['name','frame'].some(k=>parsed.mech[k]!==undefined&&typeof parsed.mech[k]!=='string')) throw new Error(L('import_invalid_tracker'));
+    for(const key of ['triggers','talents','mounts','systems','statuses']) if(parsed[key]!==undefined&&!Array.isArray(parsed[key])) throw new Error(L('import_invalid_tracker'));
+    if(parsed.pilot.licenses!==undefined&&!Array.isArray(parsed.pilot.licenses)&&typeof parsed.pilot.licenses!=='string') throw new Error(L('import_invalid_tracker'));
+    if(parsed.pilot.coreBonuses!==undefined&&!Array.isArray(parsed.pilot.coreBonuses)) throw new Error(L('import_invalid_tracker'));
+    if((parsed.pilot.loadouts!==undefined&&!Array.isArray(parsed.pilot.loadouts))||
+      (parsed.pilot.specialEquipment!==undefined&&!isPlainObject(parsed.pilot.specialEquipment))||
+      (parsed.pilot.activeLoadout!==undefined&&!Number.isInteger(parsed.pilot.activeLoadout))) throw new Error(L('import_invalid_tracker'));
+    const next=JSON.parse(JSON.stringify(parsed));
+    migrate(next);
+    commitImportedProfile(next,'');
+  });
+}
+function compconItemName(item){ return String(item?.data?.name||item?.stub?.name||item?.name||'').trim(); }
+function compconDbItem(list,item){
+  const name=compconItemName(item), id=String(item?.id||item?.data?.id||'');
+  return list.find(x=>(id&&x.id===id)||(name&&(x.n===name||x.nr===name)));
+}
+function compconDamage(item,db){
+  if(db) return {dmg:db.d||'',range:db.r||'',desc:db.x||''};
+  const data=item?.data||{};
+  const dmg=(data.damage||[]).map(x=>[x.val,x.type].filter(Boolean).join(' ')).join(', ');
+  const range=(data.range||[]).map(x=>[x.type,x.val].filter(v=>v!==undefined&&v!=='').join(' ')).join(', ');
+  return {dmg,range,desc:item?.flavorDescription||data.description||''};
+}
+function compconRankRows(rows,list){
+  return (Array.isArray(rows)?rows:[]).map(row=>{
+    const name=compconItemName(row)||String(row?.id||'').replace(/^[^_]+_/,'').replace(/_/g,' ');
+    const db=compconDbItem(list,row);
+    return {name:db?db.n:name,rank:Math.max(1,Math.min(3,+row?.rank||1))};
+  }).filter(row=>row.name);
+}
+function convertCompconPilot(parsed,mechIndex){
+  const pilot=parsed?.data||parsed;
+  if(!isPlainObject(pilot)||pilot.itemType!=='pilot'||!Array.isArray(pilot.mechs)) throw new Error(L('import_invalid_compcon'));
+  if((pilot.loadouts!==undefined&&!Array.isArray(pilot.loadouts))||(pilot.special_equipment!==undefined&&!isPlainObject(pilot.special_equipment))) throw new Error(L('import_invalid_compcon'));
+  const pilotLoadouts=Array.isArray(pilot.loadouts)?pilot.loadouts:(pilot.loadout?[pilot.loadout]:[]);
+  if(pilotLoadouts.some(item=>!isPlainObject(item)||['armor','weapons','gear'].some(key=>item[key]!==undefined&&!Array.isArray(item[key])))) throw new Error(L('import_invalid_compcon'));
+  if(!pilot.mechs.length) throw new Error(L('import_no_mechs'));
+  let index=Number.isInteger(mechIndex)?mechIndex:-1;
+  if(index<0&&pilot.mechs.length>1){
+    const favorite=pilot.mechs.findIndex(m=>m.id===pilot.favorite_mech);
+    const active=Number.isInteger(pilot.active_index)?pilot.active_index:-1;
+    const preferred=favorite>=0?favorite:(active>=0&&active<pilot.mechs.length?active:0);
+    const choices=pilot.mechs.map((m,i)=>`${i+1}. ${m.name||compconItemName(m.frameData)||m.frame}`).join('\n');
+    const answer=prompt(L('import_pick_mech')+'\n'+choices,String(preferred+1));
+    if(answer===null) return null;
+    index=Number(answer)-1;
+  }
+  if(index<0) index=0;
+  if(index>=pilot.mechs.length) throw new Error(L('import_bad_mech'));
+  const sourceMech=pilot.mechs[index], frameName=sourceMech.frameData?.name||sourceMech.frameData?.frameName||sourceMech.frame;
+  const frame=frameKey(frameName), frameDef=DB.frames[frame];
+  if(!frameDef) throw new Error(L('import_unknown_frame')+frameName);
+  const next=JSON.parse(JSON.stringify(DEFAULTS));
+  const pilotStats=pilot.stats?.current||{};
+  next.pilot.name=String(pilot.name||'');
+  next.pilot.callsign=String(pilot.callsign||'');
+  next.pilot.background=String(pilot.background||'');
+  next.pilot.loadouts=JSON.parse(JSON.stringify(pilotLoadouts));
+  next.pilot.activeLoadout=Math.max(0,Math.min(next.pilot.loadouts.length-1,Number.isInteger(pilot.active_index)?pilot.active_index:0));
+  next.pilot.specialEquipment=JSON.parse(JSON.stringify(pilot.special_equipment||{}));
+  next.pilot.hp=pilotStats.hp!==undefined&&pilotStats.hp!==null&&Number.isFinite(+pilotStats.hp)?+pilotStats.hp:(Number.isFinite(+pilot.current_hp)?+pilot.current_hp:next.pilot.hp);
+  next.pilot.hull=+(pilot.mechSkills?.[0]||0); next.pilot.agility=+(pilot.mechSkills?.[1]||0);
+  next.pilot.systems=+(pilot.mechSkills?.[2]||0); next.pilot.engineering=+(pilot.mechSkills?.[3]||0);
+  next.pilot.licenses=(pilot.licenses||[]).map(license=>{
+    const licenseName=license.stub?.name||license.stub?.frameName||'';
+    const name=licenseName?frameKey(licenseName):String(license.id||'').replace(/^mf_/,'').replace(/_/g,' ');
+    return {name,rank:Math.max(1,Math.min(3,+license.rank||1))};
+  }).filter(license=>license.name);
+  let unknownCoreBonuses=0;
+  next.pilot.coreBonuses=(pilot.core_bonuses||[]).map(bonus=>{
+    const id=String(typeof bonus==='string'?bonus:bonus?.id||'').replace(/^cb_/,'');
+    const key=id.toLowerCase().replace(/[^a-z0-9]/g,'');
+    const match=CORE_BONUSES.find(cb=>cb.n.toLowerCase().replace(/[^a-z0-9]/g,'')===key);
+    if(match) return match.n;
+    if(id) unknownCoreBonuses++;
+    return id||'';
+  }).filter(Boolean);
+  next.triggers=(pilot.skills||[]).map(row=>({name:compconItemName(row)||String(row.id||''),bonus:2*Math.max(1,+row.rank||1)})).filter(row=>row.name);
+  next.talents=compconRankRows(pilot.talents,DB.talents);
+  next.mech.name=String(sourceMech.name||''); next.mech.frame=frame;
+  if(frameDef.c!==undefined) next.mech.coreSystem=frameDef.c;
+  if(frameDef.cd!==undefined) next.mech.coreDesc=frameDef.cd;
+  if(frameDef.t!==undefined) next.mech.traits=frameDef.t;
+  const loadout=sourceMech.loadouts?.[sourceMech.active_loadout_index||0]||sourceMech.loadouts?.[0]||{};
+  next.systems=[];
+  for(const item of [...(loadout.systems||[]),...(loadout.integratedSystems||[])]){
+    const db=compconDbItem(DB.systems,item), data=item?.data||{}, name=compconItemName(item);
+    const row={name:db?db.n:(item.flavorName||name||String(item.id||'System')),sp:db?db.p:(+data.sp||0),desc:db?db.x:(item.flavorDescription||data.description||'')};
+    const base=Number(item.maxUses)||Number(db?.lim)||0, used=Number(item.currentUses)||0;
+    if(base>0){row.lim=base;row.left=Math.max(0,base+limBonus()-used);}
+    next.systems.push(row);
+  }
+  const mounts=Array.isArray(loadout.mounts)?loadout.mounts:[];
+  next.mounts=mounts.map(mount=>{
+    const weapons=[];
+    for(const slot of [...(mount.slots||[]),...(mount.extra||[])]){
+      const item=slot?.weapon; if(!item) continue;
+      const db=compconDbItem(DB.weapons,item), name=compconItemName(item), details=compconDamage(item,db);
+      const row={name:db?db.n:(item.flavorName||name||String(item.id||'Weapon')),dmg:details.dmg,range:details.range,desc:item.flavorDescription||details.desc||''};
+      const base=Number(item.maxUses)||Number(db?.lim)||0, used=Number(item.currentUses)||0;
+      if(base>0){row.lim=base;row.left=Math.max(0,base+limBonus()-used);}
+      weapons.push(row);
+    }
+    return {type:String(mount.mount_type||'Main'),weapons};
+  });
+  if(!next.mounts.length) next.mounts=JSON.parse(JSON.stringify(DEFAULTS.mounts));
+  next.mech.notes=String(sourceMech.notes||'');
+  const cStats=sourceMech.stats?.current||{}, cMax=sourceMech.stats?.max||{};
+  const copyCurrent=(stat,maxStat,target,fallback)=>{
+    if(Number.isFinite(+cStats[stat])&&Number(cMax[maxStat])>0) next.mech[target]=+cStats[stat];
+    else if(Number.isFinite(+sourceMech[fallback])) next.mech[target]=+sourceMech[fallback];
+  };
+  copyCurrent('hp','hp','hp','current_hp'); copyCurrent('structure','structure','structure','current_structure');
+  copyCurrent('stress','stress','stress','current_stress'); copyCurrent('heat','heat','heat','current_heat');
+  copyCurrent('repairs','repairs','repairs','current_repairs');
+  copyCurrent('overcharge','overcharge','overcharge','current_overcharge');
+  const notImported=[];
+  if(pilot.mechs.length>1) notImported.push(`${pilot.mechs.length-1} ${isRu()?'других меха(ов)':'other mech(s)'}`);
+  if((sourceMech.loadouts||[]).length>1) notImported.push(isRu()?'другие лоадауты выбранного меха':'other loadouts for the selected mech');
+  if((pilot.reserves||[]).length) notImported.push(isRu()?'резервы пилота':'pilot reserves');
+  if((pilot.orgs||[]).length) notImported.push(isRu()?'организации пилота':'pilot organizations');
+  if((sourceMech.statuses||[]).length||(sourceMech.customStatuses||[]).length||(sourceMech.timed_effects||[]).length) notImported.push(isRu()?'боевые статусы и временные эффекты':'combat statuses and timed effects');
+  if(unknownCoreBonuses) notImported.push(`${unknownCoreBonuses} ${isRu()?'неизвестных Core Bonus':'unrecognized Core Bonus(es)'}`);
+  migrate(next);
+  return {next,notice:notImported.length?(isRu()?'Импорт выполнен. Не перенесено: ':'Imported. Not carried over: ')+notImported.join(', ')+'.':L('import_done')};
+}
+function importCompconJSON(ev){
+  readImportFile(ev,parsed=>{
+    const result=convertCompconPilot(parsed);
+    if(!result) return;
+    commitImportedProfile(result.next,result.notice);
+  });
 }
 function resetAll(){
   if (!confirm(L('reset_confirm'))) return;
