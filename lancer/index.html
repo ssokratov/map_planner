@@ -872,7 +872,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 211</span>
+      <span class="dim global-version">Версия трекера: 212</span>
     </div>
   </div>
 </main>
@@ -883,7 +883,7 @@
   <button class="btn primary" onclick="document.getElementById('tagDialog').close()" data-i18n="u145">Закрыть</button>
 </dialog>
 
-<dialog id="refDialog" onclick="if(event.target===this)this.close()">
+<dialog id="refDialog" onclick="if(event.target===this)this.close()" onclose="refDlgClosed()">
   <h3 id="refDlgName"></h3>
   <p id="refDlgBody" style="white-space:pre-line"></p>
   <button class="btn primary" onclick="document.getElementById('refDialog').close()" data-i18n="u145">Закрыть</button>
@@ -916,7 +916,7 @@
     <button class="btn" onclick="document.getElementById('customSystemDlg').close()" data-i18n="u152">Отмена</button>
   </div>
 </dialog>
-<dialog id="searchDlg" onclick="if(event.target===this)closeSearchDlg()">
+<dialog id="searchDlg" onclick="if(event.target===this)closeSearchDlg()" onclose="searchDlgClosed()">
   <div class="search-dlg">
     <div class="row" id="searchDlgTop" style="margin-bottom:12px">
       <input type="text" id="searchDlgInput" oninput="renderSearchResults(this.value)">
@@ -1007,16 +1007,94 @@ function openSearch(kind, ctx){
   const inp = document.getElementById('searchDlgInput');
   const ph = {weapon: L('ph_weapsearch'), system: L('p003'), talent: L('p002'), trigger: L('p010'), license: L('search_ph_license'), frame: L('p009')}[kind] || '';
   if (inp){ inp.placeholder = ph; inp.value = ''; }
+  searchDlgStack = [{v:'search'}];
   renderSearchResults('');
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.showModal) dlg.showModal();
+  searchDlgOpen();
   // v61 убрала явный inp.focus(), но этого мало: showModal() сам фокусит
   // первый фокусабельный элемент диалога (поле поиска) — и на телефоне
   // клавиатура всё равно открывается. Снимаем фокус сразу после открытия.
   // Кто хочет искать — тапнет в поле сам.
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 }
-function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if (dlg && dlg.close) dlg.close(); }
+function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if (dlg && dlg.close) dlg.close(); searchDlgStack = []; }
+// v212: стек видов диалога поиска — «Назад» (кнопка и браузерное Назад) идёт по нему:
+// поиск → лицензия → фрейм → …, а не теряет контекст (было: из фрейма, открытого
+// из лицензии, «Назад» вёл в результаты поиска, а лицензия пропадала).
+// Одна запись истории на сессию диалога: браузерное Назад на глубине > 1 снимает
+// один вид и перевооружается (pushState заново), на верхнем виде — закрывает диалог.
+let searchDlgStack = [];
+let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
+let refDlgHist = false;     // то же для refDialog
+let dlgPopClosing = false;  // диалог закрывается по popstate — history.back() не нужен
+function histPush(){
+  try { if (typeof history !== 'undefined' && history.pushState) history.pushState({lancerDlg:1}, ''); } catch(e){}
+}
+function histBack(){
+  try { if (typeof history !== 'undefined' && history.back) history.back(); } catch(e){}
+}
+function bindDlgHistory(){
+  // Один раз: браузерное Назад закрывает верхний диалог / идёт по стеку видов.
+  if (bindDlgHistory.done) return;
+  bindDlgHistory.done = true;
+  if (typeof window === 'undefined' || !window.addEventListener) return;
+  window.addEventListener('popstate', ()=>{
+    const ref = document.getElementById('refDialog');
+    if (ref && ref.open){ dlgPopClosing = true; refDlgHist = false; ref.close(); dlgPopClosing = false; return; }
+    const dlg = document.getElementById('searchDlg');
+    if (dlg && dlg.open){
+      if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
+      else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
+    }
+  });
+}
+function searchDlgOpen(){
+  bindDlgHistory();
+  const dlg = document.getElementById('searchDlg');
+  if (dlg && dlg.showModal && !dlg.open) dlg.showModal();
+  if (!searchDlgHist){ histPush(); searchDlgHist = true; }
+}
+function searchDlgRenderTop(){
+  const top = searchDlgStack[searchDlgStack.length - 1];
+  const box = document.getElementById('searchDlgResults');
+  if (!box) return;
+  if (!top || top.v === 'search'){
+    const inp = document.getElementById('searchDlgInput');
+    renderSearchResults(inp ? inp.value : '');
+    return;
+  }
+  const inp = document.getElementById('searchDlgInput');
+  if (inp) inp.style.display = 'none';
+  const topEl = document.getElementById('searchDlgTop');
+  if (topEl) topEl.style.justifyContent = 'flex-end';
+  box.innerHTML = top.v === 'license' ? licenseDetailHtml(top.key) : frameDetailHtml(top.key);
+}
+function searchDlgPush(view){
+  const top = searchDlgStack[searchDlgStack.length - 1];
+  if (top && top.v === view.v && top.key === view.key){ searchDlgRenderTop(); return; }
+  searchDlgStack.push(view);
+  searchDlgOpen();
+  searchDlgRenderTop();
+}
+function searchDlgBack(){
+  // Кнопка «← Назад» внутри диалога: снять один вид; на верхнем виде — закрыть диалог.
+  if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); return; }
+  closeSearchDlg();
+}
+function searchDlgClosed(){
+  // Диалог закрыт кнопкой/фоном/Esc — убрать запись истории, которую мы пушили.
+  searchDlgStack = [];
+  if (searchDlgHist){ searchDlgHist = false; if (!dlgPopClosing) histBack(); }
+}
+function refDlgClosed(){
+  if (refDlgHist){ refDlgHist = false; if (!dlgPopClosing) histBack(); }
+}
+function dlgEnsureBase(from){
+  // Диалог открывается свежим: база стека — поиск (из поиска) или пусто (из Правил,
+  // где «Назад» с единственного вида закрывает диалог, как раньше).
+  const dlg = document.getElementById('searchDlg');
+  if (dlg && dlg.open) return;
+  searchDlgStack = (from === 'rules') ? [] : [{v:'search'}];
+}
 function renderSearchResults(q){
   frameDetailKey = null;
   licenseDetailKey = null;
@@ -3096,22 +3174,10 @@ function licenseDetailHtml(name){
 function showLicenseDetail(name, from){
   licenseDetailKey = name;
   licenseDetailFrom = from || 'search';
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.showModal && !dlg.open) dlg.showModal();
-  const inp = document.getElementById('searchDlgInput');
-  if (inp) inp.style.display = 'none';
-  const top = document.getElementById('searchDlgTop');
-  if (top) top.style.justifyContent = 'flex-end';
-  const box = document.getElementById('searchDlgResults');
-  if (!box) return;
-  box.innerHTML = licenseDetailHtml(name);
+  dlgEnsureBase(licenseDetailFrom);
+  searchDlgPush({v:'license', key:name});
 }
-function licenseDetailBack(){
-  licenseDetailKey = null;
-  if (licenseDetailFrom === 'rules'){ licenseDetailFrom = 'search'; closeSearchDlg(); return; }
-  const inp = document.getElementById('searchDlgInput');
-  renderSearchResults(inp ? inp.value : '');
-}
+function licenseDetailBack(){ searchDlgBack(); }
 // v205: стандартный способ показать что угодно по чипу — один диалог-референс
 // для действия, системы, оружия, фрейма, таланта и механики (например,
 // кости лидерства — их нет в базе как отдельной сущности).
@@ -3242,6 +3308,9 @@ function showRef(kind, key){
   nameEl.textContent = name;
   bodyEl.innerHTML = linkTagTerms(esc(body));
   dlg.showModal();
+  // v212: браузерное Назад закрывает диалог-референс (одна запись истории на открытие).
+  bindDlgHistory();
+  if (!refDlgHist){ histPush(); refDlgHist = true; }
 }
 function frameDetailHtml(key){
   const F = DB.frames[key];
@@ -3285,24 +3354,10 @@ function frameDetailHtml(key){
 function showFrameDetail(key, from){
   frameDetailKey = key;
   frameDetailFrom = from || 'search';
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.showModal && !dlg.open) dlg.showModal();
-  // На карточке фрейма поле поиска сверху не нужно и сбивает с толку — прячем его,
-  // крестик закрытия остаётся справа.
-  const inp = document.getElementById('searchDlgInput');
-  if (inp) inp.style.display = 'none';
-  const top = document.getElementById('searchDlgTop');
-  if (top) top.style.justifyContent = 'flex-end';
-  const box = document.getElementById('searchDlgResults');
-  if (!box) return;
-  box.innerHTML = frameDetailHtml(key);
+  dlgEnsureBase(frameDetailFrom);
+  searchDlgPush({v:'frame', key});
 }
-function frameDetailBack(){
-  frameDetailKey = null;
-  if (frameDetailFrom === 'rules'){ frameDetailFrom = 'search'; closeSearchDlg(); return; }
-  const inp = document.getElementById('searchDlgInput');
-  renderSearchResults(inp ? inp.value : '');
-}
+function frameDetailBack(){ searchDlgBack(); }
 // Описание: до абзаца (~240 знаков) — целиком; длиннее — абзац +
 // «подробнее» в конце, разворачивается в полный текст; «свернуть» —
 // такая же синяя ссылка в конце текста (v29–v32, для телефона)
