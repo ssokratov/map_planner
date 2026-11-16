@@ -2512,6 +2512,10 @@ const DB = {
         [
           "tg_grenade",
           null
+        ],
+        [
+          "tg_mine",
+          null
         ]
       ]
     },
@@ -2561,6 +2565,10 @@ const DB = {
         ],
         [
           "tg_grenade",
+          null
+        ],
+        [
+          "tg_mine",
           null
         ]
       ]
@@ -3065,6 +3073,10 @@ const DB = {
         [
           "tg_grenade",
           null
+        ],
+        [
+          "tg_mine",
+          null
         ]
       ]
     },
@@ -3505,6 +3517,10 @@ const DB = {
         ],
         [
           "tg_grenade",
+          null
+        ],
+        [
+          "tg_mine",
           null
         ]
       ]
@@ -4223,6 +4239,10 @@ const DB = {
         [
           "tg_grenade",
           null
+        ],
+        [
+          "tg_mine",
+          null
         ]
       ]
     },
@@ -4413,6 +4433,10 @@ const DB = {
         [
           "tg_grenade",
           null
+        ],
+        [
+          "tg_mine",
+          null
         ]
       ]
     },
@@ -4554,6 +4578,10 @@ const DB = {
         [
           "tg_grenade",
           null
+        ],
+        [
+          "tg_mine",
+          null
         ]
       ]
     },
@@ -4632,6 +4660,10 @@ const DB = {
         ],
         [
           "tg_grenade",
+          null
+        ],
+        [
+          "tg_mine",
           null
         ]
       ]
