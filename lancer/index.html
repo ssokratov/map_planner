@@ -807,7 +807,7 @@
     <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 193</span>
+      <span class="dim global-version">Версия трекера: 194</span>
     </div>
   </div>
 </main>
@@ -1341,7 +1341,7 @@ function renderProfileList(){
     const stamp=stampFor(p);
     const saveButton=!p.driveFileId&&p.id===profileCatalog.active?`<button type="button" class="btn profile-save-drive" title="Сохранить профиль в Google Drive" aria-label="Сохранить профиль в Google Drive" onclick="saveProfileToDrive('${esc(p.id)}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3h13l3 3v15H4z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h14m-6-6 6 6-6 6"/></svg><svg class="drive-brand" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00832d" d="M8.4 3h5.2L5.3 17H.1z"/><path fill="#ffba00" d="M13.6 3 23 19h-5.7L8.4 3z"/><path fill="#0066da" d="M5.3 14h14.2l3.3 5H2z"/></svg></button>`:'';
     const isActive=p.id===profileCatalog.active;
-    const deleteButton=p.driveFileId?`<button type="button" class="btn profile-delete" title="Удалить профиль из Google Drive" aria-label="Удалить профиль ${esc(p.name)} из Google Drive" onclick="deleteDriveProfile('${esc(p.id)}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 14h11l1-14M9 7V4h6v3"/></svg></button>`:'';
+    const deleteButton=p.driveFileId&&!isActive?`<button type="button" class="btn profile-delete" title="Удалить профиль из Google Drive" aria-label="Удалить профиль ${esc(p.name)} из Google Drive" onclick="deleteDriveProfile('${esc(p.id)}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 14h11l1-14M9 7V4h6v3"/></svg></button>`:'';
     return `<div class="profile-item${isActive?' active':''}"><span><b>${esc(p.name)}</b><br><small class="profile-status" data-profile-drive="${p.driveFileId?'1':'0'}" data-profile-time="${stamp}"></small>${isActive?' <small class="profile-status">· активный</small>':''}</span>${saveButton}${deleteButton}${p.driveFileId&&!isActive?`<button class="btn small profile-activate" onclick="switchDriveProfile('${esc(p.id)}')">Активировать</button>`:''}</div>`;
   }).join('')||'<p class="profile-status">Профили не найдены.</p>';
   renderProfileTimes();
