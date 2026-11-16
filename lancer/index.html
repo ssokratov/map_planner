@@ -127,6 +127,17 @@
   .btn.primary { background:var(--hud-amber); border-color:var(--hud-amber); color:#0e1116; font-weight:700; }
   .load-toggle.on { border-color:var(--hud-amber); color:var(--hud-amber); }
   .load-toggle.off { border-color:var(--bad); color:var(--bad); }
+  /* v218: тонкие разделители между элементами списков — тот же приём, что у
+     снаряжения пилота (.pilot-equip-item): волосная линия 1px var(--line),
+     без акцента. Рамок не добавляем, только линию между соседями. */
+  .wcard + .wcard { border-top:1px solid var(--line); margin-top:10px; padding-top:10px; }
+  .sec.sys + .sec.sys { border-top:1px solid var(--line); padding-top:10px; }
+  .talent-item { padding:9px 0; border-top:1px solid var(--line); }
+  .talent-item:first-child { border-top:0; }
+  .cb-item { margin-bottom:0; padding:9px 0; border-top:1px solid var(--line); }
+  .cb-item:first-child { border-top:0; }
+  .trait-item { padding:9px 0; border-top:1px solid var(--line); }
+  .trait-item:first-child { border-top:0; }
   .add { width:100%; margin-top:4px; }
   .status-tags { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; }
   .status-tags:empty { display:none; }
@@ -331,7 +342,7 @@
   .sys-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
   .sys-charges { display:inline-flex; align-items:center; gap:6px; }
   .sys-head .wmeta { padding-left:20px; margin-top:4px; }
-  .sec.sys { margin-bottom:16px; }
+  .sec.sys { margin-bottom:10px; }
   .sys-body { display:none; margin-top:10px; margin-left: 18px; }
   .sys.open .sys-body { display:block; }
   .tbl-row { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:6px 0 8px; background:var(--panel2); font-size:14px; line-height:1.5; }
@@ -874,7 +885,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 217</span>
+      <span class="dim global-version">Версия трекера: 218</span>
     </div>
   </div>
 </main>
@@ -2598,9 +2609,9 @@ function renderCoreBonuses(){
     const desc = lang()==='ru' ? cb.d : cb.de;
     const nameHtml = lang()==='ru' ? `<b>${esc(disp)}</b> <span class="dim">(${esc(cb.n)})</span>` : `<b>${esc(disp)}</b>`;
     return editOn('coreBonuses') ? `
-    <div class="row" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div>
+    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div>
     <button class="btn x" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>` : `
-    <div class="row" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div></div>`;
+    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div></div>`;
   }).join('');
 }
 function openCoreBonusPicker(){
@@ -2662,7 +2673,7 @@ function renderLists(){
     const rankRoman = ['I','II','III'][t.rank-1] || '';
     const tg = grantsChipsHtml('talent', t.name, t.rank);
     return `
-    <div style="margin-bottom:8px">
+    <div class="talent-item">
       ${editOn('talents') ? `<div class="row"><input type="text" placeholder="${L('ph_talent')}" value="${esc(tDisp)}" onchange="fillTalentFromDb(${i},this.value)">
       <select class="narrow" onchange="S.talents[${i}].rank=+this.value;save();renderLists()">
         ${[1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
@@ -3325,6 +3336,16 @@ function showRef(kind, key){
   bindDlgHistory();
   if (!refDlgHist){ histPush(); refDlgHist = true; }
 }
+// v218: трейты фрейма — каждый отдельным блоком: имя жирным, между трейтами
+// та же волосная линия, что у снаряжения пилота (.trait-item). Разбор —
+// по абзацам (\n\n), имя — до первого «: »; база не меняется (tr/t — строки).
+function traitsHtml(text){
+  return (text||'').split(/\n\n+/).map(p=>p.trim()).filter(Boolean).map(p=>{
+    const i = p.indexOf(': ');
+    if (i < 0) return `<div class="trait-item">${linkTagTerms(esc(p))}</div>`;
+    return `<div class="trait-item"><b>${esc(p.slice(0,i))}:</b> ${linkTagTerms(esc(p.slice(i+2)))}</div>`;
+  }).join('');
+}
 function frameDetailHtml(key){
   const F = DB.frames[key];
   if (!F) return '';
@@ -3341,11 +3362,7 @@ function frameDetailHtml(key){
     + statRow('hase', [['HP', st.hp], ['Structure', st.structure], ['Stress', st.stress], ['Heat Cap', st.heatcap]])
     + statRow('res', [['Repair Cap', st.repcap], ['SP', st.sp]], 2)
     + `</div>`;
-  const traits = (d.t||'').split(/\n\n+/).map(p=>{
-    const i = p.indexOf(': ');
-    if (i < 0) return `<p>${esc(p)}</p>`;
-    return `<p><b>${esc(p.slice(0,i))}:</b> ${linkTagTerms(esc(p.slice(i+2)))}</p>`;
-  }).join('');
+  const traits = traitsHtml(d.t||'');
   const mounts = (F.m||[]).map(m=>{
     const ms = MOUNT_STYLE[m] || MOUNT_STYLE['Main'];
     return `<span class="mount-badge" title="${esc(m)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span><span class="mb-name">${esc(m)}</span></span>`;
@@ -3412,7 +3429,7 @@ function renderDescBoxes(){
   const tb = document.getElementById('traitsBox');
   if (tb){
     const fg = grantsChipsHtml('frame', get('mech.frame'));
-    tb.innerHTML = descBox('traits', '', dispField('mech.traits') || '', L('p004'), "set('mech.traits', this.value);save()", false, true)
+    tb.innerHTML = traitsHtml(dispField('mech.traits') || '')
       + (fg ? `<div class="tags" style="margin-top:6px">${fg}</div>` : '');
   }
 }
