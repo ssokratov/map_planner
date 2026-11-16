@@ -872,7 +872,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 212</span>
+      <span class="dim global-version">Версия трекера: 213</span>
     </div>
   </div>
 </main>
@@ -1026,26 +1026,32 @@ let searchDlgStack = [];
 let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
 let refDlgHist = false;     // то же для refDialog
 let dlgPopClosing = false;  // диалог закрывается по popstate — history.back() не нужен
+let suppressNextPopstate = false;  // popstate от нашего же history.back() после закрытия по кнопке — не нажатие Назад
 function histPush(){
   try { if (typeof history !== 'undefined' && history.pushState) history.pushState({lancerDlg:1}, ''); } catch(e){}
 }
 function histBack(){
   try { if (typeof history !== 'undefined' && history.back) history.back(); } catch(e){}
 }
+function onDlgPopstate(){
+  // v213: закрытие чипа по кнопке/«Закрыть» само делает history.back(), чтобы убрать
+  // свою запись истории — прилетающий следом popstate НЕ означает нажатие Назад,
+  // его надо проигнорировать, иначе он закрывал и лежащую под чипом лицензию.
+  if (suppressNextPopstate){ suppressNextPopstate = false; return; }
+  const ref = document.getElementById('refDialog');
+  if (ref && ref.open){ dlgPopClosing = true; refDlgHist = false; ref.close(); dlgPopClosing = false; return; }
+  const dlg = document.getElementById('searchDlg');
+  if (dlg && dlg.open){
+    if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
+    else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
+  }
+}
 function bindDlgHistory(){
   // Один раз: браузерное Назад закрывает верхний диалог / идёт по стеку видов.
   if (bindDlgHistory.done) return;
   bindDlgHistory.done = true;
   if (typeof window === 'undefined' || !window.addEventListener) return;
-  window.addEventListener('popstate', ()=>{
-    const ref = document.getElementById('refDialog');
-    if (ref && ref.open){ dlgPopClosing = true; refDlgHist = false; ref.close(); dlgPopClosing = false; return; }
-    const dlg = document.getElementById('searchDlg');
-    if (dlg && dlg.open){
-      if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
-      else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
-    }
-  });
+  window.addEventListener('popstate', onDlgPopstate);
 }
 function searchDlgOpen(){
   bindDlgHistory();
@@ -1082,11 +1088,12 @@ function searchDlgBack(){
 }
 function searchDlgClosed(){
   // Диалог закрыт кнопкой/фоном/Esc — убрать запись истории, которую мы пушили.
+  // Следующий popstate — эхо нашего history.back(), а не нажатие Назад: подавить его.
   searchDlgStack = [];
-  if (searchDlgHist){ searchDlgHist = false; if (!dlgPopClosing) histBack(); }
+  if (searchDlgHist){ searchDlgHist = false; if (!dlgPopClosing){ suppressNextPopstate = true; histBack(); } }
 }
 function refDlgClosed(){
-  if (refDlgHist){ refDlgHist = false; if (!dlgPopClosing) histBack(); }
+  if (refDlgHist){ refDlgHist = false; if (!dlgPopClosing){ suppressNextPopstate = true; histBack(); } }
 }
 function dlgEnsureBase(from){
   // Диалог открывается свежим: база стека — поиск (из поиска) или пусто (из Правил,
