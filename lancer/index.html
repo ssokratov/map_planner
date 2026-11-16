@@ -1212,6 +1212,7 @@ if (!profileCatalog.active || !Array.isArray(profileCatalog.profiles)) {
 }
 profileCatalog.profiles.forEach(p=>{ if(!p.localModifiedAt) p.localModifiedAt=Date.now(); });
 const DRIVE_REMEMBER_KEY = 'lancer-tracker-drive-linked-v1';
+const DRIVE_TOKEN_KEY = 'lancer_drive_token_v1';
 const DRIVE_SYNC_KEY = 'lancer-tracker-drive-last-sync-v1';
 let driveAccessToken = null, driveFolderId = null, driveUploadQueue = Promise.resolve();
 const driveSaveTimers=new Map(), pendingDriveSnapshots=new Map(), queuedDriveSnapshots=new Map(), driveSaveFirstQueuedAt=new Map();
@@ -1224,6 +1225,18 @@ let driveResumePromptShown = false;
 let driveLastSyncedAt = Number(localStorage.getItem(DRIVE_SYNC_KEY)) || 0;
 let driveBusyTasks = [], driveStatusMessage = 'Профиль хранится локально на этом устройстве.';
 let profileIdentityTimer = null, profileIdentityBootstrapped = true;
+function saveDriveToken(token,expiresInSec=3600){
+  const expiresAt=Date.now()+Math.max(60,Number(expiresInSec||3600)-60)*1000;
+  localStorage.setItem(DRIVE_TOKEN_KEY,JSON.stringify({token,expiresAt}));
+}
+function loadCachedDriveToken(){
+  try {
+    const cached=JSON.parse(localStorage.getItem(DRIVE_TOKEN_KEY)||'null');
+    if(typeof cached?.token==='string'&&cached.token&&Date.now()<Number(cached.expiresAt)) return cached.token;
+  } catch(e){}
+  clearCachedDriveToken(); return null;
+}
+function clearCachedDriveToken(){ localStorage.removeItem(DRIVE_TOKEN_KEY); }
 function persistProfileCatalog(){ localStorage.setItem(PROFILE_KEY, JSON.stringify(profileCatalog)); }
 function activeProfile(){ return profileCatalog.profiles.find(p=>p.id===profileCatalog.active) || profileCatalog.profiles[0]; }
 function profileDisplayName(){ const p=activeProfile(); return p ? p.name : 'Мой профиль'; }
@@ -1250,9 +1263,17 @@ function scheduleDriveSnapshotUpload(profileId,delay=12000){
   const timer=setTimeout(()=>{
     driveSaveTimers.delete(profileId);
     const snapshot=pendingDriveSnapshots.get(profileId); pendingDriveSnapshots.delete(profileId);
-    if(snapshot) uploadActiveProfile(snapshot).catch(e=>setDriveStatus('Ошибка синхронизации: '+e.message));
+    if(snapshot) uploadActiveProfile(snapshot).catch(showDriveSyncError);
   },wait);
   driveSaveTimers.set(profileId,timer);
+}
+function showDriveSyncError(error){
+  setDriveStatus('Ошибка синхронизации: '+error.message);
+  markDriveSyncFailure();
+}
+function markDriveSyncFailure(){
+  const saved=document.getElementById('saved');
+  if(saved) saved.textContent='Локально сохранено · Ошибка Drive';
 }
 function updatePendingDriveSnapshot(profile){
   const oldId=profile.id, snapshot=pendingDriveSnapshots.get(oldId);
@@ -1391,6 +1412,7 @@ function maybeShowDriveResumePrompt(){
 function closeDriveResumePrompt(){ const dlg=document.getElementById('driveResumeDlg'); if(dlg?.open) dlg.close(); }
 function resumeDriveFromPrompt(){ closeDriveResumePrompt(); openProfiles(); connectDrive(); }
 function forgetDriveReminder(){
+  clearCachedDriveToken(); driveAccessToken=null; driveFolderId=null;
   driveRemembered=false; localStorage.removeItem(DRIVE_REMEMBER_KEY); updateDriveAuthButton();
   setDriveStatus('Запомненное подключение удалено с этого устройства.'); closeDriveResumePrompt();
 }
@@ -1432,6 +1454,13 @@ function updateDriveAuthButton(){
   if(disconnectRow) disconnectRow.style.display=(driveAccessToken||driveRemembered)?'':'none';
   if(disconnect) disconnect.textContent=driveAccessToken?'Отключить Google Drive':'Забыть подключение на этом устройстве';
 }
+async function uploadDirtyActiveDriveProfile(){
+  const profile=activeProfile();
+  if(!driveAccessToken||!profile?.driveFileId||profileDataFingerprint(S)===(profile.localBaseDataHash||null)) return;
+  const hasPending=driveSaveTimers.has(profile.id)||pendingDriveSnapshots.has(profile.id)||driveInFlightUploads.has(profile.id)||queuedDriveSnapshots.has(profile.id);
+  if(hasPending) await flushPendingDriveSave(profile.id);
+  else await uploadActiveProfile(makeDriveSnapshot(profile,S));
+}
 function connectDrive(){
   return withDriveLoading(driveRemembered?'Возобновляю подключение к Google Drive…':'Подключаю Google Drive…',async()=>{
   const start=()=>{
@@ -1439,21 +1468,21 @@ function connectDrive(){
     return new Promise((resolve,reject)=>{
       const client=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:'https://www.googleapis.com/auth/drive.file',callback:response=>{
         if(response.error){ reject(new Error('Google не выдал доступ: '+response.error)); return; }
-        driveAccessToken=response.access_token; driveRemembered=true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton(); resolve();
+        driveAccessToken=response.access_token; saveDriveToken(response.access_token,response.expires_in); driveRemembered=true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton(); resolve();
       }});
       client.requestAccessToken({prompt:''});
     });
   };
   try {
     if(!window.google?.accounts?.oauth2) await new Promise((resolve,reject)=>{ const started=Date.now(); const t=setInterval(()=>{ if(window.google?.accounts?.oauth2){clearInterval(t);resolve();} else if(Date.now()-started>10000){clearInterval(t);reject(new Error('Не удалось загрузить подключение Google. Проверьте интернет и перезагрузите страницу.'));} },150); });
-    await start(); const synced=await syncDriveProfiles(); if(synced) setDriveStatus(''); updateDriveAuthButton();
+    await start(); const synced=await syncDriveProfiles(); if(synced){ setDriveStatus(''); await uploadDirtyActiveDriveProfile(); } updateDriveAuthButton();
   } catch(e){ setDriveStatus(e.message); updateDriveAuthButton(); }
   });
 }
 function disconnectDrive(){
   return withDriveLoading('Отключаю Google Drive…',async()=>{
     const token=driveAccessToken, hadToken=!!token;
-    const clearLocal=()=>{ driveAccessToken=null; driveFolderId=null; driveRemembered=false; localStorage.removeItem(DRIVE_REMEMBER_KEY); updateDriveAuthButton(); };
+    const clearLocal=()=>{ driveAccessToken=null; driveFolderId=null; clearCachedDriveToken(); driveRemembered=false; localStorage.removeItem(DRIVE_REMEMBER_KEY); updateDriveAuthButton(); };
     if(!token||!window.google?.accounts?.oauth2?.revoke){
       clearLocal(); setDriveStatus('Подключение забыто на этом устройстве. Google-разрешение можно отозвать в настройках аккаунта.'); return;
     }
@@ -1470,7 +1499,7 @@ async function driveRequest(url, options={}){
   const bodySize=typeof options.body==='string'?new Blob([options.body]).size:0;
   const allowKeepalive=(options.keepalive??drivePageIsHiding)&&bodySize<60000;
   const response=await fetch(url,{...options,keepalive:allowKeepalive,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
-  if(!response.ok){ const body=await response.text(); if(response.status===401){ driveAccessToken=null; updateDriveAuthButton(); } throw new Error('Drive '+response.status+(body?': '+body.slice(0,180):'')); }
+  if(!response.ok){ const body=await response.text(); if(response.status===401){ driveAccessToken=null; clearCachedDriveToken(); updateDriveAuthButton(); driveResumePromptShown=false; if(driveRemembered&&!drivePageIsHiding) maybeShowDriveResumePrompt(); } throw new Error('Drive '+response.status+(body?': '+body.slice(0,180):'')); }
   if(response.status===204) return null;
   return response.json();
 }
@@ -1534,7 +1563,7 @@ async function syncDriveProfiles(){
       setDriveStatus('');
     });
     return true;
-  } catch(e){ setDriveStatus('Не удалось обновить список: '+e.message); return false; }
+  } catch(e){ setDriveStatus('Не удалось обновить список: '+e.message); markDriveSyncFailure(); return false; }
 }
 function renderProfileList(){
   const host=document.getElementById('profileList'); if(!host) return;
@@ -1776,7 +1805,8 @@ async function flushPendingDriveSave(profileId){
 }
 async function flushAllPendingDriveSaves(){
   const ids=new Set([...driveSaveTimers.keys(),...pendingDriveSnapshots.keys(),...queuedDriveSnapshots.keys(),...driveInFlightUploads.keys()]);
-  await Promise.allSettled([...ids].map(id=>flushPendingDriveSave(id)));
+  const results=await Promise.allSettled([...ids].map(id=>flushPendingDriveSave(id)));
+  results.forEach(result=>{if(result.status==='rejected') showDriveSyncError(result.reason);});
 }
 document.addEventListener('visibilitychange',()=>{
   drivePageIsHiding=document.visibilityState==='hidden';
@@ -4047,7 +4077,12 @@ function luDone(){
   + `<div class="dim">${esc(L('u189'))}: ${S.pilot.licenses.length} · ${esc(L('u190'))}: ${S.talents.length} · ${esc(L('u191'))}: ${S.triggers.length} · ${esc(L('u196'))}: ${S.pilot.coreBonuses.length}</div></div>`;
 }
 
-bind(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); applyLang(); maybeOpenWizard(); maybeShowDriveResumePrompt();
+bind(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); applyLang(); maybeOpenWizard();
+const cachedDriveToken=loadCachedDriveToken();
+if(cachedDriveToken){
+  driveAccessToken=cachedDriveToken; driveRemembered=true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton();
+  void syncDriveProfiles().then(synced=>synced?uploadDirtyActiveDriveProfile().catch(showDriveSyncError):undefined);
+} else maybeShowDriveResumePrompt();
 </script>
 <script>
 // PWA (v122): регистрация service worker'а — network-first, чтобы свайп вниз всегда давал свежую версию, а кэш работал только офлайн.
