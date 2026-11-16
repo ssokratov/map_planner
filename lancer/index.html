@@ -574,67 +574,7 @@
         </div>
         <input type="hidden" data-f="mech.coreUsed" value="0">
       </div>
-    <details class="sec">
-      <summary data-i18n="u233">Статусы</summary>
-      <div class="status-ref-list" id="statusRef"></div>
-    </details>
-    <details class="sec">
-      <summary data-i18n="u021">Потеря структуры</summary>
-      <p data-i18n="u022">Когда мех с Structure доходит до 0 HP: он получает −1 Structure, делает бросок по таблице и восстанавливает HP в максимум; излишек урона применяется дальше. При 0 Structure мех уничтожен. Бросок: 1d6 за каждую отмеченную единицу структуры (включая только что полученную), берётся наименьший результат.</p>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">5–6</span><span data-i18n="u026"><b>Glancing Blow</b> (Скользящий удар)</span></div>
-        <div data-i18n="u027">Аварийные системы стабилизируют мех, но он Impaired до конца твоего следующего хода.</div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">2–4</span><span data-i18n="u028"><b>System Trauma</b> (Травма систем)</span></div>
-        <div data-i18n="u029">Части меха оторваны. Брось 1d6:<ul><li>1–3 — всё оружие на одном маунте на твой выбор уничтожено</li><li>4–6 — одна система на твой выбор уничтожена</li></ul>Если валидных вариантов одного вида не осталось — берётся другой результат; если не осталось ни оружия, ни систем — это становится Direct Hit.</div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">1</span><span data-i18n="u030"><b>Direct Hit</b> (Прямое попадание)</span></div>
-        <div data-i18n="u031"><ul><li>3+ Structure: мех Stunned до конца твоего следующего хода.</li><li>2 Structure: проверка Hull — успех: Stunned до конца следующего хода, провал: мех уничтожен.</li><li>1 Structure: мех уничтожен.</li></ul></div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll" data-i18n="u032">несколько 1</span><span data-i18n="u033"><b>Crushing Hit</b> (Сокрушительный удар)</span></div>
-        <div data-i18n="u034">Мех повреждён без возможности ремонта — он уничтожен. Выйти из него можно как обычно.</div>
-      </div>
-    </details>
-    <details class="sec">
-      <summary data-i18n="u035">Перегрев реактора</summary>
-      <p data-i18n="u036">Когда мех получает тепло сверх Heat Cap: он получает −1 Stress, делает бросок по таблице и сбрасывает весь нагрев; излишек тепла применяется дальше. При 0 Stress мех получает расплавление реактора в конце своего следующего хода. Находиться ровно на Heat Cap безопасно. Бросок: 1d6 за каждую отмеченную единицу стресса (включая только что полученную), берётся наименьший результат.</p>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">5–6</span><span data-i18n="u040"><b>Emergency Shunt</b> (Аварийный сброс)</span></div>
-        <div data-i18n="u041">Системы охлаждения сдерживают тепло, но мех Impaired до конца твоего следующего хода.</div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">2–4</span><span data-i18n="u042"><b>Destabilized Power Plant</b> (Нестабильная силовая установка)</span></div>
-        <div data-i18n="u043"><ul><li>Силовая установка нестабильна, выбрасывает струи плазмы.</li><li>Мех становится Exposed (двойной кинетический, взрывной и энергетический урон), пока статус не снят.</li></ul></div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll">1</span><span data-i18n="u044"><b>Meltdown</b> (Расплавление)</span></div>
-        <div data-i18n="u045"><ul><li>3+ Stress: мех становится Exposed.</li><li>2 Stress: проверка Engineering — успех: Exposed, провал: расплавление реактора через 1d6 твоих ходов (GM бросает); предотвратить можно повторной проверкой Engineering как полным действием.</li><li>1 Stress: расплавление реактора в конце твоего следующего хода.</li></ul></div>
-      </div>
-      <div class="tbl-row">
-        <div><span class="tbl-roll" data-i18n="u046">несколько 1</span><span data-i18n="u047"><b>Irreversible Meltdown</b> (Необратимое расплавление)</span></div>
-        <div data-i18n="u048">Реактор выходит из-под контроля — расплавление в конце твоего следующего хода.</div>
-      </div>
-      <p data-i18n="u049"><b>Расплавление реактора:</b> пилот внутри немедленно погибает, мех испаряется. Burst 2: все персонажи в зоне делают спасбросок Agility или получают 4d6 взрывного урона (половина при успехе). Обломки уничтожены полностью.</p>
-    </details>
-    <details class="sec">
-      <summary data-i18n="u050">Отдых и полный ремонт</summary>
-      <h3 data-i18n="u051">Отдых (1 час без перерыва)</h3>
-      <ul>
-        <li data-i18n="u052">Сбросить весь нагрев; снять все статусы и условия; пилот восстанавливает половину HP и снимает Down and Out.</li>
-        <li data-i18n="u053">Можно тратить ремонты: <b>1 Repair</b> — полное HP или починить уничтоженное оружие/систему; <b>2 Repairs</b> — 1 Structure или 1 Stress; <b>4 Repairs</b> — починить уничтоженный мех (1 Structure, 1 Stress, полное HP).</li>
-        <li data-i18n="u054">Отдых <b>не</b> сбрасывает счётчик оверчарджа и <b>не</b> восстанавливает Core Power.</li>
-      </ul>
-      <h3 data-i18n="u055">Полный ремонт (от 10 часов в безопасном месте)</h3>
-      <ul>
-        <li data-i18n="u056">Пилот: HP в максимум, Down and Out снят. Мех: HP, Stress и Structure в максимум.</li>
-        <li data-i18n="u057">Все статусы и условия сняты; уничтоженное оружие и системы починены.</li>
-        <li data-i18n="u058">Core Power восстановлен; все ремонты и заряды Limited-оружия/систем восстановлены; нагрев сброшен; счётчик оверчарджа сброшен.</li>
-      </ul>
       <button class="btn primary" style="width:100%;margin-top:12px" onclick="fullRepair()" data-i18n="u014">Полный ремонт (отдых)</button>
-    </details>
     </div>
     <div class="card" id="statsCard">
       <div class="card-head"><h2 data-i18n="u165">Статы</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
@@ -751,7 +691,7 @@
 
   <!-- ============ RULES ============ -->
   <section id="tab-rules" class="tab">
-    <details class="sec" open>
+    <details class="sec">
       <summary data-i18n="u229">Твои действия</summary>
       <div id="myActions"></div>
     </details>
@@ -802,6 +742,66 @@
         <li data-i18n="u133">Другие реакции дают системы и таланты.</li>
       </ul>
 
+    </details>
+    <details class="sec">
+      <summary data-i18n="u233">Статусы</summary>
+      <div class="status-ref-list" id="statusRef"></div>
+    </details>
+    <details class="sec">
+      <summary data-i18n="u021">Потеря структуры</summary>
+      <p data-i18n="u022">Когда мех с Structure доходит до 0 HP: он получает −1 Structure, делает бросок по таблице и восстанавливает HP в максимум; излишек урона применяется дальше. При 0 Structure мех уничтожен. Бросок: 1d6 за каждую отмеченную единицу структуры (включая только что полученную), берётся наименьший результат.</p>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">5–6</span><span data-i18n="u026"><b>Glancing Blow</b> (Скользящий удар)</span></div>
+        <div data-i18n="u027">Аварийные системы стабилизируют мех, но он Impaired до конца твоего следующего хода.</div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">2–4</span><span data-i18n="u028"><b>System Trauma</b> (Травма систем)</span></div>
+        <div data-i18n="u029">Части меха оторваны. Брось 1d6:<ul><li>1–3 — всё оружие на одном маунте на твой выбор уничтожено</li><li>4–6 — одна система на твой выбор уничтожена</li></ul>Если валидных вариантов одного вида не осталось — берётся другой результат; если не осталось ни оружия, ни систем — это становится Direct Hit.</div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">1</span><span data-i18n="u030"><b>Direct Hit</b> (Прямое попадание)</span></div>
+        <div data-i18n="u031"><ul><li>3+ Structure: мех Stunned до конца твоего следующего хода.</li><li>2 Structure: проверка Hull — успех: Stunned до конца следующего хода, провал: мех уничтожен.</li><li>1 Structure: мех уничтожен.</li></ul></div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll" data-i18n="u032">несколько 1</span><span data-i18n="u033"><b>Crushing Hit</b> (Сокрушительный удар)</span></div>
+        <div data-i18n="u034">Мех повреждён без возможности ремонта — он уничтожен. Выйти из него можно как обычно.</div>
+      </div>
+    </details>
+    <details class="sec">
+      <summary data-i18n="u035">Перегрев реактора</summary>
+      <p data-i18n="u036">Когда мех получает тепло сверх Heat Cap: он получает −1 Stress, делает бросок по таблице и сбрасывает весь нагрев; излишек тепла применяется дальше. При 0 Stress мех получает расплавление реактора в конце своего следующего хода. Находиться ровно на Heat Cap безопасно. Бросок: 1d6 за каждую отмеченную единицу стресса (включая только что полученную), берётся наименьший результат.</p>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">5–6</span><span data-i18n="u040"><b>Emergency Shunt</b> (Аварийный сброс)</span></div>
+        <div data-i18n="u041">Системы охлаждения сдерживают тепло, но мех Impaired до конца твоего следующего хода.</div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">2–4</span><span data-i18n="u042"><b>Destabilized Power Plant</b> (Нестабильная силовая установка)</span></div>
+        <div data-i18n="u043"><ul><li>Силовая установка нестабильна, выбрасывает струи плазмы.</li><li>Мех становится Exposed (двойной кинетический, взрывной и энергетический урон), пока статус не снят.</li></ul></div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll">1</span><span data-i18n="u044"><b>Meltdown</b> (Расплавление)</span></div>
+        <div data-i18n="u045"><ul><li>3+ Stress: мех становится Exposed.</li><li>2 Stress: проверка Engineering — успех: Exposed, провал: расплавление реактора через 1d6 твоих ходов (GM бросает); предотвратить можно повторной проверкой Engineering как полным действием.</li><li>1 Stress: расплавление реактора в конце твоего следующего хода.</li></ul></div>
+      </div>
+      <div class="tbl-row">
+        <div><span class="tbl-roll" data-i18n="u046">несколько 1</span><span data-i18n="u047"><b>Irreversible Meltdown</b> (Необратимое расплавление)</span></div>
+        <div data-i18n="u048">Реактор выходит из-под контроля — расплавление в конце твоего следующего хода.</div>
+      </div>
+      <p data-i18n="u049"><b>Расплавление реактора:</b> пилот внутри немедленно погибает, мех испаряется. Burst 2: все персонажи в зоне делают спасбросок Agility или получают 4d6 взрывного урона (половина при успехе). Обломки уничтожены полностью.</p>
+    </details>
+    <details class="sec">
+      <summary data-i18n="u050">Отдых и полный ремонт</summary>
+      <h3 data-i18n="u051">Отдых (1 час без перерыва)</h3>
+      <ul>
+        <li data-i18n="u052">Сбросить весь нагрев; снять все статусы и условия; пилот восстанавливает половину HP и снимает Down and Out.</li>
+        <li data-i18n="u053">Можно тратить ремонты: <b>1 Repair</b> — полное HP или починить уничтоженное оружие/систему; <b>2 Repairs</b> — 1 Structure или 1 Stress; <b>4 Repairs</b> — починить уничтоженный мех (1 Structure, 1 Stress, полное HP).</li>
+        <li data-i18n="u054">Отдых <b>не</b> сбрасывает счётчик оверчарджа и <b>не</b> восстанавливает Core Power.</li>
+      </ul>
+      <h3 data-i18n="u055">Полный ремонт (от 10 часов в безопасном месте)</h3>
+      <ul>
+        <li data-i18n="u056">Пилот: HP в максимум, Down and Out снят. Мех: HP, Stress и Structure в максимум.</li>
+        <li data-i18n="u057">Все статусы и условия сняты; уничтоженное оружие и системы починены.</li>
+        <li data-i18n="u058">Core Power восстановлен; все ремонты и заряды Limited-оружия/систем восстановлены; нагрев сброшен; счётчик оверчарджа сброшен.</li>
+      </ul>
     </details>
     <details class="sec">
       <summary data-i18n="u136">Действия пилота (пешком)</summary>
@@ -885,7 +885,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 218</span>
+      <span class="dim global-version">Версия трекера: 219</span>
     </div>
   </div>
 </main>
@@ -1038,6 +1038,8 @@ function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if 
 let searchDlgStack = [];
 let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
 let refDlgHist = false;     // то же для refDialog
+// v219: история вкладок — Назад с не-главной вкладки возвращает на главную (Мех).
+let tabHist = false;  // pushState сделан для текущего ухода с главной вкладки
 let dlgPopClosing = false;  // диалог закрывается по popstate — history.back() не нужен
 let suppressNextPopstate = false;  // popstate от нашего же history.back() после закрытия по кнопке — не нажатие Назад
 function histPush(){
@@ -1058,6 +1060,12 @@ function onDlgPopstate(){
     if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
     else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
   }
+  // v219: диалогов нет — Назад с не-главной вкладки ведёт на главную (Мех).
+  // Запись уже снята самим нажатием Назад: tabHist сбрасываем ДО showTab,
+  // иначе showTab снял бы ещё одну запись истории. На главной — ничего
+  // не делаем: браузер/приложение закроется само.
+  if (curTab !== 'mech'){ tabHist = false; showTab('mech'); return; }
+  tabHist = false;
 }
 function bindDlgHistory(){
   // Один раз: браузерное Назад закрывает верхний диалог / идёт по стеку видов.
@@ -2005,6 +2013,15 @@ function showTab(t){
   if (changed && window.scrollTo) {
     const y = tabScrollPositions[t] || 0;
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+  }
+  // v219: история вкладок — уход с главной пушит запись, возврат на главную
+  // её снимает (history.back(); эхо-popstate подавляется флагом, как у диалогов).
+  if (changed){
+    if (t === 'mech'){
+      if (tabHist){ tabHist = false; suppressNextPopstate = true; histBack(); }
+    } else if (!tabHist){
+      tabHist = true; histPush();
+    }
   }
 }
 // Свайпы для переключения вкладок на телефоне (v74): свайп влево — следующая вкладка,
