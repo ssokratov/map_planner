@@ -848,7 +848,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 199</span>
+      <span class="dim global-version">Версия трекера: 200</span>
     </div>
   </div>
 </main>
@@ -1207,7 +1207,7 @@ function profileDataFingerprint(data=S){
 }
 function makeDriveSnapshot(profile=activeProfile(),data=S){
   if(!profile) return null;
-  return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,data:JSON.parse(JSON.stringify(data))};
+  return {profileId:profile.id,profile,name:profile.name,driveFileId:profile.driveFileId||null,driveVersion:profile.localBaseDriveVersion||profile.driveVersion||null,modifiedTime:profile.localBaseModifiedTime||profile.modifiedTime||null,baseDataHash:profile.localBaseDataHash||null,data:JSON.parse(JSON.stringify(data))};
 }
 function updatePendingDriveSnapshot(profile){
   const oldId=profile.id, snapshot=pendingDriveSnapshots.get(oldId);
@@ -1220,6 +1220,7 @@ function updatePendingDriveSnapshot(profile){
   snapshot.driveFileId=current.driveFileId||null;
   snapshot.driveVersion=current.localBaseDriveVersion||current.driveVersion||null;
   snapshot.modifiedTime=current.localBaseModifiedTime||current.modifiedTime||null;
+  snapshot.baseDataHash=current.localBaseDataHash||null;
   if(oldId!==current.id){
     pendingDriveSnapshots.delete(oldId); pendingDriveSnapshots.set(current.id,snapshot);
     const timer=driveSaveTimers.get(oldId);
@@ -1634,6 +1635,16 @@ async function performProfileUpload(snapshot){
           baseRevision=remoteRevision;
         } else {
         while(true){
+          const remoteSnapshot=await downloadDriveProfileSnapshot(fileId);
+          remoteMeta=remoteSnapshot.meta;
+          const remoteHash=profileDataFingerprint(remoteSnapshot.payload);
+          const snapshotHash=profileDataFingerprint(snapshot.data);
+          if(remoteHash===snapshotHash||(snapshot.baseDataHash&&remoteHash===snapshot.baseDataHash)){
+            snapshot.driveVersion=remoteMeta.version||null;
+            snapshot.modifiedTime=remoteMeta.modifiedTime||null;
+            snapshot.baseDataHash=remoteHash;
+            break;
+          }
           const choice=await askDriveConflict(snapshot,remoteMeta);
           if(choice==='remote'){ await useRemoteConflictVersion(snapshot,fileId); return; }
           const latest=await getDriveProfileMeta(fileId);
@@ -1644,8 +1655,8 @@ async function performProfileUpload(snapshot){
       }
       writeBaseMeta=remoteMeta;
     }
-    const saved=await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-    const resultMeta=saved?.version? saved : await getDriveProfileMeta(fileId);
+    await driveRequest('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(fileId)+'?uploadType=media&fields=id,modifiedTime,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+    const resultMeta=await getDriveProfileMeta(fileId);
     const previousChain=driveLocalRevisionChains.get(fileId);
     const writeBase=driveRevision(writeBaseMeta);
     const froms=previousChain?.to===writeBase?new Set(previousChain.froms):new Set();
