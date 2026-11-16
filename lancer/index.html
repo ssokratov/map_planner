@@ -889,7 +889,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 220</span>
+      <span class="dim global-version">Версия трекера: 221</span>
     </div>
   </div>
 </main>
@@ -1063,6 +1063,9 @@ function onDlgPopstate(){
   if (dlg && dlg.open){
     if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
     else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
+    // v221: одно Назад — один шаг: диалог закрыт (или вид в его стеке сменён),
+    // вкладку не трогаем — иначе одно нажатие делало два шага сразу.
+    return;
   }
   // v219: диалогов нет — Назад с не-главной вкладки ведёт на главную (Мех).
   // Запись уже снята самим нажатием Назад: tabHist сбрасываем ДО showTab,
@@ -4694,7 +4697,7 @@ function luDone(){
   + `<div class="dim">${esc(L('u189'))}: ${S.pilot.licenses.length} · ${esc(L('u190'))}: ${S.talents.length} · ${esc(L('u191'))}: ${S.triggers.length} · ${esc(L('u196'))}: ${S.pilot.coreBonuses.length}</div></div>`;
 }
 
-bind(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); applyLang(); maybeOpenWizard();
+bind(); bindDlgHistory(); recalcDerived(); save(); initDb(); renderLists(); renderCounters(); applyLang(); maybeOpenWizard();
 const cachedDriveToken=loadCachedDriveToken();
 if(cachedDriveToken){
   driveAccessToken=cachedDriveToken; driveRemembered=true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton();
