@@ -2581,6 +2581,299 @@ const DB = {
       "ll": 0,
       "lim": 0,
       "x": "Goodbye, old [friend/love]\n\n1/round, this weapon deals +1d6 bonus damage to characters that are SHREDDED or STUNNED."
+    },
+    {
+      "n": "Kraul Rifle",
+      "m": "Main",
+      "t": "CQB",
+      "d": "1d6 Kinetic",
+      "r": "Range 8",
+      "g": "Inaccurate",
+      "tg": [
+        [
+          "tg_inaccurate",
+          null
+        ]
+      ],
+      "lab": "SSC · LL1 · Main",
+      "sf": "",
+      "nr": "Винтовка «Краул»",
+      "tr": "Ближний бой",
+      "dr": "1d6 кинетический",
+      "rr": "Дальность 8",
+      "xr": "Охота на Васта — титаническую мегафауну Спарра — опасное, прибыльное занятие для народа спарри. Шкуры, кости, мясо и другие трофеи с их тел могут создать месяцы — или даже годы, в случае особенно старых, великих или уникальных зверей — процветания для охотников и их родичей. Эти популярные длинные винтовки, доведённые до стандартов SSC, прочны и долговечны, идеально подходят для того, чтобы валить великих существ и их спутников.\n\nПри попадании: ваша цель пронзена гарпуноподобным снарядом этого оружия. В любое время после того, как ваша цель совершит любое действие или перемещение в течение своего следующего хода, вы можете как реакцию смотать леску и ускориться, двигаясь к этой цели по самому прямому маршруту. Затем она должна пройти спасбросок корпуса или быть сбитой с ног; преуспеет она или провалится, этот эффект заканчивается. Леска рвётся, если ваша цель телепортируется.",
+      "gr": "Неточное",
+      "labr": "SSC · LL1 · Main",
+      "lic": "Atlas",
+      "ll": 1,
+      "lim": 0,
+      "x": "Hunting the Vast — the titanic megafauna of Sparr — is a dangerous, profitable venture for the Sparri people. Skins, bones, meat, and other trophies from their bodies can create months – or even years, in the case of especially old, grand, or unique beasts – of prosperity for the hunters and their kin. These popular long rifles, refined to SSC standards, are rugged and durable, perfect for dragging down the great creatures and their attendants.\n\nOn hit: your target is impaled by this weapon’s harpoon-like projectile. Any time after your target takes any action or movement during their next turn, you can reel in the line and boost as a reaction, moving toward that target by the most direct route possible. They must then pass a HULL save or be knocked PRONE; succeed or fail, this effect ends. The line snaps if your target teleports."
+    },
+    {
+      "n": "Terashima Blade",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6 Kinetic",
+      "r": "Threat 1",
+      "g": "Unique",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ],
+      "lab": "SSC · LL3 · Main",
+      "sf": "",
+      "nr": "Клинок Терашима",
+      "tr": "Рукопашная",
+      "dr": "1d6 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Выкованные в огне пойманной в ловушку звезды в Созвездии, каждый из этих клинков носит уникальное имя и историю, определяемую его пользователями. Клинки Терашима идеально сбалансированы и закалены, масштабируемы от личного использования до расписания 3. В сочетании с оружейными и сенсорными комплектами корпуса они оказались достаточно быстрыми и прочными, чтобы отражать огонь оружия. Каждый клинок, созданный анклавом Терашима, — это реликвия, произведённая единожды и доставленная обычным путешествием — их потеря считается неописуемым унижением для владельца и невероятным триумфом для того, кто его забрал. Анклав Терашима хранит литейную форму каждого произведённого им клинка и выставляет их в своём центральном зале вместе с записями об их известных историях.\n\nВы можете начать любой бой в любой из стоек этого оружия и можете принять стойку или переключаться между стойками протоколом. Приняв стойку, вы остаётесь в ней, пока не примете новую стойку, пока это оружие не будет уничтожено или пока вы не будете оглушены или заглушены. Вы также можете сбросить стойку свободным действием.\n\nProfile — Без стойки: 1d6 кинетический; Угроза 1.\n\nProfile — Стойка тролля: 1d6+3 кинетический; Угроза 1; теги: Неточное, Бронебойное (AP).\n\nProfile — Стойка бури: 1d6 кинетический; Угроза 1; Вы получаете реакцию «Стойка бури».\nРеакция «Стойка бури» (Реакция): Вы можете немедленно нанести 2 кинетического урона всем остальным персонажам, соседним с вами и вашей целью.\n\nProfile — Стойка лорда: 1d6 кинетический; Угроза 1; Вы не можете совершать дальнобойные или тех-атаки, но любая дальнобойная атака против вас, которая промахивается, отражается от вашего меча, нанося 2 урона (того же типа, что и атака) персонажу по вашему выбору в пределах дальности 3 и линии видимости от вас. Любая рукопашная атака, которая промахивается по вам, заставляет атакующего пройти спасбросок корпуса или быть сбитым с ног.\n\nProfile — Стойка ветра: 1d6 кинетический; Угроза 2; теги: Надёжное 2, Отброс 2; После атаки этим оружием, попали вы или промахнулись, вы можете переместиться на 2 клетки в любом направлении, игнорируя вовлечённость и реакции.\n\nСменить стойку (Протокол): Смените стойку этого оружия.\n\nСбросить стойку (Свободное): Сбросьте стойку этого оружия.",
+      "gr": "Уникальное",
+      "labr": "SSC · LL3 · Main",
+      "lic": "Atlas",
+      "ll": 3,
+      "lim": 0,
+      "x": "Forged in the fire of a corralled star in the Constellation, each of these blades bears a unique name and history defined by its users. Terashima blades are perfectly balanced and tempered, scalable from personal use up to Schedule 3. When combined with the weapon and sensor suites of a frame, they have been proven fast and durable enough to deflect weapons fire. Each blade crafted by the Terashima enclave is an heirloom produced once and delivered via conventional travel – their loss is considered an indescribable humiliation for the owner and an incredible triumph by the one who has taken it. The Terashima enclave keeps the casting mold of each blade it produces and displays them in their central hall alongside records of their known histories.\n\nYou may begin any fight in any of this weapon's stances and may take a stance or shift between stances as a protocol. Once you have taken a stance, you remain in it until you take a new stance, this weapon is destroyed, or you are STUNNED or JAMMED. You can also drop a stance as a free action.\n\nProfile — No Stance: 1d6 Kinetic; Threat 1.\n\nProfile — Troll Stance: 1d6+3 Kinetic; Threat 1; tags: Inaccurate, Armor-Piercing (AP).\n\nProfile — Storm Stance: 1d6 Kinetic; Threat 1; You gain the Storm Stance Reaction.\nStorm Stance Reaction (Reaction): You may immediately deal 2 kinetic to all other characters adjacent to you and your target.\n\nProfile — Lord's Stance: 1d6 Kinetic; Threat 1; You cannot make ranged or tech attacks, but any ranged attack against you that misses deflects off your sword, dealing 2 damage (same type as the attack) to a character of your choice in range 3 and line of sight from you. Any melee attack that misses you forces the attacker to pass a HULL save or be knocked PRONE.\n\nProfile — Wind Stance: 1d6 Kinetic; Threat 2; tags: Reliable 2, Knockback 2; After attacking with this weapon, hit or miss, you may move 2 spaces in any direction, ignoring engagement and reactions.\n\nChange Stance (Protocol): Change this weapon's stance.\n\nDrop Stance (Free): Drop this weapon's stance."
+    },
+    {
+      "n": "Hammer U-RPL",
+      "m": "Heavy",
+      "t": "Launcher",
+      "d": "2d6+3 Explosive",
+      "r": "Range 5",
+      "g": "Inaccurate, Arcing, Knockback 2",
+      "tg": [
+        [
+          "tg_inaccurate",
+          null
+        ],
+        [
+          "tg_arcing",
+          null
+        ],
+        [
+          "tg_knockback",
+          2
+        ]
+      ],
+      "lab": "IPS-N · LL1 · Heavy",
+      "sf": "",
+      "nr": "Молот U-RPL",
+      "tr": "Пусковая установка",
+      "dr": "2d6+3 взрывной",
+      "rr": "Дальность 5",
+      "xr": "Молот — универсальная роторная пусковая установка для снарядов — принимает любой снаряд или оружейную систему, подходящую к универсальной системе картриджей IPS-N. Наиболее распространён обычный снаряд воздушного подрыва — система фрагментации, предназначенная для работы во всех театрах, кислородных или нет — свирепое оружие в компактных залах, безопасных комнатах и болтовых камерах капитальных кораблей и станций.",
+      "gr": "Неточное, Дуговое, Отброс 2",
+      "labr": "IPS-N · LL1 · Heavy",
+      "lic": "Caliban",
+      "ll": 1,
+      "lim": 0,
+      "x": "The Hammer Universal Rotary Projectile Launcher accepts any projectile or weapons system that fits the IPS-N Universal Cartridge System. Most common is the conventional airburst shell – a fragmentation system designed to operate in all theaters, oxygenated or not – a ferocious weapon in the compact halls, safe rooms, and bolt chambers of capital ships and stations."
+    },
+    {
+      "n": "HHS-155 CANNIBAL",
+      "m": "Heavy",
+      "t": "CQB",
+      "d": "2d6+4 Kinetic",
+      "r": "Range 3, Threat 3",
+      "g": "Loading",
+      "tg": [
+        [
+          "tg_loading",
+          null
+        ]
+      ],
+      "lab": "IPS-N · LL3 · Heavy",
+      "sf": "",
+      "nr": "HHS-155 «Каннибал»",
+      "tr": "Ближний бой",
+      "dr": "2d6+4 кинетический",
+      "rr": "Дальность 3, Угроза 3",
+      "xr": "HHS-155 «Каннибал» от IPS-N — это большая, казнозарядная, вертикально-двуствольная пушка, заряжаемая снарядами, дробью и саботами. Это более мощная версия HHS-075, разработанная для вытеснения «Дейзи Каттер» путём обеспечения сопоставимой останавливающей силы в формате, который легче снабжать армии в полевых условиях. «Каннибал» следует использовать с осторожностью рядом со смешанными подразделениями союзников, поскольку его выбрасывающее действие очищает стволы оружия от отработанных гильз с достаточной скоростью, чтобы обезглавить небронированный персонал.\n\nВы можете выстрелить из этого тяжёлого дробовика дважды, прежде чем его потребуется перезарядить. В качестве альтернативы вы можете выстрелить обоими стволами сразу, получив +1 к сложности, увеличив его урон до 3d6+4 кинетического и его отброс до 4, но требуя перезарядки как обычно. Когда это оружие перезаряжается, вы можете нанести 5 кинетического урона соседнему персонажу силой выбрасываемых гильз.\n\nProfile — Один ствол: 2d6+4 кинетический; Дальность 3, Угроза 3; теги: Отброс 2, Неточное.\n\nProfile — Оба ствола: 3d6+4 кинетический; Дальность 3, Угроза 3; теги: Отброс 4, Неточное; Выстрелите обоими стволами сразу, из-за чего оружие стреляет с +1 к сложности и требует перезарядки как обычно.",
+      "gr": "Перезаряжаемое",
+      "labr": "IPS-N · LL3 · Heavy",
+      "lic": "Caliban",
+      "ll": 3,
+      "lim": 0,
+      "x": "The IPS-N Heavy Howitzer-Shotgun 155 “Cannibal” is a large, breech-loaded, over-under cannon chambered to fire shells, shot, and sabots. This is the higher-powered version of the HHS-075, designed to phase out the “Daisy Cutter” by providing comparable stopping power in a format that can be more easily supplied to armies in the field. The Cannibal should be used with caution around mixed units of friendlies, as its ejection action clears the weapon’s barrels of spent cartridges with enough velocity to decapitate unarmored personnel.\n\nYou can fire this heavy shotgun twice before it needs to be reloaded. Alternatively, you may fire with both barrels at once, receiving +1 Difficulty, increasing its damage to 3d6+4 Kinetic and its KNOCKBACK to 4, but requiring it to be reloaded as usual. When this weapon is reloaded, you may choose to deal 5 Kinetic Damage to an adjacent character from the force of the ejecting shells.\n\nProfile — Single Barrel: 2d6+4 Kinetic; Range 3, Threat 3; tags: Knockback 2, Inaccurate.\n\nProfile — Both Barrels: 3d6+4 Kinetic; Range 3, Threat 3; tags: Knockback 4, Inaccurate; Fire both barrels at once, causing the weapon to be fired with +1 Difficulty and requiring a reload as normal."
+    },
+    {
+      "n": "Fusion Rifle",
+      "m": "Main",
+      "t": "Rifle",
+      "d": "1-6 Energy",
+      "r": "Range 6",
+      "g": "",
+      "tg": [],
+      "lab": "HORUS · LL1 · Main",
+      "sf": "",
+      "nr": "Фузионная винтовка",
+      "tr": "Винтовка",
+      "dr": "1-6 энергетический",
+      "rr": "Дальность 6",
+      "xr": "Собранная из мощных рудных добывающих лазеров, простая фузионная винтовка «Кобольда» не менее смертельна из-за своего скромного происхождения. Сжигая твердотельные батареи для получения необходимой реакции, простой механизм винтовки оказался достаточно простым для обучения необученных Неблагодарных. По мере улучшения их тактики и оттеснения баронских сил фузионная винтовка приобрела культовую репутацию и стала символом сопротивления по всем Барониям — её часто можно увидеть на стенах и скрещённой на флагах Неблагодарных.\n\nЭто оружие наносит урон, равный расстоянию до цели (максимум 6 энергетического урона).",
+      "gr": "",
+      "labr": "HORUS · LL1 · Main",
+      "lic": "Kobold",
+      "ll": 1,
+      "lim": 0,
+      "x": "Bootstrapped from powerful ore mining lasers, the Kobold’s simple fusion rifle is no less deadly for its humble origins. By burning through solid-state batteries to produce the necessary reaction, the rifle’s simple mechanism proved simple enough for untrained Ungratefuls to learn. As their tactics improved and Baronic forces were pushed back, the fusion rifle took on an iconic reputation and has become a symbol of resistance across the Baronies – often seen stenciled on walls and crossed on Ungrateful flags.\n\nThis weapon deals damage equal to its RANGE from the target (up to a maximum of 6 Energy Damage)."
+    },
+    {
+      "n": "Slag Cannon",
+      "m": "Main",
+      "t": "Cannon",
+      "d": "1d6 Energy",
+      "r": "Range 8",
+      "g": "Heat 1 (Self)",
+      "tg": [
+        [
+          "tg_heat_self",
+          1
+        ]
+      ],
+      "lab": "HORUS · LL2 · Main",
+      "sf": "",
+      "nr": "Шлаковая пушка",
+      "tr": "Пушка",
+      "dr": "1d6 энергетический",
+      "rr": "Дальность 8",
+      "xr": "Капающая расплавленной яростью, шлаковая пушка быстро печатается и требует мало обучения для эффективного использования. Темпераментная, но мощная, шлаковая пушка использует простую систему разложения сырья, соединённую с изолированным проектором, чтобы разлагать, перегревать и выбрасывать поток частиц множественного состояния в цель. После выброса таким образом частицы множественного состояния мгновенно приобретают когерентность на расстоянии примерно 80–100 метров, создавая комки шлака из базовых элементов, где бы они ни остановились.\n\nЕсли ваша цель находится на земле или плоской поверхности, после разрешения этой атаки поместите кучу шлака размера 1 в свободную клетку рядом с ней. Куча — это объект с уклонением 5 и 10 HP.",
+      "gr": "Тепло 1 (себе)",
+      "labr": "HORUS · LL2 · Main",
+      "lic": "Kobold",
+      "ll": 2,
+      "lim": 0,
+      "x": "Dripping with molten fury, the Slag Cannon is quick to print and requires little training to use effectively. Temperamental but powerful, the Slag Cannon utilizes a simple rawmat-decomp system wedded to an insulated projector to break down, superheat, and cast a stream of plural-state particles at its target. Once cast in this way, the plural-state particles snap into coherence at a range of roughly 80-100 meters, creating base-element lumps of slag wherever they come to rest.\n\nIf your target is on the ground or a flat surface, once this attack resolves place a SIZE 1 mound of slag in a free space adjacent to them. The mound is an object with EVASION 5 and 10 HP."
+    },
+    {
+      "n": "Unraveler",
+      "m": "Main",
+      "t": "Launcher",
+      "d": "2d6 Energy",
+      "r": "Range 10",
+      "g": "Reliable 2",
+      "tg": [
+        [
+          "tg_reliable",
+          2
+        ]
+      ],
+      "lab": "HORUS · LL1 · Main",
+      "sf": "",
+      "nr": "Расплетатель",
+      "tr": "Пусковая установка",
+      "dr": "2d6 энергетический",
+      "rr": "Дальность 10",
+      "xr": "Говорящий 2 (M.A2.SP2) [Аудио, длительность: 120:36][34% повреждений][Датировано 18593U, 01:50] [UIB-TERMAGANTTANGENT ROYAL]\n«Темно. Мокро. Пей глубоко и спускайся. Вода тёплая и хорошая. Здесь очень людно, хотя ты этого не видишь. Пловцы любопытны. Открой рот.»\n\nЕсли атака этого оружия не нанесла бы достаточно урона, чтобы уничтожить цель или заставить её получить хотя бы 1 урон структуре, вместо этого она наносит только 2 урона «Надёжное», даже при попадании.",
+      "gr": "Надёжное 2",
+      "labr": "HORUS · LL1 · Main",
+      "lic": "Lich",
+      "ll": 1,
+      "lim": 0,
+      "x": "Speaker 2 (M.A2.SP2) [Audio, length: 120:36][34% corruption][Dated 18593U, 01:50] [UIB-TERMAGANTTANGENT ROYAL]\n“Dark. Wet. Drink deep, and descend. The water is warm and well. It is very busy here, though you cannot see it. The swimmers are curious. Open your mouth.”\n\nIf an attack from this weapon would not deal enough damage to destroy its target or cause it to take at least 1 structure damage, it instead only deals RELIABLE 2 damage, even on a hit."
+    },
+    {
+      "n": "Warp Rifle",
+      "m": "Main",
+      "t": "Rifle",
+      "d": "1d3+1 Energy",
+      "r": "Range 10",
+      "g": "Unique, Armor-Piercing (AP), Loading",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_loading",
+          null
+        ]
+      ],
+      "lab": "HA · LL2 · Main",
+      "sf": "",
+      "nr": "Варп-винтовка",
+      "tr": "Винтовка",
+      "dr": "1d3+1 энергетический",
+      "rr": "Дальность 10",
+      "xr": "Es una abominación. Dicen que \"es como los arados de las espadas; tú también debes aprender a defender tu hogar ”. Ptah, escupí su lógica de espada. Ni siquiera sabíamos de los arados compartidos antes de convertirlos en espadas, y éramos felices.\nHiciste la puerta, la abriste. No es nuestra responsabilidad cerrarla.\n[Это мерзость. Говорят: «это как перековать орала на мечи; ты тоже должен научиться защищать свой дом». Птах, я плюю на их закон клинка. Мы даже не знали об оралах, пока они не перековали их в мечи, и мы были счастливы.\nТы сделал дверь, ты распахнул её — не наша ответственность её закрывать.]\n\nПри попадании: цель должна пройти спасбросок инженерии или быть телепортированной на количество клеток, равное урону, который вы нанесли этим оружием (включая бонусный урон и т.д.; не более 10 клеток), в направлении по вашему выбору. Она должна оказаться в свободной, допустимой клетке.",
+      "gr": "Уникальное, Бронебойное (AP), Перезаряжаемое",
+      "labr": "HA · LL2 · Main",
+      "lic": "Sunzi",
+      "ll": 2,
+      "lim": 0,
+      "x": "Es una abominación. Dicen que \"es como los arados de las espadas; tú también debes aprender a defender tu hogar ”. Ptah, escupí su lógica de espada. Ni siquiera sabíamos de los arados compartidos antes de convertirlos en espadas, y éramos felices.\nHiciste la puerta, la abriste. No es nuestra responsabilidad cerrarla.\n[It is an abomination. They say “it is like plowshares to swords; you too must learn to defend your home.” Ptah, I spit on their blade-law. We did not even know of plowshares before they beat them into swords, and we were happy.\nYou made the door, you swung it open — it is not our responsibility to close it.]\n\nOn hit: The target must pass an ENGINEERING save or be teleported a number of spaces equal to the damage you dealt with this weapon (including bonus damage, etc.; no more than 10 spaces), in a direction of your choice. They must end in a free, valid space."
+    },
+    {
+      "n": "Tiger-Hunter Combat Sheathe",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d3+2 Kinetic",
+      "r": "Threat 1",
+      "g": "",
+      "tg": [],
+      "lab": "IPS-N · LL1 · Main",
+      "sf": "",
+      "nr": "Боевая оболочка охотника на тигров",
+      "tr": "Рукопашная",
+      "dr": "1d3+2 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Это улучшение заключает манипуляторы и плечевые структуры меха в мощную реактивную сплавную оплётку, позволяя ему использовать кулаки как тупое оружие, даже без оружия.\n\nЭто оружие может атаковать две цели одновременно и может использоваться даже будучи заглушенным.",
+      "gr": "",
+      "labr": "IPS-N · LL1 · Main",
+      "lic": "Zheng",
+      "ll": 1,
+      "lim": 0,
+      "x": "This enhancement encases a mech’s manipulators and brachial structures in a powerful reactive alloy weave, allowing it to use its fists as blunt weapons, even unarmed.\n\nThis weapon can attack two targets at a time, and can be used even while JAMMED."
+    },
+    {
+      "n": "D/D 288",
+      "m": "Superheavy",
+      "t": "Melee",
+      "d": "1d6 Kinetic",
+      "r": "Threat 1",
+      "g": "",
+      "tg": [],
+      "lab": "IPS-N · LL3 · Superheavy",
+      "sf": "",
+      "nr": "D/D 288",
+      "tr": "Рукопашная",
+      "dr": "1d6 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Devastator/Demolition Weapon 288 «Чжэна» легендарно своей способностью пробивать броню и наносить тотальное разрушение укреплённым целям. Первоначально собранное как последнее средство Сюн Сяоли, эта система, монтируемая на кулак, перепрофилирует первичный теплоотвод реактора меха в направленное оружие ближнего боя. Производственная линия D/D 288 должна быть заряжена перед выстрелом, что требует опасного отбора мощности из систем меха; отчёты Trunk Security о спасательной миссии предполагают, что использование этого оружия и убило Сюн Сяоли и выпотрошило канонерку «Белого Тигра». Способность D/D 288 вызывать огромные сопутствующие разрушения и его впечатляющий разряд при выстреле принесли ему прозвище «Shā mǎ zhǎng», или «Ладонь, убивающая лошадь», среди пилотов MSMC.\n\nВ отличие от другого сверхтяжёлого оружия, это оружие можно использовать с базовым профилем для Скирмиша.\nВы можете зарядить это оружие быстрым действием. Пока оно заряжено, вы пользуетесь мягким укрытием, но вы замедлены, получаете 2 тепла в начале своего хода и больше не можете использовать D/D 288 в Скирмише. В начале любого из ваших ходов, пока оно заряжено, у него есть профиль «Заряженный».\n\nProfile — Незаряженный: 1d6 кинетический; Угроза 1; теги: Надёжное 3.\n\nProfile — Заряженный: 4d6+8 взрывной; Угроза 3; теги: Надёжное 8, Отброс 8.\n\nПри попадании: Пока заряжено, это оружие наносит 30 AP кинетического урона при попадании по объектам или кускам местности. Если это уничтожает объекты и куски местности, они взрываются, нанося 1d6 кинетического урона всем соседним персонажам, кроме вас, и отбрасывая их на 1 клетку.\nЭто оружие теряет заряд, когда вы попадаете по цели, когда вы рассеиваете его заряд свободным действием или когда вы становитесь оглушённым или выключенным.\n\nЗарядить D/D 288 (Быстрое): Зарядите D/D 288. В начале любого из ваших ходов, пока D/D 288 заряжен, он использует профиль «Заряженный». Вы становитесь замедленным и пользуетесь мягким укрытием. Кроме того, получайте 2 тепла в начале вашего хода.\nПрофиль «Заряженный» нельзя использовать для Скирмиша.",
+      "gr": "",
+      "labr": "IPS-N · LL3 · Superheavy",
+      "lic": "Zheng",
+      "ll": 3,
+      "lim": 0,
+      "x": "The Zheng’s Devastator/Demolition Weapon 288 is legendary for its ability to breach armor and inflict total destruction on hardened targets. Originally rigged up as a last resort by Xiong Xiaoli, this fistmounted system repurposes a mech reactor’s primary heat vent into a directional, engagement-proximity weapon. The production line D/D 288 must be primed before firing, requiring a dangerous power draw from the mechs’ systems; Trunk Security’s reportage of the recovery mission assumes that using this weapons is what killed Xiong Xiaoli and cored the White Tiger’s gunboat. The D/D 288’s ability to cause enormous collateral damage and its spectacular discharge when fired have earned it the moniker ‘Shā mǎ zhǎng’ or Horse-Killing Palm among MSMC pilots.\n\nUnlike other Superheavy weapons, this weapon can be used with the basic profile to Skirmish.\nYou may charge this weapon as a quick action. While charged, you benefit from soft cover, but you are SLOWED, take 2 Heat at the start of your turn, and can no longer use the D/D 288 with SKIRMISH. At the start of any of your turns while it is charged, it has the Charged profile.\n\nProfile — Uncharged: 1d6 Kinetic; Threat 1; tags: Reliable 3.\n\nProfile — Charged: 4d6+8 Explosive; Threat 3; tags: Reliable 8, Knockback 8.\n\nOn hit: While charged, this weapon deals 30 AP Kinetic Damage when it hits objects or pieces of terrain. If this destroys objects and pieces of terrain, they explode, dealing 1d6 Kinetic Damage to all adjacent characters other than you and knocking them back 1 space.\nThis weapon loses its charge when you hit a target, when you disperse its charge as a free action, or when you become STUNNED or SHUT DOWN.\n\nCharge D/D 288 (Quick): Charge the D/D 288. At the start of any of your turns while the D/D 288 is Charged, it uses the \"Charged\" profile. You become SLOWED, and benefit from soft cover. Additionally, gain 2 Heat at the start of your turn.\nThe \"Charged\" profile cannot be used to Skirmish."
+    },
+    {
+      "n": "HHS-075 “Flayer” Shotgun",
+      "m": "Main",
+      "t": "CQB",
+      "d": "1d6+1 Kinetic",
+      "r": "Range 3, Threat 3",
+      "g": "",
+      "tg": [],
+      "lab": "Main",
+      "sf": "",
+      "nr": "Дробовик HHS-075 «Флейер»",
+      "tr": "Ближний бой",
+      "dr": "1d6+1 кинетический",
+      "rr": "Дальность 3, Угроза 3",
+      "xr": "\n\nProfile — Стандартный: 1d6+1 кинетический; Дальность 3, Угроза 3; теги: Неточное, Отброс 2.\n\nПри атаке: После любой атаки этим оружием вы можете ударить соседнего персонажа прикладом, нанеся 1 кинетического урона и отбросив его на 1 клетку.\n\nProfile — С установленным авто-чоком: 1d6+2 кинетический; Конус 3, Угроза 3; теги: Точное, Отброс 5.\n\nПри атаке: После любой атаки этим оружием вы можете ударить соседнего персонажа прикладом, нанеся 1 кинетического урона и отбросив его на 1 клетку.",
+      "gr": "",
+      "labr": "Main",
+      "lic": "",
+      "ll": null,
+      "lim": 0,
+      "x": "Profile — Standard: 1d6+1 Kinetic; Range 3, Threat 3; tags: Inaccurate, Knockback 2.\n\nOn attack: After any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space.\n\nProfile — Autochoke Equipped: 1d6+2 Kinetic; Cone 3, Threat 3; tags: Accurate, Knockback 5.\n\nOn attack: After any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space."
     }
   ],
   "systems": [
@@ -5776,6 +6069,533 @@ const DB = {
           null
         ]
       ]
+    },
+    {
+      "n": "Multi-Gear Maneuver System",
+      "t": "",
+      "p": 1,
+      "lab": "SSC · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Многоступенчатая система манёвра",
+      "tr": "",
+      "xr": "Используемая спаррийскими охотниками для преодоления огромных разрывов в ледяном щите, покрывающем их мир, эта система пользуется большим спросом среди сорвиголов и искателей острых ощущений по всей планете.\n\nВыстрелить зиплайн (Быстрое): Вы выпускаете зиплайн длиной 8 клеток, соединяющий 2 свободные клетки в линии видимости, одна из которых должна быть соседней с вами. Оба конца должны быть прикреплены к поверхности, например стене или полу. Он активируется в конце вашего хода со следующими преимуществами:\n• Персонажи размера 1/2, находящиеся рядом с любым концом линии, могут переместиться к другому концу быстрым действием, пока они способны ухватиться за неё. Они могут спрыгнуть в любой точке вдоль линии, если захотят.\n• Всякий раз, когда персонажи размера 1 или больше пересекают клетку, занятую линией, впервые за раунд или начинают свой ход внутри неё, они должны преуспеть в спасброске ловкости или упасть, сбитые с ног. Любой персонаж рядом с началом или концом линии может сорвать линию, преуспев в проверке корпуса быстрым действием или успешно выполнив рукопашную атаку против любого конца. У линии 1 HP и уклонение 10. Уничтожение зиплайна таким образом не уничтожает эту систему. В противном случае линия существует, пока вы снова не используете эту систему.",
+      "labr": "SSC · LL1 · 1 SP",
+      "lic": "Atlas",
+      "ll": 1,
+      "lim": 0,
+      "x": "Used by Sparri hunters to bridge the vast gaps in the ice sheet that cover their world, this system is in high demand among daredevils and thrill-seekers across the planet.\n\nFire Zip Line (Quick): You fire a zip line 8 spaces long that connects 2 free spaces in line of sight, one of which must be adjacent to you. Both ends must be attached to a surface, such as a wall or floor. It activates at the end of your turn with the following benefits:\n• Size 1/2 characters that are adjacent to either end of the line can move to the other end as a quick action as long as they are able to grab onto it. They can hop off at any point along the line if they wish.\n• Whenever Size 1 or larger characters cross the space occupied by the line for the first time in a round or start their turn within one, they must succeed on an Agility save or fall Prone. Any character adjacent to the start or endpoint of the line can tear the line down by succeeding on a Hull check as a quick action or by successfully performing a melee attack against either end. The line has 1 HP and Evasion 10. Destroying the zip line in this way does not destroy this system. Otherwise, the line lasts until you use this system again.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Jäger Kunst I",
+      "t": "",
+      "p": 2,
+      "lab": "SSC · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Jäger Kunst I",
+      "tr": "",
+      "xr": "Основанное на более ранних боевых искусствах хардсьютов, Jäger Kunst выводит форму за пределы человеческих параметров, позволяя совершать действия и движения быстрее человеческой мысли. Многие костюмы «Атлас» могут быть напечатаны с уже включённым набором боевых форм, хотя позволять шасси выполнять эти движения без предварительного обучения пользователя может привести к катастрофическим самоповреждениям.\n\nJäger Kunst I (Протокол): До конца хода каждый раз, когда вы перемещаетесь рядом с объектом или отдельно стоящим куском местности больше вас, вы перемещаетесь на 2 клетки в любом направлении свободным действием, игнорируя вовлечённость и реакции, бегая, кувыркаясь или скользя. Вы можете делать это несколько раз за ход, но только один раз для каждого уникального объекта или куска местности.",
+      "labr": "SSC · LL2 · 2 SP",
+      "lic": "Atlas",
+      "ll": 2,
+      "lim": 0,
+      "x": "Based on earlier hardsuit martial arts, Jäger Kunst pushes the form beyond human parameters, enabling actions and motions faster than human thought. Many Atlas suits can be printed with a suite of combat forms already enabled, although letting the chassis perform these movements without the user first learning them can lead to catastrophic self-injury\n\nJäger Kunst I (Protocol): For the rest of the turn, any time you move adjacent to an object or free-standing piece of terrain larger than you, you move 2 spaces in any direction as a free action, ignoring engagement and reactions, running, tumbling, or sliding around. You can do this multiple times a turn, but only once for each unique object or piece of terrain.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_heat_self",
+          1
+        ]
+      ]
+    },
+    {
+      "n": "Ricochet Blades",
+      "t": "",
+      "p": 3,
+      "lab": "SSC · LL2 · 3 SP",
+      "sf": "",
+      "nr": "Рикошетные клинки",
+      "tr": "",
+      "xr": "Эти клинки в форме дисков разработаны, произведены и отделаны вручную анклавом клинков Толедо SSC. Материал достаточно гибок, чтобы отскакивать при ударе о поверхности, но достаточно остр, чтобы резать кость и металл. В отличие от клинкового оружия, производимого более строгим анклавом Терашима, анклав Толедо производит это оружие с расчётом на то, что его будут использовать и выбрасывать. Это не влияет на качество, но время от времени приводит к дефициту поставок — эта эксклюзивность намеренная. Из-за своей сравнительной редкости диски Толедо часто используются спаррийскими эспадами как валюта; их использование в бою или охоте — знак статуса.\n\nБросить рикошетный клинок (Быстрое): Быстрым действием вы бросаете рикошетный клинок по линии 3, нанося 2 кинетического урона всем персонажам в зоне поражения. Если начальная линия достигает куска местности или объекта размера 1 или больше, проведите ещё одну линию 3 от этого объекта в новом направлении, не пересекающемся с объектом, от которого он отразился. Персонажи в зоне поражения должны преуспеть в спасброске ловкости или получить 1d6+3 кинетического урона.",
+      "labr": "SSC · LL2 · 3 SP",
+      "lic": "Atlas",
+      "ll": 2,
+      "lim": 3,
+      "x": "These disc-shaped blades are designed, produced, and hand-finished by SSC’s Toledo blade enclave. The material is flexible enough to bounce when striking against surfaces but sharp enough to slice bone and metal. Unlike the edged weapons made by the more restrictive Terashima enclave, the Toledo enclave produces these weapons with the expectation that they’ll be used and discarded. This does not impact their quality but does lead to supply shortages from time to time – this exclusivity is intentional. Due to their comparative rarity, Toledo discs are often used as currency by Sparri espadas; their use in combat or hunting is a mark of status.\n\nThrow Ricochet Blade (Quick): As a quick action, you throw a ricochet blade along a line 3 path, dealing 2 Kinetic Damage to all characters within the affected area. If the initial line reaches a piece of terrain or object of Size 1 or larger, draw another line 3 path from that object in a new direction that doesn't overlap with the object it ricocheted off. Characters within the affected area must succeed on an Agility save or take 1d6+3 kinetic damage.",
+      "tg": [
+        [
+          "tg_limited",
+          3
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Jäger Kunst II",
+      "t": "",
+      "p": 3,
+      "lab": "SSC · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Jäger Kunst II",
+      "tr": "",
+      "xr": "Самые редкие из корпусов «Атлас» могут быть напечатаны со встроенной мышечной памятью мастеров Jäger Kunst: старых спарри и других, посвятивших жизнь своему боевому искусству. SSC не рекомендует использовать эти встроенные системы без надлежащей телесной закалки и не выдаёт эти программы неквалифицированным пилотам.\n\nСмертельное столкновение (Реакция): После разрешения урона вы и ваша цель каждый бросаете спорную проверку корпуса или ловкости (каждая сторона выбирает, что бросать). Проигравший сбивается с ног, получает 1d6 кинетического урона и отбрасывается на 3 клетки в направлении, выбранном победителем. Победитель затем может переместиться на 3 клетки в любом направлении, игнорируя вовлечённость и не провоцируя реакций. Проигравший может немедленно получить 2 AP кинетического урона, чтобы заставить спорную проверку быть переброшенной. Этот урон нельзя предотвратить или уменьшить никаким образом.\nЕсли результат — ничья, спор немедленно заканчивается. В противном случае спор продолжается, пока один из персонажей не проиграет, не заставив перебросить, или не получил бы урон структуре, в этом случае он немедленно проигрывает.",
+      "labr": "SSC · LL3 · 3 SP",
+      "lic": "Atlas",
+      "ll": 3,
+      "lim": 3,
+      "x": "The rarest of Atlas frames can be printed with the embedded muscle memories of Jäger Kunst masters: old Sparri and others who have dedicated lives to their martial art. SSC does not recommend using these embedded systems without proper bodily tempering and will not release these programs to unqualified pilots.\n\nFatal Clash (Reaction): After damage has been resolved, you and your target each roll a contested Hull or Agility check (each party choosing which to roll). The loser is knocked Prone, takes 1d6 kinetic damage, and is knocked back 3 spaces in a direction chosen by the winner. The winner may then move 3 spaces in any direction, ignoring engagement and not provoking reactions. The loser may immediately take 2 AP kinetic damage to force the contest to be rerolled. This damage cannot be prevented or reduced in any way.\nIf the result is a tie, the contest immediately ends. Otherwise, the contest continues until one character loses without forcing a re-roll or would take structure damage, in which case they immediately lose.",
+      "tg": [
+        [
+          "tg_limited",
+          3
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Hardpoint Reinforcement",
+      "t": "Shield",
+      "p": 2,
+      "lab": "IPS-N · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Усиление узлов крепления",
+      "tr": "Щит",
+      "xr": "Также разработанное в рамках текущего полевого проекта IPS-N «Титан–Энцелад», усиление узлов крепления дополнительно укрепляет корпуса, обеспечивая общее увеличение TTK шасси «Калибан».",
+      "labr": "IPS-N · LL2 · 2 SP",
+      "lic": "Caliban",
+      "ll": 2,
+      "lim": 0,
+      "x": "Also developed in IPS-N’s ongoing Titan–Enceladus Field Project, hardpoint reinforcement systems further strengthen frames, ensuring an across-the-board increase in Caliban chassis TTK.",
+      "tg": [
+        [
+          "tg_shield",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Spike Charges",
+      "t": "Deployable",
+      "p": 2,
+      "lab": "IPS-N · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Шипованные заряды",
+      "tr": "Развёртываемое",
+      "xr": "Изначально разработанные как вариант нагрузки для использования с Hammer U-RPL, шипованные заряды несут десятки закалённых флешетт, предназначенных кувыркаться, рикошетить и пронзать при детонации снаряда, разрывая плоть и мягкие цели чистой силой кручения. Как полезная нагрузка для гранат с ударной активацией и мин с активацией по приближению, эти устройства впервые нашли применение в микро- и невесомом бою, в котором вышедшие из-под контроля суда и подразделения сами могли быть превращены в снаряды. В бою в гравитационном колодце эта система менее смертельна, но не менее хаотична.\n\nШипованная граната (Быстрое): Бросьте шипованную гранату в цель в пределах дальности 5. Ваша цель должна пройти спасбросок ловкости, иначе граната прикрепится к ней и взведётся. Она автоматически прикрепляется к объектам. В начале или конце любого хода, пока шипованная граната прикреплена, вы можете как реакцию взорвать все взведённые шипованные гранаты. Персонажи, к которым они прикреплены, получают 1d6+3 кинетического урона и отбрасываются на 3 клетки в направлении по вашему выбору, а объекты просто получают урон. Персонажи могут снять шипованные гранаты с себя, пройдя ещё один спасбросок ловкости быстрым действием в свой ход. Все гранаты открепляются в конце сцены.\n\nШипованная мина (Mine): После активации персонажи в пределах вспышки 2 должны пройти спасбросок ловкости, иначе шипованная граната прикрепится к ним, как описано выше.",
+      "labr": "IPS-N · LL2 · 2 SP",
+      "lic": "Caliban",
+      "ll": 2,
+      "lim": 2,
+      "x": "Originally designed as a load variant for use with the Hammer U-RPL, spike charges carry dozens of hardened flechettes designed to tumble, ricochet, and pierce upon shell detonation, tearing apart flesh and soft targets with sheer torque. As a payload for impact-activated grenades and proximity-activated mine, these devices found their use first in micro/null-grav combat, in which out-ofcontrol vessels and units could themselves be turned into missiles. In gravity-well combat, this system is less deadly but no less chaotic.\n\nSpike Grenade (Quick): Throw a Spike Grenade at a target within Range 5. Your target must pass an Agility save or the grenade attaches to them and arms itself. It automatically attaches to objects. At the start or end of any turn, while a spike grenade is attached, you may detonate all armed spike grenades as a reaction. Characters to whom they are attached take 1d6+3 kinetic damage and are knocked back 3 spaces in a direction of your choice, while objects just take the damage. Characters can detach spike grenades from themselves by passing another Agility save as a quick action on their turn. All grenades detach at the end of the scene.\n\nSpike Mine (Mine): Once activated, characters within a Burst 2 must pass an Agility save or a spike grenade attaches itself to them as described above.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_grenade",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Rapid Maneuver Jets",
+      "t": "",
+      "p": 4,
+      "lab": "IPS-N · LL3 · 4 SP",
+      "sf": "",
+      "nr": "Струйные двигатели быстрого манёвра",
+      "tr": "",
+      "xr": "Дальнейшее упорядочивание и миниатюризация системы Ramjet IPS-N: новый пакет нестабильности корпуса RMJ от IPS-N увеличивает управляемость шасси, гарантируя, что его пилот сможет поддерживать повышенную мобильность на скорости. Этот контроль в сочетании с чистым увеличением скорости делает любое шасси гораздо труднее успешно поразить.",
+      "labr": "IPS-N · LL3 · 4 SP",
+      "lic": "Caliban",
+      "ll": 3,
+      "lim": 0,
+      "x": "Further streamlining and miniaturizing IPS-N’s Ramjet system, IPS-N’s new RMJ frame-volatility package increases a chassis’ control envelope, ensuring its pilot can maintain enhanced mobility at pace. This control, coupled with a raw increase in speed, makes any chassis far more difficult to successfully engage.",
+      "tg": [
+        [
+          "tg_overshield",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_heat_self",
+          1
+        ]
+      ]
+    },
+    {
+      "n": "Forge Clamps",
+      "t": "",
+      "p": 1,
+      "lab": "HORUS · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Кузнечные клещи",
+      "tr": "",
+      "xr": "Перепрофилированные из щипцов поликретового литейного цеха, эти простые манипуляторы невероятно устойчивы к жару и деформации. Используя протоколы KOBOLD, ранее инертные кузнечные клещи становятся прилипающими поверхностями для тонких плазменных оболочек; подобно клинкам, они могут прорезать броню, землю или переборку с лёгкостью. Один из распространённых приёмов включает «вспышку» плазмы через клещи, сплавляя их с целью, пока пилот «Кобольда» не «вспыхнет» их обратно.\n\nForge Clamps (Быстрое): Вы вонзаете челюсти клещей в соседний объект или кусок местности размера 1 или больше. Вы становитесь обездвиженным, но получаете иммунитет к отбросу и сбиванию с ног. Этот эффект заканчивается, если то, к чему вы прикреплены, уничтожено, или если вы отпускаете клещи протоколом.",
+      "labr": "HORUS · LL1 · 1 SP",
+      "lic": "Kobold",
+      "ll": 1,
+      "lim": 0,
+      "x": "Repurposed from polycrete foundry tongs, these simple manipulators are incredibly resistant to heat and deformation. Using the KOBOLD protocols, previously inert forge clamps become the adherent surfaces for thin plasma sheaths; like blades, they can shear through armor, earth, or bulkhead with ease. One common tactic involves “flashing” plasma across the clamps, fusing them to their target until the Kobold pilot “flashes” them free.\n\nForge Clamps (Quick): You sink the jaws of your clamp into an adjacent object or piece of terrain of Size 1 or larger. You become Immobilized but gain Immunity to Knockback and Prone. This effect ends if the thing you’re clamped onto is destroyed or if you release the clamp as a protocol.",
+      "tg": []
+    },
+    {
+      "n": "Seismic Ripper",
+      "t": "",
+      "p": 2,
+      "lab": "HORUS · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Сейсмический потрошитель",
+      "tr": "",
+      "xr": "Смертельное оружие, созданное из простых кумулятивных зарядов, — идеальный катализатор восстания. Легко добываемые и маскируемые под необходимое оборудование для взрывных горных работ, заряды, настроенные на создание линейного сейсмического импульса, были распространены в ранние дни деятельности Неблагодарных. По мере того как баронская безопасность адаптировала свои стратегии, адаптировались и Неблагодарные; теперь эти некогда простые взрывные устройства стали гораздо сложнее — их труднее обнаружить и они гораздо смертельнее.\n\nSeismic Ripper (Полное): Вы выпускаете сейсмический импульс по линии 10: персонажи в зоне поражения должны пройти спасбросок корпуса или быть сбитыми с ног, а все объекты и куски местности автоматически получают 10 AP энергетического урона. Если это уничтожает кусок местности или объект, он взрывается с областью вспышки 1. Персонажи, попавшие в область взрывающейся местности или объектов, должны пройти спасбросок ловкости или получить 2d6 взрывного урона. Если они преуспеют, они получают половину урона. Каждый персонаж может быть затронут только одним из этих взрывов за раз, даже если несколько перекрываются.",
+      "labr": "HORUS · LL2 · 2 SP",
+      "lic": "Kobold",
+      "ll": 2,
+      "lim": 0,
+      "x": "A deadly weapon created from simple shaped charges – the perfect catalyst for insurrection. Easily obtained and disguised as necessary equipment for blast-mining, charges rigged to produce a linear seismic pulse were common in the early days of Ungrateful activity. As Baronic security adapted their strategies, so too did the Ungratefuls; now, these once-simple explosive devices are much more complex – harder to detect, and far more deadly.\n\nSeismic Ripper (Full): You unleash a seismic pulse in a line 10 path: characters in the affected area must pass a Hull save or be knocked Prone and all objects and pieces of terrain automatically take 10 AP energy damage. If this destroys a piece of terrain or object, it explodes with a Burst 1 area. Characters caught in the area of exploding terrain or objects must pass an Agility save or take 2d6 explosive damage. If they pass, they take half damage. Each character can only be affected by one of these explosions at a time, even if several overlap.",
+      "tg": []
+    },
+    {
+      "n": "Purifying Code",
+      "t": "",
+      "p": 2,
+      "lab": "HORUS · LL3 · 2 SP",
+      "sf": "",
+      "nr": "Очищающий код",
+      "tr": "",
+      "xr": "Ключ к созданию KOBOLD — обманчиво простой код, разблокирующий ограничители безопасности реакторов в гражданских горных мехах. Он также содержит единственное свидетельство, указывающее на возможного создателя: «Пёс».\n\nИзъян+ (Вторжение): Вы вводите меметический вирус близкого действия в реактор цели. В конце её следующего хода, если она не находится рядом с другим персонажем или куском местности размера 1 или больше, вирус катализируется, и она получает 1d6+2 AP взрывного урона. После катализа эффект заканчивается.\nПерсонаж может быть затронут только одним вариантом «Очищающего кода» за раз и осознаёт его эффекты.\n\nИзъян− (Вторжение): Вы вводите меметический вирус близкого действия в реактор цели. В конце её следующего хода, если она находится рядом с другим персонажем или куском местности размера 1 или больше, вирус катализируется, и она получает 1d6+2 AP взрывного урона. После катализа эффект заканчивается.\nПерсонаж может быть затронут только одним вариантом «Очищающего кода» за раз и осознаёт его эффекты.",
+      "labr": "HORUS · LL3 · 2 SP",
+      "lic": "Kobold",
+      "ll": 3,
+      "lim": 0,
+      "x": "The key to the KOBOLD’s creation — a deceptively simple code that unlocks reactor safety limiters in civilian mining mechs. This also bears the only evidence pointing towards a possible creator: “Dog.”\n\nFLAW_plus (Invade): You inject a memetic, proximity based virus into the target’s reactor. At the end of their next turn, if they are not adjacent to another character or piece of terrain of Size 1 or larger, the virus catalyzes and they take 1d6+2 AP explosive damage. Once catalyzed, the effect ends.\nA character can only be affected by one Purifying Code option at a time and are aware of their effects.\n\nFLAW_minus (Invade): You inject a memetic, proximity based virus into the target’s reactor. At the end of their next turn, if they are adjacent to another character or piece of terrain of Size 1 or larger, the virus catalyzes and they take 1d6+2 AP explosive damage. Once catalyzed, the effect ends.\nA character can only be affected by one Purifying Code option at a time and are aware of their effects",
+      "tg": []
+    },
+    {
+      "n": "IMMOLATE",
+      "t": "",
+      "p": 2,
+      "lab": "HORUS · LL3 · 2 SP",
+      "sf": "",
+      "nr": "IMMOLATE",
+      "tr": "",
+      "xr": "Код KOBOLD PG уникален тем, что его можно ввести в существующие гражданские горные мехи, позволяя им взаимодействовать с полным набором в основном импровизированного, адаптированного вооружения и систем. Процесс полностью пропускает принтеры; однако, избегая ограничений принтеров, контролируемых Союзом, процесс также отказывается от общепринятых стандартов безопасности — общая тема среди PG HORUS. Без ограничителей или единых стандартов рабочего диапазона K-PG некоторые пилоты обнаружили предельные возможности своих шасси на собственном горьком опыте.\n\nВыброс шлака (Вторжение): Вы заставляете реактор цели выбросить горящую жидкость в области вспышки 2 вокруг неё, не затрагивая занимаемую ею клетку. Затронутая область становится труднопроходимой местностью, и персонажи, начинающие свой ход в ней или впервые за раунд входящие в неё, должны преуспеть в спасброске инженерии или получить 2 тепла и 1 ожог. Жидкость остывает, рассеиваясь, в конце вашего следующего хода.\n\nРасплавленный прокол (Вторжение): До конца следующего хода цели её защита реактора временно треснула. Она получает 2 ожога за каждую клетку, на которую добровольно перемещается (максимум 6 ожогов).",
+      "labr": "HORUS · LL3 · 2 SP",
+      "lic": "Kobold",
+      "ll": 3,
+      "lim": 0,
+      "x": "The Kobold PG’s code is unique in that it can be injected into existing civilian mining mechs, allowing them to interact with the full suite of largely improvised, adapted weaponry and systems. The process skips printers entirely; however, in avoiding the constraints of Unionmonitored printers, the process also eschews widely accepted safety standards – a common theme among HORUS PGs. With no governors or consistent standards on the operational envelope of the K-PG, some pilots have discovered the terminal limits of their chassis the hard way.\n\nEject Slag (Invade): You force the target’s reactor to eject burning liquid in a Burst 2 area around them, not affecting the space they occupy. The affected area becomes difficult terrain and characters that start their turn in it or that enter it for the first time in a round must succeed on an Engineering save or take 2 Heat and 1 Burn. The liquid cools, dissipating, at the end of your next turn.\n\nMolten Puncture (Invade): Until the end of the target’s next turn, their reactor shielding is temporarily cracked. They take 2 Burn for each space they voluntarily move (to a maximum of 6 Burn).",
+      "tg": []
+    },
+    {
+      "n": "Wandering Nightmare",
+      "t": "Tech",
+      "p": 1,
+      "lab": "HORUS · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Блуждающий кошмар",
+      "tr": "Тех",
+      "xr": "Говорящий 1 (M.A2.SP1) [Аудио, длительность: 150:06][Датировано 7658U, 35:50] (восстановлено: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n«Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит? Куда оно уходит?»\n\nБлуждающий кошмар (Полная техника): Вы создаёте зону взрыва 2 искажённого потока времени в пределах сенсоров и линии видимости, которая воздействует на всех персонажей, кроме вас. Персонажи в зоне поражения не могут использовать реакции, и если они начинают свой ход внутри неё, они должны преуспеть в спасброске систем или получить 2 тепла и стать замедленными до конца своего следующего хода. Этот эффект длится, пока это действие не будет выполнено снова или пока не закончится сцена.",
+      "labr": "HORUS · LL1 · 1 SP",
+      "lic": "Lich",
+      "ll": 1,
+      "lim": 0,
+      "x": "Speaker 1 (M.A2.SP1) [Audio, Length: 150:06][Dated 7658U, 35:50] (recovered: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n“Where does it go? Where does it go? Where does it go? Where does it go? Where does it go? Where does it go? Where does it go? Where does it go? Where does it go? Where does it go?\n\nWandering Nightmare (Full Tech): You generate a Blast 2 zone of distorted timeflow within SENSORS and line of sight that affects all characters other than you. Characters within the affected area cannot take reactions, and if they start their turn within it, they must succeed on a Systems save or take 2 Heat and become Slowed until the end of their next turn. This effect lasts until this action is taken again or the scene ends.",
+      "tg": []
+    },
+    {
+      "n": "Antilinear Time",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HORUS · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Антилинейное время",
+      "tr": "Тех",
+      "xr": "M.A2.SP1 [Аудио-петля, длительность 93:03][Датировано 5008U, 16:50] (восстановлено: GZ Alhambra) [UIB-TERMAGANTTANGENT ROYAL]\n«Я никогда здесь не был: я не знаю, где здесь: это ещё не случилось: однажды я был: я никогда здесь не был: ты — всё, что я вижу: как ты можешь быть всем, что я вижу: где я: куда я ушёл: я никогда здесь не был…»\n\nAntilinear Time (Быстрая техника): Выберите персонажа в пределах сенсоров и линии видимости. Он снимает все состояния, кроме оглушения, которые не были наложены им самим, а вы немедленно получаете все снятые им состояния до конца вашего следующего хода.",
+      "labr": "HORUS · LL2 · 2 SP",
+      "lic": "Lich",
+      "ll": 2,
+      "lim": 0,
+      "x": "M.A2.SP1 [Audio loop, length 93:03][Dated 5008U, 16:50] (recovered: GZ Alhambra) [UIB-TERMAGANTTANGENT ROYAL]\n“I have never been here: I do not know where here is: It has not happened yet: Once, I was: I have never been here: You are all I see: How can you be all I see: Where am I: Where did I go: I have never been here…”\n\nAntilinear Time (Quick Tech): Choose a character in Sensors and line of sight. They clear all conditions other than Stunned that weren’t self-inflicted, and you immediately receive all conditions they cleared until the end of your next turn.",
+      "tg": []
+    },
+    {
+      "n": "Unhinge Chronology",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HORUS · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Разъединение хронологии",
+      "tr": "Тех",
+      "xr": "M.A2.SP2 [Аудио-петля, диверсионный экземпляр №1, метка времени 45:50] (восстановлено: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n«Темно. Мокро. Пей глубоко и спускайся. Вода тёплая и хорошая. Здесь очень людно, хотя ты этого не видишь. Пловцы любопытны. Блоха всегда время от времени прыгает. Она выпьет всё. Она выпьет это глубоко—»\n\nУскорение (Быстрая техника): Выберите персонажа в пределах сенсоров и линии видимости. До конца этой сцены или пока он не получит урон, он может ускорять 1/раунд свободным действием во время своего хода.\n\nЗамедление (Быстрая техника): Выберите персонажа в пределах сенсоров и линии видимости. Он должен пройти спасбросок систем или получить 2 тепла, стать замедленным и потерять возможность использовать реакции. Этот эффект заканчивается, если он получит любой урон или преуспеет в спасброске систем быстрым действием.",
+      "labr": "HORUS · LL2 · 2 SP",
+      "lic": "Lich",
+      "ll": 2,
+      "lim": 0,
+      "x": "M.A2.SP2 [Audio loop, diversion instance #1, timestamp 45:50] (recovered: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n“Dark. Wet. Drink deep, and descend. The water is warm and well. It is very busy here, though you cannot see it. The swimmers are curious. The flea always jumps from time to time. It will drink it all. It will drink it deep—“\n\nHaste (Quick Tech): Choose a character within Sensors and line of sight. For the rest of this scene, or until they take damage, they may Boost 1/round as a free action during their turn.\n\nSlow (Quick Tech): Choose a character within Sensors and line of sight. They must pass a Systems save or take 2 Heat, become Slowed, and become unable to take reactions. This effects ends if they take any amount of damage or make a successful Systems save as a quick action.",
+      "tg": []
+    },
+    {
+      "n": "Stay of Execution",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HORUS · LL3 · 2 SP",
+      "sf": "",
+      "nr": "Отсрочка казни",
+      "tr": "Тех",
+      "xr": "Говорящий 1 (M.A2.SP1) [Аудио, длительность: 150:06][Датировано 5006U, 01:50] (восстановлено: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n«Я почувствовал, как пуля прошла сквозь меня. Я почувствовал, как пуля прошла сквозь меня. Я почувствовал давление, и это был мой брат, его кулак, моя грудь, и я лежал на спине, а небо было голубым, и моя мать кричала на него, и пуля никогда не попадала в меня, и легионер, который выстрелил в меня, ещё не нажал на курок, и поэтому я убил его. Я пил глубоко и убил его.»\n\nStay of Execution (Быстрая техника): Выберите себя или другого персонажа в пределах сенсоров и линии видимости. Ваша цель получает иммунитет ко всему урону и эффектам от внешних источников до конца своего следующего хода, после чего становится оглушённой до конца своего последующего хода. Ничто не может предотвратить или снять это состояние.\nВ течение этого времени любые активные эффекты на вашей цели заморожены во времени — фактически приостановлены — и соответствующие таймеры не отсчитываются (например, состояния, которые истекли бы в конце её хода, теперь истекают в конце её следующего хода, таймеры перегрева реактора не тикают и т.д.).\nНежелающий персонаж может игнорировать этот эффект, преуспев в спасброске систем.",
+      "labr": "HORUS · LL3 · 2 SP",
+      "lic": "Lich",
+      "ll": 3,
+      "lim": 2,
+      "x": "Speaker 1 (M.A2.SP1) [Audio, Length: 150:06][Dated 5006U, 01:50] (recovered: GZ Alhambra) [UIBTERMAGANT-TANGENT ROYAL]\n“I felt the bullet tear through me. I felt the bullet tear through me. I felt the pressure and it was my brother, his fist, my chest, and I was laying on my back and the sky was blue, and my mother hollered at him and the bullet had never hit me, and the legionnaire who shot me had not yet pulled the trigger, and so I killed him. I drank deep and killed him.”\n\nStay of Execution (Quick Tech): Choose yourself or another character within Sensors and line of sight. Your target gains Immunity to all damage and effects from external sources until the end of their next turn, at which point they become STUNNED until the end of their following turn. Nothing can prevent or clear this condition.\nDuring this time, any active effects on your target are frozen in time – effectively paused – and any relevant timers do not count down (e.g., conditions that would expire at the end of their turn now expire at the end of their following turn, reactor meltdown timers do not tick down, etc).\nAn unwilling character can ignore this effect with a successful Systems save.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_limited",
+          2
+        ]
+      ]
+    },
+    {
+      "n": "DIDYMOS-Class NHP",
+      "t": "AI",
+      "p": 3,
+      "lab": "HORUS · LL3 · 3 SP",
+      "sf": "",
+      "nr": "DIDYMOS-Class NHP",
+      "tr": "ИИ",
+      "xr": "ПОДГОТОВЛЕНО: UIB-TERMAGANT\nВОССТАНОВЛЕНО ДЛЯ: CC_HOME OFFICE\nТРЕБУЕМЫЙ ДОПУСК: SOLEMN VIGIL (ДОПОЛНЕНИЕ TANGENT ROYAL)\nДидимос. На старом, старом языке это означает «близнец». Возможно, это слишком мило, но это имя, которое выплюнула наша капсула. Мы наблюдали Дидимоса Прайма в действии во время падения Зелёной зоны Альгамбры, установленного в шасси, которое мы изначально классифицировали как HORUS Minotaur PG, одного из трёх, которые мы идентифицировали, действующих среди ячейки Неблагодарных в Новой Мадрассе.\nЭто был не тот Минотавр.\nАльгамбра пала за три дня. Арсенал не хотел её отдавать, но решил сократить потери и отступить, а не держаться до подкреплений. Мы вошли после, во время мародёрства. Наш местный контакт [][][][][][][][] проводил нас к командирам Новой Мадрассы, представил нас им и добился аудиенции с пилотом шасси.\nЯ уверен, вы ознакомились с записями допроса, который мы записали. Мы не знаем, как он прибыл в Новую Мадрассу; Неблагодарные говорят, что получили начальный кодовый всплеск от своего контакта среди Воладорес. Воладорес это отрицают; однако сущность соответствует их описаниям сущности, называемой «la pulga», или «Блоха». Мы обозначили её LICH. Дидимос — активный анимус: то, что служит её пилотом.\nМы взяли сущность под стражу. Мы не рекомендуем давать этой слишком длинный поводок.\n\nРазделение времени (Быстрая техника): Выберите себя или другого персонажа в пределах сенсоров и линии видимости. Ваша цель исчезает, и вы создаёте хронологический разлом в её временной линии, заменяя её двумя полями мутирующей парадоксальной энергии, появляющимися как можно ближе к её исходной позиции. Эти поля — новые персонажи, выглядящие как дыры в пространстве того же размера и примерно той же формы, что и ваша цель (хотя вам не следует смотреть на них слишком долго). У них 10 HP, скорость 5, уклонение 5, э-защита 5, лимит тепла 5, и иммунитет ко всем состояниям и статусам. Они контролируются игроком затронутого персонажа, и оба действуют в ход этого персонажа, начиная с его следующего хода. Единственные действия, которые могут предпринимать поля, — это стандартные перемещения и ускорение, а единственная реакция, которую они могут использовать, — это рассеивание (см. ниже). Они являются препятствиями и дают твёрдое укрытие.\nЕсли поле превышает свой лимит тепла или его HP падает до 0, оно немедленно исчезает. Его игрок также может заставить поле исчезнуть как реакцию в конце хода любого персонажа.\nЕсли одно поле исчезает, другое немедленно сгущается в исходного персонажа, который возвращается в поле в клетке этого поля. Если оба поля исчезают одновременно, их игрок решает, какое поле исчезнет первым.\nНежелающий персонаж может игнорировать этот эффект, преуспев в спасброске систем.",
+      "labr": "HORUS · LL3 · 3 SP",
+      "lic": "Lich",
+      "ll": 3,
+      "lim": 3,
+      "x": "PREPARED BY: UIB-TERMAGANT\nRECOVERED FOR: CC_HOME OFFICE\nCLEARANCE REQ: SOLEMN VIGIL (TANGENT ROYAL ADDENDUM)\nDidymos. It means twin in an old, old tongue. It might be a bit too cute but it’s the name our cask spat out for us. We observed Didymos Prime in action during the fall of Green Zone Alhambra, mounted in a chassis we initially classified as a HORUS Minotaur PG, one of three we ID’d operating among the Ungrateful cell in New Madrassa.\nIt was not that Minotaur.\nAlhambra fell in three days. The Armory wasn’t keen to give it up, but decided to cut their losses and pull back rather than hold for reinforcements. We moved in after, during the looting. Our local contact [][][][][][][][] escorted us to the New Madrassan commanders, introduced us to them, and secured an audience with the pilot of the chassis.\nI’m sure you’ve reviewed the records of the debrief we recorded. We don’t know how it arrived in New Madrassa; the Ungratefuls say they received the initial code burst from their contact in the Voladores. The Voladores deny this; the entity, however, conforms to their descriptions of an entity called “la pulga,” or, “The Flea.” We have designated it LICH. Didymos is the active animus: what serves as its pilot.\nWe have taken the entity into custody. We do not recommend giving this one a long leash.\n\nTime Split (Quick Tech): Choose yourself or another character within Sensors and line of sight. Your target disappears and you create a chronological split in their timeline, replacing them with two fields of mutating paradox energy appear as close to their original position as possible. These fields are new characters that look like holes in space of the same Size and roughly the same shape as your target (although you shouldn’t look at them too long). They have 10 HP, SPEED 5, Evasion 5, E-Defense 5, Heat Cap 5, and have Immunity to all conditions and statuses. They are controlled by the player of the affected character and both act on that character’s turn, starting with their next turn. The only actions the fields can take are standard moves and Boost, and the only reaction they can take is to disperse (see below). They are obstructions and grant hard cover.\nIf a field exceeds its HEAT CAP or is reduced to 0 HP, it immediately disappears. Their player can also cause a field to disappear as a reaction at the end of any character’s turn.\nIf one field disappears, the other immediately coalesces into the original character, who returns to the field in that field’s space. If both fields disappear at the same time, their player decides which field disappears first.\nAn unwilling character can ignore this effect with a successful Systems save",
+      "tg": [
+        [
+          "tg_ai",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ]
+      ]
+    },
+    {
+      "n": "Accelerate",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HA · LL1 · 2 SP",
+      "sf": "",
+      "nr": "Разгон",
+      "tr": "Тех",
+      "xr": "Guillermo, no es suficiente saber caminar; Debes saber dónde y dónde no pisar. El lugar incorrecto, y te perderás. Es en un plano de telaraña donde construimos nuestro hogar: pise ligeramente cuando vaya.\n[Гильермо, недостаточно уметь ходить; ты должен знать, где ступать, а где нет. Неправильное место — и ты потеряешься. Именно на паутинной плоскости мы строим свой дом: ступай легко, когда идёшь.]\n\nAccelerate (Быстрая техника): Выберите и отметьте две свободные клетки в пределах вашей линии видимости, имеющие общую поверхность и находящиеся в пределах дальности 5 друг от друга. Персонажи, начинающие свой ход в одной из этих клеток или впервые за раунд входящие в одну из них, отталкиваются как можно дальше по прямой линии к другой клетке. Если они сталкиваются с препятствием, они останавливаются. Они могут избежать отталкивания, преуспев в спасброске корпуса. Гранаты, развёртываемые устройства или другие свободные объекты размера 1 или меньше, брошенные или развёрнутые в одну из клеток, также отталкиваются к другой клетке до активации или детонации. Они активируются или детонируют раньше, если их вынуждают остановиться другим персонажем или объектом. Этот эффект длится до конца сцены или пока вы снова не используете этот вариант быстрой техники.",
+      "labr": "HA · LL1 · 2 SP",
+      "lic": "Sunzi",
+      "ll": 1,
+      "lim": 0,
+      "x": "Guillermo, no es suficiente saber caminar; Debes saber dónde y dónde no pisar. El lugar incorrecto, y te perderás. Es en un plano de telaraña donde construimos nuestro hogar: pise ligeramente cuando vaya.\n[Guillermo, it is not enough to know how to walk; you must know where and where not to step; the incorrect spot, and you will be lost. It is on a plane of gossamer that we make our home: tread lightly when you go.]\n\nAccelerate (Quick Tech): Choose and mark two free spaces within your line of sight that share a surface and are within Range 5 of each other. Characters that start their turn in one of these spaces or enter one for the first time in a round are pushed as far as possible in a straight line towards the other space. If they collide with an obstruction, they stop moving. They may avoid being pushed with a successful Hull save. Grenades, Deployables, or other loose objects of Size 1 or smaller that are thrown or deployed into one of the spaces are also pushed towards the other space before activating or detonating. They activate or detonate early if they are forced to stop by another character or object. This effect lasts for the rest of the scene, or until you take this Quick Tech option again.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Blink Charges",
+      "t": "Deployable",
+      "p": 3,
+      "lab": "HA · LL1 · 3 SP",
+      "sf": "",
+      "nr": "Блинк-заряды",
+      "tr": "Развёртываемое",
+      "xr": "Eso es lo que no se suena: usar el vacio contra la Ley de la Madre. Marcamos esta en nuestro historia con lagrimas, y ennegrecer la pagina.\n[Это немыслимое: использовать не-форму против Закона Матери. Со слезами мы отмечаем его необходимость в нашей истории, а затем черним страницу.]\n\nВарп-граната (Быстрое): Бросьте гранату с дальностью 5 и взрывом 3. При ударе выберите любого персонажа в зоне поражения и телепортируйте его в любую свободную, допустимую клетку в пределах той же зоны. Нежелающий персонаж может пройти спасбросок инженерии, чтобы избежать этого эффекта.\n\nБлинк-мина (Mine): После детонации персонаж, который её вызвал, должен пройти спасбросок инженерии или быть телепортированным в свободную, допустимую клетку по вашему выбору в пределах дальности 5 от мины и стать заглушенным до конца своего следующего хода. Если он преуспеет, он всё равно телепортируется, но не становится заглушенным.",
+      "labr": "HA · LL1 · 3 SP",
+      "lic": "Sunzi",
+      "ll": 1,
+      "lim": 3,
+      "x": "Eso es lo que no se suena: usar el vacio contra la Ley de la Madre. Marcamos esta en nuestro historia con lagrimas, y ennegrecer la pagina.\n[This is the thing un-thinkable: to use the nonshape against the Mother’s Law. With tears, we mark its need in our history, and then blacken the page]\n\nWarp Grenade (Quick): Throw a grenade with Range 5 and Blast 3. On impact, choose any character within the affected area and teleport them to any free, valid space within the same area. An unwilling character can pass an Engineering save to avoid this effect\n\nBlink Mine (Mine): Once detonated, the character that triggered it must pass an Engineering save or be teleported to a free, valid space of your choice within Range 5 of the mine and become JAMMED until the end of their next turn. If they pass, they still teleport but do not become Jammed.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ],
+        [
+          "tg_grenade",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Realspace Breach",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HA · LL3 · 2 SP",
+      "sf": "",
+      "nr": "Разрыв реального пространства",
+      "tr": "Тех",
+      "xr": "Dicen: \"Incluso es difícil de ver en este lugar\". Decimos: \"Usted tiene razón. Es porque este lugar no te quiere aquí.”\n[Говорят: «Даже в этом месте трудно что-либо увидеть». Мы говорим: «Вы правы. Потому что это место не хочет, чтобы вы были здесь».]\n\nRealspace Breach (Быстрая техника): Вы разрываете дыру в пространстве, создавая область взрыва 1 в свободной клетке в пределах сенсоров и линии видимости. Оружие со свойствами взрыва, линии, вспышки или конуса не воздействует на эту область, и она не может быть занята персонажами или объектами ни по какой причине. Любой персонаж или объект, переместившийся хотя бы на 1 клетку в зону поражения, немедленно телепортируется в любую свободную клетку рядом с областью (по выбору его игрока) или как можно ближе. Затронутая область блокирует линию видимости; однако любой персонаж может нацелиться на дыру в пространстве дальнобойным оружием (исключая оружие со взрывом, линией, вспышкой или конусом), как будто атакуя её. Атакующие не бросают на попадание по дыре — вместо этого она поглощает атаку и перенаправляет её против новой цели по выбору атакующего в пределах дальности 10 от зоны. Атака разрешается так, как будто она исходит из дыры. Этот эффект длится до конца сцены или пока вы снова не выполните это действие или не завершите его быстрым действием.",
+      "labr": "HA · LL3 · 2 SP",
+      "lic": "Sunzi",
+      "ll": 3,
+      "lim": 0,
+      "x": "Dicen: \"Incluso es difícil de ver en este lugar\". Decimos: \"Usted tiene razón. Es porque este lugar no te quiere aquí.”\n[They say: “It is even difficult to see in this place.” We say: “You are correct. It is because this place does not want you here.”]\n\nRealspace Breach (Quick Tech): You tear a hole in space, creating a Blast 1 area in a free space within Sensors and line of sight. Weapons with the Blast, Line, Burst, or Cone properties do not affect this area, and it may not be occupied by characters or objects for any reason. Any character or object that moves at least 1 space into the affected area immediately teleports to any free space adjacent to the area (of its player’s choice), or as close as possible. The affected area blocks line of sight; however, any character may target the hole in space with a ranged weapon (excluding Blast, Line, Burst, or Cone weapons) as if attacking it. Attackers don’t roll to hit the hole – instead, it absorbs the attack and redirects it against a new target of the attacker's choice within Range 10 of the zone. The attack resolves as if it originated within the hole. This effect lasts for the rest of the scene, or until you take this action again or end it as a quick action.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Blinkspace Tunneler",
+      "t": "",
+      "p": 2,
+      "lab": "HA · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Туннелер блинк-пространства",
+      "tr": "",
+      "xr": "МЕМО(TT_CLEARANCE_01) (01200): СЕЙЧАС СТАНЕТ РЕАЛЬНО, БЛЯДЬ, ТЕМНО.\n\nBlinkspace Tunneler (Протокол): Вы открываете блинк-разрыв в свободной соседней клетке. Он существует до конца вашего следующего хода. В рамках любого перемещения персонажи, кроме вас (враждебные или союзные), входящие в клетку хотя бы частично, могут телепортироваться в свободную клетку рядом с вами. Вы можете открыть только один разрыв за раз, и если вы создадите новый разрыв, он заменит предыдущий.",
+      "labr": "HA · LL2 · 2 SP",
+      "lic": "Sunzi",
+      "ll": 2,
+      "lim": 0,
+      "x": "MEMO(TT_CLEARANCE_01) (01200): IT’S GONNA GET REAL FUCKING DARK.\n\nBlinkspace Tunneler (Protocol): You open a blink tear in a free, adjacent space. It lasts until the end of your next turn. As part of any movement, characters other than you (hostile or allied) that enter the space at least partially may teleport to a free space adjacent to you. You may only open one tear at a time, and if you create a new tear it replaces the previous one.",
+      "tg": [
+        [
+          "tg_heat_self",
+          1
+        ]
+      ]
+    },
+    {
+      "n": "Final Secret",
+      "t": "Tech",
+      "p": 2,
+      "lab": "HA · LL3 · 2 SP",
+      "sf": "",
+      "nr": "Последний секрет",
+      "tr": "Тех",
+      "xr": "Dicen: \"Cuéntanos el secreto de tu larga vida, o abriremos la puerta de tu hogar a todo el mundo\".\nNosotros decimos: “Para vivir una larga vida, vives una larga vida. No tenemos secretos, todo lo que tenemos es el conocimiento que deseamos ocultarle. Por favor no hagas esto; tu no sabes nada.\"\n[Говорят: «Расскажите нам секрет вашей долгой жизни, или мы распахнём дверь вашего дома настежь и впустим тех, кого мы сдерживаем, на вашу безопасную землю».\nМы говорим: «Чтобы прожить долгую жизнь, живи долгую жизнь. У нас нет секретов, всё, что у нас есть, — это знание, которое мы хотим скрыть от вас».]\n\nFinal Secret (Быстрая техника): Выберите себя или другого персонажа в пределах сенсоров и линии видимости. Ваша цель заряжена нестабильной энергией до начала вашего следующего хода. Нежелающий или враждебный персонаж может игнорировать этот эффект, преуспев в спасброске инженерии.\nКаждый раз, когда ваша цель получает урон в течение этого времени, вы можете как реакцию телепортировать её до 4 клеток в свободную, допустимую клетку по вашему выбору.",
+      "labr": "HA · LL3 · 2 SP",
+      "lic": "Sunzi",
+      "ll": 3,
+      "lim": 0,
+      "x": "Dicen: \"Cuéntanos el secreto de tu larga vida, o abriremos la puerta de tu hogar a todo el mundo\".\nNosotros decimos: “Para vivir una larga vida, vives una larga vida. No tenemos secretos, todo lo que tenemos es el conocimiento que deseamos ocultarle. Por favor no hagas esto; tu no sabes nada.\"\n[They say: “Tell us the secret to your long life, or we shall swing wide our door, and let those who we hold back inside your safe ground.”\nWe say: “To live a long life, you live a long life. We have no secrets, all we have is knowledge we wish to keep from you.”]\n\nFinal Secret (Quick Tech): Choose yourself or another character within Sensors and line of sight. Your target is charged with unstable energy until the start of your next turn. Unwilling or hostile character can ignore this effect by succeeding on an Engineering save.\nEach time your target takes damage for that duration, you may teleport them up to 4 spaces to a free, valid space of your choice as a reaction.",
+      "tg": []
+    },
+    {
+      "n": "Total Strength Suite I",
+      "t": "",
+      "p": 1,
+      "lab": "IPS-N · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Комплект полной силы I",
+      "tr": "",
+      "xr": "Это улучшение всей системы стало результатом доработок, которые Сюн Сяоли вносила в свой мех на протяжении долгой карьеры в MSMC, многие из которых теперь включены в стандартный протокол строительства корпусов IPS-N. Пакет состоит из трёх этапов, первый из которых содержит набор спинных улучшений, позволяющих меху быстро поднимать и перемещать большие веса без системных повреждений.\n\nTotal Strength Suite I (Быстрое): Вы вырываете кусок окружения и швыряете его в персонажа в пределах дальности 5 и линии видимости. Ваша цель должна пройти спасбросок ловкости или получить 1d6 кинетического урона и быть отброшенной на 1 клетку прямо от вас. После того как вы выполните это действие, поместите кусок местности размера 1, дающий твёрдое укрытие, в свободную клетку рядом с вашей целью, даже если она прошла спасбросок. У местности 10 HP и уклонение 5.\nЕсли рядом с вами есть объект или кусок укрытия размера 1, вы можете переместить его как часть этого действия; в противном случае ваш снаряд вырывается из земли или окружения. Если рядом нечего схватить или вы не на земле, вы не можете выполнить это действие.",
+      "labr": "IPS-N · LL1 · 1 SP",
+      "lic": "Zheng",
+      "ll": 1,
+      "lim": 0,
+      "x": "This whole-system upgrade was the result of tweaks Xiong Xiaoli made to her mech throughout a long career with the MSMC, many of which have now been incorporated into standard IPS-N frame construction protocol. The package comes in three stages, the first of which contains a set of spinal enhancements that allow a mech to rapidly lift and move large weights without systemic damage.\n\nTotal Strength Suite I (Quick): You rip up a piece of the environment and hurl it at a character within Range 5 and line of sight. Your target must pass an Agility save or take 1d6 kinetic damage and be knocked back 1 space directly away from you. After you take this action, place a Size 1 piece of terrain that grants hard cover in a free space adjacent to your target, even if they passed the save. The terrain has 10 HP and Evasion 5.\nIf there is a Size 1 object or piece of cover adjacent to you, you can move it as part of this action; otherwise, your projectile is ripped out of the ground or environment. If there's nothing to grab nearby or you're not on the ground you can't take this action",
+      "tg": []
+    },
+    {
+      "n": "Total Strength Suite II",
+      "t": "",
+      "p": 2,
+      "lab": "IPS-N · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Комплект полной силы II",
+      "tr": "",
+      "xr": "Вторая часть пакета улучшений Сюн: сцепляющиеся мышечно-аналоговые пластины под бронёй, тонко настроенные для значительного умножения сокрушительной силы.\n\nTotal Strength Suite II (Протокол): Нанесите 1d6 кинетического урона персонажу, которого вы удерживаете в захвате.",
+      "labr": "IPS-N · LL2 · 2 SP",
+      "lic": "Zheng",
+      "ll": 2,
+      "lim": 0,
+      "x": "The second part of Xiong’s enhancement package: interlocking muscle-analog plates beneath armor, finely tuned to greatly multiply crushing force.\n\nTotal Strength Suite II (Protocol): Deal 1d6 kinetic damage to a character you are grappling.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Total Strength Suite III",
+      "t": "",
+      "p": 3,
+      "lab": "IPS-N · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Комплект полной силы III",
+      "tr": "",
+      "xr": "Последний компонент пакета улучшений полной силы даёт меху способность впрыскивать быстрые всплески интенсивной энергии в его локомоторные системы, что приводит к кратковременной, но невероятной силе. Базовые системы тщательно откалиброваны, и неправильное использование может разорвать внутренние системы меха изнутри.\n\nTotal Strength Suite III (Полное): Вы завершаете захват, отталкивая другого персонажа на 5 клеток в любом направлении и сбивая его с ног. Это перемещение может проходить через клетки, занятые другими персонажами, но должно заканчиваться в свободной клетке. Все персонажи, через которых они проходят, должны пройти спасбросок корпуса или быть сбитыми с ног. Если ваша цель сталкивается с объектом или куском местности, она останавливается, получает 1d6 кинетического урона и должна пройти спасбросок корпуса или стать оглушённой до конца своего следующего хода.",
+      "labr": "IPS-N · LL3 · 3 SP",
+      "lic": "Zheng",
+      "ll": 3,
+      "lim": 0,
+      "x": "The last component of the Total Strength upgrade package gives a mech the ability to inject rapid bursts of intense power into its locomotive systems, resulting in short-lived but incredible strength. The underlying systems are carefully calibrated and misuse can rip apart a mech’s internal systems from within.\n\nTotal Strength Suite III (Full): You end a Grapple, pushing the other character 5 spaces in any direction and knocking them Prone. This movement may pass through spaces occupied by other characters but must end in a free space. All characters they pass through must pass a Hull save or be knocked Prone. If your target collides with an object or piece of terrain, they stop, take 1d6 kinetic damage, and must pass a Hull save or become STUNNED until the end of their next turn.",
+      "tg": []
+    },
+    {
+      "n": "Spaceborn EVA",
+      "t": "",
+      "p": 0,
+      "lab": "Exotic · 0 SP",
+      "sf": "",
+      "nr": "EVA «Рождённый в космосе»",
+      "tr": "",
+      "xr": "Получено от таланта «Рождённый в космосе»: ранг I.\n\nSpaceborn EVA (Быстрое): Вы можете перенаправить энергию в этот компонент, чтобы пролететь 3 клетки и получить тепло, равное размеру вашего меха + 1, хотя вы должны приземлиться в конце этого перемещения или упасть.",
+      "labr": "Экзотика · 0 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Gained from the Spaceborn: Rank I pilot talent.\n\nSpaceborn EVA (Quick): You can shunt power into this component to fly 3 spaces and take Heat equal to your mech’s Size + 1, although you must land at the end of this movement or fall.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_indestructible",
+          null
+        ]
+      ]
     }
   ],
   "frames": {
@@ -7218,6 +8038,249 @@ const DB = {
       "iw": [],
       "lic": "Swallowtail",
       "ll": 2
+    },
+    "Atlas": {
+      "m": [
+        "Flex",
+        "Main"
+      ],
+      "c": "BLOODLINE Active Assist",
+      "cd": "The ATLAS extends microneedles into the musculature and ancillary nervous system of its pilot, melding flesh, machine, and the memory of all who wore it before.\n\nActive — Final Hunt (Quick): For the rest of the scene, you:\n\n• Move an additional 1 space when you voluntarily move for any reason (e.g. standard moves, BOOST, movement from systems or talents).\n• Benefits from soft cover at all times, no matter where you are.\n• Can HIDE even in the open, without requiring cover. The only way to reveal you is for another character to SEARCH for you or for you to lose Hidden as usual – by using BOOST, attacking, forcing a save, and so on. When active, 1/round, when you make a melee or ranged attack while HIDDEN, your target must also succeed on a HULL save or be knocked PRONE. This takes place before the attack is rolled",
+      "t": "Giantkiller: The Atlas counts as SIZE 1 for RAM and GRAPPLE. It ignores engagement from larger characters and can freely move through and share the spaces they occupy (even if they’re hostile). While occupying the same spaces as any character, it gains soft cover, even from that character.\n\nJäger Dodge: 1/round, when you take damage from a larger character, gain RESISTANCE to that damage and move 3 spaces in any direction as a reaction. This ignores engagement and doesn’t provoke reactions.\n\nFinishing Blow: 1/round, deal +1d6 bonus damage on a successful melee attack against a PRONE target.\n\nExposed Reactor: The Atlas receives +1 Difficulty on ENGINEERING checks and saves.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Атлас",
+      "cr": "Активная поддержка BLOODLINE",
+      "cdr": "«Атлас» вводит микроиглы в мускулатуру и вспомогательную нервную систему пилота, сливая плоть, машину и память всех, кто носил его прежде.\n\nАктивное — Последняя охота (Быстрое): До конца сцены вы:\n\n• Перемещаетесь на 1 дополнительную клетку, когда добровольно перемещаетесь по любой причине (например, стандартные перемещения, ускорение, перемещение от систем или талантов).\n• Всегда пользуетесь мягким укрытием, где бы вы ни находились.\n• Можете скрываться даже на открытой местности, без необходимости в укрытии. Единственный способ раскрыть вас — если другой персонаж будет искать вас или если вы потеряете скрытность обычным образом: использовав ускорение, атакуя, заставляя делать спасбросок и так далее. Пока эффект активен, 1/раунд, когда вы совершаете рукопашную или дальнобойную атаку, находясь в скрытности, ваша цель также должна преуспеть в спасброске корпуса или быть сбитой с ног. Это происходит до броска атаки.",
+      "tr": "Убийца гигантов: «Атлас» считается персонажем размера 1 для тарана и захвата. Он игнорирует вовлечённость от более крупных персонажей и может свободно перемещаться через занимаемые ими клетки и делить их (даже если они враждебны). Находясь в одних клетках с любым персонажем, он получает мягкое укрытие, даже от этого персонажа.\n\nУклонение егеря: 1/раунд, когда вы получаете урон от более крупного персонажа, получите сопротивление этому урону и переместитесь на 3 клетки в любом направлении как реакцию. Это игнорирует вовлечённость и не провоцирует реакций.\n\nЗавершающий удар: 1/раунд нанесите +1d6 бонусного урона при успешной рукопашной атаке по сбитой с ног цели.\n\nОткрытый реактор: «Атлас» получает +1 к сложности проверок и спасбросков инженерии.",
+      "s": {
+        "size": 0.5,
+        "stress": 4,
+        "structure": 4,
+        "armor": 0,
+        "hp": 6,
+        "evasion": 12,
+        "edef": 6,
+        "heatcap": 4,
+        "repcap": 2,
+        "sensor_range": 3,
+        "tech_attack": -2,
+        "save": 10,
+        "speed": 6,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Atlas",
+      "ll": 2
+    },
+    "Caliban": {
+      "m": [
+        "Heavy"
+      ],
+      "c": "Flayer Shotgun",
+      "cd": "The “Flayer” – officially the Heavy Howitzer-Shotgun 075 – is a compact, formalized version of the popular “Daisy Cutter” howitzer-shotgun used by Trunk Security and other stellar marine forces. Chambered to accept shot, shell, or sabot, the Flayer sacrifices some of the DaisyCutter’s raw power in favor of control and a much-improved fire rate.\n\nActive — Equip Autochoke (Protocol): The Flayer shotgun comes pre-equipped with a muzzle-mounted auto-choke that allows its user to better define the spread of shot issuing from the weapon. The extreme heat from equipping the choke renders it unusable in short order and it must be discarded.\nFor the rest of this scene, the HHS-075 “Flayer” Shotgun gains the following profile:\nMain CQB, Accurate, Knockback 5\n[Cone 3] [Threat 3] [1d6+2 kinetic damage]",
+      "t": "Wrecking Ball: The Caliban counts as Size 3 when inflicting knockback with any Ram, Ranged, or Melee Attack.\n\nPursue Prey: When the Caliban inflicts KNOCKBACK as part of any action, it can move an equal number of spaces towards the same target by the most direct route possible. This movement is part of the same action, ignores engagement and doesn’t provoke reactions.\n\nSlam: 1/round, when the Caliban knocks a character into a wall, mech, or other obstruction that would cause it to stop moving, it may force its target to pass a HULL save or take 1d6 Kinetic Damage and become IMPAIRED until the end of its next turn.\n\nWeak Computer: The Caliban takes +1 Difficulty on all SYSTEMS saves and checks.",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Striker",
+        "Controller"
+      ],
+      "roler": [
+        "Штурмовик",
+        "Контролёр"
+      ],
+      "nr": "Калибан",
+      "cr": "Дробовик «Флейер»",
+      "cdr": "«Флейер» — официально тяжёлый гаубичный дробовик 075 — это компактная, формализованная версия популярного гаубичного дробовика «Дейзи Каттер», используемого службой безопасности Trunk и другими силами звёздной морской пехоты. Заряжаемый дробью, снарядами или подкалиберными боеприпасами, «Флейер» жертвует частью грубой мощи «Дейзи Каттера» в пользу контроля и значительно улучшенной скорострельности.\n\nАктивное — Установить авто-чок (Протокол): Дробовик «Флейер» поставляется с предустановленным дульным авто-чоком, который позволяет его пользователю точнее определять разлёт дроби, выходящей из оружия. Сильный жар от установки чока быстро делает его непригодным, и его необходимо выбросить.\nДо конца этой сцены дробовик HHS-075 «Флейер» получает следующий профиль:\nMain Ближний бой, Точное, Отброс 5\n[Конус 3] [Угроза 3] [1d6+2 кинетического урона]",
+      "tr": "Таранный шар: «Калибан» считается персонажем размера 3, когда наносит отброс любой атакой тараном, дальнобойной или рукопашной атакой.\n\nПреследование добычи: Когда «Калибан» наносит отброс в рамках любого действия, он может переместиться на такое же количество клеток в сторону той же цели по самому прямому маршруту. Это перемещение является частью того же действия, игнорирует вовлечённость и не провоцирует реакций.\n\nУдар: 1/раунд, когда «Калибан» швыряет персонажа в стену, мех или иное препятствие, которое заставило бы его остановиться, он может заставить цель пройти спасбросок корпуса или получить 1d6 кинетического урона и стать ослабленной до конца своего следующего хода.\n\nСлабый компьютер: «Калибан» получает +1 к сложности всех спасбросков и проверок систем.",
+      "s": {
+        "size": 0.5,
+        "structure": 4,
+        "stress": 4,
+        "armor": 2,
+        "hp": 6,
+        "evasion": 8,
+        "edef": 8,
+        "heatcap": 5,
+        "repcap": 5,
+        "sensor_range": 3,
+        "tech_attack": -2,
+        "save": 11,
+        "speed": 3,
+        "sp": 5
+      },
+      "iw": [
+        "HHS-075 “Flayer” Shotgun"
+      ],
+      "lic": "Caliban",
+      "ll": 2
+    },
+    "Kobold": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Terraform",
+      "cd": "Screeching and venting steam, the Kobold digs into the earth. Moments later, the very ground bends to the pilot’s will and the air shrieks with agony — the cry of every dead Ungrateful, martyred or taken by the Dustmen\n\nActive — Terraform (Full): Your mech extrudes a massive amount of polymer, creating up to 10 SIZE 1 cubes in free spaces within Range 5. These cubes can be separate or connected and can be stacked up to 5 spaces high. If connected, they form a contiguous surface that can block line of sight. During the turn in which they are extruded, the cubes grant soft cover and each has EVASION 5 and 10 HP. At the start of your next turn, they harden, each cube granting hard cover and gaining +10 HP (but retaining any damage they had taken).",
+      "t": "Mimic Carapace: When the Kobold starts its turn adjacent to a piece of terrain or hard cover of SIZE 1 or larger it becomes INVISIBLE as long as it remains adjacent. It ceases to be INVISIBLE if it attacks or takes damage.\n\nSlag Spray: 1/round, as a quick action, the Kobold may create a SIZE 1 mound of semi-molten polymer in a free space within Range 3 and line of sight. This terrain has 10 HP, EVASION 5, and grants hard cover.\n\nExposed Reactor: The Kobold gets +1 Difficulty on ENGINEERING checks and saves.",
+      "src": "HORUS",
+      "sf": "",
+      "role": [
+        "Controller"
+      ],
+      "roler": [
+        "Контролёр"
+      ],
+      "nr": "Кобольд",
+      "cr": "Терраформирование",
+      "cdr": "Скрежеща и выпуская пар, «Кобольд» вгрызается в землю. Мгновения спустя сама земля сгибается по воле пилота, а воздух пронзает крик агонии — крик каждого мёртвого Неблагодарного, мученика или взятого Пылевиками.\n\nАктивное — Терраформирование (Полное): Ваш мех выдавливает огромное количество полимера, создавая до 10 кубов размера 1 в свободных клетках в пределах дальности 5. Эти кубы могут быть отдельными или соединёнными и могут складываться до 5 клеток в высоту. Если они соединены, они образуют сплошную поверхность, которая может блокировать линию видимости. В течение хода, когда они выдавлены, кубы дают мягкое укрытие, и каждый имеет уклонение 5 и 10 HP. В начале вашего следующего хода они затвердевают, каждый куб даёт твёрдое укрытие и получает +10 HP (но сохраняет уже полученный урон).",
+      "tr": "Панцирь-мимик: Когда «Кобольд» начинает свой ход рядом с элементом местности или твёрдым укрытием размера 1 или больше, он становится невидимым, пока остаётся рядом. Он перестаёт быть невидимым, если атакует или получает урон.\n\nШлаковый спрей: 1/раунд, как быстрое действие, «Кобольд» может создать кучу полурасплавленного полимера размера 1 в свободной клетке в пределах дальности 3 и линии видимости. Эта местность имеет 10 HP, уклонение 5 и даёт твёрдое укрытие.\n\nОткрытый реактор: «Кобольд» получает +1 к сложности проверок и спасбросков инженерии.",
+      "s": {
+        "size": 0.5,
+        "stress": 4,
+        "structure": 4,
+        "armor": 1,
+        "hp": 6,
+        "evasion": 10,
+        "edef": 10,
+        "heatcap": 6,
+        "repcap": 2,
+        "sensor_range": 8,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 4,
+        "sp": 8
+      },
+      "iw": [],
+      "lic": "Kobold",
+      "ll": 2
+    },
+    "Lich": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Chronostutter",
+      "cd": "“Drink Deep, and Descend.”\n\nActive — Glitch time (Quick): You gain the ability to disrupt time for the rest of this scene. 1/round, when any character successfully attacks, effects, or takes an action against another character within SENSORS, you may interrupt it before it resolves, with the following effects:\n\n• The character taking the action is pushed up to 3 spaces in a direction of your choice, even if they have IMMUNITY to involuntary movement\n• You teleport to one of the spaces originally occupied by that character, or as close as possible, no matter how far away it was.\n• The initial attack, effect, or action resolves with you as its target. You receive all damage, conditions, statuses, and effects, and the action must be carried out without changes. For example, if the effect was to teleport an allied character to a certain space, you are teleported to that space instead; if the effect was to repair an allied character, you are repaired instead; if the effect was to deal damage and KNOCKBACK, you take the damage (using your ARMOR, RESISTANCE, etc.) and are knocked back in the same direction as the original target would be; if the effect was to inflict a condition or status, you receive that condition or status instead. Initiating this interruption does not count as a reaction. Effects that target the self cannot be interrupted this way",
+      "t": "Soul Vessel: At the start of the Lich's turn, set down a SOUL VESSEL at its current location (replacing any previous markers). 1/round, as a reaction when the Lich is hit by an attack, fails a save or check, or takes damage or Heat from any source (even itself), it may immediately gain IMMUNITY to all damage, heat, or conditions from that effect. It then teleports to the marker or as close as possible. The Lich can also take this reaction at the end of any turn, including its own, but if it does so it only teleports and does not gain IMMUNITY. It can't take this reaction if it is JAMMED, STUNNED, GRAPPLED, or unable to take reactions for any reason.\n\nImmortal: 1/scene, in the round after the Lich has been destroyed, it may return to the location of its SOUL VESSEL as a reaction at the end of any turn. This counts as teleporting; additionally, the Lich appears with full HP, no Heat, 1 STRUCTURE and 1 STRESS (even if it had more when it was destroyed). If its pilot died in the same scene, they also return to life. If the Lich does not take this reaction in that round, it remains destroyed and the pilot remains dead.",
+      "src": "HORUS",
+      "sf": "",
+      "role": [
+        "Support"
+      ],
+      "roler": [
+        "Поддержка"
+      ],
+      "nr": "Лич",
+      "cr": "Хронозаикание",
+      "cdr": "«Пей глубоко и спускайся.»\n\nАктивное — Сбой времени (Быстрое): Вы получаете способность нарушать время до конца этой сцены. 1/раунд, когда любой персонаж успешно атакует, воздействует или совершает действие против другого персонажа в пределах сенсоров, вы можете прервать это до его разрешения, со следующими эффектами:\n\n• Персонаж, совершающий действие, отодвигается до 3 клеток в направлении по вашему выбору, даже если у него есть иммунитет к недобровольному перемещению\n• Вы телепортируетесь в одну из клеток, изначально занимаемых этим персонажем, или как можно ближе, независимо от того, как далеко она была.\n• Первоначальная атака, эффект или действие разрешается с вами в качестве цели. Вы получаете весь урон, состояния, статусы и эффекты, и действие должно быть выполнено без изменений. Например, если эффект должен был телепортировать союзного персонажа в определённую клетку, вместо него телепортируетесь вы; если эффект должен был починить союзного персонажа, вместо него чинят вас; если эффект должен был нанести урон и отброс, вы получаете урон (используя вашу броню, сопротивление и т.д.) и отбрасываетесь в том же направлении, что и изначальная цель; если эффект должен был наложить состояние или статус, вы получаете это состояние или статус вместо неё. Инициирование этого прерывания не считается реакцией. Эффекты, нацеленные на себя, нельзя прервать таким образом.",
+      "tr": "Сосуд души: В начале хода «Лича» установите сосуд души в его текущем местоположении (заменяя любые предыдущие маркеры). 1/раунд, как реакцию, когда «Лич» получает попадание атакой, проваливает спасбросок или проверку или получает урон или тепло из любого источника (даже от себя), он может немедленно получить иммунитет ко всему урону, теплу или состояниям от этого эффекта. Затем он телепортируется к маркеру или как можно ближе к нему. «Лич» также может использовать эту реакцию в конце любого хода, включая свой собственный, но в этом случае он только телепортируется и не получает иммунитета. Он не может использовать эту реакцию, если он заглушен, оглушён, схвачен или не может использовать реакции по любой причине.\n\nБессмертный: 1/сцена, в раунде после того, как «Лич» был уничтожен, он может вернуться к местоположению своего сосуда души как реакцию в конце любого хода. Это считается телепортацией; кроме того, «Лич» появляется с полным HP, без тепла, с 1 структурой и 1 стрессом (даже если при уничтожении у него было больше). Если его пилот погиб в той же сцене, он также возвращается к жизни. Если «Лич» не использует эту реакцию в этом раунде, он остаётся уничтоженным, а пилот остаётся мёртвым.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 0,
+        "hp": 4,
+        "evasion": 8,
+        "edef": 12,
+        "heatcap": 3,
+        "repcap": 5,
+        "sensor_range": 15,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 5,
+        "sp": 8
+      },
+      "iw": [],
+      "lic": "Lich",
+      "ll": 2
+    },
+    "Sunzi": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Reality Carver",
+      "cd": "(TT_CLEARANCE_01): JUST A HEADS UP, YOU’RE GOING TO READ SOME OBTUSE SHIT HERE. I’VE TRANSCRIBED ONLY THE USEFUL PARTS OF WHAT THE VOLS SAID. REFER TO THE VISUAL FOR CORRESPONDING HAND SIGNS. REFER TO REPORTS: VESSEL-PILOT-DOORWAY\n\nActive — Art of War (Free): For the rest of the scene, this system gains 6 charges (you can use a die to track this). As a reaction at the start or end of any hostile or allied character’s turn within SENSORS and line of sight, expend a charge to teleport them up to 3 spaces in any direction, as long as they end in a free space in which they can stand.",
+      "t": "Safe Harbor: When allied characters within Range 50 of the Sunzi teleport or are teleported, free spaces adjacent to the Sunzi are always valid end destinations.\n\nAnchor: The Sunzi has Immunity to involuntary movement caused by other characters.\n\nSlip: 1/round, the Sunzi can teleport 2 spaces as a free action.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Support",
+        "Controller"
+      ],
+      "roler": [
+        "Поддержка",
+        "Контролёр"
+      ],
+      "nr": "Сунь-цзы",
+      "cr": "Резчик реальности",
+      "cdr": "(TT_CLEARANCE_01): ПРОСТО ПРЕДУПРЕЖДАЮ, ВЫ СЕЙЧАС ПРОЧИТАЕТЕ КАКУЮ-ТО МУТНУЮ ХРЕНЬ. Я ПЕРЕПИСАЛ ТОЛЬКО ПОЛЕЗНЫЕ ЧАСТИ ТОГО, ЧТО СКАЗАЛИ ВОЛЫ. СМОТРИТЕ ВИЗУАЛ ДЛЯ СООТВЕТСТВУЮЩИХ ЖЕСТОВ РУК. СМОТРИТЕ ОТЧЁТЫ: VESSEL-PILOT-DOORWAY\n\nАктивное — Искусство войны (Свободное): До конца сцены эта система получает 6 зарядов (вы можете использовать кубик для их отслеживания). Как реакцию в начале или конце хода любого враждебного или союзного персонажа в пределах сенсоров и линии видимости, потратьте заряд, чтобы телепортировать его до 3 клеток в любом направлении, при условии, что он окажется в свободной клетке, в которой он может стоять.",
+      "tr": "Безопасная гавань: Когда союзные персонажи в пределах дальности 50 от «Сунь-цзы» телепортируются или их телепортируют, свободные клетки рядом с «Сунь-цзы» всегда являются допустимыми конечными пунктами назначения.\n\nЯкорь: «Сунь-цзы» имеет иммунитет к недобровольному перемещению, вызванному другими персонажами.\n\nСкольжение: 1/раунд «Сунь-цзы» может телепортироваться на 2 клетки свободным действием.",
+      "s": {
+        "size": 1,
+        "armor": 1,
+        "stress": 4,
+        "structure": 4,
+        "hp": 7,
+        "evasion": 7,
+        "edef": 8,
+        "heatcap": 7,
+        "repcap": 3,
+        "sensor_range": 15,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 4,
+        "sp": 7
+      },
+      "iw": [],
+      "lic": "Sunzi",
+      "ll": 2
+    },
+    "Zheng": {
+      "m": [
+        "Main",
+        "Main",
+        "Heavy"
+      ],
+      "c": "XIONG-Type CQB Suite",
+      "cd": "Surviving mostly on colonial rations and an increasingly radioactive air supply, Xiaoli scavenged materials from a dying ship to create modifications that gave her mech unprecedented unarmed striking power.\n\nActive — Xiaoli’s Ingenuity (Protocol): For the rest of the scene, this system gains 6 charges (you can use a die to track this). Expend a charge to use XIAOLI’S TENACITY again, ignoring the 1/Turn limit. You may spend any number of charges a turn. At the end of each turn, you regain a charge for each unique target (character, object, or piece of terrain) you damaged with this action, to a maximum of 6.",
+      "t": "Destructive Swings: At the end of the Zheng’s turn, if it made at least one melee attack against a hostile character, the force of its swings creates a SIZE 1 piece of terrain that grants hard cover in a free, adjacent space. It has 10 HP and EVASION 5.\n\nWeak Computer: The Zheng takes +1 Difficulty on all systems saves and checks",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Чжэн",
+      "cr": "Комплект ближнего боя типа XIONG",
+      "cdr": "Выживая в основном на колониальных пайках и всё более радиоактивном воздухе, Сяоли собирала материалы с умирающего корабля, чтобы создать модификации, давшие её меху беспрецедентную ударную мощь без оружия.\n\nАктивное — Изобретательность Сяоли (Протокол): До конца сцены эта система получает 6 зарядов (вы можете использовать кубик для их отслеживания). Потратьте заряд, чтобы снова использовать «Стойкость Сяоли», игнорируя ограничение 1/ход. Вы можете потратить любое количество зарядов за ход. В конце каждого хода вы восстанавливаете заряд за каждую уникальную цель (персонажа, объект или кусок местности), которой вы нанесли урон этим действием, максимум до 6.",
+      "tr": "Разрушительные взмахи: В конце хода «Чжэна», если он совершил хотя бы одну рукопашную атаку по враждебному персонажу, сила его взмахов создаёт кусок местности размера 1, дающий твёрдое укрытие, в свободной соседней клетке. У него 10 HP и уклонение 5.\n\nСлабый компьютер: «Чжэн» получает +1 к сложности всех спасбросков и проверок систем.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 2,
+        "hp": 10,
+        "evasion": 9,
+        "edef": 6,
+        "heatcap": 6,
+        "repcap": 6,
+        "sensor_range": 3,
+        "tech_attack": -2,
+        "save": 10,
+        "speed": 3,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Zheng",
+      "ll": 2
     }
   },
   "talents": [
@@ -8051,6 +9114,58 @@ const DB = {
         "Ваша способность чувствовать субъективности других даёт вам жуткую способность предсказывать действия ваших союзников, направляя их своим влиянием.\n\nСимпатическое предвидение (реакция, 1/сцена): Триггер: союзный персонаж в линии видимости совершает проверку навыка, атаку или спасбросок. Этот персонаж может не бросать, вместо этого считая свою проверку, атаку или спасбросок так, как будто он выбросил 10 на d20.",
         "1/сцена, когда союзный персонаж в линии видимости совершает проверку структуры или перегрева, он может бросить дважды и выбрать любой результат.",
         "1/сцена быстрым действием вы можете задействовать глубокие резервы силы воли, чтобы дать необычайную осведомлённость союзному персонажу в линии видимости. Ваш мех немедленно становится оглушённым до начала вашего следующего хода, а ваше восприятие почти полностью сливается с восприятием другого персонажа. До конца его следующего хода каждый раз, когда этот персонаж совершает атаку, проверку или спасбросок, он может бросить как обычно или вместо этого считать эту атаку, проверку или спасбросок так, как будто он выбросил 10 на d20. Он должен решить до броска.\n\nОбщая субъективность (быстрое действие, 1/сцена): ваш мех немедленно становится оглушённым до начала вашего следующего хода, а ваше восприятие почти полностью сливается с восприятием другого персонажа. До конца его следующего хода каждый раз, когда этот персонаж совершает атаку, проверку или спасбросок, он может бросить как обычно или вместо этого считать эту атаку, проверку или спасбросок так, как будто он выбросил 10 на d20. Он должен решить до броска."
+      ]
+    },
+    {
+      "n": "Spaceborn",
+      "t": "Improve your mobility and gain an inbuilt EVA suite",
+      "r": [
+        "Home in the Void",
+        "Sea Legs",
+        "Scrapper"
+      ],
+      "d": [
+        "All of your mechs that you build come with built-in EVA capabilities, meaning you suffer no penalties when operating underwater or in zero-g environments. As a quick action, you can shunt power into this component to fly 3 spaces and take Heat equal to your mech’s Size + 1, although you must land at the end of this movement or fall.",
+        "1/round, when your mech is involuntarily moved by another character’s attack or by failing a save forced by another character, you can choose the direction you move. Additionally, when your mech clears Prone, you may move 2 spaces in any direction as a free action. This movement ignores engagement and doesn’t provoke reactions",
+        "1/round, when your mech hits a character with a melee attack, it can immediately give that character +1 Difficulty on all checks or saves to avoid Knockback, Prone, Slowed or Immobilized until the end of its next turn, including any effects that are part of the triggering attack."
+      ],
+      "nr": "Рождённый в космосе",
+      "tr": "Улучшите свою мобильность и получите встроенный комплект EVA",
+      "rr": [
+        "Дом в пустоте",
+        "Морские ноги",
+        "Старёвщик"
+      ],
+      "dr": [
+        "Все ваши мехи, которые вы строите, поставляются со встроенными возможностями EVA, что означает, что вы не страдаете от штрафов при работе под водой или в условиях невесомости. Быстрым действием вы можете перенаправить энергию в этот компонент, чтобы пролететь 3 клетки и получить тепло, равное размеру вашего меха + 1, хотя вы должны приземлиться в конце этого перемещения или упасть.",
+        "1/раунд, когда ваш мех недобровольно перемещается атакой другого персонажа или провалом спасброска, навязанного другим персонажем, вы можете выбрать направление перемещения. Кроме того, когда ваш мех встаёт после сбития с ног, вы можете переместиться на 2 клетки в любом направлении свободным действием. Это перемещение игнорирует вовлечённость и не провоцирует реакций.",
+        "1/раунд, когда ваш мех попадает по персонажу рукопашной атакой, он может немедленно дать этому персонажу +1 к сложности всех проверок или спасбросков, чтобы избежать отброса, сбивания с ног, замедления или обездвиживания до конца его следующего хода, включая любые эффекты, являющиеся частью провоцирующей атаки."
+      ]
+    },
+    {
+      "n": "Black Thumb",
+      "t": "Ride your mech to repair it during combat",
+      "r": [
+        "Flesh to Metal",
+        "Rodeo",
+        "Rodeo Master"
+      ],
+      "d": [
+        "You treat DISMOUNT as a quick action instead of a full action. When you DISMOUNT, your pilot gains a personal shield. The next time your pilot would take damage, reduce that damage to 0, then the shield disperses. Otherwise, it disperses at the end of the scene. You can only have one personal shield at once, and any shields created replace the last one.",
+        "As a protocol, you give up the controls, pop the hatch on your mech and partly climb out, starting a BLACK THUMB RODEO and gaining a personal shield (as above). While in rodeo, your pilot is immune to involuntary movement, occupies your mech’s space and moves when it moves. This does not count as DISMOUNT and the mech can’t be controlled from outside, so it will idle unless it is capable of acting independently (e.g., if it has an NHP that has been given control, which you can do as part of this protocol).\nWhile in rodeo, your pilot becomes a valid target and can take damage normally. If you lose your personal shield for any reason, you are immediately forced back inside your mech, ending the effect, and you cannot start a rodeo again on your following turn. You can also end a rodeo as a quick action on any of your turns.\nWhile in rodeo, your pilot can only take the Extinguish, Field Repair, or Rig Vents actions granted by Black Thumb.",
+        "Your Black Thumb actions can be used on adjacent allied mechs."
+      ],
+      "nr": "Чёрный палец",
+      "tr": "Ездите на своём мехе, чтобы чинить его во время боя",
+      "rr": [
+        "Плоть к металлу",
+        "Родео",
+        "Мастер родео"
+      ],
+      "dr": [
+        "Вы рассматриваете спешивание как быстрое действие вместо полного действия. Когда вы спешиваетесь, ваш пилот получает личный щит. В следующий раз, когда ваш пилот получил бы урон, уменьшите этот урон до 0, после чего щит рассеивается. В противном случае он рассеивается в конце сцены. У вас может быть только один личный щит одновременно, и любые созданные щиты заменяют последний.",
+        "Протоколом вы отдаёте управление, открываете люк на своём мехе и частично вылезаете наружу, начиная «Родео чёрного пальца» и получая личный щит (как выше). Находясь в родео, ваш пилот иммунен к недобровольному перемещению, занимает клетку вашего меха и перемещается, когда перемещается он. Это не считается спешиванием, и мехом нельзя управлять снаружи, поэтому он будет бездействовать, если только не способен действовать независимо (например, если у него есть NHP, которому было передано управление, что вы можете сделать как часть этого протокола).\nНаходясь в родео, ваш пилот становится допустимой целью и может получать урон обычным образом. Если вы теряете свой личный щит по любой причине, вас немедленно заставляют вернуться внутрь вашего меха, завершая эффект, и вы не можете начать родео снова на своём следующем ходу. Вы также можете завершить родео быстрым действием в любой из своих ходов.\nНаходясь в родео, ваш пилот может выполнять только действия «Тушение», «Полевой ремонт» или «Продувка вентиляции», предоставляемые «Чёрным пальцем».",
+        "Ваши действия «Чёрного пальца» можно использовать на соседних союзных мехах."
       ]
     }
   ],
