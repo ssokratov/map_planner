@@ -889,7 +889,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 222</span>
+      <span class="dim global-version">Версия трекера: 223</span>
     </div>
   </div>
 </main>
@@ -2595,7 +2595,7 @@ function addCustomSystem(){
   document.getElementById('customSystemDlg').close();
   save(); renderLists();
 }
-function delRow(list, i){ S[list].splice(i,1); save(); renderLists(); }
+function delRow(list, i){ S[list].splice(i,1); if (list==='talents') syncNuclearCavalier(); save(); renderLists(); }
 function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 function findCoreBonus(name){ return CORE_BONUSES.find(cb=>cb.n===name); }
 // Ранги лицензий по производителям (лицензия = фрейм; corp — из DB.frames[src]).
@@ -2848,26 +2848,38 @@ function addWeaponByIndex(mi, i){
   S.mounts[mi].weapons.push(row);
   save(); renderLists();
 }
-// v222: Nuclear Cavalier III — «Gain the Fuel Rod Gun integrated weapon».
+// v223: Nuclear Cavalier III — «Gain the Fuel Rod Gun integrated weapon».
 // По книге встроенный маунт строится вокруг конкретной пушки: у каждой
 // встроенной пушки свой отдельный Integrated-маунт (корбук, раздел маунтов:
 // «Integrated mounts are designed around specific weapons»), поэтому
 // Fuel Rod Gun получает СВОЙ маунт, а не кладётся в маунт от фрейма.
-// Синхронизация только по событию (поднятие ранга до III): provenance
-// не запоминаем (решение пользователя) — снятие ранга пушку не убирает,
-// удалить её можно вручную кнопкой удаления оружия. Заряды — как у
-// обычной пушки: Fuel Rod Gun Limited 3 (плюс бонус Engineering).
+// Маунт помечается src 'nuc-cav' (provenance): когда талант снимается
+// или падает ниже III, пушка и пустой маунт убираются автоматически —
+// трогаются ТОЛЬКО помеченные маунты, вручную добавленная Fuel Rod Gun
+// не трогается. Синхронизация только по событию смены таланта (не по
+// состоянию при загрузке): удалённое вручную не возвращается само.
+// Заряды — как у обычной пушки: Fuel Rod Gun Limited 3 (плюс бонус
+// Engineering).
 function syncNuclearCavalier(){
   const t = (S.talents||[]).find(x=>x.name==='Nuclear Cavalier');
-  if (!t || (t.rank||1) < 3) return;
-  if ((S.mounts||[]).some(m=>m.type==='Integrated' && (m.weapons||[]).some(w=>w.name==='Fuel Rod Gun'))) return;
+  if (!t || (t.rank||1) < 3) {
+    (S.mounts||[]).forEach(m=>{
+      if (m.src !== 'nuc-cav') return;
+      m.weapons = (m.weapons||[]).filter(w=>w.name!=='Fuel Rod Gun');
+    });
+    S.mounts = (S.mounts||[]).filter(m=>!(m.src==='nuc-cav' && !(m.weapons||[]).length));
+    return;
+  }
+  if ((S.mounts||[]).some(m=>m.src==='nuc-cav' && (m.weapons||[]).some(w=>w.name==='Fuel Rod Gun'))) return;
   const w = DB.weapons.find(x=>x.n==='Fuel Rod Gun');
   if (!w) return;
   const row = {name:w.n, dmg:w.d, range:w.r, desc:w.x};
   const lim = weapLim(row);
   if (lim > 0) row.left = lim;
   if (weapLoading(row)) row.loaded = true;
-  S.mounts.push({type:'Integrated', weapons:[row]});
+  const m = (S.mounts||[]).find(m=>m.src==='nuc-cav');
+  if (m) m.weapons.push(row);
+  else S.mounts.push({type:'Integrated', weapons:[row], src:'nuc-cav'});
 }
 function setTalentRank(i, v){
   if (!S.talents[i]) return;
@@ -4649,6 +4661,7 @@ function luRaiseTalent(name){
 }
 function luRemoveTalent(i){
   S.talents.splice(i,1);
+  syncNuclearCavalier();
   save(); renderLists(); renderCounters(); luRenderStep();
 }
 function luTalent(){
