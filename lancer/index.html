@@ -890,7 +890,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 227</span>
+      <span class="dim global-version">Версия трекера: 228</span>
     </div>
   </div>
 </main>
@@ -4008,6 +4008,26 @@ const DICE_DEFS = {
 // остаток (реакция-приказ) остаётся на карточке.
 const DICE_TEXT_DROP = { 'Leader':[0,2], 'Brawler':[2], 'Gunslinger':[2], 'Duelist':[1,2], 'Stormbringer':[2] };
 const LEAD_R2_PREFIX = ['Gain 5 Leadership Dice instead of 3; additionally, ', 'Получить 5 костей лидерства вместо 3; кроме того, '];
+function stripLeadR2(desc){
+  for (const p of LEAD_R2_PREFIX) if (desc.startsWith(p)) { desc = desc.slice(p.length); return desc.charAt(0).toUpperCase() + desc.slice(1); }
+  return desc;
+}
+// v228: для поиска — все ранги видны; у рангов с кубиком вместо текста чип
+// (тап — полные правила). Leader II: чип + остаток про реакцию-приказ.
+const DICE_RANKS = { 'Leader':[0,1,2], 'Brawler':[2], 'Gunslinger':[2], 'Duelist':[1,2], 'Stormbringer':[2] };
+function talentRankDisplay(t){
+  const d = findTalent(t.name); if (!d || !d.r.length) return [];
+  const dd = td(d);
+  const upto = Math.min(Math.max(+t.rank || 1, 1), dd.r.length);
+  const out = [];
+  for (let k = 0; k < upto; k++) {
+    const chip = (DICE_RANKS[d.n] || []).includes(k);
+    let desc = dd.d[k];
+    if (d.n === 'Leader' && k === 1) desc = stripLeadR2(desc);
+    out.push({ k, n: dd.r[k], d: chip ? (d.n === 'Leader' && k === 1 ? desc : '') : desc, chip });
+  }
+  return out;
+}
 function diceFor(t){
   const d = findTalent(t.name); if (!d) return null;
   const def = DICE_DEFS[d.n]; if (!def) return null;
@@ -4070,9 +4090,7 @@ function talentRankDesc(t){
   for (let k = 0; k < upto; k++) {
     if ((DICE_TEXT_DROP[d.n] || []).includes(k)) continue;
     let desc = dd.d[k];
-    if (d.n === 'Leader' && k === 1) {
-      for (const p of LEAD_R2_PREFIX) if (desc.startsWith(p)) { desc = desc.slice(p.length); desc = desc.charAt(0).toUpperCase() + desc.slice(1); break; }
-    }
+    if (d.n === 'Leader' && k === 1) desc = stripLeadR2(desc);
     out.push({ k, n: dd.r[k], d: desc });
   }
   return out;
@@ -4092,19 +4110,22 @@ function showTalentResults(q, box){
   box.innerHTML = shown.map(({ t, i })=>{
     const d = td(t);
     const key = 'tal:' + i;
-    // v227: в поиске — тот же фильтр, что на карточке таланта: текст механики
-    // кубика не показывается, вместо него чип кубика (тап — полные правила).
-    const rds = talentRankDesc({ name: t.n, rank: (d.r||[]).length });
-    const full = rds.map(r=>['I','II','III'][r.k] + '. ' + r.n + ': ' + r.d).join('\n\n');
+    // v228: в поиске видны ВСЕ ранги; у рангов с кубиком вместо текста чип
+    // на своём месте (тап — полные правила). Отдельный чип над описанием
+    // убран: без ранга было непонятно, что на каком уровне добавляется.
+    const disp = talentRankDisplay({ name: t.n, rank: (d.r||[]).length });
     const dc = diceFor({ name: t.n, rank: (d.r||[]).length });
-    const needsMore = full.length > 140;
+    const dieName = dc ? L(dc.def.nameKey) : '';
+    const fullText = disp.map(p=>['I','II','III'][p.k] + '. ' + p.n + ': ' + (p.chip ? dieName + (p.d ? ' ' + p.d : '') : p.d)).join('\n\n');
+    const fullHtml = disp.map(p=>['I','II','III'][p.k] + '. ' + esc(p.n) + ': ' + (p.chip ? `<button class="tag" onclick="showDiceDlgByIndex(${i})">${esc(dieName)}</button>` + (p.d ? ' ' + esc(p.d) : '') : esc(p.d))).join('\n\n');
+    const needsMore = fullText.length > 140;
     let descHtml = '';
-    if (full && !needsMore) descHtml = esc(excerpt(full, 140));
-    else if (full && openSearchDescs.has(key)) descHtml = esc(full) + ' <button class="desc-more" onclick="closeSearchDesc(\'' + key + '\')">' + esc(L('desc_less')) + '</button>';
-    else if (full) descHtml = esc(excerpt(full, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
+    if (fullText && !needsMore) descHtml = fullHtml;
+    else if (fullText && openSearchDescs.has(key)) descHtml = fullHtml + ' <button class="desc-more" onclick="closeSearchDesc(\'' + key + '\')">' + esc(L('desc_less')) + '</button>';
+    else if (fullText) descHtml = esc(excerpt(fullText, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span>${dc ? `<br><button class="tag" style="margin-top:4px" onclick="showDiceDlgByIndex(${i})">${esc(L(dc.def.nameKey))}</button>` : ''}${descHtml ? `<br><span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span>${descHtml ? `<br><span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
       <button class="btn search-add" style="flex:0 0 auto" onclick="addTalentByIndex(${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
