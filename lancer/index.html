@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 251</span>
+      <span class="dim global-version">Версия трекера: 252</span>
     </div>
   </div>
 </main>
@@ -1170,10 +1170,12 @@ function licenseMatches(lic, q){
   const toks = (q||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!toks.length) return true;
   const hay = [lic.name, lic.src];
-  // v230: поиск ищет и по вайб-описанию лицензии (роль/фрейм/оружие/системы):
+  // v230: поиск ищет и по вайб-описанию лицензии (оружие/системы):
   // «дрон» находит все лицензии, связанные с дронами.
+  // v252: роль/теги фреймов — из FRAME_VIBE (у каждого фрейма свои,
+  // включая варианты); роль самой лицензии больше не источник истины.
   const vb = LICENSE_VIBE[lic.name];
-  if (vb) hay.push(vb.role, vb.frame, vb.weapons, vb.systems);
+  if (vb) hay.push(vb.weapons, vb.systems);
   const fk = licenseFrameKey(lic.name);
   if (fk){
     const F = DB.frames[fk];
@@ -1181,7 +1183,7 @@ function licenseMatches(lic, q){
   }
   for (const r of [1, 2, 3]){
     for (const g of (lic.ranks[r] || [])){
-      if (g.kind === 'frame'){ const F = DB.frames[g.key]; hay.push(g.key, F.nr || ''); }
+      if (g.kind === 'frame'){ const F = DB.frames[g.key]; hay.push(g.key, F.nr || ''); const fv = FRAME_VIBE[g.key]; if (fv) hay.push(fv.role, fv.frame); }
       else if (g.kind === 'weapon'){ const w = findWeapon(g.key); hay.push(g.key, w ? (w.nr || '') : ''); }
       else { const s = findSystem(g.key); hay.push(g.key, s ? (s.nr || '') : ''); }
     }
@@ -3536,11 +3538,12 @@ function frameMatches(key, q){
   const toks = (q||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!toks.length) return true;
   const F = DB.frames[key];
-  // v230: поиск фреймов ищет и по описанию фрейма из вайба его лицензии.
-  // v245: и по строке роли из вайба (иначе фрейм без тега, как Гидра,
-  // не находится по слову из роли — «дрон» есть только в роли).
-  const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
-  const hay = [key, F.nr, F.src, F.sf, (F.role||[]).join(' '), (F.roler||[]).join(' '), F.ll ? 'LL'+F.ll : '', vb ? vb.role : '', vb ? vb.frame : '', F.src === 'GMS' ? (GMS_FRAME_ROLE[key] || '') : ''].join(' ').toLowerCase();
+  // v252: поиск фреймов ищет и по роли+тегам фрейма из FRAME_VIBE (у каждого
+  // фрейма свои — варианты больше не ищутся по тегам базовой лицензии).
+  // Фрейм без тега, как Гидра, находится по слову из роли («дрон» есть
+  // только в роли). GMS — по подписи GMS_FRAME_ROLE.
+  const fv = FRAME_VIBE[key];
+  const hay = [key, F.nr, F.src, F.sf, (F.role||[]).join(' '), (F.roler||[]).join(' '), F.ll ? 'LL'+F.ll : '', fv ? fv.role : '', fv ? fv.frame : '', F.src === 'GMS' ? (GMS_FRAME_ROLE[key] || '') : ''].join(' ').toLowerCase();
   return toks.every(t=>hay.includes(t));
 }
 function showFrameResults(q, box){
@@ -3634,6 +3637,66 @@ const LICENSE_VIBE = {
   "Vlad": {role: "контролер-штурмовик, ловчий, ближний бой", frame: "обездвиживание", weapons: "копьё, гвоздемёт, бур", systems: "система ловушки, система контроля"},
   "White Witch": {role: "защитник, ближний бой", frame: "броня, гигант", weapons: "копьё, пушка возмездия", systems: "система контроля, система щита"},
   "Zheng": {role: "штурмовик, ближний бой", frame: "стойкость", weapons: "кулаки, пушка", systems: "система усиления"},
+};
+// v252: роль+теги ПО ФРЕЙМАМ (решение пользователя 17.11: у лицензии ролей
+// и тегов больше нет — они есть только у фреймов). Базовые фреймы берут
+// значения из вайба своей лицензии (LICENSE_VIBE); 14 вариантных фреймов —
+// свои из черновика frame-vibes-short (v3 + v251). GMS-фреймы здесь НЕТ —
+// у них своя подпись GMS_FRAME_ROLE. Сортировка списков по-прежнему
+// считается от роли лицензии (sortLicenses/sortFrameKeys) — не менять.
+const FRAME_VIBE = {
+  "“Worldkiller” Genghis Mk I": {role: "штурмовик-поджигатель, ближний бой", frame: "джаггернаут, гигант"},
+  "Amber Phantom": {role: "штурмовик, ближний бой", frame: "предвидение"},
+  "Atlas": {role: "штурмовик, ближний бой", frame: "убийца гигантов, маленький"},
+  "Balor": {role: "штурмовик/танк, ближний бой", frame: "регенерация, гигант"},
+  "Barbarossa": {role: "артиллерия/танк, дальняя дистанция", frame: "рельсотрон, гигант"},
+  "Black Witch": {role: "контролер/поддержка, средняя дистанция", frame: "парирование"},
+  "Blackbeard": {role: "гладиатор-убийца, ближний бой", frame: "гарпун"},
+  "Calendula": {role: "контролер-танк, ближний бой", frame: "пустота"},
+  "Caliban": {role: "штурмовик-контролер, ближний бой", frame: "отброс, маленький"},
+  "Death’s Head": {role: "снайпер-артиллерия, дальняя дистанция", frame: "переброс"},
+  "Drake": {role: "танк-защитник, средняя дистанция", frame: "крепость, гигант"},
+  "Dusk Wing": {role: "контролер-призрак, средняя дистанция", frame: "невидимость, маленький"},
+  "Empakaai": {role: "штурмовик, ближний бой", frame: "захват"},
+  "Emperor": {role: "поддержка, артиллерия, средняя дистанция", frame: "сверхщит"},
+  "Enkidu": {role: "штурмовик, перегрев, ближний бой", frame: "когти, гигант"},
+  "Genghis": {role: "штурмовик-поджигатель, ближний бой", frame: ""},
+  "Gilgamesh": {role: "штурмовик, ближний бой", frame: "больше зарядов"},
+  "Goblin": {role: "контролер-хакер, средняя дистанция", frame: "маленький"},
+  "Gorgon": {role: "танк-защитник, наказание, ближний бой", frame: "оглушение, гигант"},
+  "Hecatoncheires": {role: "штурмовик, контролер, средняя дистанция", frame: "дроны, маленький"},
+  "Hydra": {role: "штурмовик-контролер, дроны, средняя дистанция", frame: ""},
+  "Iskander": {role: "контролер, минное поле, средняя дистанция", frame: "гигант"},
+  "Kidd": {role: "саппорт", frame: "жертва, дроны"},
+  "Kobold": {role: "контролер, средняя дистанция", frame: "укрытия, маленький"},
+  "Kutuzov": {role: "защитник, поддержка, ближний бой", frame: "щиты, маленький"},
+  "Lancaster": {role: "саппорт-ремонтник", frame: "дроны, гигант"},
+  "Lich": {role: "поддержка, средняя дистанция", frame: "возрождение"},
+  "Lycan": {role: "защитник, штурмовик, ближний бой", frame: "помехи"},
+  "Manticore": {role: "штурмовик, живая гроза, ближняя-средняя дистанция", frame: "взрыв"},
+  "Metalmark": {role: "убийца-невидимка, средняя дистанция", frame: "невидимость"},
+  "Minotaur": {role: "контролер-танк, ближний бой", frame: "стена"},
+  "Monarch": {role: "артиллерия, ракеты, дальняя дистанция", frame: "самонаведение, гигант"},
+  "Mourning Cloak": {role: "убийца-телепортер, ближний бой", frame: "изоляция"},
+  "Napoleon": {role: "танк-контролер, уменьшение урона", frame: "маленький"},
+  "Nelson": {role: "штурмовик-дуэлянт, рыцарь с пикой, ближний бой", frame: "мобильность"},
+  "Orchis": {role: "контролер/поддержка, средняя дистанция", frame: "щит"},
+  "Pegasus": {role: "артиллерия-стрелок, средняя дистанция", frame: "средний урон"},
+  "Raleigh": {role: "штурмовик, старый солдат, дальний бой с перезарядкой", frame: ""},
+  "Saladin": {role: "танк-защитник, бафер защиты", frame: "гигант"},
+  "Sherman": {role: "штурмовик-артиллерия, лазерщик, средняя-дальняя дистанция", frame: "опасная зона"},
+  "Störtebeker": {role: "штурмовик, старый солдат, дальний бой с перезарядкой", frame: "криты"},
+  "Sunzi": {role: "поддержка-контролер, средняя дистанция", frame: "телепортация"},
+  "Swallowtail": {role: "саппорт-разведчик, дебафер, дальняя дистанция", frame: "изорванность"},
+  "Swallowtail (Ranger Variant)": {role: "саппорт-разведчик, дебафер, дальняя дистанция", frame: "местность"},
+  "Tagetes": {role: "артиллерия, дальняя дистанция", frame: "винтовки"},
+  "Taraxacum": {role: "поддержка, средняя дистанция", frame: "сканирование, гигант"},
+  "Tokugawa": {role: "штурмовик, перегрев, ближний бой", frame: "энергия"},
+  "Tortuga": {role: "танк-штурмовик, таран, ближний бой", frame: "реакции, гигант"},
+  "Viceroy": {role: "артиллерия, ракеты, дальняя дистанция", frame: "залп"},
+  "Vlad": {role: "контролер-штурмовик, ловчий, ближний бой", frame: "обездвиживание"},
+  "White Witch": {role: "защитник, ближний бой", frame: "броня, гигант"},
+  "Zheng": {role: "штурмовик, ближний бой", frame: "стойкость"}
 };
 // v232: вайб-текст хранится строчными, а показывается с заглавных:
 // роль — каждое слово-позиция с заглавной («Контролер-Штурмовик, Ловчий,
@@ -3740,6 +3803,8 @@ function licenseRowInfoHtml(lic){
 // имя + описание фрейма из вайба его лицензии (у GMS — название ядра).
 // v248: название ядра у GMS из строки УБРАНО (вторая строка) —
 // строка GMS-фрейма: только имя + роль. Теги v245 для GMS не вносятся.
+// v252: роль+теги фрейма — из FRAME_VIBE (у каждого фрейма свои;
+// варианты больше не показывают теги базовой лицензии).
 // v237: подпись роли для строки фрейма — из вайба его лицензии
 // (как у лицензий); у GMS-фреймов лицензии нет — подпись задана
 // пользователем (16.11): «LL0 Танк» и т.д. (сверено с ролями в db.js:
@@ -3749,6 +3814,8 @@ function frameRoleLine(k){
   const F = DB.frames[k];
   if (!F) return '';
   if (F.src === 'GMS') return GMS_FRAME_ROLE[k] || '';
+  const fv = FRAME_VIBE[k];
+  if (fv) return capRole(fv.role);
   const v = F.lic ? LICENSE_VIBE[F.lic] : null;
   return v ? capRole(v.role) : '';
 }
@@ -3760,6 +3827,8 @@ function frameDispName(k){
 function frameRowSub(k){
   const F = DB.frames[k];
   if (!F || F.src === 'GMS') return ''; // v248: у GMS нет тегов — название ядра из строки списка убрано
+  const fv = FRAME_VIBE[k];
+  if (fv) return capList(fv.frame);
   const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
   return vb ? capList(vb.frame) : '';
 }
