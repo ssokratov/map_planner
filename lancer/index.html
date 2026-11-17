@@ -903,7 +903,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 247</span>
+      <span class="dim global-version">Версия трекера: 248</span>
     </div>
   </div>
 </main>
@@ -3549,13 +3549,13 @@ function showFrameResults(q, box){
   const shown = matches;
   box.innerHTML = shown.map(k=>{
     const d = fd(k);
-    // v245: пустое описание фрейма не даёт пустой span в строке
-    const sub = frameRowSub(k);
+    // v248: одна строка — роль + теги (у GMS — только роль, название ядра убрано)
+    const sub = frameRowFull(k);
     return `
     <div class="dbrow dbrow-float">
       <button class="btn search-add" style="flex:0 0 auto" onclick="pickFrame('${esc(k)}');closeSearchDlg()">＋</button>
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}')">ⓘ</button>
-      <div class="dbinfo"><b>${esc(frameDispName(k))}</b><span>${esc(frameRoleLine(k))}</span>${sub ? `<span>${esc(sub)}</span>` : ''}</div>
+      <div class="dbinfo"><b>${esc(frameDispName(k))}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
 }
@@ -3580,12 +3580,12 @@ function renderRulesFrameList(){
   const keys = sortFrameKeys(Object.keys(DB.frames));
   box.innerHTML = keys.map(k=>{
     const d = fd(k);
-    // v245: пустое описание фрейма не даёт пустой span в строке
-    const sub = frameRowSub(k);
+    // v248: одна строка — роль + теги (у GMS — только роль, название ядра убрано)
+    const sub = frameRowFull(k);
     return `
     <div class="dbrow dbrow-float">
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}','rules')">ⓘ</button>
-      <div class="dbinfo"><b>${esc(frameDispName(k))}</b><span>${esc(frameRoleLine(k))}</span>${sub ? `<span>${esc(sub)}</span>` : ''}</div>
+      <div class="dbinfo"><b>${esc(frameDispName(k))}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div>
     </div>`;
   }).join('');
 }
@@ -3624,7 +3624,7 @@ const LICENSE_VIBE = {
   "Minotaur": {role: "контролер-танк, живой лабиринт, ближний бой", frame: "стена", weapons: "", systems: "система ловушки, система взлома, система перегрева, система телепортации, система контроля"},
   "Monarch": {role: "артиллерия, ракеты, дальняя дистанция", frame: "самонаведение, гигант", weapons: "ракеты", systems: "система ловушки, НHP"},
   "Mourning Cloak": {role: "убийца-телепортер, ближний бой", frame: "изоляция", weapons: "нож, ракеты, меч", systems: "система взлома, система телепортации, система маскировки"},
-  "Napoleon": {role: "танк-контролер, время как броня", frame: "маленький", weapons: "винтовка", systems: "система щита, система контроля"},
+  "Napoleon": {role: "танк-контролер, уменьшение урона", frame: "маленький", weapons: "винтовка", systems: "система щита, система контроля"},
   "Nelson": {role: "штурмовик-дуэлянт, рыцарь с пикой, ближний бой", frame: "мобильность", weapons: "копьё, кастеты", systems: "система усиления, система щита"},
   "Pegasus": {role: "артиллерия-стрелок, средняя дистанция", frame: "средний урон", weapons: "винтовка, мимик, автопушка", systems: "система усиления, система разведки, НHP"},
   "Raleigh": {role: "штурмовик, старый солдат, дальний бой с перезарядкой", frame: "", weapons: "пистолет, пушка, молот", systems: "система ловушки, система усиления"},
@@ -3648,6 +3648,9 @@ function capFirst(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function capRole(role){
   return (role || '').split(', ').map(part=>part.replace(/(^|[-/])([а-яa-z])/g, (m, sep, ch)=>sep + ch.toUpperCase())).join(', ');
 }
+// v248: каждый тег с заглавной («Регенерация, Гигант», а не «Регенерация, гигант»:
+// capFirst капитализирует только первую букву всей строки).
+function capList(s){ return (s || '').split(', ').map(capFirst).join(', '); }
 // v231: полный вайб-текст лицензии (Фрейм/Оружие/Системы) — для строки
 // поиска лицензий и для карточки лицензии. Русский текст, EN нет.
 // v233: лейблы — инлайн с текстом (не своей строкой), между блоками —
@@ -3658,6 +3661,10 @@ function capRole(role){
 // фреймов (frameRowSub — та же функция, тот же результат). Без тега
 // (Genghis, Hydra, Raleigh) — только имя, без тире. Волосяные линии
 // убраны: блок — .lic-vibe вместо .vibe-lines.
+// v248: строка фрейма — та же объединённая строка, что в списке фреймов
+// (frameRowFull: роль + теги). Для однофреймовых лицензий роль при этом
+// дублируется (она уже есть строкой выше) — по правилу пользователя
+// «та же строка в точности»; решение — за пользователем.
 function licenseVibeFullHtml(v, lic){
   const ws = [v.weapons, v.systems].filter(Boolean).join(', ');
   // фреймы лицензии: из всех рангов, базовый (ключ === имя лицензии) первым
@@ -3670,7 +3677,9 @@ function licenseVibeFullHtml(v, lic){
   }
   const frameLine = (key, label)=>{
     const name = key ? esc(fd(key).n) : '';
-    const sub = key ? frameRowSub(key) : capFirst(v.frame || '');
+    // v248: объединённая строка фрейма (роль + теги), как в списке фреймов;
+    // у фрейма без ключа (запасная ветка) — роль + теги самой лицензии.
+    const sub = key ? frameRowFull(key) : (v.frame ? capRole(v.role) + ', ' + capList(v.frame) : capRole(v.role));
     const body = name ? (sub ? `${name} — ${esc(sub)}` : name) : esc(sub);
     return body ? `<p><b>${label}:</b> ${body}</p>` : '';
   };
@@ -3727,6 +3736,8 @@ function licenseRowInfoHtml(lic){
 }
 // v232: строка фрейма везде одинаковая — поиск и список в Правилах:
 // имя + описание фрейма из вайба его лицензии (у GMS — название ядра).
+// v248: название ядра у GMS из строки УБРАНО (вторая строка) —
+// строка GMS-фрейма: только имя + роль. Теги v245 для GMS не вносятся.
 // v237: подпись роли для строки фрейма — из вайба его лицензии
 // (как у лицензий); у GMS-фреймов лицензии нет — подпись задана
 // пользователем (16.11): «LL0 Танк» и т.д. (сверено с ролями в db.js:
@@ -3745,9 +3756,18 @@ function frameDispName(k){
   return (F && F.src ? F.src + ': ' : '') + fd(k).n;
 }
 function frameRowSub(k){
-  const d = fd(k), F = DB.frames[k];
+  const F = DB.frames[k];
+  if (!F || F.src === 'GMS') return ''; // v248: у GMS нет тегов — название ядра из строки списка убрано
   const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
-  return vb ? capFirst(vb.frame) : (d.c || '');
+  return vb ? capList(vb.frame) : '';
+}
+// v248: одна строка фрейма — роль + теги (каждый с заглавной), через запятую.
+// У GMS — только роль. Без тега (Genghis, Hydra, Raleigh) — только роль, без висячей запятой.
+// Та же строка показывается в списке фреймов, в лицензиях и в карточке фрейма.
+function frameRowFull(k){
+  const role = frameRoleLine(k);
+  const sub = frameRowSub(k);
+  return sub ? (role ? role + ', ' + sub : sub) : role;
 }
 
 // v205: лицензии — отдельные сущности, а не фреймы. В lancer-data нет
@@ -4111,12 +4131,14 @@ function frameDetailHtml(key){
   // v244: описание-вайб из карточки убрано (осталось только в строках
   // списков — поиск и Правила); в карточке — только строка роли,
   // как у лицензии с v238. Механика (статы, трейты, ядро) и так в карточке.
+  // v248: в карточке — та же объединённая строка, что в списке (роль + теги);
+  // правило v244/v245 «тег — только в списке» для этой строки отменено.
   return `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(frameDispName(key))}</b>
   </div>
-  <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRoleLine(key))}</div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRowFull(key))}</div>
   <h3 style="margin:10px 0 6px">${esc(L('u240'))}</h3>
   ${statsHtml}
   ${mounts ? `<h3 style="margin:10px 0 6px">${esc(L('u242'))}</h3><div class="tags">${mounts}</div>` : ''}
