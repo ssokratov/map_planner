@@ -310,7 +310,7 @@
   .dbinfo > b { display:block; font-size:14px; }
   .dbinfo span { display:block; font-size:13px; color:var(--text); }
   .dbinfo span.dim { color:var(--dim); font-size:12px; }
-  .vibe-lines { margin:6px 0 0; font-size:12px; color:var(--text); }
+  .vibe-lines { margin:10px 0 0; font-size:13px; color:var(--text); }
   .vibe-lines p { margin:6px 0 0; border-top:1px solid var(--line); padding:6px 0 0; }
   .vibe-lines p:first-child { margin-top:0; }
   /* v234: строки лицензий/фреймов — кнопки float:right, текст обтекает их
@@ -343,7 +343,7 @@
   details.sec h3 { margin:14px 0 6px; font-size:14px; color:var(--text); }
   details.sec ul { margin:4px 0 10px; padding-left:20px; }
   details.sec li { margin-bottom:7px; font-size:14px; line-height:1.5; }
-  details.sec p { font-size:14px; line-height:1.5; color:var(--dim); }
+  details.sec p { font-size:14px; line-height:1.5; }
   /* Системы — сворачиваемые карточки (v189): заголовок обычный белый, а не жёлтый;
      заряды и теги видны и в свёрнутом виде (в шапке), описание — только в развёрнутом. */
   .sys-head { cursor:pointer; }
@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 234</span>
+      <span class="dim global-version">Версия трекера: 235</span>
     </div>
   </div>
 </main>
