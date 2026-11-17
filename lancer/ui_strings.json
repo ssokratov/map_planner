@@ -982,6 +982,31 @@
       "ru": "Снять статус",
       "en": "Remove status",
       "tag": "js"
+    },
+    "u259": {
+      "ru": "Кости лидерства",
+      "en": "Leadership Dice",
+      "tag": "js"
+    },
+    "u260": {
+      "ru": "Кость драчуна",
+      "en": "Brawler Die",
+      "tag": "js"
+    },
+    "u261": {
+      "ru": "Кость стрелка",
+      "en": "Gunslinger Die",
+      "tag": "js"
+    },
+    "u262": {
+      "ru": "Кости мастера клинка",
+      "en": "Blademaster Dice",
+      "tag": "js"
+    },
+    "u263": {
+      "ru": "Кость потока",
+      "en": "Torrent Die",
+      "tag": "js"
     }
   }
 }

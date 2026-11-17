@@ -952,6 +952,26 @@
     "u258": {
       "en": "Remove status",
       "tag": "js"
+    },
+    "u259": {
+      "en": "Leadership Dice",
+      "tag": "js"
+    },
+    "u260": {
+      "en": "Brawler Die",
+      "tag": "js"
+    },
+    "u261": {
+      "en": "Gunslinger Die",
+      "tag": "js"
+    },
+    "u262": {
+      "en": "Blademaster Dice",
+      "tag": "js"
+    },
+    "u263": {
+      "en": "Torrent Die",
+      "tag": "js"
     }
   }
 }
