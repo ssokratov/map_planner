@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 250</span>
+      <span class="dim global-version">Версия трекера: 251</span>
     </div>
   </div>
 </main>
@@ -3596,7 +3596,6 @@ function renderRulesFrameList(){
 // («Ранг I: 1 оружие...»). Только русский текст (EN-перевода пока нет);
 // поиск лицензий и фреймов ищет и по этому тексту.
 const LICENSE_VIBE = {
-  "Amber Phantom": {role: "штурмовик, ближний бой", frame: "предвидение", weapons: "", systems: ""},
   "Atlas": {role: "штурмовик, ближний бой", frame: "убийца гигантов, маленький", weapons: "винтовка, клинок", systems: "система мобильности, система усиления, 2 системы"},
   "Balor": {role: "штурмовик/танк, ближний бой", frame: "регенерация, гигант", weapons: "кнут, нексус", systems: "система дронов, система разведки, система контроля"},
   "Barbarossa": {role: "артиллерия/танк, дальняя дистанция", frame: "рельсотрон, гигант", weapons: "пушка", systems: "система ловушки, система усиления, система дронов, система контроля, система зарядов"},
@@ -3606,21 +3605,17 @@ const LICENSE_VIBE = {
   "Death’s Head": {role: "снайпер-артиллерия, дальняя дистанция", frame: "переброс", weapons: "винтовка, рельсотрон", systems: "система мобильности, система разведки, система усиления"},
   "Drake": {role: "танк-защитник, средняя дистанция", frame: "крепость, гигант", weapons: "пушка, ракеты", systems: "система щита"},
   "Dusk Wing": {role: "контролер-призрак, средняя дистанция", frame: "невидимость, маленький", weapons: "винтовка, лаунчер", systems: "система взлома, система маскировки, система контроля, система щита"},
-  "Empakaai": {role: "штурмовик, ближний бой", frame: "захват", weapons: "", systems: ""},
   "Emperor": {role: "поддержка, артиллерия, средняя дистанция", frame: "сверхщит", weapons: "нексус", systems: "система щита, система контроля, система энергии"},
   "Genghis": {role: "штурмовик-поджигатель, ближний бой", frame: "", weapons: "огнемёт", systems: "система перегрева, система ловушки, НHP"},
   "Gilgamesh": {role: "штурмовик, ближний бой", frame: "больше зарядов", weapons: "винтовка, клинок, нексус", systems: "система ремонта, система дронов, система ловушки"},
   "Goblin": {role: "контролер-хакер, средняя дистанция", frame: "маленький", weapons: "лаунчер", systems: "система взлома, система маскировки, НHP, система контроля, 1 система"},
   "Gorgon": {role: "танк-защитник, наказание, ближний бой", frame: "оглушение, гигант", weapons: "пушка", systems: "система разведки, система дронов, система взлома, система контроля, НHP"},
-  "Hecatoncheires": {role: "штурмовик, контролер, средняя дистанция", frame: "дроны, маленький", weapons: "", systems: ""},
   "Hydra": {role: "штурмовик-контролер, дроны, средняя дистанция", frame: "", weapons: "нексус", systems: "система дронов"},
   "Iskander": {role: "контролер, минное поле, средняя дистанция", frame: "гигант", weapons: "пушка, гравитационная винтовка", systems: "система ловушки, система контроля, система зарядов"},
   "Kidd": {role: "саппорт", frame: "жертва, дроны", weapons: "лазер", systems: "система ремонта, система усиления, система перегрева"},
   "Kobold": {role: "контролер, средняя дистанция", frame: "укрытия, маленький", weapons: "винтовка, пушка", systems: "система контроля, система взлома, 1 система"},
-  "Kutuzov": {role: "защитник, поддержка, ближний бой", frame: "щиты, маленький", weapons: "", systems: ""},
   "Lancaster": {role: "саппорт-ремонтник", frame: "дроны, гигант", weapons: "плазменный резак", systems: "система контроля, система дронов, система ремонта, система щита, 1 система"},
   "Lich": {role: "поддержка, средняя дистанция", frame: "возрождение", weapons: "пусковая установка", systems: "система контроля, НHP, 3 системы"},
-  "Lycan": {role: "защитник, штурмовик, ближний бой", frame: "помехи", weapons: "", systems: ""},
   "Manticore": {role: "штурмовик, живая гроза, ближняя-средняя дистанция", frame: "взрыв", weapons: "пистолет, цепная молния", systems: "система телепортации, система взлома, система контроля, система энергии"},
   "Metalmark": {role: "убийца-невидимка, средняя дистанция", frame: "невидимость", weapons: "винтовка, нож", systems: "система ловушки, система маскировки"},
   "Minotaur": {role: "контролер-танк, ближний бой", frame: "стена", weapons: "", systems: "система ловушки, система взлома, система перегрева, система телепортации, система контроля"},
@@ -3634,8 +3629,6 @@ const LICENSE_VIBE = {
   "Sherman": {role: "штурмовик-артиллерия, лазерщик, средняя-дальняя дистанция", frame: "опасная зона", weapons: "лазерная винтовка, лазерная пушка, плазменная пушка", systems: "система перегрева, система ремонта, НHP"},
   "Sunzi": {role: "поддержка-контролер, средняя дистанция", frame: "телепортация", weapons: "варп-винтовка", systems: "система контроля, система телепортации"},
   "Swallowtail": {role: "саппорт-разведчик, дебафер, дальняя дистанция", frame: "изорванность", weapons: "пулемёт", systems: "система дронов, система усиления, система маскировки, НHP"},
-  "Tagetes": {role: "артиллерия, дальняя дистанция", frame: "винтовки", weapons: "", systems: ""},
-  "Taraxacum": {role: "поддержка, средняя дистанция", frame: "сканирование, гигант", weapons: "", systems: ""},
   "Tokugawa": {role: "штурмовик, перегрев, ближний бой", frame: "энергия", weapons: "дробовик, плазменный топор", systems: "система энергии, система перегрева, НHP"},
   "Tortuga": {role: "танк-штурмовик, таран, ближний бой", frame: "реакции, гигант", weapons: "дробовик, молот", systems: "система усиления, система щита"},
   "Vlad": {role: "контролер-штурмовик, ловчий, ближний бой", frame: "обездвиживание", weapons: "копьё, гвоздемёт, бур", systems: "система ловушки, система контроля"},
@@ -3922,7 +3915,7 @@ for (const [kind, names, src] of [
 function itemSource(kind, key){ return ITEM_SOURCE[kind + ':' + key] || ''; }
 // v238: источник лицензии (книга), если не корбук. Пока только Kidd —
 // Wallflower; кор — без подписи.
-const LICENSE_SOURCE = { 'Kidd': WALLFLOWER_SRC, 'Atlas': LONG_RIM_SRC, 'Caliban': LONG_RIM_SRC, 'Kobold': LONG_RIM_SRC, 'Lich': LONG_RIM_SRC, 'Sunzi': LONG_RIM_SRC, 'Zheng': LONG_RIM_SRC, 'Amber Phantom': OWS_SRC, 'Empakaai': SSMR_SRC, 'Emperor': KTB_SRC, 'Gilgamesh': OWS_SRC, 'Hecatoncheires': SOTW_SRC, 'Kutuzov': OWS_SRC, 'Lycan': OWS_SRC, 'Tagetes': SOTW_SRC, 'Taraxacum': SOTW_SRC, 'White Witch': KTB_SRC };
+const LICENSE_SOURCE = { 'Kidd': WALLFLOWER_SRC, 'Atlas': LONG_RIM_SRC, 'Caliban': LONG_RIM_SRC, 'Kobold': LONG_RIM_SRC, 'Lich': LONG_RIM_SRC, 'Sunzi': LONG_RIM_SRC, 'Zheng': LONG_RIM_SRC, 'Emperor': KTB_SRC, 'Gilgamesh': OWS_SRC, 'White Witch': KTB_SRC };
 function licenseDetailHtml(name){
   const lic = licenseData().find(l=>l.name === name);
   if (!lic) return '';

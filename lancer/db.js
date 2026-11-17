@@ -9770,7 +9770,7 @@ const DB = {
       "iw": [
         "Colossus Termo-Unguis"
       ],
-      "lic": "Empakaai",
+      "lic": "Blackbeard",
       "ll": 2
     },
     "Gilgamesh": {
@@ -9852,7 +9852,7 @@ const DB = {
         "sp": 5
       },
       "iw": [],
-      "lic": "Amber Phantom",
+      "lic": "Metalmark",
       "ll": 2
     },
     "Lycan": {
@@ -9896,7 +9896,7 @@ const DB = {
       "iw": [
         "Shock Claws"
       ],
-      "lic": "Lycan",
+      "lic": "Manticore",
       "ll": 2
     },
     "Kutuzov": {
@@ -9937,7 +9937,7 @@ const DB = {
         "sp": 7
       },
       "iw": [],
-      "lic": "Kutuzov",
+      "lic": "Napoleon",
       "ll": 2
     },
     "Taraxacum": {
@@ -9976,7 +9976,7 @@ const DB = {
         "sp": 8
       },
       "iw": [],
-      "lic": "Taraxacum",
+      "lic": "Lancaster",
       "ll": 2
     },
     "Hecatoncheires": {
@@ -10018,7 +10018,7 @@ const DB = {
         "sp": 6
       },
       "iw": [],
-      "lic": "Hecatoncheires",
+      "lic": "Balor",
       "ll": 2
     },
     "Tagetes": {
@@ -10059,7 +10059,7 @@ const DB = {
         "sp": 5
       },
       "iw": [],
-      "lic": "Tagetes",
+      "lic": "Sherman",
       "ll": 2
     }
   },
