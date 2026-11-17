@@ -305,11 +305,14 @@
   .mount-badge { display:inline-flex; align-items:stretch; height:28px; border:1px solid; border-radius:0; font-size:14px; line-height:1; flex:0 0 auto; }
   .mb-ico { display:inline-flex; align-items:center; justify-content:center; min-width:30px; padding:0 8px; }
   .mb-name { display:inline-flex; align-items:center; padding:0 10px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; border-left:1px solid; }
-  .dbrow { display:flex; gap:8px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
+  .dbrow { display:flex; gap:8px; align-items:flex-start; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
   .dbinfo { flex:1; min-width:0; }
-  .dbinfo b { display:block; font-size:14px; }
+  .dbinfo > b { display:block; font-size:14px; }
   .dbinfo span { display:block; font-size:13px; color:var(--text); }
   .dbinfo span.dim { color:var(--dim); font-size:12px; }
+  .vibe-lines { margin:6px 0 0; font-size:12px; color:var(--dim); }
+  .vibe-lines p { margin:6px 0 0; border-top:1px solid var(--line); padding:6px 0 0; }
+  .vibe-lines p:first-child { margin-top:0; }
   .dbmore { color:var(--dim); font-size:12px; padding:2px 0 6px; }
   .core-power { position:relative; overflow:hidden; background:linear-gradient(180deg, #454e5e 0%, #2b323e 50%, #1a1f28 100%) padding-box, repeating-linear-gradient(45deg, #ffd43b 0 10px, #10131a 10px 20px) border-box; border:3px solid transparent; border-radius:8px; padding:12px; text-align:center; margin-bottom:12px; }
   /* Металлический отблеск (v87): пара диагональных градиентов пробегает по панели раз в ~6.5с */
@@ -890,7 +893,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 232</span>
+      <span class="dim global-version">Версия трекера: 233</span>
     </div>
   </div>
 </main>
@@ -3324,7 +3327,7 @@ function showFrameResults(q, box){
   box = box || document.getElementById('frameResults');
   if (!box) return;
   const query = (q||'').trim().toLowerCase();
-  const matches = Object.keys(DB.frames).filter(k=>frameAvailable(k) && frameMatches(k, query));
+  const matches = sortFrameKeys(Object.keys(DB.frames).filter(k=>frameAvailable(k) && frameMatches(k, query)));
   const shown = matches;
   box.innerHTML = shown.map(k=>{
     const d = fd(k);
@@ -3350,15 +3353,11 @@ let frameDetailFrom = 'search';
 // Список мехов (фреймов) (v177): все 29 фреймов в Правилах — для исследования
 // до получения лицензии (в поиске фреймов без лицензии их нет). Строка (v231) —
 // имя + описание фрейма из вайба его лицензии; кнопка ⓘ на полные статы.
+// Сортировка (v233) — Корпорация → Дистанция боя → Название.
 function renderRulesFrameList(){
   const box = document.getElementById('rulesFrameList');
   if (!box || !DB.frames) return;
-  const keys = Object.keys(DB.frames).sort((a,b)=>{
-    const fa = DB.frames[a], fb = DB.frames[b];
-    if ((fa.ll||0) !== (fb.ll||0)) return (fa.ll||0) - (fb.ll||0);
-    if ((fa.src||'') !== (fb.src||'')) return (fa.src||'').localeCompare(fb.src||'');
-    return a.localeCompare(b);
-  });
+  const keys = sortFrameKeys(Object.keys(DB.frames));
   box.innerHTML = keys.map(k=>{
     const d = fd(k);
     return `
@@ -3413,8 +3412,41 @@ function capRole(role){
 }
 // v231: полный вайб-текст лицензии (Фрейм/Оружие/Системы) — для строки
 // поиска лицензий и для карточки лицензии. Русский текст, EN нет.
+// v233: лейблы — инлайн с текстом (не своей строкой), между блоками —
+// волосяные разделители (класс .vibe-lines).
 function licenseVibeFullHtml(v){
-  return `<div style="margin:2px 0 0;font-size:12px;color:var(--dim)"><p style="margin:0 0 4px"><b>Фрейм:</b> ${esc(capFirst(v.frame))}</p><p style="margin:0 0 4px"><b>Оружие:</b> ${esc(capFirst(v.weapons))}</p><p style="margin:0"><b>Системы:</b> ${esc(capFirst(v.systems))}</p></div>`;
+  return `<div class="vibe-lines"><p><b>Фрейм:</b> ${esc(capFirst(v.frame))}</p><p><b>Оружие:</b> ${esc(capFirst(v.weapons))}</p><p><b>Системы:</b> ${esc(capFirst(v.systems))}</p></div>`;
+}
+// v233: ранг дистанции боя из роли вайба (последняя часть после запятой):
+// ближний → средний → средний-дальний → дальний → без дистанции (в конец).
+function vibeDistRank(role){
+  const dist = (role || '').split(', ').pop() || '';
+  if (/ближн/.test(dist)) return 0;
+  if (/средн/.test(dist) && /дальн/.test(dist)) return 2;
+  if (/средн/.test(dist)) return 1;
+  if (/дальн/.test(dist)) return 3;
+  return 4;
+}
+// v233: сортировка списков — Корпорация → Дистанция боя → Название.
+function sortLicenses(lics){
+  return lics.sort((a, b)=>{
+    if ((a.src||'') !== (b.src||'')) return (a.src||'').localeCompare(b.src||'');
+    const va = LICENSE_VIBE[a.name], vb = LICENSE_VIBE[b.name];
+    const da = vibeDistRank(va ? va.role : ''), db = vibeDistRank(vb ? vb.role : '');
+    if (da !== db) return da - db;
+    return licenseDispName(a).localeCompare(licenseDispName(b));
+  });
+}
+function sortFrameKeys(keys){
+  return keys.sort((a, b)=>{
+    const fa = DB.frames[a], fb = DB.frames[b];
+    if ((fa.src||'') !== (fb.src||'')) return (fa.src||'').localeCompare(fb.src||'');
+    const va = fa.lic ? LICENSE_VIBE[fa.lic] : null;
+    const vb = fb.lic ? LICENSE_VIBE[fb.lic] : null;
+    const da = vibeDistRank(va ? va.role : ''), db = vibeDistRank(vb ? vb.role : '');
+    if (da !== db) return da - db;
+    return fd(a).n.localeCompare(fd(b).n);
+  });
 }
 // v232: строка лицензии везде одинаковая — поиск и список в Правилах:
 // имя «КОРП: Имя», роль отдельной строкой, полный вайб-текст.
@@ -3453,7 +3485,8 @@ function licenseData(){
   // поэтому ключ гранта — имя (W.n/S.n), а не индекс массива (v205 клал индекс).
   for (const W of DB.weapons) put(W.lic, null, 'weapon', W.n, W.ll);
   for (const S of DB.systems) put(S.lic, null, 'system', S.n, S.ll);
-  return Object.values(map).sort((a, b)=>a.name.localeCompare(b.name));
+  // v233: сортировка — Корпорация → Дистанция боя → Название.
+  return sortLicenses(Object.values(map));
 }
 function licenseFrameKey(lic){
   // Фрейм лицензии: предмет-«фрейм» на ранге II (в корбуке у каждой лицензии один,
