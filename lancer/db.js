@@ -2387,6 +2387,200 @@ const DB = {
       "ll": null,
       "lim": 0,
       "x": "Profile — 1 Charge: 1d6 Energy; Line 4; This weapon’s profile is determined by the number of Charges it carries. It begins with 1 Charge, dealing 1d6 energy with line 4. Each time you Stabilize, you gain an additional 1 Charge, up to a maximum of 4. The ZF4 gains an additional +4 line and +1d6 energy damage for each charge, and resets to 1 Charge after each attack. Charges persist between scenes, but are lost during a full repair.\n\nProfile — 2 Charges: 2d6 Energy; Line 8; This weapon’s profile is determined by the number of Charges it carries. It begins with 1 Charge, dealing 1d6 energy with line 4. Each time you Stabilize, you gain an additional 1 Charge, up to a maximum of 4. The ZF4 gains an additional +4 line and +1d6 energy damage for each charge, and resets to 1 Charge after each attack. Charges persist between scenes, but are lost during a full repair.\n\nProfile — 3 Charges: 3d6 Energy; Line 12; This weapon’s profile is determined by the number of Charges it carries. It begins with 1 Charge, dealing 1d6 energy with line 4. Each time you Stabilize, you gain an additional 1 Charge, up to a maximum of 4. The ZF4 gains an additional +4 line and +1d6 energy damage for each charge, and resets to 1 Charge after each attack. Charges persist between scenes, but are lost during a full repair.\n\nProfile — 4 Charges: 4d6 Energy; Line 16; This weapon’s profile is determined by the number of Charges it carries. It begins with 1 Charge, dealing 1d6 energy with line 4. Each time you Stabilize, you gain an additional 1 Charge, up to a maximum of 4. The ZF4 gains an additional +4 line and +1d6 energy damage for each charge, and resets to 1 Charge after each attack. Charges persist between scenes, but are lost during a full repair."
+    },
+    {
+      "n": "Blackspot Targeting Laser",
+      "m": "Main",
+      "t": "Rifle",
+      "d": "1d3+1 Energy",
+      "r": "Range 15",
+      "g": "Unique",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ],
+      "lab": "IPS-N · LL1 · Main",
+      "sf": "",
+      "nr": "Лазер наведения «Чёрная метка»",
+      "tr": "Винтовка",
+      "dr": "1d3+1 энергетический",
+      "rr": "Дальность 15",
+      "xr": "«Кто подсунул мне чёрную метку в день, когда мы высадились и начали этот танец?» — «Остров сокровищ» (1883).\n\nПри попадании: оружие и системы дронов, самонаводящиеся и нексусные получают +1 к точности атаки по цели до конца её следующего хода.\n\nПри крите: цель также получает захват цели.",
+      "gr": "Уникальное",
+      "labr": "IPS-N · LL1 · Main",
+      "lic": "Kidd",
+      "ll": 1,
+      "lim": 0,
+      "x": "“Who tipped me the black spot the day we landed and began this dance?” – Treasure Island (1883)\n\nOn hit: DRONE, SEEKING, and NEXUS weapons and systems gain +1 Accuracy to attack the target until the end of their next turn.\n\nOn crit: The target also receives Lock On."
+    },
+    {
+      "n": "Plasma Talons",
+      "m": "Aux",
+      "t": "Melee",
+      "d": "1d3+2 Energy",
+      "r": "Threat 3",
+      "g": "Armor-Piercing (AP), Danger Zone, Reliable 2",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_danger_zone",
+          null
+        ],
+        [
+          "tg_reliable",
+          2
+        ]
+      ],
+      "lab": "Aux",
+      "sf": "",
+      "nr": "Плазменные когти",
+      "tr": "Рукопашная",
+      "dr": "1d3+2 энергетический",
+      "rr": "Угроза 3",
+      "xr": "Эти расплавленные когти — длинные, похожие на кнут плазменные плети, которые Энкиду может выдвигать или втягивать. Их можно использовать только в опасной зоне.",
+      "gr": "Бронебойное (AP), Опасная зона, Надёжное 2",
+      "labr": "Aux",
+      "lic": "",
+      "ll": null,
+      "lim": 0,
+      "x": "These molten talons are long, whiplike plasma lashes that the Enkidu can extend or retract. They can only be used in the DANGER ZONE."
+    },
+    {
+      "n": "Plasma Maul",
+      "m": "Heavy",
+      "t": "Melee",
+      "d": "3d6 Energy",
+      "r": "Threat 1",
+      "g": "Loading, Overkill 1, Exotic Gear",
+      "tg": [
+        [
+          "tg_loading",
+          null
+        ],
+        [
+          "tg_overkill",
+          1
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Heavy",
+      "sf": "",
+      "nr": "Плазменная кувалда",
+      "tr": "Рукопашная",
+      "dr": "3d6 энергетический",
+      "rr": "Угроза 1",
+      "xr": "Плазменная кувалда популярна среди колониальных ополчений — тяжёлое, но простое устройство. Магнитные плазменные конденсаторы высокой плотности имеют широкий спектр применения — от хранения энергии до строительства и обороны. В случае плазменной кувалды они установлены рядами вдоль усиленной рукояти и разряжаются при контакте, что делает это оружие разрушительным оружием ближнего боя, ограниченным лишь необходимостью перезарядки между ударами. Ранние модели имели сбрасываемые конденсаторные блоки, но современные версии рассчитаны на питание напрямую от реактора шасси.\n\nЭто оружие не нужно перезаряжать при промахе.",
+      "gr": "Перезаряжаемое, Перебор 1, Экзотическое снаряжение",
+      "labr": "Экзотика · Heavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Popular among colonial militias, the plasma maul is a heavy but simple device. High-density magnetic plasma capacitors have a wide range of applications, from power storage through to construction and defense. In the case of the plasma maul, they are mounted in rows along a reinforced haft and set to discharge on contact, making this a devastating closequarters weapon limited only by its need to recharge between strikes. Early models featured ejectable capacitor banks, but contemporary versions are designed to draw power directly from a chassis’ reactor.\n\nThis weapon does not need to be reloaded on a miss."
+    },
+    {
+      "n": "“Sting” Heavy Anti-Armor Rifle",
+      "m": "Superheavy",
+      "t": "Rifle",
+      "d": "4d6 Kinetic",
+      "r": "Range 20",
+      "g": "Loading, Ordnance, Reliable 5, Exotic Gear",
+      "tg": [
+        [
+          "tg_loading",
+          null
+        ],
+        [
+          "tg_ordnance",
+          null
+        ],
+        [
+          "tg_reliable",
+          5
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Superheavy",
+      "sf": "",
+      "nr": "Тяжёлая противотанковая винтовка «Жало»",
+      "tr": "Винтовка",
+      "dr": "4d6 кинетический",
+      "rr": "Дальность 20",
+      "xr": "Устаревшая противотанковая/противоброневая винтовка классом шасси, датируемая временами герцинианского кризиса; эта конкретная конструкция не производится уже сотни лет, но продолжает использоваться современными герцинианскими силами. Более громоздкая и неудобная, чем современная противотанковая винтовка GMS T-3, эта конкретная модель лишена многих усовершенствований, включённых в более поздние модели, и предназначена для использования с выделенным наводчиком для обеспечения целеуказания. Тем не менее её тяжёлые высокоскоростные снаряды остаются чрезвычайно эффективными в поражении как брони, так и статичной обороны на экстремальной дальности.\n\nПри атаке: если вы расходуете захват цели, ваша атака игнорирует укрытие.\n\nПри попадании: создайте линию 5 от вашей цели (не включая её), продолжающуюся в том же направлении, что и атака. Персонажи на этой линии получают 5 кинетического урона.",
+      "gr": "Перезаряжаемое, Тяжёлое орудие, Надёжное 5, Экзотическое снаряжение",
+      "labr": "Экзотика · Superheavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "An obsolete chassis-grade anti-materiel/ anti-armor rifle dating back to the Hercynian Crisis, this particular design has not been in distribution for hundreds of years but finds continued use among contemporary Hercynian forces. Bulkier and more cumbersome than the current GMS T-3 anti-materiel rifle, this particular model lacks many of the refinements incorporated into later models and is meant to be employed with a dedicated spotter to provide targeting data. All the same, its heavy, highvelocity rounds remain extremely effective at defeating both armor and static defenses at extreme range.\n\nOn attack: If you consume LOCK ON, your attack ignores cover.\n\nOn hit: Create a Line 5 path from (but not including) your target, continuing in the same direction as the attack. Characters in this path take 5 Kinetic Damage."
+    },
+    {
+      "n": "“Steelpunch” Heavy Needlebeam",
+      "m": "Heavy",
+      "t": "Rifle",
+      "d": "4 Energy",
+      "r": "Range 15",
+      "g": "Armor-Piercing (AP), Exotic Gear",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Heavy",
+      "sf": "",
+      "nr": "Тяжёлый игольчатый луч «Стилпанч»",
+      "tr": "Винтовка",
+      "dr": "4 энергетический",
+      "rr": "Дальность 15",
+      "xr": "«Стилпанч», как его ласково называют, — это двулучевое оружие направленной энергии, разработанное инженерами HUC для поражения сильно укреплённых корпусов остаточных шасси и других закалённых целей. Самые ранние модели были получены из минеральных геодезических лазеров эпохи Второго комитета. Начальная вспышка луча мгновенно испаряет внешний слой цели, а плазменный цветок мгновенно анализируется на плотность материала и структурный состав, после чего игольчатый луч выпускает сфокусированный высокоинтенсивный импульсный луч, настроенный на поражение тяжёлой брони. Однако эффективность против более мягких целей значительно снижена, так как чрезмерная абляция материала нарушает вторичный луч до достижения оптимального эффекта.\n\nЭто оружие наносит +1d6 бонусного урона против целей, имеющих как минимум 1 броню.",
+      "gr": "Бронебойное (AP), Экзотическое снаряжение",
+      "labr": "Экзотика · Heavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The “steelpunch”, as it’s affectionately known, is a twin-beam directed-energy weapon developed by HUC engineers for use against the heavily reinforced hulls of remnant chassis and other hardened targets. The earliest models were derived from Second Committee–era mineral surveying lasers. An initial beam flash-vaporizes the target’s outer layer and the plasma bloom is instantly analyzed for material density and structural composition, following which the needlebeam fires a focused, highintensity pulsed beam tuned to defeat heavy armor. Performance against softer targets is significantly reduced, however, as excessive material ablation disrupts the secondary beam before an optimal effect can be achieved.\n\nThis weapon deals +1d6 bonus damage against targets with at least 1 Armor."
+    },
+    {
+      "n": "Brood-Sibling’s Molt",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6+1 Kinetic",
+      "r": "Threat 1",
+      "g": "Exotic Gear",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Линька брата по выводку",
+      "tr": "Рукопашная",
+      "dr": "1d6+1 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Прощай, старый [друг/любовь]\n\n1/раунд это оружие наносит +1d6 бонусного урона персонажам, которые изорваны или оглушены.",
+      "gr": "Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Goodbye, old [friend/love]\n\n1/round, this weapon deals +1d6 bonus damage to characters that are SHREDDED or STUNNED."
     }
   ],
   "systems": [
@@ -5299,6 +5493,289 @@ const DB = {
           1
         ]
       ]
+    },
+    {
+      "n": "PEBCAC",
+      "t": "Tech",
+      "p": 2,
+      "lab": "IPS-N · LL1 · 2 SP",
+      "sf": "",
+      "nr": "PEBCAC",
+      "tr": "Тех",
+      "xr": "Когда проблема между креслом и шасси, нужны агрессивные решения. Это довольно быстрое решение — старая программа перезагрузки на уровне системы, которую часто используют астероидные шахтёры, работающие со стареющим оборудованием.\n\nPEBCAC (быстрая техника): союзный мех в линии видимости и в пределах сенсоров быстро перезагружается на уровне системы. Это прекращает все эффекты, вызванные тех-действиями, останавливает каскады NHP и даёт цели иммунитет ко всем тех-действиям — враждебным и союзным — кроме этого, до конца её следующего хода. Это нельзя использовать на заглушенных персонажах.\n\nКроме того, бросьте 1d6, чтобы определить побочный эффект из таблицы ниже. Эти эффекты происходят немедленно и не считаются действием или реакцией. Любое вызванное ими перемещение недобровольно.\n\n1. Ваша цель становится заглушенной до конца своего следующего хода.\n2. Ваша цель перемещается на расстояние до своей скорости в направлении по выбору ведущего.\n3. Ваша цель немедленно перемещается до 3 клеток к ближайшему персонажу (союзному или враждебному) и совершает против него импровизированную атаку. Если персонажей в радиусе нет, она только перемещается.\n4. Ваша цель падает, сбитая с ног, и получает 2 кинетического урона.\n5. Ваша цель сбрасывает 1d6 тепла и наносит количество сброшенного тепла энергетическим уроном всем соседним персонажам.\n6. Ваша цель немедленно выполняет действие «Стабилизация» и может выбрать, что делать.",
+      "labr": "IPS-N · LL1 · 2 SP",
+      "lic": "Kidd",
+      "ll": 1,
+      "lim": 0,
+      "x": "When the problem exists between chair and chassis, aggressive solutions are needed. This rather quick solution is an old system-level reboot program that is often used by asteroid miners dealing with aging hardware.\n\nPEBCAC (Quick Tech): An allied mech character within line of sight and SENSORS quickly flash reboots at the system level. This ends all effects caused by tech actions, stops NHP cascades, and gives the target Immunity to all tech actions – hostile and allied – other than this one until the end of their next turn. This cannot be used on Jammed characters.\n\nAdditionally, roll 1d6 to determine a side effect from the table below. These effects take place immediately and don't count as an action or reaction. Any movement they cause is involuntary.\n\n1. Your target becomes JAMMED until the end of their next turn.\n2. Your target moves up to its SPEED in a direction of the GM's choice.\n3. Your target immediately moves up to 3 spaces toward the nearest character (allied or hostile) and performs an IMPROVISED ATTACK against them. If no characters are in range, it only moves.\n4. Your target falls PRONE and takes 2 Kinetic Damage.\n5. Your target vents 1d6 Heat and deals the amount cooled as energy damage to all adjacent characters.\n6. Your target immediately takes the STABILIZE action and can choose what to do.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Omnibus Plate",
+      "t": "Deployable",
+      "p": 1,
+      "lab": "IPS-N · LL2 · 1 SP",
+      "sf": "",
+      "nr": "Плита «Омнибус»",
+      "tr": "Развёртываемое",
+      "xr": "«Нортстар Бранч Роботикс» вернулась к своим корням с плитой «Омнибус», создав простой развёртываемый катализатор для передовых пользователей нексуса. Разработанная с учётом адаптации, плита «Омнибус» надёжно крепится к любой системе дронов или развёртываемых устройств, повышая эффективность этой системы во всех аспектах применения.\n\nПотратьте заряд, чтобы развернуть плиту «Омнибус» в клетке в пределах дальности 5.\n\nПлита «Омнибус» (развёртываемое, размер 1, HP 10, уклонение 5): плиту нельзя переместить, она плоская и не блокирует перемещение. Она достаточно велика, чтобы удерживать одного дрона или развёртываемое устройство размера 1 или меньше за раз. Дроны и развёртываемые устройства, размещённые на плите, получают сопротивление всему урону и +1 к размеру любых эффектов взрыва или вспышки, которые они создают. Кроме того, любые их эффекты, требующие соседства, теперь можно активировать в пределах дальности 2.",
+      "labr": "IPS-N · LL2 · 1 SP",
+      "lic": "Kidd",
+      "ll": 2,
+      "lim": 2,
+      "x": "Northstar Branch Robotics returned to their roots with the Omnibus Plate, creating a simple, deployable catalytic for frontline nexus users. Designed with adaptation in mind, Omnibus Plates can attach securely to any drone or deployable system, increasing that system’s efficacy in all aspects of employ.\n\nExpend a charge to deploy an omnibus plate to a space within Range 5.\n\nOmnibus Plate (Deployable, Size 1, HP 10, Evasion 5): The plate cannot be moved, is flat, and does not block movement. It is large enough to hold a single SIZE 1 or smaller DRONE or DEPLOYABLE at a time. DRONES and DEPLOYABLES placed on the plate gain RESISTANCE to all damage and gain +1 to the size of any BURST or BLAST effects they generate. Additionally, any of their effects that require adjacency can now be activated from within Range 2.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Field-Approved, Brass Ignorant Modifications",
+      "t": "Tech",
+      "p": 2,
+      "lab": "IPS-N · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Полевые модификации, одобренные невежественным начальством",
+      "tr": "Тех",
+      "xr": "Как следует из названия, модификации FABI — это кустарные полевые модификации, которые, хотя технически и выходят далеко за пределы одобренного диапазона функциональности и безопасности, тем не менее популярны среди опытных пилотов. Модификации FABI, как правило, носят временный характер: снятие ограничителей джоулей с помощью быстро залатанного кода, полевые «горячие» кинетические снаряды и так далее.\n\nПолевые модификации, одобренные невежественным начальством (быстрая техника): выберите союзного меха в линии видимости и в пределах сенсоров. Вы усиливаете его оружие. Когда он совершает бросок дальнобойной или ближней атаки:\n• урон атаки нельзя уменьшить никаким образом\n• отдача от выстрела отбрасывает его на 1 клетку в любом направлении после атаки\n• При попадании: его цель должна преуспеть в спасброске корпуса или быть сбитой с ног.\nЭтот эффект заканчивается, когда ваша цель успешно попадает дальнобойной или ближней атакой, или в конце сцены.",
+      "labr": "IPS-N · LL2 · 2 SP",
+      "lic": "Kidd",
+      "ll": 2,
+      "lim": 0,
+      "x": "As implied by the name, FABI modifications are ad hoc battlefield modifications that, while technically falling well outside the approved envelope of functionality and safety, are nonetheless popular among veteran pilots. FABI mods tend to be temporary in nature: removal of joule governors with quick-patched code, fieldcooked “hot” kinetic rounds, and so on.\n\nField-Approved, Brass Ignorant Modifications (Quick Tech): Choose an allied mech character within line of sight and SENSORS. You power up their weapons. When they make a ranged or melee attack roll:\n\n• the attack's damage cannot be reduced in any way\n• the kick from firing the weapon knocks them back 1 space in any direction after the attack\n• On Hit: their target must succeed on a HULL save or be knocked PRONE.\n\nThis effect ends when your target successfully hits with a ranged or melee attack roll or at the end of the scene.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "FORGE-2 Subaltern Squad",
+      "t": "Deployable",
+      "p": 4,
+      "lab": "IPS-N · LL3 · 4 SP",
+      "sf": "",
+      "nr": "Отряд субординатов FORGE-2",
+      "tr": "Развёртываемое",
+      "xr": "Линия субординатов FORGE — это премьерная линейка автономных роботизированных гуманоидов передовой от IPS-N. Произведённые её робототехническим подразделением, «Нортстар Бранч Роботикс», субординаты FORGE-2 — новейшие модели боевой инженерии IPS-N, созданные в масштабе пользователя и под его функции.\n\n1/раунд потратьте заряд, чтобы развернуть команду субординатов FORGE-2 и начать работу над одним из следующих проектов в свободной клетке в линии видимости и в пределах дальности 5.\n\nПроект — неподвижный объект, который завершается в начале вашего следующего хода, получая +10 HP (максимального и текущего). Он отменяется, если его уничтожить.\n\nСубординаты не считаются отдельными существами, и их нельзя нацелить. Они возвращаются к вам, если проект уничтожен, отменён или завершён, где бы вы ни находились.\n\nЕсли вы перегружаетесь, чтобы использовать эту систему снова, она может игнорировать ограничение 1/раунд, но второй проект должен быть размещён вплотную к первому.\n\nУкрепление (проект, размер 1, HP 5): после завершения это приподнятое укрепление имеет размер 1 и высоту 3 клетки. Верхняя треть — это защищённая платформа, на которой могут разместиться персонажи суммарным размером 1 (остальное — сплошной металл или пластик). Бойницы позволяют проводить линию видимости как внутрь, так и наружу укрепления, но дают персонажам внутри твёрдое укрытие со всех сторон. Персонажи могут входить в укрепление или выходить из него из любой соседней клетки как быстрое действие. При входе они перемещаются на защищённую платформу. Персонажи и развёртываемые устройства могут стоять на плоской крыше сооружения, но не получают укрытия.\n\nЛовчая пена (проект, размер 1, HP 5): после завершения этот проект постоянно распыляет пену вокруг себя, создавая зону взрыва 2 труднопроходимой местности. Уничтожение проекта убирает эффект.\n\nДемпфирующая станция (проект, размер 1, HP 5): после завершения эта ремонтная станция создаёт поле взрыва 1, в котором союзные персонажи получают иммунитет к ожогу и снимают любой текущий ожог.\n\nБронекомплект (проект, размер 1, HP 5): после завершения этот комплект крепится к следующему союзному персонажу, который переместится вплотную к нему, и сливается с ним. Проект уничтожается, но персонаж получает +1 брони до конца сцены. Это может временно превысить максимум брони.",
+      "labr": "IPS-N · LL3 · 4 SP",
+      "lic": "Kidd",
+      "ll": 3,
+      "lim": 6,
+      "x": "The FORGE line of subalterns represents IPS-N’s premier range of frontline autonomous robotic humanoids. Produced by its robotics division, Northstar Branch Robotics, FORGE-2 subalterns are IPS-N’s newest combat engineering models, built to user scale and function.\n\n1/round, expend a charge to deploy a team of FORGE-2 subalterns to start work on one of the following projects in a free space within line of sight and Range 5.\n\nThe project is an immovable object that is finished at the start of your next turn, gaining +10 HP (maximum and current). It is canceled if it's destroyed.\n\nThe subalterns aren't treated as separate entities and can't be targeted. They return to you if the project is destroyed, canceled, or finished, no matter where you are.\n\nIf you OVERCHARGE to use this system again, it may ignore the 1/round limit, but the second project must be placed adjacent to the first.\n\nEmplacement (Project, Size 1, HP 5): When finished, this elevated emplacement is SIZE 1 and 3 spaces high. The top third is a is a shielded platform that can fit characters up to a combined SIZE 1 (the rest is solid metal or plastic). Firing slits allow line of sight both into and out of the emplacement but give characters within hard cover from all directions. Characters can enter or exit the emplacement from any adjacent space as a quick action. Upon entering, they move into the shielded platform. Characters and DEPLOYABLES can stand on the flat roof of the structure, but don’t gain cover.\n\nSnare Foam (Project, Size 1, HP 5): When finished, this project continually sprays foam around it, creating a Burst 2 area of difficult terrain. Destroying it removes the effect.\n\nDamping Station (Project, Size 1, HP 5): When finished, this repair station generates a Burst 1 field within which allied characters gain IMMUNITY to burn and clear any burn currently affecting them.\n\nArmor Pack (Project, Size 1, HP 5): When finished, this pack latches onto the next allied character that moves adjacent to it and fuses onto them. The project is destroyed, but they gain +1 ARMOR for the rest of the scene. This could temporarily put them over the armor maximum.",
+      "tg": [
+        [
+          "tg_limited",
+          6
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "SMOKESTACK Heat Sink",
+      "t": "Deployable",
+      "p": 3,
+      "lab": "IPS-N · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Теплоотвод «SMOKESTACK»",
+      "tr": "Развёртываемое",
+      "xr": "Теплоотвод «SMOKESTACK» от Кидда IPS-N представляет собой новейшую систему рассеивания тепла IPS-N для транспортных средств и машин с CORE-приводом. Используя запатентованную аксиоматику, система «SMOKESTACK» устанавливает (через развёртываемый пилон) локализованное, незначительное и стабильное отверстие в омега-состояние, позволяя пользователям — при определённом значении термодинамического обмена — охлаждать избыточный тепловой долг, сбрасывая его в это состояние. Как только «SMOKESTACK» достигает ёмкости — жёстко запрограммированной особенности — он детонирует, делая систему столь же эффективным оружием, сколь и теплоотводом.\n\nТеплоотвод «SMOKESTACK» (пилон, размер 0.5, HP 5, уклонение 10, э-защита 10): потратьте заряд, чтобы развернуть пилон, поглощающий тепло в зоне взрыва 2 вокруг себя. Он поглощает любое тепло, наносимое персонажам, хотя бы частично находящимся в зоне действия, из любого источника (до снижений, включая сопротивление). Как только пилон поглотит 6 тепла, он взрывается. Персонажи в зоне действия должны преуспеть в спасброске ловкости или получить 1d6+3 бронебойного энергетического урона. При успехе они получают половину урона. Объекты и развёртываемые устройства поражаются автоматически. Любое избыточное тепло, поглощённое пилоном в рамках того же действия или эффекта, которое вызвало взрыв, рассеивается без эффекта.",
+      "labr": "IPS-N · LL3 · 3 SP",
+      "lic": "Kidd",
+      "ll": 3,
+      "lim": 2,
+      "x": "The IPS-N Kidd’s SMOKESTACK Heat Sink represents the latest in IPS-N’s heat dispersion systems for chassis and other CORE-powered vehicles and vessels. Utilizing proprietary axiomatics, the SMOKESTACK system establishes (via deployable pylon) a localized, minor, and stable pinhole into an omega state, allowing users to – for a certain value of thermodynamic exchange – cool excess heat debt by depositing it into that same state. Once the SMOKESTACK reaches capacity – a hard-coded feature – it detonates, making the system just as effective a weapon as it is a heat sink.\n\nSMOKESTACK Heat Sink (Pylon, Size 0.5, HP 5, Evasion 10, E-Defense 10): Expend a charge to deploy a pylon that absorbs heat in a Burst 2 area around itself. It absorbs any heat dealt to characters at least partially within the affected area from any source (before reductions, including RESISTANCE). Once the pylon has absorbed 6 Heat, it explodes. Characters within the affected area must succeed on an AGILITY save or take 1d6+3 AP Energy Damage. On a success, they take half damage. Objects and DEPLOYABLES are hit automatically. Any excess heat absorbed by the pylon as part of the same action or effect that caused it to explode disperses with no effect.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Snapdragon Anti-Chassis Guided Missile Launcher",
+      "t": "",
+      "p": 1,
+      "lab": "Exotic · 1 SP",
+      "sf": "",
+      "nr": "Противошассийный управляемый ракетный комплекс «Снэпдрагон»",
+      "tr": "",
+      "xr": "1. Проверьте все предохранители.\n2. Выдвиньте пусковую трубу. Дверца ракеты должна открыться автоматически (если дверца не открывается, пусковая установка не выстрелит).\n3. Включите дальномер, захватите цель. Дождитесь положительного тона и визуального подтверждения захвата цели (ЦЕЛЬ ОК).\n4. Проверьте зону реактивной струи. Минимальное безопасное расстояние — 100 метров. ВНИМАНИЕ: реактивная струя представляет серьёзный риск травм для незащищённого персонала.\n5. Огонь.\n\n1/миссия, противошассийный управляемый ракетный комплекс «Снэпдрагон» можно использовать для совершения дальнобойной атаки со следующим профилем:\n\nТяжёлая пусковая установка, надёжное 4, самонаводящееся\nДальность 15, 2d6+2 взрывного урона\n\nПротивошассийный управляемый ракетный комплекс «Снэпдрагон» (быстрое действие): выстрелите из противошассийного управляемого ракетного комплекса «Снэпдрагон». Это дальнобойная атака со следующим профилем: тяжёлая пусковая установка, надёжное 4, самонаводящееся. Дальность 15, 2d6+2 взрывного урона. Эта атака игнорирует укрытие и «Трудно попасть». Вы не можете совершить эту атаку, если вы заглушены.",
+      "labr": "Экзотика · 1 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "1. Check all safety locks.\n2. Extend launch tube. Missile door should open automatically (if door fails to open, launcher will not fire).\n3. Activate rangefinder, acquire target. Wait for positive tone and visual confirmation that target has been acquired (TGT OK).\n4. Check backblast area. Minimum safe distance 100 meters. WARNING: backblast poses serious injury risk to unprotected personnel.\n5. Fire.\n\n1/mission, the \"Snapdragon\" anti-chassis guided missile launcher can be used to make a ranged attack with the following profile:\n\nHeavy Launcher, Reliable 4, Seeking\nRange 15, 2d6 + 2 Explosive Damage\n\nSnapdragon Anti-Chassis Guided Missile Launcher (Quick): Fire the Snapdragon anti-chassis guided missile launcher. This is a ranged attack with the following profile: Heavy Launcher, Reliable 4, Seeking. Range 15, 2d6 + 2 Explosive Damage. This attack ignores cover and Hard to Hit. You cannot make this attack if you are JAMMED.",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_quick_action",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Cynosure",
+      "t": "Tech",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Киносура",
+      "tr": "Тех",
+      "xr": "Эта программа тихо говорит о мести, о порядке вещей, о марше клинков, поднятых высоко против солнца.\n\nНебесный порядок (быстрая техника): каждый персонаж на поле боя недобровольно перемещается на 1 клетку в направлении по вашему выбору, игнорируя ближний бой и не провоцируя реакции. Все они должны двигаться в одном направлении.\n\nНеотступное преследование (быстрая техника): враждебный персонаж в линии видимости и в пределах сенсоров должен преуспеть в спасброске систем или стать заворожённым. Выберите другого видимого персонажа. Любое добровольное перемещение заворожённого персонажа должно быть направлено к выбранному персонажу самым прямым маршрутом. Этот эффект заканчивается, когда заворожённый персонаж начинает или заканчивает свой ход вплотную к любому другому персонажу, в противном случае он длится до конца боя.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "This program talks, quietly, of revenge, of the ordering of things, of a march of blades lifted high against the sun.\n\nCelestial Ordering (Quick Tech): Every character on the battlefield involuntarily moves 1 space in a direction of your choice, ignoring engagement and without provoking reactions. They must all move in the same direction.\n\nUnblinking Pursuit (Quick Tech): A hostile character within line of sight and SENSORS must succeed on a SYSTEMS save or be mesmerized. Choose another visible character. Any voluntary movement the mesmerized character makes must be toward the chosen character by the most direct route possible. This effect ends when the mesmerized character starts or ends their turn adjacent to any other character, otherwise it lasts until the end of combat.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Opportunity",
+      "t": "AI",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Возможность",
+      "tr": "ИИ",
+      "xr": "Стук (быстрая техника): «Возможность» предоставляет свою необычайную вычислительную мощность и свою точную (хотя и требовательную) помощь, оптимизируя системы союзника до более «организованного» состояния.\n\nВыберите союзного меха в линии видимости и в пределах сенсоров, чтобы он получил пользу от оптимизации «Возможности». Он получает иммунитет к теплу от других персонажей, +1 к точности всех проверок и спасбросков систем, а атакующие получают +1 к сложности тех-атак против него.\n\nЭтот эффект немедленно заканчивается, когда вы снова совершаете это действие, или когда затронутый персонаж «наводит беспорядок», совершая бросок атаки, заставляя совершить спасбросок или совершая любое другое действие, которое затронуло бы враждебного персонажа.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Knock (Quick Tech): Opportunity lends their extraordinary processing power and their precise (if exacting) aid, optimizing an ally's systems to a more “organized” state.\n\nChoose an allied mech character within line of sight and SENSORS to benefit from Opportunity's optimization. They gain immunity to heat from other characters, +1 Accuracy on all SYSTEMS checks and saves, and attackers gain +1 Difficulty on tech attacks against them.\n\nThis effect ends immediately when you take this action again, or when the affected character “makes a mess of things” by taking an attack roll, forcing a save, or taking any other action that would affect a hostile character.",
+      "tg": [
+        [
+          "tg_ai",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Markey’s Fusebox",
+      "t": "Deployable",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Взрыватель Марки",
+      "tr": "Развёртываемое",
+      "xr": "Взрыватель Марки (мина, размер 0.5, HP 10, уклонение 5, э-защита 5, предел тепла 10): потратьте заряд, чтобы установить взрывной заряд в свободной соседней клетке. Он взводится в конце раунда; после взведения он взрывается, если получает урон или тепло. Персонажи во взрыве 3 должны преуспеть в спасброске ловкости или получить 2d6 взрывного урона и быть вытолкнутыми из зоны поражения или как можно дальше. При успехе они всё равно выталкиваются, но получают половину урона.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 2,
+      "x": "Markey’s Fusebox (Mine, Size 0.5, HP 10, Evasion 5, E-Defense 5, Heat Cap 10): Expend a charge to set an explosive charge in a free adjacent space. It arms at the end of the round; once armed, it explodes if it takes any damage or heat. Characters within Burst 3 must succeed on an AGILITY save or take 2d6 Explosive damage and be pushed out of the affected area, or as far as possible. On a success, they are still pushed but take half damage.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Carapace Cladding",
+      "t": "",
+      "p": 1,
+      "lab": "Exotic · 1 SP",
+      "sf": "",
+      "nr": "Панцирная обшивка",
+      "tr": "",
+      "xr": "Хотя эгрегорианский хитин сам по себе достаточен для личной брони, он недостаточно прочен, чтобы выдерживать атаки более тяжёлого оружия, и его нелегко собрать в достаточных количествах, чтобы полностью оснастить шасси. Тем не менее многие рейнджеры до сих пор используют вторичные защитные усиления на основе панциря, закреплённые над критическими системами, как дополнительный слой абляционной защиты, особенно против зажигательных или едких/коррозийных боеприпасов, которые иначе могли бы сопротивляться обычному подавлению.\n\nПотратьте заряд, чтобы немедленно снять весь ожог с вашего меха. Кроме того, когда вы принимаете стойку, вы также можете потратить заряд, чтобы снизить весь ожог, наносимый атакой, до 0.\n\nПанцирная обшивка (быстрое действие): немедленно снимите весь ожог с вашего меха.",
+      "labr": "Экзотика · 1 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 2,
+      "x": "While sufficient for personal armor, Egregorian chitin on its own is not robust enough to withstand attacks from heavier weapons, nor can it easily be gathered in sufficient quantities to fully outfit a chassis. Regardless, many rangers still utilize carapace-based secondary defensive enhancements anchored over critical systems as an additional layer of ablative protection, most notably against incendiary or caustic/corrosive munitions that might otherwise resist conventional suppression.\n\nExpend a charge to immediately clear all Burn from your mech. Additionally, whenever you BRACE you may also expend a charge to reduce all Burn dealt by the attack to 0.\n\nCarapace Cladding (Quick): Immediately clear all Burn from your mech.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Fragment of Beggar One",
+      "t": "Tech",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Осколок Нищего Первого",
+      "tr": "Тех",
+      "xr": "Этот артефакт, обнаруженный после уничтожения Нищего Первого (предварительно обозначенного /obj/00001), демонстрирует ряд необычных свойств. Хотя он материален и считается химически стабильным, его монокристаллический состав не соответствует ни одному известному элементу и испускает постоянный, измеримый уровень гамма-излучения неизвестным образом. Глубокое магнитно-резонансное сканирование указывает на наличие значительных количеств сжатых данных, хранящихся в объекте, хотя он не проявляет признаков самонаправленного интеллекта на каком-либо измеримом уровне. Его точное назначение, если оно есть, ещё предстоит определить.\n\n1/сцена вы можете совершить одно из следующих полных тех-действий:\n\nШёпот каскада (полная техника): выберите враждебного персонажа в пределах сенсоров. Он должен либо немедленно атаковать другого персонажа или объект по вашему выбору в пределах его дальности и линии видимости одним оружием как реакцию, либо стать заглушенным до конца своего следующего хода.\n\nБритва по имени Квалия (полная техника): выберите враждебного персонажа в пределах сенсоров. До конца его следующего хода:\n• Он должен использовать своё стандартное перемещение, чтобы двигаться к вам самым прямым маршрутом\n• Пока вы находитесь в пределах дальности и линии видимости его атак, он считает вас единственной допустимой целью для атак.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "This artifact, recovered following the termination of Beggar One (provisionally designated /obj/00001), displays a number of unusual properties. Though tangible and presumed to be chemically stable, its monocrystalline composition does not correspond to any known element and emits a steady, measurable level of gamma radiation through an unknown process. Deep magnetic resonance scans indicate the presence of significant quantities of compressed data stored within the object, though it shows no signs of self-directed intelligence at any quantifiable level. Its exact purpose, if it has one, has yet to be determined.\n\n1/scene, you may take one of the following Full Tech actions:\n\nWhisper of Cascade (Full Tech): Choose a hostile character within SENSORS. They must either immediately attack a different character or object of your choice within their RANGE and line of sight with a single weapon as a reaction, or become JAMMED until the end of their next turn.\n\nA Razor Called Qualia (Full Tech): Choose a hostile character within SENSORS. Until the end of their next turn:\n\n• They must use their standard move to move toward you by the most direct route possible\n• As long as you are within the RANGE and line of sight of their attacks, they consider you the only valid target for attacks.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
     }
   ],
   "frames": {
@@ -6534,6 +7011,213 @@ const DB = {
       "iw": [],
       "lic": "Tokugawa",
       "ll": 2
+    },
+    "Kidd": {
+      "m": [
+        "Main"
+      ],
+      "c": "The Jolly Roger",
+      "cd": "Active — Skull and Bones (Protocol, Encounter): For the rest of the scene, Plunder and Swindle become Blast 2 and Shiver Timbers affects all characters in a Line 10 path.\n\nPassive — Jolly Roger: At the start of every combat scene, your Kidd automatically connects to its paired Jolly Roger orbital satellite weapon. The efficacy of the Jolly Roger depends on maintaining a high level of calibration with the Kidd, which is tracked with a JOLLY ROGER DIE - 1d6, starting at 1.\n\nThe die ticks up by 1 whenever you:\n\n• deploy a DRONE or DEPLOYABLE\n• take a tech action that targets at least one allied character.\n\nEach option can only increase the value of the of the JOLLY ROGER DIE once per round independently; however, the die also ticks up by 1 any time a hostile character takes a tech action against an allied character within your SENSORS, with no limit.\n\n1/round, you can activate the Jolly Roger as a quick action, resetting the JOLLY ROGER DIE to 1. Choose one of the following effects, based on the value of the die:\n\n3+ Plunder: SCAN every hostile character in a Blast 1 area and give them LOCK ON.\n\n5+ Swindle: Every hostile character in a Blast 1 area must succeed on a SYSTEMS save or become IMPAIRED, JAMMED, and SLOWED until the end of their next turn.\n\n6 Shiver Timbers: Fire a beam weapon, punching a narrow hole through walls and obstructions. One hostile character must succeed on an AGILITY save or take 3d6 AP Energy Damage. On a success, they take half damage\n\nYou do not require line of sight for any of these effects, they have the effective range of the battlefield, and they easily penetrate objects and terrain, although more potent barriers (e.g., energy shields that prevent effects from crossing them due to line of sight) block them normally",
+      "t": "Rapid Deployment: On its first turn in any combat scene, the Kidd can deploy or activate any one system with the drone or deployable tag as a free action.\n\nReroute Power: As a quick action 1/round, the Kidd can destroy one of its DEPLOYABLES or DRONES that was not deployed or created in the same round to either grant 1d6+1 OVERSHIELD to an allied character or deal 1d6+1 AP Energy Damage to a hostile character. The target, allied or hostile, must be adjacent to whatever is destroyed. Systems without LIMITED that are destroyed this way must be repaired before they can be used again.\n\nRecycle: At the end of any scene in which the Kidd used REROUTE POWER, it restores 1 charge to a LIMITED system of its choice with the DRONE or DEPLOYABLE tag.",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Support"
+      ],
+      "roler": [
+        "Поддержка"
+      ],
+      "nr": "Кидд",
+      "cr": "Весёлый Роджер",
+      "cdr": "Активное — Череп и кости (протокол, на сцену): до конца этой сцены «Добыча» и «Обман» становятся взрывом 2, а «Дрожи, мачты» действует на всех персонажей на линии 10.\n\nПассивное — Весёлый Роджер: в начале каждой боевой сцены ваш Кидд автоматически подключается к своему орбитальному спутнику-оружию «Весёлый Роджер». Эффективность «Весёлого Роджера» зависит от поддержания высокого уровня калибровки с Киддом, которая отслеживается костью «Весёлый Роджер» — 1d6, начиная с 1.\n\nКость растёт на 1, когда вы:\n• развёртываете дрона или развёртываемое устройство\n• совершаете тех-действие, нацеленное хотя бы на одного союзного персонажа.\n\nКаждый вариант может повысить значение кости только один раз за раунд независимо; однако кость также растёт на 1 каждый раз, когда враждебный персонаж совершает тех-действие против союзного персонажа в пределах ваших сенсоров, без ограничений.\n\n1/раунд вы можете активировать «Весёлого Роджера» быстрым действием, сбросив кость «Весёлый Роджер» на 1. Выберите один из следующих эффектов по значению кости:\n\n3+ Добыча: просканируйте всех враждебных персонажей во взрыве 1 и дайте им захват цели.\n\n5+ Обман: все враждебные персонажи во взрыве 1 должны преуспеть в спасброске систем или стать ослабленными, заглушенными и замедленными до конца своего следующего хода.\n\n6 Дрожи, мачты: выстрелите лучом, пробивающим стены и препятствия. Один враждебный персонаж должен преуспеть в спасброске ловкости или получить 3d6 бронебойного энергетического урона. При успехе он получает половину урона.\n\nДля этих эффектов не нужна линия видимости, они действуют на всё поле боя и легко проникают сквозь объекты и местность, хотя более мощные барьеры (например, энергетические щиты, не дающие эффектам пересекать их из-за линии видимости) блокируют их как обычно.",
+      "tr": "Быстрое развёртывание: в первый ход любой боевой сцены Кидд может развернуть или активировать любую одну систему с тегом дрона или развёртываемого устройства как свободное действие.\n\nПеренаправление энергии: быстрым действием 1/раунд Кидд может уничтожить одно из своих развёртываемых устройств или дронов, которое не было развёрнуто или создано в этом же раунде, чтобы либо дать 1d6+1 сверхщита союзному персонажу, либо нанести 1d6+1 бронебойного энергетического урона враждебному персонажу. Цель, союзная или враждебная, должна находиться вплотную к тому, что уничтожено. Системы без Ограниченного, уничтоженные таким образом, должны быть отремонтированы, прежде чем их можно будет использовать снова.\n\nПереработка: в конце любой сцены, в которой Кидд использовал Перенаправление энергии, он восстанавливает 1 заряд системе с Ограниченным на свой выбор с тегом дрона или развёртываемого устройства.",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 2,
+        "hp": 6,
+        "evasion": 6,
+        "edef": 12,
+        "heatcap": 4,
+        "repcap": 5,
+        "sensor_range": 8,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 6,
+        "sp": 10
+      },
+      "iw": [],
+      "lic": "Kidd",
+      "ll": 2
+    },
+    "Sagarmatha": {
+      "m": [
+        "Main",
+        "Flex",
+        "Heavy"
+      ],
+      "c": "Rallying Cry",
+      "cd": "Active — Raise the Banner (Quick, Next Turn): You raise a rallying banner. All allied characters in line of sight of your mech when you do this gain RESISTANCE to all damage and heat and gain +1 Accuracy on all checks and saves. These effects last until the end of your next turn.",
+      "t": "Guardian: Adjacent allied characters can use the Sagarmatha as hard cover.\n\nHeroism: 1/scene the Sagarmatha can brace without sacrificing any actions or movement on its following turn.\n\nReplaceable Parts: While resting, the Sagarmatha can be repaired at a rate of 1 repair per structure damage instead of 2.",
+      "src": "GMS",
+      "sf": "",
+      "role": [
+        "Defender"
+      ],
+      "roler": [
+        "Защитник"
+      ],
+      "nr": "Сагарматха",
+      "cr": "Боевой клич",
+      "cdr": "Активное — Поднять знамя (быстрое действие): вы поднимаете боевое знамя. Все союзные персонажи в линии видимости вашего меха в этот момент получают сопротивление всему урону и теплу и +1 к точности всех проверок и спасбросков. Эти эффекты действуют до конца вашего следующего хода.",
+      "tr": "Страж: соседние союзные персонажи могут использовать Сагарматху как твёрдое укрытие.\n\nГероизм: 1/сцену Сагарматха может принять стойку, не жертвуя действиями или перемещением в свой следующий ход.\n\nЗаменяемые детали: во время отдыха Сагарматху можно ремонтировать из расчёта 1 ремонт за 1 единицу урона структуре вместо 2.",
+      "s": {
+        "size": 2,
+        "stress": 4,
+        "structure": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 8,
+        "edef": 8,
+        "heatcap": 6,
+        "repcap": 4,
+        "sensor_range": 10,
+        "tech_attack": 0,
+        "save": 10,
+        "speed": 4,
+        "sp": 6
+      },
+      "iw": [],
+      "lic": "GMS",
+      "ll": 0
+    },
+    "Enkidu": {
+      "m": [
+        "Flex",
+        "Flex"
+      ],
+      "c": "Limit Restriction Zero",
+      "cd": "Active — Crush Limiter (Protocol, Encounter): For the rest of the scene, the Enkidu gains the Bifurcate action, which can only be used in the DANGER ZONE\n\nBifurcate (Full, DANGER ZONE only): The Enkidu engages its monstrous strength, targets an adjacent character (allied or hostile) and attempts to tear them in half with its talons. If the target has 7 HP or less, only 1 STRUCTURE remaining, and doesn't have IMMUNITY to damage, they are immediately destroyed, the action cost of this ability is refunded, and the Enkidu can BOOST as a free action. If this action fails to destroy the target, the target instead takes 1 Kinetic Damage.\n\nAt the end of the scene, the CP cost of BIFURCATE is refunded if the Enkidu did not use it to destroy any characters.",
+      "t": "Primal Fury: When the Enkidu ends its turn in the DANGER ZONE, it rears up, extends its PLASMA TALONS (see below), and enters a state of primal fury with the following effects:\n\n• On hit, characters struck by the Enkidu's PLASMA TALONS immediately become IMMOBILIZED until the end of their next turn.\n• As a special reaction, the Enkidu must use its PLASMA TALONS to attack any character (hostile or allied) that enters, exits or moves more than 1 space within its THREAT. This special reaction can be used once a turn, any number of times a round, and doesn’t count against the maximum number of reactions a turn, so the Enkidu can take other reactions normally.\n\nThis state ends at the start of the Enkidu's turn, or if the Enkidu exits the DANGER ZONE.\n\nAll Fours: While it’s in the DANGER ZONE, the Enkidu can’t make ranged or tech attacks but has 6 base SPEED.\n\nBrute Strength: The Enkidu gets +1 accuracy on hull checks and saves.\n\nBloodsense: The Enkidu always knows if characters are at or under half of their maximum HP, but not the exact number.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Striker",
+        "Defender"
+      ],
+      "roler": [
+        "Штурмовик",
+        "Защитник"
+      ],
+      "nr": "Энкиду",
+      "cr": "Снятие ограничений: ноль",
+      "cdr": "Активное — Снять ограничитель (протокол, на сцену): до конца этой сцены Энкиду получает действие «Разорвать», которое можно использовать только в опасной зоне.\n\nРазорвать (полное действие, только в опасной зоне): Энкиду пускает в ход свою чудовищную силу, нацеливается на соседнего персонажа (союзного или враждебного) и пытается разорвать его пополам когтями. Если у цели 7 HP или меньше, осталась только 1 структура и нет иммунитета к урону, она немедленно уничтожается, стоимость этого действия возвращается, и Энкиду может выполнить ускорение как свободное действие. Если действие не уничтожает цель, цель вместо этого получает 1 кинетического урона.\n\nВ конце сцены стоимость CP за «Разорвать» возвращается, если Энкиду не уничтожил этим действием ни одного персонажа.",
+      "tr": "Первобытная ярость: когда Энкиду заканчивает свой ход в опасной зоне, он встаёт на дыбы, выпускает плазменные когти (см. ниже) и впадает в состояние первобытной ярости со следующими эффектами:\n• При попадании персонажи, поражённые плазменными когтями Энкиду, немедленно становятся обездвиженными до конца своего следующего хода.\n• Как особую реакцию, Энкиду должен использовать плазменные когти, чтобы атаковать любого персонажа (враждебного или союзного), который входит, выходит или перемещается более чем на 1 клетку в пределах его угрозы. Эту особую реакцию можно использовать один раз в ход, любое количество раз за раунд, и она не учитывается в максимальном количестве реакций за ход, так что Энкиду может совершать другие реакции как обычно.\nЭто состояние заканчивается в начале хода Энкиду или если Энкиду выходит из опасной зоны.\n\nНа четвереньках: пока Энкиду находится в опасной зоне, он не может совершать дальнобойные или тех-атаки, но имеет базовую скорость 6.\n\nГрубая сила: Энкиду получает +1 к точности проверок и спасбросков корпуса.\n\nЧутьё крови: Энкиду всегда знает, находятся ли персонажи на половине или менее от их максимального HP, но не знает точное число.",
+      "s": {
+        "size": 2,
+        "stress": 4,
+        "structure": 4,
+        "armor": 1,
+        "hp": 10,
+        "evasion": 8,
+        "edef": 8,
+        "heatcap": 8,
+        "repcap": 5,
+        "sensor_range": 5,
+        "tech_attack": -2,
+        "save": 10,
+        "speed": 3,
+        "sp": 5
+      },
+      "iw": [
+        "Plasma Talons"
+      ],
+      "lic": "Tokugawa",
+      "ll": 2
+    },
+    "“Worldkiller” Genghis Mk I": {
+      "m": [
+        "Main",
+        "Main",
+        "Heavy"
+      ],
+      "c": "Juggernaut Reactor",
+      "cd": "Active — A Pleasure to Burn (Protocol, Encounter): For the rest of the scene, the Genghis is wreathed in coruscating heat. Your FURIOSA aura grows to Burst 2, and your mech ignores all difficult terrain, simply melting through it.\n\nIf you overheat during this time, your mech releases a blast of heat that melts the ground beneath it. Characters other than you within the affected area of FURIOSA take 1d6 AP Energy damage and must succeed on a HULL save or become IMMOBILIZED until the end of their next turn. The area then becomes difficult terrain for the rest of the scene.\n\nPassive — Furiosa: While in the DANGER ZONE, you are surrounded by shimmering heat that interferes with targeting. You gain soft cover. Additionally, other than you, characters within Burst 1 can’t take reactions.",
+      "t": "Insulated: The Genghis has immunity to Burn.\n\nTBK Munitions: The Genghis’s attacks ignore resistance to Burn and Heat.\n\nWeak Computer: The Genghis receives +1 Difficulty on all SYSTEM saves and checks.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Striker",
+        "Defender"
+      ],
+      "roler": [
+        "Штурмовик",
+        "Защитник"
+      ],
+      "nr": "“Убийца миров” Чингис Mk I",
+      "cr": "Реактор джаггернаута",
+      "cdr": "Активное — Сжечь дотла (протокол, на сцену): до конца этой сцены Генгис окутан переливающимся жаром. Ваша аура Фуриозы вырастает до взрыва 2, и ваш мех игнорирует всю труднопроходимую местность, просто проплавляя её насквозь.\n\nЕсли вы перегреетесь за это время, ваш мех выпустит взрыв жара, который расплавит землю под ним. Персонажи, кроме вас, в зоне действия Фуриозы получают 1d6 бронебойного энергетического урона и должны преуспеть в спасброске корпуса или стать обездвиженными до конца своего следующего хода. Зона после этого становится труднопроходимой местностью до конца сцены.\n\nПассивное — Фуриоза: находясь в опасной зоне, вы окружены мерцающим жаром, который мешает прицеливанию. Вы получаете лёгкое укрытие. Кроме того, кроме вас, персонажи во взрыве 1 не могут совершать реакции.",
+      "tr": "Изоляция: Генгис имеет иммунитет к ожогу.\n\nБоеприпасы TBK: атаки Генгиса игнорируют сопротивление ожогу и теплу.\n\nСлабый компьютер: Генгис получает +1 к сложности всех спасбросков и проверок систем.",
+      "s": {
+        "size": 2,
+        "stress": 4,
+        "structure": 4,
+        "armor": 3,
+        "hp": 6,
+        "evasion": 6,
+        "edef": 8,
+        "heatcap": 8,
+        "repcap": 4,
+        "sensor_range": 5,
+        "tech_attack": -2,
+        "save": 10,
+        "speed": 3,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Genghis",
+      "ll": 2
+    },
+    "Swallowtail (Ranger Variant)": {
+      "m": [
+        "Flex",
+        "Main"
+      ],
+      "c": "Gaia Inheritance",
+      "cd": "Active — Guerrilla Warfare (Protocol, Encounter): You create three Burst 1 patches of smoke in spaces within line of sight and Range 5. These patches grant soft cover to characters at least partly within them. They last for the rest of the scene.\n\nAdditionally, for the rest of the scene, allied characters within SENSORS gain the benefits of GROUNDED.\n\nPassive — Grounded: When you end your turn in a zone that grants soft cover, you become INVISIBLE until you leave that cover, take damage, attack, force a save, or take any other hostile action that affects another character.",
+      "t": "Scout Battlefield: Before the first round of any combat and before any deployment takes place, place up to two of the following in free spaces anywhere on the battlefield:\n\n• A 2 x 2 zone that does not impede movement and grants soft cover to characters at least partly within it.\n• A 2 x 2 zone that is difficult terrain.\n• A SIZE 1 piece of hard cover.\n\nThey can't be placed within 4 spaces of each other. The same option can be chosen more than once. These objects and zones represent naturally occurring terrain on the battlefield, and you can work with the GM to decide what they are.\n\nInvigorating Scanners: 1/round when the Swallowtail inflicts Lock On, an allied character in its sensor range and line of sight can move up to its speed as a reaction.\n\nWeathering: The Swallowtail ignores difficult terrain.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Support"
+      ],
+      "roler": [
+        "Поддержка"
+      ],
+      "nr": "Махаон (рейнджер-вариант)",
+      "cr": "Наследие Гайи",
+      "cdr": "Активное — Партизанская война (протокол, на сцену): вы создаёте три пятна дыма взрыва 1 в клетках в линии видимости и в дальности 5. Эти пятна дают лёгкое укрытие персонажам, хотя бы частично находящимся в них. Они действуют до конца сцены.\n\nКроме того, до конца сцены союзные персонажи в пределах сенсоров получают преимущества «Заземления».\n\nПассивное — Заземление: когда вы заканчиваете свой ход в зоне, дающей лёгкое укрытие, вы становитесь невидимым, пока не покинете это укрытие, не получите урон, не атакуете, не заставите совершить спасбросок или не совершите любое другое враждебное действие, затрагивающее другого персонажа.",
+      "tr": "Разведка поля боя: до первого раунда любого боя и до любого развёртывания разместите до двух из следующего в свободных клетках в любом месте поля боя:\n• Зона 2 x 2, не мешающая перемещению и дающая лёгкое укрытие персонажам, хотя бы частично находящимся в ней.\n• Зона 2 x 2 труднопроходимой местности.\n• Кусок твёрдого укрытия размера 1.\nИх нельзя размещать ближе 4 клеток друг от друга. Один и тот же вариант можно выбрать более одного раза. Эти объекты и зоны представляют собой естественную местность на поле боя, и вы можете вместе с ведущим решить, что это такое.\n\nБодрящие сканеры: 1/раунд, когда Махаон накладывает захват цели, союзный персонаж в дальности его сенсоров и в линии видимости может переместиться на расстояние до своей скорости как реакцию.\n\nВыветривание: Махаон игнорирует труднопроходимую местность.",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 0,
+        "hp": 6,
+        "evasion": 10,
+        "edef": 8,
+        "heatcap": 4,
+        "repcap": 5,
+        "sensor_range": 20,
+        "tech_attack": 1,
+        "save": 10,
+        "speed": 6,
+        "sp": 6
+      },
+      "iw": [],
+      "lic": "Swallowtail",
+      "ll": 2
     }
   },
   "talents": [
@@ -7341,6 +8025,32 @@ const DB = {
         "Когда вы Поддерживаете союзника, дополнительная Точность сохраняется до следующей проверки навыка или спасброска, который он совершит.",
         "Когда вы Поддерживаете союзника, техатаки против него совершаются с +1 Сложностью до конца его следующего хода.",
         "1/раунд, когда вы Поддерживаете союзника, вы запускаете в его реактор особый цикл. Он снижает до 0 следующее количество тепла, которое получил бы от враждебного персонажа, а этот персонаж получает 2 тепла и становится Ослабленным до конца своего следующего хода. Этот эффект не суммируется и действует до срабатывания."
+      ]
+    },
+    {
+      "n": "Empath",
+      "t": "Gain abilities that grant your allies guaranteed dice results",
+      "r": [
+        "Sympathetic Precognition",
+        "Bend to Will",
+        "Shared Subjectivity"
+      ],
+      "d": [
+        "Your ability to sense the subjectivities of others grants you an uncanny ability to predict your ally’s actions, guiding them with your influence.\n\nSympathetic Precognition (Reaction, 1/scene): Trigger: An allied character in line of sight makes a skill check, attack, or save. That character may choose not to roll, instead treating their check, attack, or save as if they had rolled a 10 on the d20.",
+        "1/scene when an allied character in line of sight makes a structure or overheating check, they can roll twice and choose either result.",
+        "1/scene as a quick action, you may tap deep reserves of willpower to grant extraordinary awareness to an allied character in line of sight. Your mech immediately becomes STUNNED until the start of your next turn and your perception almost completely merges with that of the other character. Until the end of their next turn, any time that character makes an attack, check, or saving throw, they can choose to roll as normal or instead treat that attack, check, or save as if they had rolled a 10 on the d20. They must decide before rolling.\n\nShared Subjectivity (Quick, 1/scene): Your mech immediately becomes STUNNED until the start of your next turn and your perception almost completely merges with that of the other character. Until the end of their next turn, any time that character makes an attack, check, or saving throw, they can choose to roll as normal or instead treat that attack, check, or save as if they had rolled a 10 on the d20. They must decide before rolling."
+      ],
+      "nr": "Эмпат",
+      "tr": "Получать способности, дающие союзникам гарантированные результаты бросков",
+      "rr": [
+        "Симпатическое предвидение",
+        "Подчинение воле",
+        "Общая субъективность"
+      ],
+      "dr": [
+        "Ваша способность чувствовать субъективности других даёт вам жуткую способность предсказывать действия ваших союзников, направляя их своим влиянием.\n\nСимпатическое предвидение (реакция, 1/сцена): Триггер: союзный персонаж в линии видимости совершает проверку навыка, атаку или спасбросок. Этот персонаж может не бросать, вместо этого считая свою проверку, атаку или спасбросок так, как будто он выбросил 10 на d20.",
+        "1/сцена, когда союзный персонаж в линии видимости совершает проверку структуры или перегрева, он может бросить дважды и выбрать любой результат.",
+        "1/сцена быстрым действием вы можете задействовать глубокие резервы силы воли, чтобы дать необычайную осведомлённость союзному персонажу в линии видимости. Ваш мех немедленно становится оглушённым до начала вашего следующего хода, а ваше восприятие почти полностью сливается с восприятием другого персонажа. До конца его следующего хода каждый раз, когда этот персонаж совершает атаку, проверку или спасбросок, он может бросить как обычно или вместо этого считать эту атаку, проверку или спасбросок так, как будто он выбросил 10 на d20. Он должен решить до броска.\n\nОбщая субъективность (быстрое действие, 1/сцена): ваш мех немедленно становится оглушённым до начала вашего следующего хода, а ваше восприятие почти полностью сливается с восприятием другого персонажа. До конца его следующего хода каждый раз, когда этот персонаж совершает атаку, проверку или спасбросок, он может бросить как обычно или вместо этого считать эту атаку, проверку или спасбросок так, как будто он выбросил 10 на d20. Он должен решить до броска."
       ]
     }
   ],
