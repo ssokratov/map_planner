@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 243</span>
+      <span class="dim global-version">Версия трекера: 244</span>
     </div>
   </div>
 </main>
@@ -4069,13 +4069,15 @@ function frameDetailHtml(key){
   // из вайба его лицензии (у GMS — название ядра); wmeta с корп/ролями/LL нет.
   // v237: заголовок — имя с префиксом корпорации, как в строке;
   // строка роли — как в строке (у GMS — подпись «LL0 …»).
+  // v244: описание-вайб из карточки убрано (осталось только в строках
+  // списков — поиск и Правила); в карточке — только строка роли,
+  // как у лицензии с v238. Механика (статы, трейты, ядро) и так в карточке.
   return `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(frameDispName(key))}</b>
   </div>
   <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRoleLine(key))}</div>
-  <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRowSub(key))}</div>
   <h3 style="margin:10px 0 6px">${esc(L('u240'))}</h3>
   ${statsHtml}
   ${mounts ? `<h3 style="margin:10px 0 6px">${esc(L('u242'))}</h3><div class="tags">${mounts}</div>` : ''}
