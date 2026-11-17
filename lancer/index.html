@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 249</span>
+      <span class="dim global-version">Версия трекера: 250</span>
     </div>
   </div>
 </main>
@@ -3623,7 +3623,7 @@ const LICENSE_VIBE = {
   "Lycan": {role: "защитник, штурмовик, ближний бой", frame: "помехи", weapons: "", systems: ""},
   "Manticore": {role: "штурмовик, живая гроза, ближняя-средняя дистанция", frame: "взрыв", weapons: "пистолет, цепная молния", systems: "система телепортации, система взлома, система контроля, система энергии"},
   "Metalmark": {role: "убийца-невидимка, средняя дистанция", frame: "невидимость", weapons: "винтовка, нож", systems: "система ловушки, система маскировки"},
-  "Minotaur": {role: "контролер-танк, живой лабиринт, ближний бой", frame: "стена", weapons: "", systems: "система ловушки, система взлома, система перегрева, система телепортации, система контроля"},
+  "Minotaur": {role: "контролер-танк, ближний бой", frame: "стена", weapons: "", systems: "система ловушки, система взлома, система перегрева, система телепортации, система контроля"},
   "Monarch": {role: "артиллерия, ракеты, дальняя дистанция", frame: "самонаведение, гигант", weapons: "ракеты", systems: "система ловушки, НHP"},
   "Mourning Cloak": {role: "убийца-телепортер, ближний бой", frame: "изоляция", weapons: "нож, ракеты, меч", systems: "система взлома, система телепортации, система маскировки"},
   "Napoleon": {role: "танк-контролер, уменьшение урона", frame: "маленький", weapons: "винтовка", systems: "система щита, система контроля"},
@@ -3667,6 +3667,10 @@ function capList(s){ return (s || '').split(', ').map(capFirst).join(', '); }
 // (frameRowFull: роль + теги).
 // v249: отдельная строка роли из строки лицензии удалена — роль теперь
 // только внутри строк фреймов (все фреймы лицензии делят одну роль).
+// v250: роль лицензии из отображения лицензий убрана ПОЛНОСТЬЮ (решение
+// пользователя: у лицензии может быть несколько фреймов, роль — свойство
+// фрейма, а не лицензии) — строка фрейма снова только теги (frameRowSub,
+// как в v247); роль остаётся в списке/поиске/карточке фреймов (frameRowFull).
 function licenseVibeFullHtml(v, lic){
   const ws = [v.weapons, v.systems].filter(Boolean).join(', ');
   // фреймы лицензии: из всех рангов, базовый (ключ === имя лицензии) первым
@@ -3679,9 +3683,10 @@ function licenseVibeFullHtml(v, lic){
   }
   const frameLine = (key, label)=>{
     const name = key ? esc(fd(key).n) : '';
-    // v248: объединённая строка фрейма (роль + теги), как в списке фреймов;
-    // у фрейма без ключа (запасная ветка) — роль + теги самой лицензии.
-    const sub = key ? frameRowFull(key) : (v.frame ? capRole(v.role) + ', ' + capList(v.frame) : capRole(v.role));
+    // v250: только теги (frameRowSub), без роли — роль лицензии из отображения
+    // лицензий убрана полностью; у фрейма без ключа (запасная ветка) — теги
+    // самой лицензии. Без тега (Genghis, Hydra, Raleigh) — только имя, без тире.
+    const sub = key ? frameRowSub(key) : capList(v.frame);
     const body = name ? (sub ? `${name} — ${esc(sub)}` : name) : esc(sub);
     return body ? `<p><b>${label}:</b> ${body}</p>` : '';
   };
@@ -3767,7 +3772,8 @@ function frameRowSub(k){
 }
 // v248: одна строка фрейма — роль + теги (каждый с заглавной), через запятую.
 // У GMS — только роль. Без тега (Genghis, Hydra, Raleigh) — только роль, без висячей запятой.
-// Та же строка показывается в списке фреймов, в лицензиях и в карточке фрейма.
+// v250: та же строка показывается в списке/поиске/карточке фреймов; в лицензиях
+// роль больше не показывается — там только теги (frameRowSub).
 function frameRowFull(k){
   const role = frameRoleLine(k);
   const sub = frameRowSub(k);
@@ -3920,21 +3926,20 @@ const LICENSE_SOURCE = { 'Kidd': WALLFLOWER_SRC, 'Atlas': LONG_RIM_SRC, 'Caliban
 function licenseDetailHtml(name){
   const lic = licenseData().find(l=>l.name === name);
   if (!lic) return '';
-  const fk = licenseFrameKey(name);
-  const F = fk ? DB.frames[fk] : null;
   const owned = (S.pilot.licenses || []).find(l=>l.name === name);
   const rn = ['I', 'II', 'III'];
   // v232: карточка лицензии — то же, что и в строке (имя, роль, полный
   // текст), без компактной версии; wmeta с корп/ролями/LL больше нет.
   // v238: полный вайб-текст из карточки убран (всё уже есть в грантах);
   // осталась строка роли; внизу — источник, если лицензия не из корбука.
-  const vb = LICENSE_VIBE[name];
+  // v250: строка роли из карточки УБРАНА — роль лицензии из отображения
+  // лицензий убрана полностью (карточка: имя, гранты по рангам, кнопка
+  // «Взять лицензию», источник внизу, если лицензия не из корбука).
   let h = `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="licenseDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(licenseDispName(lic))}</b>
-  </div>
-  ${vb ? `<div style="margin-bottom:10px;font-size:13px">${esc(capRole(vb.role))}</div>` : `<div class="wmeta" style="margin-bottom:10px">${esc(F ? frameLabel(F) : lic.src)}</div>`}`;
+  </div>`;
   if (owned) h += `<p class="hint">${esc(L('u247'))}: ${esc(L('u245'))} ${esc(rn[(owned.rank || 1) - 1])}</p>`;
   for (let r = 1; r <= 3; r++){
     const g = lic.ranks[r] || [];
