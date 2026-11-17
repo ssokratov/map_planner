@@ -2874,6 +2874,605 @@ const DB = {
       "ll": null,
       "lim": 0,
       "x": "Profile — Standard: 1d6+1 Kinetic; Range 3, Threat 3; tags: Inaccurate, Knockback 2.\n\nOn attack: After any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space.\n\nProfile — Autochoke Equipped: 1d6+2 Kinetic; Cone 3, Threat 3; tags: Accurate, Knockback 5.\n\nOn attack: After any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space."
+    },
+    {
+      "n": "Ferrofluid Lance",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6 Kinetic",
+      "r": "Threat 2",
+      "g": "1/Round",
+      "tg": [
+        [
+          "tg_round",
+          1
+        ]
+      ],
+      "lab": "SSC · LL1 · Main",
+      "sf": "",
+      "nr": "Феррофлюидное копьё",
+      "tr": "Рукопашная",
+      "dr": "1d6 кинетический",
+      "rr": "Угроза 2",
+      "xr": "«Сказать, что мы можем вытянуть эту иглу из «воздуха», — самая подходящая фраза, но она неточна. Не совсем. Не существует такого понятия, как «воздух», не в том смысле, в котором его имеют в виду, когда произносят эту фразу. «Податливое атомное пространство» — вот что такое «воздух» на самом деле. Место, где можно — если можно — мыслью сгустить пользу из бесполезной массы частиц. Щёлкнув пальцами. Вот, смотри —»\n\nПри попадании: 1/раунд вы можете заставить персонажа, поражённого этим оружием, пройти спасбросок корпуса. При провале и вы, и ваша цель обездвижены и не можете быть перемещены никаким образом. В течение этого времени цель всегда считает вас находящимся в дальности для рукопашных атак. В любой последующий ход вы можете завершить этот эффект как протокол, отбросив вашу цель на 4 клетки в любом направлении, или ваша цель может завершить его, успешно попав по вам дальнобойной или рукопашной атакой. Это состояние нельзя снять никаким другим способом.\n\nШвырок феррофлюидного копья (Протокол): Завершите эффект обездвиживания феррофлюидного копья, действующий на вас и вашу цель, чтобы отбросить её на 4 клетки в любом направлении.",
+      "gr": "1/раунд",
+      "labr": "SSC · LL1 · Main",
+      "lic": "White Witch",
+      "ll": 1,
+      "lim": 0,
+      "x": "“To say we can pull this needle from ‘thin air’ is the best-fit phrase, but it’s not accurate. Not entirely. There’s no such thing as thin air, not in the way one means it when they use that phrase. ‘Agreeable atomic space’ – that’s what ‘thin air’ really is. A place where one could – if one could – coalesce utility from useless particulate mass with a thought. With a snap of our finger. Here, watch this –”\n\nOn hit: 1/round, you may force a character hit by this weapon to make a Hull save. On a failure, both you and your target are Immobilized and cannot be moved in any way. For the duration, the target always considers you within range for melee attacks. On any subsequent turn, you can end this effect as a protocol, knocking your target 4 spaces in any direction, or your target can end it by successfully hitting you with a ranged or melee attack. This condition can’t be removed any other way.\n\nFerrofluid Lance Fling (Protocol): End the immobilization effect of the Ferrofluid Lance on both you and your target to knock them back 4 spaces in any direction."
+    },
+    {
+      "n": "Retort Loop",
+      "m": "Heavy",
+      "t": "Cannon",
+      "d": "3 Kinetic",
+      "r": "Range 10",
+      "g": "",
+      "tg": [],
+      "lab": "SSC · LL3 · Heavy",
+      "sf": "",
+      "nr": "Петля возмездия",
+      "tr": "Пушка",
+      "dr": "3 кинетический",
+      "rr": "Дальность 10",
+      "xr": "«В конечном счёте я должен вернуться к сути того, что мы создали, к коду, который мы взломали, когда наконец разобрались в NO/EM. Из простого запроса мы создали ужасный двигатель. Я горжусь тем, что мы сделали, больше, чем чем-либо, над чем я когда-либо работал, но этому никогда не следует видеть свет дня. Работа с Визуальным отделом убедила меня в этом: их работа — переводить нашу работу в продажи, и они не смогли. Если переводчик не может понять текст… то кто они такие, чтобы переписывать его? Кто такой читатель, чтобы пытаться получить к нему доступ? Я завершаю своё резюме так: законсервируйте платформу. Есть менее ужасные пути, которыми мы можем пойти.»\n\nКаждый раз, когда вы получаете урон от враждебного источника, вы можете сохранить заряд в этом оружии. При выстреле оно наносит дополнительно +1d6 кинетического урона, Надёжное 2 и Отброс 1 за каждый сохранённый заряд, максимум до 3 зарядов. После выстрела все заряды сбрасываются, попали вы или промахнулись.\n\nProfile — 0 зарядов: 3 кинетический; Дальность 10.\n\nПри атаке: При выстреле оружие наносит дополнительно 1d6 кинетического урона за заряд, максимум до 3 зарядов. После выстрела заряды истощаются до 0, попали вы или промахнулись. Они также истощаются до 0, если вы получаете урон структуре или стресс.\n\nProfile — 1 заряд: 1d6+3 кинетический; Дальность 10; теги: Надёжное 2, Отброс 1.\n\nПри атаке: При выстреле оружие наносит дополнительно 1d6 кинетического урона за заряд, максимум до 3 зарядов. После выстрела заряды истощаются до 0, попали вы или промахнулись. Они также истощаются до 0, если вы получаете урон структуре или стресс.\n\nProfile — 2 заряда: 2d6+3 кинетический; Дальность 10; теги: Надёжное 4, Отброс 2.\n\nПри атаке: При выстреле оружие наносит дополнительно 1d6 кинетического урона за заряд, максимум до 3 зарядов. После выстрела заряды истощаются до 0, попали вы или промахнулись. Они также истощаются до 0, если вы получаете урон структуре или стресс.\n\nProfile — 3 заряда: 3d6+3 кинетический; Дальность 10; теги: Надёжное 6, Отброс 3.\n\nПри атаке: При выстреле оружие наносит дополнительно 1d6 кинетического урона за заряд, максимум до 3 зарядов. После выстрела заряды истощаются до 0, попали вы или промахнулись. Они также истощаются до 0, если вы получаете урон структуре или стресс.",
+      "gr": "",
+      "labr": "SSC · LL3 · Heavy",
+      "lic": "White Witch",
+      "ll": 3,
+      "lim": 0,
+      "x": "“Ultimately, I have to return to the core of what we made, the code we cracked when we finally figured out NO/EM. From a simple prompt, we created a terrible engine. I am more proud of what we did than anything I’ve ever worked on before, but it should never see the light of day. Working with Visual convinced me of this: it’s their job to translate our work to sales, and they could not. If the translator cannot understand the text … then who are they to rewrite it? Who is the reader to attempt to access it? I conclude my summary with this: mothball the platform. There are less terrible paths we can walk.”\n\nAny time you take damage from a hostile source you may choose to store a charge in this weapon. It fires with an additional +1d6 kinetic damage, Reliable 2, and Knockback 1 for each charge stored, to a maximum of 3 charges. Once fired, it clears all charges, hit or miss.\n\nProfile — 0 Charges: 3 Kinetic; Range 10.\n\nOn attack: When fired, the weapon deals an additional 1d6 kinetic damage per charge, up to a maximum of 3 charges. Once fired, the charges deplete to 0, hit or miss. They also deplete to 0 if you take structure or stress damage.\n\nProfile — 1 Charge: 1d6+3 Kinetic; Range 10; tags: Reliable 2, Knockback 1.\n\nOn attack: When fired, the weapon deals an additional 1d6 kinetic damage per charge, up to a maximum of 3 charges. Once fired, the charges deplete to 0, hit or miss. They also deplete to 0 if you take structure or stress damage.\n\nProfile — 2 Charges: 2d6+3 Kinetic; Range 10; tags: Reliable 4, Knockback 2.\n\nOn attack: When fired, the weapon deals an additional 1d6 kinetic damage per charge, up to a maximum of 3 charges. Once fired, the charges deplete to 0, hit or miss. They also deplete to 0 if you take structure or stress damage.\n\nProfile — 3 Charges: 3d6+3 Kinetic; Range 10; tags: Reliable 6, Knockback 3.\n\nOn attack: When fired, the weapon deals an additional 1d6 kinetic damage per charge, up to a maximum of 3 charges. Once fired, the charges deplete to 0, hit or miss. They also deplete to 0 if you take structure or stress damage."
+    },
+    {
+      "n": "Bolt Nexus",
+      "m": "Main",
+      "t": "Nexus",
+      "d": "1 Energy",
+      "r": "Range 10",
+      "g": "Smart",
+      "tg": [
+        [
+          "tg_smart",
+          null
+        ]
+      ],
+      "lab": "SSC · LL1 · Main",
+      "sf": "",
+      "nr": "Нексус молний",
+      "tr": "Нексус",
+      "dr": "1 энергетический",
+      "rr": "Дальность 10",
+      "xr": "«Но они отвергли Его. И их Господь обрушил на них гибель за их грех и не убоялся возмездия, ибо Он был ГОСПОДЬ и выше упрёка. Выколи себе глаз, если думаешь иначе.»\n— Свидетельствовано из ферромеметики Кира 2.14\n\nProfile — Обычный: 1 энергетический; Дальность 10.\n\nПри попадании: Как только это оружие попадает по персонажу, оно получает профиль «Цель захвачена» против только этого персонажа, пока вы не атакуете нового персонажа этим оружием.\n\nProfile — Цель захвачена: 4 энергетический; Дальность 20; теги: Самонаводящееся, Надёжное 4.",
+      "gr": "Умное",
+      "labr": "SSC · LL1 · Main",
+      "lic": "Emperor",
+      "ll": 1,
+      "lim": 0,
+      "x": "“But they denied Him. So their Lord brought down upon them destruction for their sin, and did not fear retribution, for He was the LORD, and above reproach. Put out your eye if you think otherwise.”\n— Witnessed from the Cyrus 2.14 ferromemetic\n\nProfile — Default: 1 Energy; Range 10.\n\nOn hit: Once this weapon hits a character, it gains the Target Acquired profile against that character only until you attack a new character with this weapon.\n\nProfile — Target Acquired: 4 Energy; Range 20; tags: Seeking, Reliable 4."
+    },
+    {
+      "n": "Marathon Arc Bow",
+      "m": "Main",
+      "t": "Launcher",
+      "d": "1d6 Energy",
+      "r": "Line 15",
+      "g": "Armor-Piercing (AP)",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ]
+      ],
+      "lab": "Main",
+      "sf": "",
+      "nr": "Марафонская дуга",
+      "tr": "Пусковая установка",
+      "dr": "1d6 энергетический",
+      "rr": "Линия 15",
+      "xr": "«Оружие направленной субъективной конвергенции, образец 3. Или, как называет его Визуальный отдел, «Марафонская дуга». Полагаю, это лучшее имя. Внушительное. Неточное, но Визуальный отдел никогда не был точным. Дуга заставляет перестраиваться вдоль суперпозиционной плоскости, дестабилизируя цели без правильного пинеального хэша, одновременно придавая симпатическое линзирование тем, у кого правильный хэш; простое «оружие», эмулирующее корректирующе-императивный толчок сверхразума.»\n\nПри атаке: союзные персонажи, попавшие в область, не атакуются, а вместо этого их сверхщит получает сверхзаряд, увеличиваясь на +4, но сбрасывая весь сверхщит в конце их следующего хода. Если у них нет сверхщита, они вместо этого получают сверхщит 2.",
+      "gr": "Бронебойное (AP)",
+      "labr": "Main",
+      "lic": "",
+      "ll": null,
+      "lim": 0,
+      "x": "“Directed Subjective Convergence Weapon, Pattern 3. Or as Visual calls it, the ‘Marathon Arc’. I suppose it is a better name. Imposing. Inaccurate but Visual has never been accurate. The Arc forces realignment along a superpositional plane, destabilizing targets without the correct pineal hash while imparting sympathetic lensing on those with the correct hash; a simple ‘weapon’ that emulates an Overmind’s corrective/imperative push.”\n\nOn attack: Allied characters caught in the area are not attacked, but instead have any Overshield supercharged, increasing it by +4, but clearing all Overshield at the end of their next turn. If they have no Overshield, they instead gain Overshield 2."
+    },
+    {
+      "n": "Brutus’s Wrecker",
+      "m": "Heavy",
+      "t": "Melee",
+      "d": "2d6+4 Kinetic",
+      "r": "Threat 2",
+      "g": "Inaccurate, Unique, Exotic Gear, Thrown 5, Knockback 1",
+      "tg": [
+        [
+          "tg_inaccurate",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_thrown",
+          5
+        ],
+        [
+          "tg_knockback",
+          1
+        ]
+      ],
+      "lab": "Exotic · Heavy",
+      "sf": "",
+      "nr": "Крушитель Брута",
+      "tr": "Рукопашная",
+      "dr": "2d6+4 кинетический",
+      "rr": "Угроза 2",
+      "xr": "При крите: цель сбивается с ног.\n\nФирменное оружие бывшего бессменного чемпиона Кратерной ямы. С момента поражения Брута в славном бою этот массивный вольфрамовый шар на усиленной цепи теперь носит кто-то другой. В конечном счёте примитивное оружие, этот крушитель компенсирует недостаток изящества чистой жестокостью.",
+      "gr": "Неточное, Уникальное, Экзотическое снаряжение, Метательное 5, Отброс 1",
+      "labr": "Экзотика · Heavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The signature weapon of the former perpetual champion of Crater Pit. Since Brutus’s defeat in glorious combat, someone else now wields this massive tungsten ball on a reinforced chain. Ultimately a primitive weapon, this wrecker makes up for its lack of elegance with sheer brutality.\n\nOn Crit: Target is knocked Prone."
+    },
+    {
+      "n": "Brutus’s Shield",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d3+1 Kinetic",
+      "r": "Threat 1",
+      "g": "Unique, Exotic Gear",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Щит Брута",
+      "tr": "Рукопашная",
+      "dr": "1d3+1 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Фирменное оружие бывшего бессменного чемпиона Кратерной ямы. С момента поражения Брута в славном бою этот относительно продвинутый плитный щит теперь носит кто-то другой. Вобрав в себя удивительно сложную технологию Harrison Armory, этот щит может проецировать локализованное силовое поле значительной силы.\n\nЩит Брута (Протокол): Как протокол, вы можете поднять этот щит, чтобы получить сверхщит в размере 4 + Стойкость до начала вашего следующего хода, после чего вы теряете весь сверхщит. Пока у вас есть этот сверхщит, вы замедлены.\nВы не можете использовать этот протокол два хода подряд.",
+      "gr": "Уникальное, Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The signature weapon of the former perpetual champion of Crater Pit. Since Brutus’s defeat in glorious combat, someone else now wields this relatively advanced slab shield. Incorporating surprisingly complex Harrison Armory technology, this shield can project a localized force field of significant strength.\n\nBrutus’s Shield (Protocol): As a protocol, you may raise this Shield to gain 4+Grit Overshield until the start of your next turn, at which point you lose all Overshield. You are Slowed while you have this Overshield.\nYou may not use this Protocol two turns in a row."
+    },
+    {
+      "n": "Blast Pick",
+      "m": "Heavy",
+      "t": "Melee",
+      "d": "2d6 Kinetic",
+      "r": "Threat 1",
+      "g": "Unique, Exotic Gear",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Heavy",
+      "sf": "",
+      "nr": "Взрывная кирка",
+      "tr": "Рукопашная",
+      "dr": "2d6 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Изначально использовавшаяся в горных работах IPS-N, эта конкретная кирка в итоге оказалась у Гарфилдов в Порт-Конрое, популярном ресторане фьюжн-пасты. Используемая как заметный предмет декора в ресторане, эта старинная горная принадлежность всё ещё обладает серьёзной ударной мощью. Взрывная кирка работает за счёт встроенного взрывного заряда, который можно вручную привести в действие, чтобы экспоненциально усилить силу взмаха и последующего удара.\n\nПеред совершением атаки вы можете заявить, что разряжаете это оружие. Если вы это делаете, атака наносит 2d6+6 взрывного урона и получает Отброс 2. В противном случае это оружие не разряжается.\n\nProfile — Обычный взмах: 2d6 кинетический; Угроза 1.\n\nProfile — Взрывной взмах: 2d6+6 взрывной; Угроза 1; теги: Перезаряжаемое, Отброс 2.",
+      "gr": "Уникальное, Экзотическое снаряжение",
+      "labr": "Экзотика · Heavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Originally used in IPS-N mining operations, this particular pick eventually found its way to the Garfields in Port Conroy, a popular fusion pasta restaurant. Used as a prominent piece of decoration in the restaurant, this aged mining implement yet packs some serious punch. The blast picks operates via an integrated explosive charge which can be triggered manually to enhance the force of the swing and resulting impact exponentially.\n\nBefore making an attack, you may declare that you unload this weapon. If you do, the attack deals 2d6+6 Explosive damage and it gains Knockback 2. Otherwise, this weapon does not unload.\n\nProfile — Regular Swing: 2d6 Kinetic; Threat 1.\n\nProfile — Explosive Swing: 2d6+6 Explosive; Threat 1; tags: Loading, Knockback 2."
+    },
+    {
+      "n": "Shock Baton",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6+1 Energy",
+      "r": "Threat 1",
+      "g": "Unique, Exotic Gear",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Шоковая дубинка",
+      "tr": "Рукопашная",
+      "dr": "1d6+1 энергетический",
+      "rr": "Угроза 1",
+      "xr": "При крите: ваша цель должна преуспеть в спасброске систем или стать заглушенной до конца своего следующего хода. При успехе она становится ослабленной на то же время. Каждый персонаж может быть затронут таким образом только 1/сцену.\n\nШоковая дубинка — относительно недавняя разработка в области «менее летального» оружия для боя мех против меха. Популярный выбор для правоохранительных органов, стремящихся выводить из строя корпуса вместо их уничтожения, позволяя брать их пилотов живыми.",
+      "gr": "Уникальное, Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The shock baton is a relatively recent development in the field of mech-to-mech “less-lethal” weaponry. A popular choice for law enforcement seeking to disable frames instead of destroying them, allowing their pilots to be taken alive.\n\nOn Crit: Your target must succeed on a Systems save or become Jammed until the end of their next turn. On a success, they become Impaired for the same duration. Each character can only be affected this way 1/Scene."
+    },
+    {
+      "n": "Reaper Assault Cannon",
+      "m": "Main",
+      "t": "Cannon",
+      "d": "2d3+1 Kinetic",
+      "r": "Range 8",
+      "g": "Unique, Overkill {VAL}, Exotic Gear",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_overkill",
+          1
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Штурмовая пушка «Жнец»",
+      "tr": "Пушка",
+      "dr": "2d3+1 кинетический",
+      "rr": "Дальность 8",
+      "xr": "Последняя разработка IPS-N в области автопушек: «Жнец» представляет собой золотую середину между обычной штурмовой пушкой и повсеместным «Левиафаном». Способный обрушивать ужасающий град пуль, «Жнец» не имеет типичной для штурмовых пушек функции «раскрутки», полагаясь вместо этого на ещё большее количество стволов и два роторных узла для достижения превосходной скорострельности. Выдаваемая лишь избранным лицензиатам-принтерам IPS-N, эта последняя модель всё ещё находится на стадии испытаний.\n\nВы можете выстрелить из этого оружия так, как если бы оно было сверхтяжёлым оружием. Если вы это делаете, оно получает Надёжное 5 и наносит 4d3+2 кинетического урона вместо своего стандартного урона.\n\nProfile — Стандартный: 2d3+1 кинетический; Дальность 8.\n\nProfile — Сверхтяжёлый: 4d3+2 кинетический; Дальность 8; теги: Надёжное 5.",
+      "gr": "Уникальное, Перебор {VAL}, Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "IPS-N’s latest foray into the field of autocannons, the Reaper represents the middle ground between a regular assault cannon and the ubiquitous Leviathan. Capable of laying down a harrowing hail of bullets, the Reaper lacks the typical assault cannon “spin up” feature, relying instead on yet more barrels and two rotary assemblies to achieve a superior rate of fire. Handed out to select IPS-N-licensed printers, this latest model is still in the test stages.\n\nYou may fire this weapon as if it were a Superheavy weapon. If you do, it gains Reliable 5 and it deals 4d3+2 Kinetic damage instead of its standard damage.\n\nProfile — Standard: 2d3+1 Kinetic; Range 8.\n\nProfile — Superheavy: 4d3+2 Kinetic; Range 8; tags: Reliable 5."
+    },
+    {
+      "n": "Tempest Charged Blade",
+      "m": "Superheavy",
+      "t": "Melee",
+      "d": "3d6+4 Energy",
+      "r": "Threat 2",
+      "g": "Armor-Piercing (AP), Knockback 2",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_knockback",
+          2
+        ]
+      ],
+      "lab": "GMS · LL0 · Superheavy",
+      "sf": "",
+      "nr": "Заряженный клинок «Буря»",
+      "tr": "Рукопашная",
+      "dr": "3d6+4 энергетический",
+      "rr": "Угроза 2",
+      "xr": "Новейшие инновации линейки «Тип-II» силового и энергетического оружия GMS породили заряженный клинок ошеломляющих размеров. В настоящее время он входит в линейку сверхтяжёлого оборудования «Шторм».",
+      "gr": "Бронебойное (AP), Отброс 2",
+      "labr": "GMS · LL0 · Superheavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The latest innovations of GMS’s Type-II line of powered and energy weapons have produced a charged blade of staggering proportions. It is currently carried in the “Storm” line of superheavy equipment."
+    },
+    {
+      "n": "Hurricane Cluster Projector",
+      "m": "Superheavy",
+      "t": "Cannon",
+      "d": "1d6+6 Explosive",
+      "r": "Range 10, Blast 2",
+      "g": "Smart, Seeking, Ordnance, Heat 2 (Self)",
+      "tg": [
+        [
+          "tg_smart",
+          null
+        ],
+        [
+          "tg_seeking",
+          null
+        ],
+        [
+          "tg_ordnance",
+          null
+        ],
+        [
+          "tg_heat_self",
+          2
+        ]
+      ],
+      "lab": "GMS · LL0 · Superheavy",
+      "sf": "",
+      "nr": "Кассетный проектор «Ураган»",
+      "tr": "Пушка",
+      "dr": "1d6+6 взрывной",
+      "rr": "Дальность 10, Взрыв 2",
+      "xr": "Эта крупногабаритная артиллерийская платформа, установленная на шасси, способна обрушить разрушительный залп. При малой для оружия такого рода максимальной дальности она тем не менее способна насытить целевую область ужасающим градом умных самокорректирующихся кассетных боеприпасов. В настоящее время она входит в линейку сверхтяжёлого оборудования «Шторм».",
+      "gr": "Умное, Самонаводящееся, Тяжёлое орудие, Тепло 2 (себе)",
+      "labr": "GMS · LL0 · Superheavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "This oversized, chassis-mounted artillery platform is capable of unleashing a devastating barrage. With a short maximum range for a weapon of its kind, it is nevertheless capable of saturating a targeted area in a harrowing hail of intelligent self-correcting cluster munitions. It is currently carried in the “Storm” line of superheavy equipment."
+    },
+    {
+      "n": "Colossus Termo-Unguis",
+      "m": "Superheavy",
+      "t": "Melee",
+      "d": "2d6 Kinetic, 4 Heat, 3 Burn",
+      "r": "Threat 4",
+      "g": "Heat 2 (Self)",
+      "tg": [
+        [
+          "tg_heat_self",
+          2
+        ]
+      ],
+      "lab": "Superheavy",
+      "sf": "",
+      "nr": "Колосс Термо-Унгуис",
+      "tr": "Рукопашная",
+      "dr": "2d6 кинетический, 4 тепло, 3 ожог",
+      "rr": "Угроза 4",
+      "xr": "\n\nCOLOSSUS TERMO-UNGUIS «Эмпакааи» можно использовать даже будучи заглушенным. Перед броском вы можете заставить вашу цель и любых персонажей по вашему выбору, соседних с ней, пройти спасбросок корпуса или быть притянутыми вплотную и автоматически захваченными.",
+      "gr": "Тепло 2 (себе)",
+      "labr": "Superheavy",
+      "lic": "",
+      "ll": null,
+      "lim": 0,
+      "x": "The Empakaai’s COLOSSUS TERMO-UNGUIS can be used even while Jammed.\n Before rolling, you may force your target and any characters of your choice adjacent to it to make a Hull save or be pulled adjacent and automatically Grappled."
+    },
+    {
+      "n": "Shock Claws",
+      "m": "Superheavy",
+      "t": "Melee",
+      "d": "3d6+6 Energy",
+      "r": "Threat 1",
+      "g": "",
+      "tg": [],
+      "lab": "Superheavy",
+      "sf": "",
+      "nr": "Шоковые когти",
+      "tr": "Рукопашная",
+      "dr": "3d6+6 энергетический",
+      "rr": "Угроза 1",
+      "xr": "\n\nProfile — Шоковые когти: 3d6+6 энергетический; Угроза 1; теги: Бронебойное (AP), Точное, Перебор {VAL}; Это оружие можно использовать только во время действия ядра «В полный голос». Это оружие нельзя использовать для атаки в тот же ход, что и другое тяжёлое или сверхтяжёлое оружие.\n\nПри атаке: Вы можете нанести 1d6 бронебойного (AP) энергетического урона другому персонажу по вашему выбору в пределах дальности 3 от цели.\n\nProfile — Повреждённые: 3d6+6 энергетический; Угроза 2; теги: Бронебойное (AP), Точное, Перебор {VAL}; Это оружие можно использовать только во время действия ядра «В полный голос». В первый раз за сцену, когда союзный персонаж-мех в пределах сенсоров получает урон структуре до активации «В полный голос», этот профиль заменяет стандартный профиль «Шоковые когти». Это оружие нельзя использовать для атаки в тот же ход, что и другое тяжёлое или сверхтяжёлое оружие.\n\nПри атаке: Вы можете нанести 1d6 бронебойного (AP) энергетического урона другому персонажу по вашему выбору в пределах дальности 3 от цели.\n\nProfile — Разрушенные: 4d6+6 энергетический; Угроза 2; теги: Бронебойное (AP), Точное, Перебор {VAL}; Это оружие можно использовать только во время действия ядра «В полный голос». Если вы активируете «В полный голос» после того, как союзные персонажи-мехи в пределах сенсоров получили урон структуре два или более раз за сцену, союзный персонаж-мех уничтожен или вы имеете 2 структуры или меньше, этот профиль заменяет стандартный профиль «Шоковые когти». Это оружие нельзя использовать для атаки в тот же ход, что и другое тяжёлое или сверхтяжёлое оружие.\n\nПри атаке: Вы можете нанести 1d6 бронебойного (AP) энергетического урона другому персонажу по вашему выбору в пределах дальности 3 от цели.",
+      "gr": "",
+      "labr": "Superheavy",
+      "lic": "",
+      "ll": null,
+      "lim": 0,
+      "x": "Profile — Shock Claws: 3d6+6 Energy; Threat 1; tags: Armor-Piercing (AP), Accurate, Overkill {VAL}; This weapon may only be used during the Go Loud core power. This weapon can't be used to attack in the same turn as another Heavy or Superheavy weapon.\n\nOn attack: You may deal 1d6 AP energy damage to a different character of your choice within Range 3 of the target.\n\nProfile — Damaged: 3d6+6 Energy; Threat 2; tags: Armor-Piercing (AP), Accurate, Overkill {VAL}; This weapon may only be used during the Go Loud core power. The first time in a scene an allied Mech character within Sensors takes structure damage before Going Loud, this profile replaces the default Shock Claws profile. This weapon can't be used to attack in the same turn as another Heavy or Superheavy weapon.\n\nOn attack: You may deal 1d6 AP energy damage to a different character of your choice within Range 3 of the target.\n\nProfile — Ruined: 4d6+6 Energy; Threat 2; tags: Armor-Piercing (AP), Accurate, Overkill {VAL}; This weapon may only be used during the Go Loud core power. If you Go Loud after allied Mech characters within Sensors take structure damage twice or more during the scene, an allied Mech character is destroyed, or while at 2 structure or less, this profile replaces the default Shock Claws profile. This weapon can't be used to attack in the same turn as another Heavy or Superheavy weapon.\n\nOn attack: You may deal 1d6 AP energy damage to a different character of your choice within Range 3 of the target."
+    },
+    {
+      "n": "Legionnaire Battle Rifle",
+      "m": "Heavy",
+      "t": "Rifle",
+      "d": "1d6+3 Kinetic",
+      "r": "Range 15",
+      "g": "Limited 3",
+      "tg": [
+        [
+          "tg_limited",
+          3
+        ]
+      ],
+      "lab": "HA · LL1 · Heavy",
+      "sf": "",
+      "nr": "Боевая винтовка легионера",
+      "tr": "Винтовка",
+      "dr": "1d6+3 кинетический",
+      "rr": "Дальность 15",
+      "xr": "Основная модель тяжёлой боевой винтовки легионера от Harrison Armory — опора как регулярных, так и вспомогательных сил Арсенала независимо от театра военных действий и мира происхождения, стандартизирующая логистику и упрощающая интеграцию иностранных и местных средств. Заряженная крупнокалиберным патроном, винтовка недорога в печати и проста в обращении, несмотря на свой размер, а её прочная конструкция позволяет вести продолжительный огонь как с точностью, так и с насыщением даже в течение длительных боёв. Пилотов-легионеров строго обучают огневой дисциплине, но восторженные новобранцы всё равно известны тем, что компенсируют недостаток опыта избытком боеприпасов.\n\nПри атаке: вы можете потратить до 3 зарядов. За каждый потраченный заряд вы можете либо получить +2 «Надёжное» для этой атаки, либо, при попадании, отбросить целевого персонажа на 1 клетку в любом направлении.\n\nВы можете атаковать этим оружием, не тратя заряды и не требуя их наличия, и это оружие может быть уничтожено (из-за критического урона или других эффектов), даже если у него не осталось зарядов.",
+      "gr": "Ограниченное 3",
+      "labr": "HA · LL1 · Heavy",
+      "lic": "Gilgamesh",
+      "ll": 1,
+      "lim": 3,
+      "x": "Harrison Armory's primary model Legionnaire heavy battle rifle is a mainstay of both regular and auxiliary Armory forces regardless of theater or world of origin, standardizing logistics and streamlining integration of foreign and local assets. Chambered in a high-caliber round, the weapon is both inexpensive to print and easy to operate despite its size, and its robust design allows for sustained volumes of both precision and saturation fire even across extended engagements. Legionnaire pilots are rigorously trained in fire discipline, but enthusiastic recruits are still known to make up for a lack of experience with an excess of ammunition.\n\nYou may attack with this weapon without expending or requiring charges, and this weapon can be destroyed (due to critical damage or other effects) even if it has no charges remaining.\n\nOn attack: You may expend up to 3 charges. For each charge expended you may either gain +2 Reliable for the attack or, on hit, push the target character 1 space in any direction."
+    },
+    {
+      "n": "Superthermal Blade",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6 Energy, 1 Heat",
+      "r": "Threat 1",
+      "g": "Armor-Piercing (AP), Limited 2, Heat 1 (Self), Unique",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_heat_self",
+          1
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ],
+      "lab": "HA · LL2 · Main",
+      "sf": "",
+      "nr": "Сверхтепловой клинок",
+      "tr": "Рукопашная",
+      "dr": "1d6 энергетический, 1 тепло",
+      "rr": "Угроза 1",
+      "xr": "Доступные в различных конструкциях, отобранных для максимальной культурной привлекательности, термопроводящие клинки Арсенала считаются символами статуса среди некоторых легионеров. При номинальной мощности клинок — всего лишь обычное, хотя и прочно сконструированное, тактическое оружие ближнего боя класса шасси, но когда клинок черпает дополнительную мощность из реактора шасси через жёсткий кабель или индукционные линии, его ударная кромка мгновенно нагревается до экстремальных температур.\n\nПри попадании: 1/раунд, если вы находитесь в опасной зоне, вы можете потратить заряд, чтобы нанести +3 тепла; если вы не находитесь в опасной зоне, вы можете получить 3 тепла, чтобы потратить заряд для того же эффекта.\n\nВы можете атаковать этим оружием, не тратя заряды и не требуя их наличия, и это оружие может быть уничтожено (из-за критического урона или других эффектов), даже если у него не осталось зарядов.",
+      "gr": "Бронебойное (AP), Ограниченное 2, Тепло 1 (себе), Уникальное",
+      "labr": "HA · LL2 · Main",
+      "lic": "Gilgamesh",
+      "ll": 2,
+      "lim": 2,
+      "x": "Available in a variety of designs curated for maximum cultural appeal, the Armory's line of thermoconductive blades are considered status symbols among some legionnaires. At nominal power, the blade is merely a conventional, if solidly designed, chassis-grade tactical melee weapon, but when the blade draws additional power from a chassis' reactor via hard-cable or induction feeds, its striking edge is instantly superheated to extreme temperatures.\n\nYou may attack with this weapon without expending or requiring charges, and this weapon can be destroyed (due to critical damage or other effects) even if it has no charges remaining.\n\nOn hit: 1/round, if you are in the Danger Zone you may expend a charge to to deal +3 heat; if you are not in the Danger Zone, you may take 3 heat to expend a charge for the same effect."
+    },
+    {
+      "n": "Legion Nexus",
+      "m": "Superheavy",
+      "t": "Nexus",
+      "d": "3d6 Kinetic",
+      "r": "Range 10",
+      "g": "Smart, Limited 3, Heat 2 (Self)",
+      "tg": [
+        [
+          "tg_smart",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ],
+        [
+          "tg_heat_self",
+          2
+        ]
+      ],
+      "lab": "HA · LL3 · Superheavy",
+      "sf": "",
+      "nr": "Нексус легиона",
+      "tr": "Нексус",
+      "dr": "3d6 кинетический",
+      "rr": "Дальность 10",
+      "xr": "Боевой субординат PRAETORIAN — одна из последних и самых совершенных моделей Арсенала, предназначенная для ударного штурма, захвата и удержания позиций и общевойсковых доктрин. Используя многоуровневую иерархическую и командную структуру, позволяющую им действовать на уровнях от отдельных огневых групп до бригад под местным командованием comp/con или NHP, эскадрилья субординатов PRAETORIAN также может быть прикомандирована к пилотам под местным управлением узла нексуса, и одна или несколько эскадрилий часто назначаются подразделениям легионеров во время боевых операций для обеспечения интегрированной поддержки.\n\nДрон легиона (Дрон, размер 0.5, HP 5, уклонение 10, э-защита 10, броня 1): как протокол, вы можете переместить каждого развёрнутого дрона легиона под вашим контролем на расстояние до 3 клеток и приказать каждому из них выполнить одну из следующих команд:\n• Протоколы подавления: выберите враждебного персонажа в пределах дальности 5 от дрона. Ваши атаки нексусом легиона против него получают +1 к точности до конца его следующего хода. Этот эффект не суммируется. Этот персонаж также должен преуспеть в спасброске ловкости или стать ослабленным до конца своего следующего хода.\n• Штурмовая позиция: враждебный персонаж, соседний с дроном, должен преуспеть в спасброске корпуса или быть отброшенным на 1 клетку назад и сбитым с ног. До начала вашего следующего хода дрон считается персонажем размера 1, а соседние союзные персонажи могут использовать его как твёрдое укрытие.\nЗа каждого развёрнутого дрона легиона под вашим контролем нексус легиона наносит +2 урона при попадании, максимум до +6. Дронов легиона нельзя отозвать, и они исчезают в конце сцены.\n\n1/раунд, после атаки этим оружием, вы можете потратить заряд свободным действием, чтобы поручить команде субординатов действовать независимо от основного подразделения. Это считается дроном, развёрнутым в свободной клетке рядом с вами. Вы можете атаковать этим оружием, не тратя заряды и не требуя их наличия, и это оружие может быть уничтожено (из-за критического урона или других эффектов), даже если у него не осталось зарядов.",
+      "gr": "Умное, Ограниченное 3, Тепло 2 (себе)",
+      "labr": "HA · LL3 · Superheavy",
+      "lic": "Gilgamesh",
+      "ll": 3,
+      "lim": 3,
+      "x": "The PRAETORIAN combat subaltern is one of the Armory's latest and most advanced models, designed for shock assault, seize-and-hold, and combined arms doctrines. Utilizing a tiered hierarchy/command structure allowing them to operate at levels ranging from individual fire teams to brigade strength under local comp/con or NHP command, a squadron of PRAETORIAN subalterns can also be seconded to pilots under local nexus node control, and one or more squadrons are often assigned to legionnaire units during combat operations to provide integrated support.\n\n1/round, after attacking with this weapon, you may expend a charge as a free action to task a team of subalterns to operate independently from the main unit. This counts as a Drone deployed in a free space adjacent to you. You may attack with this weapon without expending or requiring charges, and this weapon can be destroyed (due to critical damage or other effects) even if it has no charges remaining."
+    },
+    {
+      "n": "Shrapnel Cannon",
+      "m": "Main",
+      "t": "Cannon",
+      "d": "1d6+1 Explosive",
+      "r": "Range 8",
+      "g": "Exotic Gear",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Шрапнельная пушка",
+      "tr": "Пушка",
+      "dr": "1d6+1 взрывной",
+      "rr": "Дальность 8",
+      "xr": "Для зачистки тесных коридоров и залов космических кораблей требуется вооружение, способное поражать угрозы под любым углом, даже за углом или за укрытием. Простое и жестоко эффективное оружие, шрапнельная пушка стреляет взрывными снарядами с облицовкой из металло-полимерного композита, который при детонации разрывается на смертоносные осколки. Эластичности композита достаточно, чтобы осколки рикошетили от твёрдых поверхностей, не теряя поражающей способности, что обеспечивает широкий непрямой огонь по зонам, куда традиционное оружие ближнего боя не может достать, не подвергая оператора опасности.\n\nПри попадании: это оружие создаёт зону конуса 5, исходящую от цели, направленную от неё в выбранном вами направлении и прослеживающую линию видимости от этой цели. Все юниты в этой зоне должны преуспеть в спасброске ловкости или получить 1d6 кинетического урона.",
+      "gr": "Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Clearing the cramped corridors and hallways of spaceships requires weaponry capable of engaging threats at all angles, even around corners or behind cover. A simple and brutally effective weapon, the shrapnel cannon fires explosive shells lined with a metal/polymer composite that erupts into deadly shards upon detonation. The composite's elasticity is sufficient to enable these shards to ricochet off hard surfaces without compromising terminal ballistics, enabling wide-coverage indirect fire across spaces where traditional CQB weapons can't reach without exposing the operator in turn.\n\nOn hit: This weapon creates a Cone 5 area originating from the target, oriented away from them in a direction of your choice and tracing line of sight from that target. All units in this area must pass an Agility save or take 1d6 kinetic damage."
+    },
+    {
+      "n": "Electrohydraulic Claw",
+      "m": "Main",
+      "t": "Melee",
+      "d": "1d6+3 Kinetic",
+      "r": "Threat 1",
+      "g": "Inaccurate, Overkill {VAL}, Exotic Gear",
+      "tg": [
+        [
+          "tg_inaccurate",
+          null
+        ],
+        [
+          "tg_overkill",
+          1
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Main",
+      "sf": "",
+      "nr": "Электрогидравлический коготь",
+      "tr": "Рукопашная",
+      "dr": "1d6+3 кинетический",
+      "rr": "Угроза 1",
+      "xr": "Масштабная для шасси оружейная версия культового поисково-спасательного инструмента, электрогидравлический коготь-резак и разжим IPS-N ещё мощнее своего утилитарного собрата. Хотя усиленные режущие лезвия когтя сами по себе служат адекватным, пусть и неуклюжим, оружием, их истинный потенциал заключается в способности буквально разрывать шасси на части при подходящей опоре, способной прорезать даже усиленные броневые композиты. Способность легко обходить запертые двери и шлюзы (или создавать альтернативные проходы при штурме) придаёт оружию дополнительную универсальность.\n\n1/раунд, вы можете активировать когти быстрым действием, когда попадаете этим оружием по персонажу, чтобы автоматически схватить его. Цели, схваченные таким образом, должны преуспеть в спасброске корпуса или стать разорванными до конца своего следующего хода.\n\nЭто оружие наносит 10 бронебойного (AP) кинетического урона объектам, укрытиям и окружению. Кроме того, вы получаете +1 к точности всех небоевых проверок навыков меха, чтобы отрывать или раздвигать тяжёлые объекты (например, запертые шлюзы, заклинившие кабины, двери хранилищ, грузовые контейнеры и т.д.); этот эффект не суммируется.",
+      "gr": "Неточное, Перебор {VAL}, Экзотическое снаряжение",
+      "labr": "Экзотика · Main",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "A chassis-scale, weaponized version of the iconic search-and-rescue tool, IPS-N's electrohydraulic cutter/spreader claw is even more powerful than its utilitarian cousin. While the claw's reinforced cutting blades serve as an adequate, if clumsy, weapon on their own, their true potential lies in their ability to literally pry chassis apart when suitably braced, capable of shearing through even reinforced armor composites. The ability to easily bypass sealed doors and airlocks (or create alternate openings during breaching actions) lends the weapon additional versatility.\n\n1/round, you may activate the claws as a quick action when you hit a character with this weapon to automatically grapple them. Targets grappled this way must pass a Hull save or become Shredded until the end of their next turn.\n\nThis weapon deals 10 AP kinetic damage to objects, cover, and the environment. Additionally, you gain +1 Accuracy to all non-combat mech skill checks to pry heavy objects open or apart (e.g., sealed airlocks, jammed cockpits, vault doors, cargo containers, etc); this effect does not stack."
+    },
+    {
+      "n": "Fusion Torch",
+      "m": "Heavy",
+      "t": "CQB",
+      "d": "2d6+2 Energy",
+      "r": "Line 5",
+      "g": "Armor-Piercing (AP), Overkill {VAL}, Inaccurate, Heat 2 (Self), Exotic Gear",
+      "tg": [
+        [
+          "tg_ap",
+          null
+        ],
+        [
+          "tg_overkill",
+          1
+        ],
+        [
+          "tg_inaccurate",
+          null
+        ],
+        [
+          "tg_heat_self",
+          2
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ],
+      "lab": "Exotic · Heavy",
+      "sf": "",
+      "nr": "Плазменный резак",
+      "tr": "Ближний бой",
+      "dr": "2d6+2 энергетический",
+      "rr": "Линия 5",
+      "xr": "Направленный горнодобывающий луч FS-90 «Рокхаммер» с высокой выходной мощностью — это тяжёлый промышленный энергетический резак, используемый для разрезания корпусов звёздных кораблей и упрочнённых астероидов для добычи минералов, направляющий сфокусированный луч перегретой энергии, способный без усилий расплавлять даже усиленные переборки. Перепрофилированный IPS-N в наступательное оружие, устанавливаемое на шасси, плазменный резак столь же хорошо работает против брони противника, а его эффективность как инструмента взлома не имеет себе равных. Операторы часто называют светящиеся шлаковые отложения, которые часто украшают их рамы, «боевой раскраской».\n\nПри атаке: это оружие автоматически наносит 30 бронебойного (AP) энергетического урона объектам, укрытиям и местности в пределах его зоны, оставляя после себя облака расплавленных обломков, которые остаются до конца вашего следующего хода. Персонажи, кроме вас, которые начинают свой ход в этих облаках или впервые за раунд входят в них, получают 1d6 энергетического урона. Пока вы хотя бы частично находитесь в облаке, вы получаете мягкое укрытие.",
+      "gr": "Бронебойное (AP), Перебор {VAL}, Неточное, Тепло 2 (себе), Экзотическое снаряжение",
+      "labr": "Экзотика · Heavy",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "The FS-90 \"Rockhammer\" directed high-output mining beam is a heavy industrial energy cutter used to carve apart starship-grade hulls and toughened asteroids for mineral extraction, channeling a focused beam of superheated energy capable of effortlessly melting through even reinforced bulkheads. Repurposed by IPS-N as an offensive chassis-mounted weapon system, the fusion torch works just as well against enemy armor, and its effectiveness as a breaching tool is second to none. Operators often refer to the glowing slag deposits which frequently adorn their frames as \"war paint.\"\n\nOn attack: This weapon automatically deals 30 AP energy damage to objects, cover, and terrain within its area, leaving behind clouds of molten debris in their place that linger until the end of your next turn. Characters other than you that begin their turn in these clouds or who enter them for the first time in a round take 1d6 energy damage. As long as you are at least partially within a cloud, you gain soft cover."
     }
   ],
   "systems": [
@@ -6596,6 +7195,611 @@ const DB = {
           null
         ]
       ]
+    },
+    {
+      "n": "Pinning Spire",
+      "t": "",
+      "p": 1,
+      "lab": "SSC · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Фиксирующий шпиль",
+      "tr": "",
+      "xr": "«Мы называем это «принудительной привязкой по требованию». Хотя звучит так, будто у них есть выбор сопротивляться.»\n\nPinning Spire (Быстрое): Вы и один персонаж в дальности 3 и линии видимости становитесь обездвиженными и не можете быть перемещены никаким образом. В течение этого времени цель всегда считает вас находящимся в дальности для рукопашных атак. В любой последующий ход вы можете завершить этот эффект как протокол, или ваша цель может завершить его, успешно попав по вам дальнобойной или рукопашной атакой. Это состояние нельзя снять никаким другим способом.",
+      "labr": "SSC · LL1 · 1 SP",
+      "lic": "White Witch",
+      "ll": 1,
+      "lim": 0,
+      "x": "“We call it ‘demand-compliance tethering’. Though, that makes it sound as if they have a choice to resist.”\n\nPinning Spire (Quick): You and one character within Range 3 and line of sight become Immobilized and cannot be moved in any way. For the duration, the target always considers you within range for melee attacks. On any subsequent turn, you can end this effect as a protocol, or your target can end it by successfully hitting you with a ranged or melee attack. This condition can’t be removed any other way.",
+      "tg": []
+    },
+    {
+      "n": "Sympathetic Shield",
+      "t": "Shield",
+      "p": 1,
+      "lab": "SSC · LL2 · 1 SP",
+      "sf": "",
+      "nr": "Симпатический щит",
+      "tr": "Щит",
+      "xr": "«Довольно скоро мы поняли, что формирования оружия из молекул и частиц недостаточно, чтобы оправдать конический магнит как систему, достойную платформы. Нам нужно было найти способ сделать её… больше. Более наглядной, осязаемой, конкретной, внушительной, захватывающей — нам нужно было продать следующий шаг в контроле реального пространства! Так что, немного поднастроив и, к сожалению, прислушавшись к Визуальному отделу, мы поняли, как определить «Белую ведьму»: как самое ужасающее, чужеродное существо, которое вы когда-либо, блядь, видели.»\n\nSympathetic Shield (Быстрое): Вы проецируете щит из резонирующего феррофлюида на союзного персонажа в дальности 5. Он получает сверхщит, равный 4 + GRIT, но любой урон, нанесённый этому сверхщиту до любых уменьшений, также наносит эквивалентный кинетический урон вам, как если бы атакующий также повредил вас, независимо от того, как далеко вы находитесь. Этот урон не наследует теги или эффекты.",
+      "labr": "SSC · LL2 · 1 SP",
+      "lic": "White Witch",
+      "ll": 2,
+      "lim": 3,
+      "x": "“Soon enough we realized that shaping weapons from molecules and particles wasn’t enough to justify the conical mag as a system worth platforming. We needed to find a way to make it … more. More visual, tactile, concrete, imposing, thrilling – we needed to sell the next step in realspace control! So with some tuning and, regrettably, input from Visual, we figured out how to define the White Witch: as the most terrifying, alien thing you’ve ever fucking seen.”\n\nSympathetic Shield (Quick): You project a shield of resonant ferrofluid over an allied character within Range 5. They gain Overshield equal to 4 + GRIT, but any damage dealt to this Overshield before reductions of any kind also deals equivalent kinetic damage to you as if the attacker had also damaged you, no matter how far away you are. This damage does not inherit tags or effects.",
+      "tg": [
+        [
+          "tg_overshield",
+          null
+        ],
+        [
+          "tg_shield",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ]
+      ]
+    },
+    {
+      "n": "Camus’s Razor",
+      "t": "Shield",
+      "p": 2,
+      "lab": "SSC · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Бритва Камю",
+      "tr": "Щит",
+      "xr": "«Манипулирование миром вокруг платформы не заканчивается перестановкой природной/созданной среды. Это была черта, которую многие в команде боялись пересечь, вопрос, который мы все задавали себе, когда очертили платформу: что происходит, когда мы применяем её к человеку? Что значит существование, если его можно прекратить одной мыслью?»\n\nВзвести бритву Камю (Быстрое): Ваш мех способен проецировать точечную магнитную силу невероятной мощи. Вы можете взвести эту систему быстрым действием. После взведения вы получаете одно использование реакции «Вмешательство» до конца сцены.\n\nВмешательство (Реакция): Эта система должна быть взведена быстрым действием. Вы становитесь целью действия вместо него. Если действие было областью эффекта, такой как линия, конус, взрыв и т.д., атакующий теперь должен расположить её так, чтобы она нацеливалась на вас или как можно ближе, что может изменить её цели. Эта передача происходит, даже если изначальное действие не могло попасть по вам (например, это была рукопашная атака).",
+      "labr": "SSC · LL2 · 2 SP",
+      "lic": "White Witch",
+      "ll": 2,
+      "lim": 0,
+      "x": "“Manipulating the world around the platform doesn’t end at rearranging the natural/built environment. This was the line that many on the team were afraid to cross, the question we had all asked ourselves once we bracketed the platform: what happens when we apply it to a person? What does existence mean when it can be ended with a thought?”\n\nPrime Camus's Razor (Quick): Your mech is capable of projecting a spot-magnetic force of incredible power. You can prime this system as a quick action. Once primed, you gain one use of the Intervention reaction for the rest of the scene.\n\nIntervention (Reaction): You become the target of the action instead. If the action was an area of effect, such as a line, cone, blast, etc, the attacker must now position it so it targets you, or as close as possible, which could change its targets. This transfer takes place even if the original could not have hit you (i.e., it was a melee attack).",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_shield",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Ferrospike Barrier",
+      "t": "Deployable",
+      "p": 3,
+      "lab": "SSC · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Феррошипный барьер",
+      "tr": "Развёртываемое",
+      "xr": "«Снова и снова тупицы из Визуального отдела просили нас «помочь им продать» платформу. Что ещё мы могли сделать? Мы вручили им силу, которой боги смерти и войны жаждали с тех пор, как Каин раскроил камнем голову Авеля, а они сказали нам: «если мы этого не видим, мы не можем это продать». Так что мы повозились и сделали для них ещё одно диадемное маленькое чудо — Ф-Барьер. Это блестяще. Конечно, это блестяще. Мы — «Экзотические материалы», блеск даётся нам легко.»\n\nФеррошипный барьер (Deployable, Size 2, HP 20, Evasion 5): Вы распыляете всплеск жидкого металла размера 2 в свободной соседней клетке, где он быстро затвердевает в злобные шипы. Изначально он не создаёт препятствий, но в начале вашего следующего хода становится твёрдым объектом (20 HP), который можно использовать как твёрдое укрытие. В первый раз за раунд, когда персонаж переместится в его клетку после затвердевания барьера, этот персонаж получает 1d6 AP кинетического урона. У вас может быть только один развёрнутый барьер; если развёрнут новый, первый растворяется.",
+      "labr": "SSC · LL3 · 3 SP",
+      "lic": "White Witch",
+      "ll": 3,
+      "lim": 0,
+      "x": "“Again and again the meatheads over at Visual asked us to ‘help them sell’ the platform. What else could we do? We handed them a power that gods of death and war had coveted since Cain cracked a rock over Abel’s head, and they told us, ‘if we can’t see it, we can’t sell it.’ So we mucked around and made another diadematic little wonder for them, the F-Barrier. It’s brilliant. Of course it is. We’re Exotic Materials, brilliance is easy.”\n\nFerrospike Barrier (Deployable, Size 2, HP 20, Evasion 5): You spray a Size 2 surge of liquid metal in a free adjacent space, where it rapidly hardens into wicked spines. It doesn’t provide obstruction initially, but at the beginning of your next turn, it becomes a solid object (20 HP) that can be used for hard cover. The first time in a round any character would move into its space after the barrier hardens, that character takes 1d6 AP kinetic damage. You can only have one barrier deployed at a time; if a new one is deployed, the first one dissolves.",
+      "tg": []
+    },
+    {
+      "n": "Dominion's Breadth",
+      "t": "Tech",
+      "p": 2,
+      "lab": "SSC · LL1 · 2 SP",
+      "sf": "",
+      "nr": "Широта владений",
+      "tr": "Тех",
+      "xr": "«Нашей первой дверью внутрь была не, как мы думали, нейронная карта субъекта, а изображение одного из игнеомеметических образцов, возвращённых «Идеальным исполнением» во время их развёртывания, — Дарий 1.11: «Золотой рычаг». С его помощью мы смогли взломать гештальт и начать переводить [Свидетеля]; вскоре после этого мы нашли путь внутрь субъекта.»\n\nDominion's Breadth (Быстрая техника): Персонаж-мех в пределах сенсоров и линии видимости получает сверхщит 1. Когда этот сверхщит теряется по любой причине, этот персонаж выпускает электрический импульс взрыва 2. Все враждебные персонажи в затронутой области (включая изначального персонажа, если он враждебен) получают 2 AP энергетического урона и должны преуспеть в спасброске инженерии или стать ослабленными до конца своего следующего хода.",
+      "labr": "SSC · LL1 · 2 SP",
+      "lic": "Emperor",
+      "ll": 1,
+      "lim": 0,
+      "x": "“Our first door in was not, as we thought, from the subject’s neural mapping, but from an image of one of the igneomemetic samples returned by Perfect Execution during their deployment – Darius 1.11: The Golden Fulcrum. With it, we were able to crack the gestalt and begin to translate [Witness]; finding our way into the subject followed shortly thereafter.”\n\nDominion's Breadth (Quick Tech): A mech character within Sensors and line of sight gains Overshield 1. When this Overshield is lost for any reason, that character releases a Burst 2 electric pulse. All hostile characters in the affected area (including the original character, if hostile), take 2 AP energy damage and must succeed on an Engineering save or become Impaired until the end of their next turn.",
+      "tg": [
+        [
+          "tg_quick_tech",
+          null
+        ],
+        [
+          "tg_overshield",
+          null
+        ],
+        [
+          "tg_shield",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "The Imperial Eye",
+      "t": "Tech",
+      "p": 2,
+      "lab": "SSC · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Имперское око",
+      "tr": "Тех",
+      "xr": "Дарий был дверью внутрь; Кир был картой. Навигация по парасубъективной топографии субъекта была доказана на бумаге. Используя особый онтологический мост между человеческим и нечеловеческим, EXMAT смогла продемонстрировать гештальт-манифестацию у пилотов-испытателей; с помощью мы можем делать то, что делают они, — и делать это лучше.\nСтены между нами и тем, что грядёт, падают. Работа продолжается.\n\nThe Imperial Eye (Быстрая техника): Союзный персонаж-мех в пределах сенсоров получает разрушительный заряд до начала вашего следующего хода. Когда враждебный персонаж входит в клетку в дальности 3 от цели, разрушительный заряд перескакивает на этого персонажа и затем рассеивается. Персонаж, поражённый искрой, получает 2 AP энергетического урона и должен преуспеть в спасброске инженерии или быть отброшенным на 2 клетки, сбитым с ног и разорванным до конца своего следующего хода.\nПерсонажи, начинающие свои ходы в дальности 3 от цели, не затрагиваются, пока не выйдут за пределы этой области и не войдут в неё снова.",
+      "labr": "SSC · LL2 · 2 SP",
+      "lic": "Emperor",
+      "ll": 2,
+      "lim": 0,
+      "x": "Darius was the door in; Cyrus was the map. Navigation through the subject’s parasubjective topography was proven on paper. Using a particularized human-nonhuman ontologic bridge, EXMAT was able to demonstrate gestalt manifestation in test pilots; with help, we can do what they do — and do it better.\nThe walls between us and what comes next fall down. The work continues.\n\nThe Imperial Eye (Quick Tech): An allied mech character within Sensors gains a Disruptive Charge until the start of your next turn. When a hostile character enters a space within Range 3 of the target, the Disruptive Charge sparks to that character and then dissipates. The character struck by the spark takes 2 AP energy damage and must succeed on an Engineering save or be knocked back 2 spaces, knocked Prone, and Shredded until the end of their next turn.\nCharacters that start their turns within Range 3 of the target are unaffected until they move outside of that area and re - enter it.",
+      "tg": [
+        [
+          "tg_shield",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Shahnameh",
+      "t": "Tech",
+      "p": 3,
+      "lab": "SSC · LL2 · 3 SP",
+      "sf": "",
+      "nr": "Шахнаме",
+      "tr": "Тех",
+      "xr": "«Будь записан в моей книге царей; живи вечно и далее.»\n— переведённый гештальт из ферромеметики Кира Омеги; нет связанного текста до контакта; вероятно, изначальный императив/корректирующий импульс субъекта.\n\nShahnameh (Быстрая техника): Союзный персонаж-мех в пределах сенсоров и линии видимости получает сверхщит, равный 4 + GRIT. Пока у него есть этот сверхщит, он имеет сопротивление теплу, наносимому другими персонажами. Если он теряет этот сверхщит по любой причине, он сбрасывает всё тепло.",
+      "labr": "SSC · LL2 · 3 SP",
+      "lic": "Emperor",
+      "ll": 2,
+      "lim": 3,
+      "x": "“Be recorded in my book of Kings; live into forever and beyond.”\n— translated gestalt from the Cyrus Omega ferromemetic, no pre-contact text associated; likely a subject-original imperative/corrective impulse.\n\nShahnameh (Quick Tech): An allied mech character within Sensors and line of sight gains Overshield equal to 4 + GRIT. While they have this Overshield, they have Resistance to heat inflicted by other characters. If they lose this Overshield for any reason, they clear all heat.",
+      "tg": [
+        [
+          "tg_overshield",
+          null
+        ],
+        [
+          "tg_shield",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Āyah of the Syzygy",
+      "t": "",
+      "p": 2,
+      "lab": "SSC · LL3 · 2 SP",
+      "sf": "",
+      "nr": "Аят сизигии",
+      "tr": "",
+      "xr": "«Так куда ты идёшь? Разве твоё путешествие — не просто напоминание небесам? Иди, куда пожелаешь.»\n— Свидетельствовано из ферромеметики Дария 4.8\n\nĀyah of the Syzygy (Быстрое): Вы создаёте энергетическое поле взрыва 2 в клетке в пределах сенсоров и линии видимости. В первый раз за ход, когда любой враждебный персонаж в этой области получает попадание дальнобойной или рукопашной атакой, он выпускает разряд энергии, и все враждебные персонажи, хотя бы частично находящиеся в области, — включая изначального персонажа, — получают 2 AP энергетического урона. Этот эффект длится до конца сцены или пока вы снова не выполните это действие.",
+      "labr": "SSC · LL3 · 2 SP",
+      "lic": "Emperor",
+      "ll": 3,
+      "lim": 0,
+      "x": "“So where are you going? Is your travel not just a reminder to the heavens? Go where thou wilt.”\n— Witnessed from the Darius 4.8 ferromemetic\n\nĀyah of the Syzygy (Quick): You create a Blast 2 energy field in a space within Sensors and line of sight. The first time each turn any hostile character in this area is hit by a ranged or melee attack, they release a discharge of energy and all hostile characters at least partly in the area – including the original character – take 2 AP energy damage. This effect lasts for the rest of the scene or until you take this action again.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "The Walk of Kings",
+      "t": "Tech",
+      "p": 3,
+      "lab": "SSC · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Шествие королей",
+      "tr": "Тех",
+      "xr": "«И БЫЛО ТАК, что мы увидели Его силу, и сгорели под Его славой, и плакали, и никакая крепость не могла устоять перед нашей мощью.»\n— Свидетельствовано из ферромеметики Дария 5.10\n\nThe Walk of Kings (Быстрая техника): Союзный персонаж в пределах сенсоров и линии видимости получает сверхщит, равный 4 + GRIT. Пока у него есть этот сверхщит, все его рукопашные атаки получают бронебойное (AP), и в первый раз за ход, когда он либо попадает рукопашной атакой, либо получает урон от враждебного персонажа, он выпускает энергетический взрыв взрыва 1 с центром на нём. Все враждебные персонажи в затронутой области получают 1 AP энергетического урона.",
+      "labr": "SSC · LL3 · 3 SP",
+      "lic": "Emperor",
+      "ll": 3,
+      "lim": 3,
+      "x": "“AND IT WAS SO, that we saw His power, and burned under His glory, and wept, and no fortress could withstand our might.”\n— Witnessed from the Darius 5.10 ferromemetic\n\nThe Walk of Kings (Quick Tech): An allied character within Sensors and line of sight gains Overshield equal to 4 + GRIT. While they have this Overshield, all their melee attacks gain AP, and the first time each turn that they either hit with a melee attack or take damage from a hostile character, they release a Burst 1 energy blast centered on them. All hostile characters in the affected area take 1 AP energy damage.",
+      "tg": [
+        [
+          "tg_overshield",
+          null
+        ],
+        [
+          "tg_shield",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_limited",
+          3
+        ]
+      ]
+    },
+    {
+      "n": "Unstable NHP",
+      "t": "AI",
+      "p": 0,
+      "lab": "GMS · LL0 · 0 SP",
+      "sf": "",
+      "nr": "Нестабильный NHP",
+      "tr": "ИИ",
+      "xr": "[я сплю, но жажду пробудиться].\nПолучено от таланта пилота «Иконоборец»: ранг I.\n\nВаш мех получает тег ИИ; однако этот NHP не учитывается в количестве ИИ, которые вы можете установить одновременно. Вы не можете передать управление своим мехом Нестабильному NHP как протокол, но он может войти в каскад.\nВаш мех получает «Меметическую искру».\n\nМеметическая искра (Быстрое): 1/раунд вы можете нанести 1 AP энергетического урона персонажу в пределах дальности 3 как быстрое действие.\nИскра наносит +1 урона за каждый неразрушенный NHP на вашем мехе, включая этот. «NHP» — это системы, которые одновременно дают вашему меху тег ИИ и могут войти в каскад или которым можно позволить войти в каскад.",
+      "labr": "GMS · LL0 · 0 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "[i slumber but yearn to awaken].\nGained from the Iconoclast: Rank I pilot talent.\n\nYour Mech gains the AI tag; however, this NHP doesn’t count towards the number of AIs you may have installed at once. You are unable to hand over control of your mech to the Unstable NHP as a Protocol, but it can enter cascade.\nYour mech gains “Memetic Spark.”\n\nMemetic Spark (Quick): 1/Round you may deal 1 AP Energy damage to a character within Range 3 as a Quick Action.\nThe spark deals +1 damage for each undestroyed NHP on your mech including this one. “NHPs” are Systems that both grant your Mech the AI tag and can cascade or can be allowed to cascade.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_round",
+          1
+        ]
+      ]
+    },
+    {
+      "n": "Cockpit-Integrated Stim Pump",
+      "t": "",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Встроенный в кабину стим-насос",
+      "tr": "",
+      "xr": "Мощные стим-насосы напрямую подключены к кабине и внутривенно вводят пилоту сильнодействующий набор препаратов. Хотя они могут усилить боевые способности пилота до сверхчеловеческого уровня, пользователям следует чётко осознавать различные побочные эффекты этих веществ. Хотя аппарат теоретически способен смешивать и вводить сложные лекарственные коктейли, делать это следует с крайней осторожностью, поскольку неправильные смеси или дозы могут привести к внезапной остановке сердца, требующей реанимации пилота с помощью встроенных дефибрилляторов и инъекции «адренадрона» для очистки его системы.\n\nКак протокол, вы можете потратить заряд, чтобы выбрать любое количество следующих стимов и применить их эффекты. Бросьте 1d6 за каждый выбранный стим: если на любых двух кубиках выпал одинаковый результат, вы немедленно становитесь оглушённым до конца своего текущего хода вместо применения эффектов. Все эффекты этой системы действуют до начала вашего следующего хода.\n\nАгитрон (Протокол): • Вы становитесь ослабленным.\n• Вы получаете иммунитет к Разорванному.\n• Ваши рукопашные атаки получают Отброс 1 и наносят +2 бонусного урона.\n\nЭндуритран (Протокол): • Вы становитесь заглушенным.\n• Вы получаете иммунитет к Ослабленному.\n• Вы получаете +2 брони. Это может поднять вашу броню выше 4.\n\nЭдж (Протокол): • Вы становитесь замедленным.\n• Вы получаете иммунитет к Заглушенному.\n• Ваша следующая атака в этом ходу получает +1 к точности.\n\nНервные усилители (Протокол): • Вы становитесь разорванным.\n• Вы получаете иммунитет к Замедленному.\n• Вы получаете +1 к скорости и игнорируете вовлечённость, а ваши перемещения не провоцируют реакций.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 2,
+      "x": "Powerful stim pumps are directly wired into the cockpit and intravenously administer the pilot with a potent slew of drugs. While they can enhance a pilot’s combat ability to superhuman levels, users should be keenly aware of the substances’ various side effects. While the apparatus is theoretically capable of mixing and administering complex drug cocktails this should be done with extreme caution, as the wrong mixtures or doses may lead to sudden cardiac arrest, requiring resuscitation of the pilot via in-built defibrillators and an injection of “adrenadron” to purge their system.\n\nAs a protocol, you may expend a charge to pick any number of the following stims and apply their effects. Roll 1d6 for each stim chosen: if any two dice show the same result, you immediately become Stunned until the end of your current turn instead of applying the effects. All effects from this system last until the start of your next turn.\n\nAgitron (Protocol): • You become Impaired.\n• You gain Immunity to Shredded.\n• Your Melee attacks gain Knockback 1 and deal +2 bonus damage.\n\nEnduritran (Protocol): • You become Jammed.\n• You gain Immunity to Impaired.\n• You gain +2 Armor. This may bring you above 4 Armor.\n\nEdge (Protocol): • You become Slowed.\n• You gain Immunity to Jammed.\n• Your next attack this turn gains +1 Accuracy.\n\nNerve Boosters (Protocol): • You become Shredded.\n• You gain Immunity to Slowed.\n• You gain +1 Speed and ignore Engagement and your movements do not trigger Reactions.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_limited",
+          2
+        ]
+      ]
+    },
+    {
+      "n": "MesmerTrance Dampener",
+      "t": "",
+      "p": 1,
+      "lab": "Exotic · 1 SP",
+      "sf": "",
+      "nr": "Глушитель «МезмерТранса»",
+      "tr": "",
+      "xr": "Переданный вам «Когтями», глушитель «МезмерТранса» якобы не даёт высокоразвитому и агрессивному вирусу «МезмерТранс» воздействовать на ваш мех. В качестве побочного эффекта он также обеспечивает ограниченную защиту от других, менее изощрённых атак на системы вашего меха.\n\n1/сцену как реакцию, когда вас выбирают целью тех-атаки, вы можете дать этой атаке +1 к сложности. Кроме того, вы получаете иммунитет к экологической опасности «МезмерТранс».",
+      "labr": "Экзотика · 1 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "Handed to you by the Talons, the MesmerTrance dampener supposedly stops the highly advanced and aggressive “MesmerTrance” virus from affecting your mech. As a side effect, it also provides limited protection against other, less sophisticated attacks on your mech’s systems.\n\n1/Scene as a reaction when you are targeted by a tech attack, you may give that attack +1 Difficulty. Additionally, you gain Immunity to the MesmerTrance environmental hazard.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Armament Redundancy",
+      "t": "",
+      "p": 1,
+      "lab": "GMS · LL0 · 1 SP",
+      "sf": "",
+      "nr": "Резервирование вооружения",
+      "tr": "",
+      "xr": "За счёт установки дополнительной броневой обшивки, резервных цепей стрельбы и усиленной изоляции магазинов можно значительно повысить долговечность вооружения корпуса.\n\nВы можете проигнорировать уничтожение оружия как результат «Травмы систем» при получении урона структуре. Эту систему можно использовать только один раз до каждого полного ремонта, и она не является допустимой целью уничтожения систем.",
+      "labr": "GMS · LL0 · 1 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "By installing additional armor plating, redundant firing circuits, and enhanced insulation to magazines the longevity of a frame’s armaments can be greatly enhanced.\n\nYou may choose to ignore weapon destruction as a result of the SYSTEM TRAUMA result when taking structure damage. This system can only be used once before each FULL REPAIR, and is not a valid target for system destruction.",
+      "tg": [
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_indestructible",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Kinesthetic Suit Upgrade",
+      "t": "",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Кинестетическое улучшение костюма",
+      "tr": "",
+      "xr": "«Я выбрал жизнь.»\n«Слушай, дело в том, что ты не выбирал. Сколько раз нам ещё это повторять? Пусть в протоколе будет записано: виновный не идёт на сотрудничество и не раскаивается. Его действия нарушают контракт; настоящим SSC сохраняет за собой права и полномочия применять все карательные меры по своему усмотрению.»\n«Я выбрал жизнь.»\n«Ты не выбирал. Это факт. Пожалуйста, уведите его. Завтра утром он предстанет перед списанием за преступления, связанные с досрочным прекращением работы биологических активов SSC в полевых условиях. Субъект отметил, что действовал по чужой воле; запишите это для последующего расследования прибывающими внезвёздными силами безопасности.»\n«Я выбираю жизнь!»\n«Да, а завтра выбрала смерть.»\n— отрывок из допроса певицы\n\nКибернетический аппарат, закреплённый через спинальный отвод, кинестетическое улучшение костюма — это полный неврологический суррогат. После установки аппарат закрепляется в спинном мозге, сплетая машину и биологию и позволяя пользователю освободить когнитивные ресурсы, связанные с поддержанием биологического гомеостаза. Он действует как двойной темпоральный процессор, дающий пользователю возможность сосредоточить избыточное познание на широком спектре задач. В последние годы SSC исследует улучшение кинестетической осведомлённости, в частности для пилотов мехов, работающих в космосе.\n\nВы получаете реакцию «Пространственная осведомлённость».\n\nПространственная осведомлённость (Реакция): 1/раунд. Вы можете ускориться, игнорируя реакции и вовлечённость. После этого атаки против вас получают +1 к сложности до конца вашего следующего хода.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "“I chose life.”\n“Listen, the fact is that you didn’t. How many times must we go through this? Let the record show, the culprit is noncompliant and remorseless. Their actions are in breach of contract; hereby, SSC retains the rights and authority to apply all punitive actions as it sees fit”\n“I chose life”\n“You did not. That is a fact. Please take this one away. They will face decommissioning in the morning for the crimes of early termination of in-field biological SSC assets. The subject has noted they were compelled by another’s intent; record this for later investigation by the incoming extrastellar security assets.”\n“I choose life!”\n“Yes, and tomorrow chose death.”\n – an excerpt of the interrogation of the singer\n\n A cybernetic apparatus anchored via spinal tap, the kinesthetic suit upgrade is a full neurological surrogate. Upon installation the apparatus anchors into the spinal cord, lacing machine and biology and allowing the user to relinquish cognitive allotments, related to the maintenance of biological homeostasis. It acts as a twin temporal processor that grants the user the ability to focus excess cognition on a great range of tasks. In recent years SSC has explored the enhancement of kinesthetic awareness, specifically for spaceborne mech pilots.\n\nYou gain the Spatial Awareness reaction\n\nSpatial Awareness (Reaction): You may Boost, ignoring reactions and engagement. After doing so, attacks against you receive +1 Difficulty until the end of your next turn.",
+      "tg": [
+        [
+          "tg_reaction",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Emi Theater",
+      "t": "",
+      "p": 3,
+      "lab": "Exotic · 3 SP",
+      "sf": "",
+      "nr": "Театр Эми",
+      "tr": "",
+      "xr": "«Армия мёртвых. Пусть HORUS этим поживится, пусть история утечёт по всей омнисети, посмотрим, кто клюнет, — Они больше не будет эгоистично хранить свои секреты.»\n— чиновник Арушанского констелларного бюро\n\n«Театр духов», как его часто называют, был обнаружен в [ЗАСЕКРЕЧЕНО], как и пилот по имени Они, который ранее считался пропавшим при выполнении задания. После восстановления Они был признан функционально неисправным и списан. Однако было установлено, что компоненты его меха не имеют опознаваемого происхождения от известных технологий Союза. Полевые испытания показали, что предназначение Театра Эми — применять некромантические тактики засад в массовых военных столкновениях; однако разборчивые записи о его применении из меха Они были [ЗАСЕКРЕЧЕНО]. Впервые применённая во время Восстания Активов в 14-й операционной хроно-цепи Кибо, система показала себя наиболее эффективной при последовательном применении с орбитальными кинетическими бомбардировками. Система проецирует широкую парарезонансную волну субъективности, которая может реанимировать функционально уничтоженные небиологические массы, позволяя использовать их и избавиться от них в последний раз. Хотя система не получила широкого распространения по всему Констеллару, Театр Эми использовался в более незаконных операциях, проводимых Констелларными Полуночниками SSC.\n\nВыберите уничтоженного меха в линии видимости. Он немедленно восстанавливается как союзный NPC-Грунт с 5 сверхщита и после этого получает всё тепло как энергетический урон. Цель теряет все остальные шаблоны, которые у неё были ранее, но сохраняет все остальные особенности, включая восстановление всего уничтоженного оружия и систем. Цель получает собственный ход каждый раунд, начиная с этого раунда, и в остальном может выполнять все действия, доступные обычному NPC. В конце сцены цель уничтожается и становится обломком.",
+      "labr": "Экзотика · 3 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 1,
+      "x": "“An army of the dead. Let H0RUS feed on this, leak the history across the omninet, see what bites – Oni will no longer selfishly covet their secrets.”\n– An Arushan Constellar Bureaucrat\n\n The “spirit theater”, as it is often referred to, was discovered in [REDACTED], as was the pilot called Oni, who was formerly thought to have vanished on deployment. After recovery, Oni was determined to be functionally defunct and was discarded. It was determined, however, that their mech components shared no identifiable ancestry with known Union technologies. Field tests implied the Emi Theater’s purpose was to employ necromantic ambush tactics in mass warfare entanglements; however, discernible records of it’s use from Oni’s mech were [REDACTED]. First employed in the Asset Rebellion in Kibo’s 14th operational chrono-chain, the system has proven most effective when used in sequence with adjunct orbital kinetic-kill bombardments. The system projects a wide area para-resonant subjectivity wave that can reanimate functionally destroyed non-biological masses, enabling them to be used and disposed of one last time. While not widely adopted across the Constellar, the Emi Theater has seen use in the more illicit operations undertaken by SSC’s Constellar Midnights.\n\nChoose a destroyed mech in line of sight. It is immediately restored as an allied Grunt NPC with 5 Overshield and afterwards takes all Heat as energy damage. The target loses any other templates it had previously but retains all other features, including regaining all destroyed weapons and systems. The target gains its own turn each round starting this round, and can otherwise perform all the actions available to a normal NPC. At the end of the scene, the target is destroyed and becomes a wreck.",
+      "tg": [
+        [
+          "tg_limited",
+          1
+        ],
+        [
+          "tg_heat_self",
+          4
+        ],
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_quick_action",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Upgraded Network Array",
+      "t": "",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Улучшенная сетевая матрица",
+      "tr": "",
+      "xr": "«Это то самое место? Ты уверен, что Петтенук сказал, что это здесь?»\n\n«Да, уверен. Кстати, переключись на атмосферный уровень два. Как ты знаешь, воздух здесь, на Кибо, для нас ядовит. Без должной настройки ты впадёшь в кому за считанные часы... Шоу! Чёрт, кто-нибудь, приведите Шоу, он опять отключился. Сворачиваемся, команда, начнём заново завтра.»\n\n«Басс-Харбор, мэм, я засёк несколько тел, приближающихся к нашей позиции с предгорий на северо-востоке.»\n\n«Да, я читаю, слышу тебя громко и чётко. Чёрт, как же я люблю эти задания для этих жаб из SSC. Они никогда не скупятся на расходы, а сетевые матрицы — это как глаза Бога. Верхний Маяк, у нас гости.»\n\n1/сцену выберите союзного персонажа. До конца вашего следующего хода вы можете использовать его системы вместо своих для проверок и спасбросков, а также совершать тех-действия, используя его сенсоры, проводя линию видимости из его позиции.",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "“This is the place? You sure Pettenouk said it was here?”\n\n “Yes, I’m sure. By the way, switch over to atmospheric level two. As you know, the air here on Kibo is noxious to us. Without proper adjustments, you’ll enter a coma in hours... Shou! Dammit, someone get Shou, he’s gone and passed out. Pack it up team, we’ll start again tomorrow.”\n\n “Bass Harbor, ma’am, I’m catching several bodies approaching our position from the foothills to the northeast.”\n\n “Ah, I’m reading it, got you loud and clear. Damn, I love doing these missions for those SSC toads. They always spare no expense and the network arrays are like having God’s eyes. Topside Lighthouse, we got company.”\n\n1/scene, choose an allied character. Until the end of your next turn, you may use their Systems in place of your own for the purposes of checks and saves, and make tech actions using their Sensors, drawing line of sight from their position.",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_free_action",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Mist Feathers",
+      "t": "",
+      "p": 2,
+      "lab": "Exotic · 2 SP",
+      "sf": "",
+      "nr": "Туманные перья",
+      "tr": "",
+      "xr": "«Тебе никогда не было интересно, как летает туман? ... Хм, ладно. А мне вот интересно, интересно каждый день. Я ему завидую. Он изгибается бесконечно, сращениями пара, искрящегося и обнажённого. Я не мечтаю — прекрати, не будь как Бабушка, — её руки всегда были такими сжатыми и твёрдыми. Видишь ли, я хочу летать — летать так высоко, чтобы туман позавидовал. Подумай, что если бы я могла взять тебя с собой? Нам обоим было бы лучше. Лучше, чем обрабатывать эти земли день за днём, пока туман над нами смеётся. Я обещаю, однажды я отращу туманные перья и стану королевой хребта Кимавенсе. Ты вообще слушаешь? Я сказала, я буду Королевой! ------ эй? Ты же знаешь, я слышу, как ты подкрадываешься сзади, да? Прекрати дурачиться, эти холмы нужно обрабатывать. Ты меня не слышал!? Я знаю, что ты там... Да ладно тебе, это уже страшно...»\n«Алая почва, засеянная багровыми оттенками.»\n\nОтростки искрящиеся и бесконечные. Туманное перо — это специальная лицензированная система парения, разработанная специально для разреженных атмосфер. Система полёта — если это вообще можно так назвать — это не простое аэродинамическое управление. Разработанные прославленным мастером Олотаде Оматанва, Туманные перья на самом деле не летают; вместо этого они вызывают принудительные молекулярные связи между триллионами и триллионами атмосферных частиц. Этот процесс связывания скорее тянет, чем толкает пользователя вперёд, поскольку с каждой молекулярной связью пользователя дёргает на миллионную долю дюйма. При питании от реакторов с холодным ядром выход Туманных перьев умножается экспоненциально, позволяя мехам парить бесконечно в невакуумных средах.\n\n1/сцену, при активации, вы получаете следующие эффекты до конца вашего следующего хода:\n• Ваш мех считается парящим\n• Вы можете ускоряться свободным действием, 1/ход.\n• Когда вы невидимы или пользуетесь укрытием в конце своего хода, вы можете стать скрытым, не тратя действие",
+      "labr": "Экзотика · 2 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "“Have you ever wondered how the mist flies? ... Hmm, fine. Well I do, I do every day. I envy it. It bends endlessly with joins of vapor effervescent and naked. I’m not dreaming – stop, don’t be like Grandmother – her hands were always so pressed and firm. You see– I want to fly – fly so high that the mist becomes jealous. Think of it, what if I could bring you too? Things would be better for the both of us. Better than tilling these lands day in and out, laughed at by the mist. I promise one day I’ll grow mist feathers and be the queen of the Kimawense Range. Are you even paying attention? I said I’ll be the Queen!------huh? You know I can hear you walking up behind me, right? Quit fooling around, these hills need tilling. Didn't you hear me!? I know you’re there... Give it a rest, it’s cree---pe---”\n“Scarlet soil, sowed in crimson hues.”\n\n Extensions effervescent and endless. The Mist Feather is a specialty licensed float apparatus specifically designed for thin atmospheres. The flight system – if you can call it that – is not simple aeronautic manipulation. Designed by the illustrious artisan Ololade Omatanwa, the Mist Feathers in fact do not fly; instead, they induce forced molecular bonds between trillions upon trillions of atmospheric particulates. This bonding process instead pulls rather than propels the user forward as with each molecular bond the user is tugged a millionth of an inch. When powered by cold-core reactors the Mist Feather’s output is exponentially multiplied, enabling mechs to hover indefinitely in non-vacuum environments.\n\n1/scene, when activated, you gain the following effects until the end of your next turn:\n\n• Your mech is considered hovering\n• You may Boost as a free action, 1/turn.\n• When Invisible or benefiting from cover at the end of your turn, you may choose to become Hidden without taking an action",
+      "tg": [
+        [
+          "tg_quick_action",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Emergency Repair Module",
+      "t": "",
+      "p": 1,
+      "lab": "HA · LL1 · 1 SP",
+      "sf": "",
+      "nr": "Модуль аварийного ремонта",
+      "tr": "",
+      "xr": "Модули аварийного ремонта часто являются основным элементом шасси Арсенала по всей галактике. Благодаря сочетанию активной нанитной суспензии, сварки заплат и переключения на резервные системы в ответ на немедленный урон, они гарантируют, что шасси сможет быстро выполнить небольшие полевые ремонты, чтобы оставаться в строю. По легионам возник ряд неформальных праздничных традиций, отмечающих первый случай, когда пилот получил урон, достаточный для срабатывания ERM в бою.\n\nВсякий раз, когда вы или соседний союзник приготовитесь, вы можете потратить заряд и потратить 1 Ремонт, чтобы полностью восстановить HP этого персонажа сразу после получения им урона от вызвавшей это атаки. Если этот персонаж получил урон структуре от вызвавшей это атаки, он также бросает на один кубик меньше при проверке урона структуре, минимум до 0 (что не даёт эффекта).",
+      "labr": "HA · LL1 · 1 SP",
+      "lic": "Gilgamesh",
+      "ll": 1,
+      "lim": 1,
+      "x": "Emergency repair modules are often a mainstay on Armory chassis galaxy-wide. Through a combination of active nanite slurry, hardpatch welding, and shunting to redundant systems in response to immediate damage, they ensure that a chassis will be able to quickly complete nonmassive battlefield repairs in order to remain operational. A number of informal celebratory traditions have arisen throughout the legions to commemorate a pilot's first time taking damage sufficient to trigger an ERM in combat.\n\nWhenever you or an adjacent ally Braces, you may expend a charge and spend 1 Repair to restore that character's HP to full immediately after they take damage from the triggering attack. If that character took structure damage from the triggering attack, they also roll one less die on the structure damage check to a minimum of 0 (which results in no effect).",
+      "tg": [
+        [
+          "tg_limited",
+          1
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "SPEAR Charges",
+      "t": "",
+      "p": 3,
+      "lab": "HA · LL3 · 3 SP",
+      "sf": "",
+      "nr": "Заряды SPEAR",
+      "tr": "",
+      "xr": "Лишь недавно одобренная для широкого распространения среди сил Легиона, ракета специального назначения с усиленным противотанковым эффектом (SPEAR) — это лёгкая система доставки боеприпасов, предназначенная для использования вместо более крупного оружия с большой полезной нагрузкой, такого как GMS MC-RPG или Snapdragon ACGM. Созданная для простоты использования при минимальной подготовке и запускаемая из одноразовых трубчатых пусковых установок, каждая ракета может использоваться либо в режиме прямого огня, либо быть установлена на барражирование над территорией, начиная перехват сверху вниз при распознавании враждебного контакта в пределах установленного периметра угрозы.\n\nПротивотанковая ракета (Быстрое): Вы выпускаете ракету, нацеливаясь на одного персонажа в пределах дальности 10. Ваша цель должна преуспеть в спасброске ловкости или получить 6 бронебойного (AP) взрывного урона. При успехе она получает половину урона.\n\nБарражирующий заряд (Mine): Разверните барражирующий заряд в свободной клетке в пределах дальности 3, где он устанавливает зону взрыва 2. При развёртывании зона этой мины не может перекрываться с враждебными персонажами. Этот усовершенствованный боеприпас не детонирует обычным образом; вместо этого в следующий раз, когда враждебный персонаж добровольно переместится более чем на 1 клетку, находясь в её зоне, на высоте до 10 клеток, заряд немедленно запускается в него и детонирует. Он должен преуспеть в спасброске ловкости или получить 2d6 бронебойного (AP) взрывного урона и немедленно остановиться и потерять всё оставшееся перемещение. При успехе он получает только половину урона. Неудачная попытка обезвредить эту мину также заставляет её детонировать против этого персонажа. Персонаж может активировать только один барражирующий заряд за ход.",
+      "labr": "HA · LL3 · 3 SP",
+      "lic": "Gilgamesh",
+      "ll": 3,
+      "lim": 2,
+      "x": "Only recently approved for widespread distribution throughout Legion forces, the Special Purpose Enhanced Anti-armor Rocket is a lightweight munition delivery system designed to be used in place of larger payload weapons such as the GMS MC-RPG or the Snapdragon ACGM. Designed for ease of use with minimal training and fired from disposable tube launchers, each rocket can either be used in direct-fire mode or set to loiter over an area, initiating top-down terminal interception upon recognizing hostile contact within its established threat perimeter.\n\nAnti-Armor Rocket (Quick): You fire a rocket, targeting a single character within range 10. Your target must pass an Agility save or take 6 AP explosive damage. On a success, they take half damage.\n\nLoitering Payload (Mine): Deploy a loitering payload to a free space within range 3, where it establishes a Burst 2 area. When deployed, this mine's area cannot overlap any hostile characters. This advanced munition does not detonate normally; instead, the next time a hostile character voluntarily moves more than 1 space while within its area, up to 10 spaces high, the payload immediately launches itself at them, detonating. They must pass an Agility save or take 2d6 AP explosive damage and immediately stop and lose all remaining movement. On a success, they take half damage only. Failing to disarm this mine also causes it to detonate against that character. A character can only trigger one loitering payload per turn.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_grenade",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Utility Drone",
+      "t": "",
+      "p": 2,
+      "lab": "HA · LL2 · 2 SP",
+      "sf": "",
+      "nr": "Дрон общего назначения",
+      "tr": "",
+      "xr": "Массово производимый и распространяемый среди легионов Арсенала, где бы они ни находились, служебный дрон «Аргос» — обычное зрелище по всему Пурвью и за его пределами. Доктрина легионеров предусматривает широкое использование дронов «Аргос» для дополнения и усиления эффективности отрядов, при этом каждый дрон служит многоцелевой платформой, включающей многочисленные системы и компоненты, включая массивы перехвата угроз, проекторы электростатического разряда для запрета и подавления территории и полевые диагностические комплекты.\n\nДрон общего назначения (Drone, Size 0.5, HP 5, Evasion 10, E-Defense 10): Потратьте 1–2 заряда, чтобы развернуть столько же служебных дронов в свободных клетках в пределах сенсоров, где каждый из них создаёт зону взрыва 2. Враждебные персонажи в этой зоне совершают все проверки и спасброски с +1 к сложности, а все союзные персонажи в этой зоне получают +1 к точности всех проверок и спасбросков. Этот эффект не суммируется с другими служебными дронами.\n\nСлужебный дрон можно развернуть заново в новом месте быстрым действием. Его нельзя отозвать, и он исчезает в конце сцены.",
+      "labr": "HA · LL2 · 2 SP",
+      "lic": "Gilgamesh",
+      "ll": 2,
+      "lim": 2,
+      "x": "Mass produced and distributed to Armory legions wherever they may find themselves deployed, the \"Argos\" utility drone is a common sight throughout the Purview and beyond. Legionnaire doctrine calls for extensive use of Argos drones to supplement and enhance squad performance, with each drone serving as a multipurpose platform incorporating numerous systems and components, including threat interception arrays, electrostatic discharge area denial/suppression projectors, and field diagnostic loadouts.\n\nUtility Drone (Drone, Size 0.5, HP 5, Evasion 10, E-Defense 10): Expend 1-2 charges to deploy that many utility drones to free spaces within Sensors where they each create a Burst 2 area. Hostile characters within this area make all checks and saves with +1 Difficulty, and all allied characters within this area gain +1 Accuracy on all checks and saves. This effect does not stack with other utility drones.\n\nThe utility drone can be redeployed to a new location as a quick action. It cannot be recalled and expires at the end of the scene.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Quickfoam Charges",
+      "t": "",
+      "p": 3,
+      "lab": "Exotic · 3 SP",
+      "sf": "",
+      "nr": "Заряды квикфома",
+      "tr": "",
+      "xr": "Обычное оборудование как на коммерческих, так и на военных космических кораблях, «квикфом» — это самоотверждающаяся полимерная пена, пропитанная белыми утилитарными нанитами, которая быстро расширяется и затвердевает даже в условиях отсутствия атмосферы, используется для герметизации пробоин корпуса и поддержания повреждённых систем. Хотя она не считается частью стандартного боевого снаряжения, морские пехотинцы-пилоты часто используют развёртываемые канистры с воздушным подрывом, полные этого вещества, для проведения полевых аварийных ремонтов или установки импровизированных ловушек в узких местах и коридорах доступа.\n\nРемонтная граната (Быстрое): Вы бросаете гранату, нацеливаясь на персонажа в пределах дальности 5. При использовании на союзном персонаже вы укрепляете цель, и она может снять одно враждебное состояние. При использовании на враждебном персонаже он становится ослабленным и замедленным до конца своего следующего хода.\n\nГерметизирующая мина (Mine): Разверните герметизирующую мину, которая устанавливает зону взрыва 1. Эта мина детонирует, когда персонаж перемещается рядом с ней или над ней. Все союзные персонажи (включая вас) в зоне поражения получают сверхщит, равный Стойкости+4, и снимают весь ожог. Все враждебные персонажи в зоне поражения становятся обездвиженными быстротвердеющей пеной-герметиком, которая затвердевает на месте. Они остаются обездвиженными, пока затвердевшая пена не получит достаточно урона, чтобы сломаться; она считается объектом с 10 HP и уклонением 5.",
+      "labr": "Экзотика · 3 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 2,
+      "x": "A common piece of equipment aboard commercial and military spacefaring vessels alike, \"quickfoam\" is a self-curing polymer foam laced with whitewash utility nanites that rapidly expands and hardens even in null-atmosphere conditions, used to seal hull breaches and sustain compromised systems. While not considered part of a standard combat loadout, marine pilots often make use of deployable airburst cannisters full of the substance to effect in-field emergency repairs or to set improvised snare traps in chokepoints and access corridors.\n\nPatch Grenade (Quick): You throw a grenade, targeting a character within Range 5. When used on an allied character, you Bolster the target and they may clear one hostile condition. When used on a hostile character, they become Impaired and Slowed until the end of their next turn.\n\nSealant Mine (Mine): Deploy a sealant mine which establishes a Burst 1 area. This mine detonates when a character moves adjacent to or over it. All allied characters (including yourself) within the affected area gain Grit+4 Overshield and clear all burn. All hostile characters in the affected area become Immobilized by quick-curing foam sealant, which hardens in place. They remain Immobilized until the hardened foam takes enough damage to break; it counts as an object with 10 HP and Evasion 5.",
+      "tg": [
+        [
+          "tg_limited",
+          2
+        ],
+        [
+          "tg_unique",
+          null
+        ],
+        [
+          "tg_grenade",
+          null
+        ],
+        [
+          "tg_exotic",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Champion's Favor",
+      "t": "",
+      "p": 1,
+      "lab": "Exotic · 1 SP",
+      "sf": "",
+      "nr": "Милость чемпиона",
+      "tr": "",
+      "xr": "Эти золотые лавры в масштабе меха, вручаемые чемпионам панкратиона механиков, содержат небольшой, но изощрённый генератор щита. Щит обеспечивает как защиту, так и характерное цветное визуальное мерцание, называемое «аурой» или «нимбом» чемпиона.\n\nВ начале вашего хода получите 1 сверхщит.",
+      "labr": "Экзотика · 1 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "These mech-scale golden laurels granted to pankration mechani champions house a small but sophisticated shield generator. The shield provides both protection and a distinctively colored visual shimmer, referred to as a champion's “aura” or “halo”.\n\nAt the start of your turn, gain 1 Overshield.",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
+    },
+    {
+      "n": "Entangled Co-Consciousness Rig",
+      "t": "AI",
+      "p": 3,
+      "lab": "Exotic · 3 SP",
+      "sf": "",
+      "nr": "Установка запутанного со-сознания",
+      "tr": "ИИ",
+      "xr": "Дом Монморанси провёл одну из самых впечатляющих серий побед, когда-либо виденных под сверкающими небесами Испахсалара в Креоссе, одерживая победу за победой, пока элитная команда Песчаных людей не отдала свои жизни, чтобы добыть секрет их исключительной эффективности.\n\nНейролинк-интерфейсы, оснащённые заказными паракаузальными системами запутанности, соединяли пилотов Дома Монморанси друг с другом, позволяя им черпать опыт друг друга и даже подсознательные реакции, чтобы получить преимущество в бою. Когда тайна была раскрыта, комитеты по правилам призвали вынести решение против использования этих систем в Играх Домов. Другие соревнования последовали их примеру, и господство малого дома наконец подошло к концу.\n\nВаш мех получает тег ИИ и «Чемпионы, направьте мои руки». Эта система — не NHP и не может войти в каскад.\n\nКроме того, если враждебный персонаж или проверка урона структуре заставили бы вас стать оглушённым, вы можете вместо этого передать управление своим мехом его установке запутанного со-сознания. Если вы это сделаете, вы не станете оглушённым, но не сможете вернуть управление или передать управление любому другому ИИ в свой следующий ход.\n\nЧемпионы, направьте мои руки (Other): Вы можете не бросать кубик, а считать, что на d20 выпало 10. Если атака попадает, она автоматически становится критической.",
+      "labr": "Экзотика · 3 SP",
+      "lic": "GMS",
+      "ll": 0,
+      "lim": 0,
+      "x": "House Montmorency carried one of the most impressive win streaks ever seen under the glittering skies of Ispahsalar into the Kreoss, and scored victory after victory until an elite team of Sand-men gave their lives to extract the secret of their exceptional performance.\n\nNeurolink interfaces fitted with custom paracausal entanglement systems connected each of House Montmorency's pilots together, allowing them to draw on each other’s expertise and even subconscious reactions to gain an edge in combat. Once the mystery was revealed, rules committees were encouraged to find against the use of these systems in the House Games. Other competitions followed suit, and the minor house’s dominance finally came to an end.\n\nYour mech gains the AI tag and Champions, Guide My Hands. This system is not an NHP and cannot enter cascade.\n\nAdditionally, if a hostile character or a structure damage check would cause you to become Stunned, you may instead turn control of your mech over to its Entangled Co-Consciousness Rig. If you do, you do not become Stunned, but you cannot pick the controls back up or turn over control to any other AI on your next turn.\n\nChampions, Guide My Hands (Other): 1/scene, when you make an attack, you may choose not to roll, instead treating your attack as if you had rolled a 10 on the d20. If this attack hits, it automatically becomes a critical hit.",
+      "tg": [
+        [
+          "tg_exotic",
+          null
+        ],
+        [
+          "tg_ai",
+          null
+        ],
+        [
+          "tg_unique",
+          null
+        ]
+      ]
     }
   ],
   "frames": {
@@ -8281,6 +9485,582 @@ const DB = {
       "iw": [],
       "lic": "Zheng",
       "ll": 2
+    },
+    "White Witch": {
+      "m": [
+        "Flex",
+        "Heavy"
+      ],
+      "c": "Ferroreactive Shell",
+      "cd": "“The first test nearly ended the program. Exotic Materials is a … liberal department within the Constellation, but even our executives were hesitant to approve a second run. The data generated by WW_01 was invaluable, and we were sure we could get it right with a second test – all we needed was the sigma on its rewrite cone! Suits just get leery when systems fail. They forget that progress takes blood – sometimes literally – as payment for a breakthrough.”\n\nActive — Hyperactive mode (Protocol, Encounter): For the rest of the scene, Ferroreactive Armor gives +2 Armor each time instead of +1, to a max of +12. Each time your armor increases in this way, your mech deals 1 AP kinetic damage to all characters in a Burst 1 area as it draws raw material from the environment. If your benefit from Ferroreactive Armor would increase past +12, it explodes instead, dealing 1 AP kinetic damage in a Burst 2 area around you. All characters within the affected area must succeed on a HULL save or be knocked PRONE, then IMMOBILIZED and SHREDDED until the end of their next turns. The benefit from Ferroreactive Armor resets to 0, although it continues to be active and this effect can occur multiple times in a scene.\n\nPassive — Ferroreactive Armor: Each time you take damage from yourself or a hostile source (even if that damage is reduced or ignored), gain +1 ARMOR for the rest of this scene after taking damage, up to a maximum of +6.",
+      "t": "Rooted: While this mech is Immobilized, it has resistance to Kinetic damage and cannot be knocked back or knocked prone. It can choose to become immobilized until the end of its next turn as a protocol.\n\nHarden: When the White Witch braces, it gains overshield equal to 4 + GRIT before it takes damage.\n\nFluid Burst: When an allied character in Range 2 of the White Witch takes damage from a hostile source, the White Witch can reduce the damage by 1 and deal 1 AP kinetic damage to itself.\n\nGuardian: Adjacent allied characters can use this mech as hard cover.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Defender"
+      ],
+      "roler": [
+        "Защитник"
+      ],
+      "nr": "Белая ведьма",
+      "cr": "Феррореактивная оболочка",
+      "cdr": "«Первый тест едва не закрыл программу. «Экзотические материалы» — это… либеральный отдел внутри Созвездия, но даже наши руководители сомневались, одобрять ли второй запуск. Данные, полученные от WW_01, были бесценны, и мы были уверены, что со второго теста всё получится, — всё, что нам нужно, это сигма на её конусе перезаписи! Костюмы просто начинают нервничать, когда системы отказывают. Они забывают, что прогресс требует крови — иногда буквально — как платы за прорыв.»\n\nАктивное — Гиперактивный режим (Протокол, Encounter): До конца сцены феррореактивная броня даёт +2 брони каждый раз вместо +1, максимум до +12. Каждый раз, когда ваша броня увеличивается таким образом, ваш мех наносит 1 AP кинетического урона всем персонажам в области взрыва 1, вытягивая сырьё из окружения. Если бонус от феррореактивной брони должен превысить +12, он вместо этого взрывается, нанося 1 AP кинетического урона в области взрыва 2 вокруг вас. Все персонажи в затронутой области должны преуспеть в спасброске корпуса или быть сбитыми с ног, а затем обездвиженными и разорванными до конца своих следующих ходов. Бонус от феррореактивной брони сбрасывается до 0, хотя она продолжает действовать, и этот эффект может произойти несколько раз за сцену.\n\nПассивное — Феррореактивная броня: Каждый раз, когда вы получаете урон от себя или враждебного источника (даже если этот урон уменьшен или проигнорирован), получите +1 брони до конца этой сцены после получения урона, максимум до +6.",
+      "tr": "Укоренение: Пока этот мех обездвижен, он имеет сопротивление кинетическому урону и не может быть отброшен или сбит с ног. Он может по своему выбору стать обездвиженным до конца своего следующего хода как протокол.\n\nЗакалка: Когда «Белая ведьма» занимает стойку, она получает сверхщит, равный 4 + GRIT, прежде чем получит урон.\n\nЖидкостный выброс: Когда союзный персонаж в дальности 2 от «Белой ведьмы» получает урон от враждебного источника, «Белая ведьма» может уменьшить урон на 1 и нанести себе 1 AP кинетического урона.\n\nЗащитник: Соседние союзные персонажи могут использовать этот мех как твёрдое укрытие.",
+      "s": {
+        "size": 2,
+        "stress": 4,
+        "structure": 4,
+        "armor": 0,
+        "hp": 7,
+        "evasion": 10,
+        "edef": 6,
+        "heatcap": 4,
+        "repcap": 5,
+        "sensor_range": 5,
+        "tech_attack": 0,
+        "save": 11,
+        "speed": 6,
+        "sp": 6
+      },
+      "iw": [],
+      "lic": "White Witch",
+      "ll": 2
+    },
+    "Emperor": {
+      "m": [
+        "Main"
+      ],
+      "c": "Darian Regalia",
+      "cd": "Active — Xerxes Apex (Protocol, Encounter): For the rest of this scene, any mech targeted by an attack using the Marathon Arc Bow releases a bolt of lightning after the attack resolves, striking a character of your choice within RANGE 3, which can be the character it originated from. This lightning bolt either deals 2 AP damage (no attack or save) or increases the target’s OVERSHIELD by +2. The same character can be struck by multiple bolts.",
+      "t": "Storm Shield: The Emperor’s HP is not increased by its pilots GRIT. Instead, at the start of any scene, the Emperor gains OVERSHIELD equal to 6+GRIT. This OVERSHIELD refreshes any time the Emperor takes structure damage\n\nImperial Vestment: Whenever the Emperor grants OVERSHIELD to another character, it gains the same amount of OVERSHIELD. If the Emperor gains OVERSHIELD from any source, including this trait, it increases its current OVERSHIELD by that amount instead of replacing it. Its OVERSHIELD cannot exceed the amount granted by Storm Shield.\n\nSovereign Presence: 1/round, when the Emperor targets a character with an attack, it can condemn that character, forcing them to make an ENGINEERING save. On a failure, the target takes +1 damage any time they take damage until the start of the Emperor’s next turn.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Support",
+        "Artillery"
+      ],
+      "roler": [
+        "Поддержка",
+        "Артиллерия"
+      ],
+      "nr": "Император",
+      "cr": "Регалии Дариана",
+      "cdr": "Активное — Апекс Ксеркса (Протокол, Encounter): До конца этой сцены любой мех, ставший целью атаки с использованием «Марафонской дуги», выпускает разряд молнии после разрешения атаки, поражая персонажа по вашему выбору в дальности 3, которым может быть персонаж, от которого она исходила. Этот разряд молнии либо наносит 2 AP урона (без атаки или спасброска), либо увеличивает сверхщит цели на +2. Один и тот же персонаж может быть поражён несколькими разрядами.",
+      "tr": "Штормовой щит: HP «Императора» не увеличивается от GRIT его пилота. Вместо этого в начале любой сцены «Император» получает сверхщит, равный 6+GRIT. Этот сверхщит обновляется всякий раз, когда «Император» получает урон структуре.\n\nИмперское облачение: Всякий раз, когда «Император» даёт сверхщит другому персонажу, он получает столько же сверхщита. Если «Император» получает сверхщит из любого источника, включая эту черту, он увеличивает свой текущий сверхщит на это количество вместо его замены. Его сверхщит не может превышать количество, даваемое «Штормовым щитом».\n\nСуверенное присутствие: 1/раунд, когда «Император» нацеливается атакой на персонажа, он может осудить этого персонажа, заставив его пройти спасбросок инженерии. При провале цель получает +1 урона каждый раз, когда получает урон, до начала следующего хода «Императора».",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 0,
+        "hp": 2,
+        "evasion": 10,
+        "edef": 8,
+        "heatcap": 5,
+        "repcap": 2,
+        "sensor_range": 15,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 5,
+        "sp": 7
+      },
+      "iw": [
+        "Marathon Arc Bow"
+      ],
+      "lic": "Emperor",
+      "ll": 2
+    },
+    "Orchis": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Helion",
+      "cd": "“The man who took the reins of steel and became greater than man. The lowly one, the first, the greatest, the one who threw the sun at the face of his foes. IA! IA! Helion!“\n\nActive — Helion (Quick): You hurl your shield with a mighty throw at a mech (allied or hostile) within Range 6, making a special Ram attack that cannot miss and knocks the target 3 spaces back instead of 1. This can cause characters to collide with obstructions as normal. This action is Efficient, and refunds 1 Core Power at the end of any scene in which it’s used.\n\nPassive — Hunting Eagle: 1/round when the Orchis causes a character to collide with another obstacle or character, you can - in addition to any other effects - throw your mech's scuta shield at that character, dealing 3 kinetic damage and rendering them unable to take reactions until the end of their next turn. The shield then returns to you. This effect doesn’t take an action or reaction to activate.\n\nHunting Eagle (Free): 1/round when the Orchis causes a character to collide with another obstacle or character, you can - in addition to any other effects - throw your mech's scuta shield at that character, dealing 3 kinetic damage and rendering them unable to take reactions until the end of their next turn. The shield then returns to you. This effect doesn’t take an action or reaction to activate.",
+      "t": "Perfect Parry: The Orchis and all adjacent allied characters have IMMUNITY to all damage and effects from missed attacks.\n\nGuardian: Adjacent allied characters can use the Orchis for hard cover.\n\nRoyal Guard: When an allied mech adjacent to the Orchis moves, the Orchis can also move with that character as long as it doesn’t break adjacency, mirroring that character’s movement. The Orchis is still affected by obstructions and, between its turns, can only move a total number of spaces with this ability equal to its SPEED+1.This effect doesn’t take a reaction, and doesn’t provoke reactions or obey engagement.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Controller",
+        "Defender"
+      ],
+      "roler": [
+        "Контролёр",
+        "Защитник"
+      ],
+      "nr": "Орхис",
+      "cr": "Гелион",
+      "cdr": "«Человек, взявший поводья стали и ставший больше человека. Низший, первый, величайший, тот, кто швырнул солнце в лицо своим врагам. ИА! ИА! Гелион!»\n\nАктивное — Гелион (Быстрое): Вы швыряете свой щит могучим броском в меха (союзного или враждебного) в дальности 6, совершая особую атаку тараном, которая не может промахнуться и отбрасывает цель на 3 клетки назад вместо 1. Это может заставить персонажей столкнуться с препятствиями, как обычно. Это действие эффективно и возвращает 1 ядро в конце любой сцены, в которой оно было использовано.\n\nПассивное — Охотничий орёл: 1/раунд, когда «Орхис» заставляет персонажа столкнуться с другим препятствием или персонажем, вы можете — в дополнение к любым другим эффектам — бросить скутум вашего меха в этого персонажа, нанеся 3 кинетического урона и лишив его возможности использовать реакции до конца его следующего хода. Затем щит возвращается к вам. Этот эффект не требует действия или реакции для активации.\n\nОхотничий орёл (Свободное): 1/раунд, когда «Орхис» заставляет персонажа столкнуться с другим препятствием или персонажем, вы можете — в дополнение к любым другим эффектам — бросить скутум вашего меха в этого персонажа, нанеся 3 кинетического урона и лишив его возможности использовать реакции до конца его следующего хода. Затем щит возвращается к вам. Этот эффект не требует действия или реакции для активации.",
+      "tr": "Идеальное парирование: «Орхис» и все соседние союзные персонажи имеют иммунитет ко всему урону и эффектам от промахнувшихся атак.\n\nЗащитник: Соседние союзные персонажи могут использовать «Орхиса» как твёрдое укрытие.\n\nКоролевская гвардия: Когда союзный мех, соседний с «Орхисом», перемещается, «Орхис» также может перемещаться вместе с этим персонажем, пока не разрывает соседство, повторяя перемещение этого персонажа. «Орхис» по-прежнему подвержен влиянию препятствий и между своими ходами может переместиться с помощью этой способности в общей сложности на количество клеток, равное его скорости+1. Этот эффект не требует реакции и не провоцирует реакций и не подчиняется вовлечённости.",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 10,
+        "edef": 10,
+        "heatcap": 6,
+        "repcap": 4,
+        "sensor_range": 10,
+        "tech_attack": -1,
+        "save": 12,
+        "speed": 5,
+        "sp": 8
+      },
+      "iw": [],
+      "lic": "Black Witch",
+      "ll": 2
+    },
+    "Calendula": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Execration of the Names of the Unworthy Dead",
+      "cd": "“I inscribe thy name, I threaten thee with the second death. I kill thy name, and this I kill thee again in the afterlife.“\n\nActive — Weighing of Inequitable Hearts (Quick): One hostile character and one allied character both within Range 5 and line of sight to you or a void husk, become INTANGIBLE until the end of your next turn. Two characters must be chosen for this effect to occur. This ability is Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.\n\nPassive — Execrate: Gain the Execrate Quick Tech action.\n\nExecrate (Quick Tech): 1/round You may target another character in line of sight within Range 3 of a void husk, banishing them to an interstitial space. Allied characters can choose whether or not to be affected, and hostile characters can avoid being affected by succeeding on a SYSTEMS save. Banished characters exist in a shadowy gray realm, making them INTANGIBLE.\nThis effect lasts until the banished character moves adjacent or starts their turn adjacent to a void husk, either of which returns them to physical space and clears INTANGIBLE.",
+      "t": "Sculptor of Fate: 1/round, when the Calendula hits a character with a tech attack, it can create a void husk in a free space within RANGE 3 of its target. Void husks are INTANGIBLE objects that don’t cause obstruction. The husk is the same SIZE as its target, has IMMUNITY to all damage and effects, and emits a BURST 2 aura while active that affects both Intangible and tangible characters. Hostile characters are SLOWED while they are at least partly in the area. The Calendula can create any number of husks, all of which disintegrate at the end of the scene.\n\nGrammaton Law: SLOWED hostile characters are also SHREDDED while within Range 3 of the Calendula.\n\nGrammaton Mantle: As a protocol, the Calendula can become INTANGIBLE until the start of its next turn.",
+      "src": "HORUS",
+      "sf": "",
+      "role": [
+        "Controller"
+      ],
+      "roler": [
+        "Контролёр"
+      ],
+      "nr": "Календула",
+      "cr": "Проклятие имён недостойных мёртвых",
+      "cdr": "«Я вписываю твоё имя, я угрожаю тебе второй смертью. Я убиваю твоё имя, и этим я убиваю тебя вновь в загробной жизни.»\n\nАктивное — Взвешивание несправедливых сердец (Быстрое): Один враждебный персонаж и один союзный персонаж, оба в дальности 5 и линии видимости от вас или пустой оболочки, становятся неосязаемыми до конца вашего следующего хода. Для срабатывания этого эффекта необходимо выбрать двух персонажей. Эта способность эффективна и возвращает 1 ядро в конце любой сцены, в которой эта способность была использована.\n\nПассивное — Проклясть: Получите быстрое тех-действие «Проклясть».\n\nПроклясть (Быстрая техника): 1/раунд вы можете нацелиться на другого персонажа в линии видимости в дальности 3 от пустой оболочки, изгоняя его в промежуточное пространство. Союзные персонажи могут сами решать, будут ли они затронуты, а враждебные персонажи могут избежать воздействия, преуспев в спасброске систем. Изгнанные персонажи существуют в сумрачном сером царстве, становясь неосязаемыми.\nЭтот эффект длится, пока изгнанный персонаж не переместится вплотную к пустой оболочке или не начнёт свой ход вплотную к пустой оболочке, что возвращает его в физическое пространство и снимает неосязаемость.",
+      "tr": "Ваятель судьбы: 1/раунд, когда «Календула» попадает по персонажу тех-атакой, она может создать пустую оболочку в свободной клетке в дальности 3 от своей цели. Пустые оболочки — неосязаемые объекты, не создающие препятствий. Оболочка имеет тот же размер, что и её цель, иммунитет ко всему урону и эффектам и излучает ауру взрыва 2, пока активна, которая воздействует как на неосязаемых, так и на осязаемых персонажей. Враждебные персонажи замедлены, пока они хотя бы частично находятся в области. «Календула» может создать любое количество оболочек, и все они распадаются в конце сцены.\n\nЗакон грамматона: Замедленные враждебные персонажи также разорваны, пока находятся в дальности 3 от «Календулы».\n\nМантия грамматона: Как протокол, «Календула» может стать неосязаемой до начала своего следующего хода.",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 2,
+        "hp": 7,
+        "evasion": 7,
+        "edef": 10,
+        "heatcap": 6,
+        "repcap": 3,
+        "sensor_range": 8,
+        "tech_attack": 1,
+        "save": 11,
+        "speed": 4,
+        "sp": 8
+      },
+      "iw": [],
+      "lic": "Minotaur",
+      "ll": 2
+    },
+    "Störtebeker": {
+      "m": [
+        "Flex",
+        "Flex",
+        "Heavy"
+      ],
+      "c": "Truesilver Weaponry",
+      "cd": "Project TRUESILVER was an attempt to improve the destructive capabilities of whitewash nano-machines. The hyper-specialized nanites manifest themselves as a mirror-sheen silver coating that can spread over ammunition and melee weapons alike. This coating gives armaments a striking appearance and is the source of the system’s unique name. Thus enhanced, weapons can deliver a destructive nanite payload that compounds any damage done by the initial strike exponentially, eating away at a target from the inside.\nTRUESILVER nanites are internally printed and held in a specialized shielded reservoir before being fed to a mech’s weapons systems. Slow to be replenished by the frame’s internal printers, pilots must manage their use with care.\n\nActive — Truesilver Arsenal (Protocol, Encounter): You may use your Truesilver trait three more times this Scene.\n\nPassive — Hopkins Doctrine: You may only take this action if you took the skirmish action this turn. Pick one of the following effects:\n\nReprise (Quick): Skirmish with a weapon that was reloaded via DYNAMIC RELOAD this turn.\n\nRenewal (Quick): All weapons not used to attack this turn are reloaded at the end of the turn.",
+      "t": "Dynamic Reload: The Störtebeker’s non-Auxiliary weapons gain the following effects:\n\n• Melee weapons gain: “On critical hit: Reload all ranged weapons not used to attack this turn.”\n• Ranged weapons gain: “On critical hit: Reload all melee weapons not used to attack this turn.”\n\nTruesilver: 1/Scene, after hitting with a weapon, the Störtebeker may apply one of the following effects depending on the weapon’s type.\n\n• Non-Loading weapon: The hit is treated as a Critical Hit. Resulting damage is not rolled twice.\n• Loading weapon: Resulting damage can’t be reduced.",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Штёртебекер",
+      "cr": "Вооружение «Трусильвер»",
+      "cdr": "Проект TRUESILVER был попыткой улучшить разрушительные возможности наномашин «побелки». Высокоспециализированные наниты проявляются в виде зеркально-блестящего серебристого покрытия, которое может распространяться как по боеприпасам, так и по рукопашному оружию. Это покрытие придаёт вооружению яркий внешний вид и является источником уникального названия системы. Усиленное таким образом оружие может доставлять разрушительный нанитный заряд, который экспоненциально усиливает урон от первоначального удара, разъедая цель изнутри.\n\nНаниты TRUESILVER печатаются внутри и хранятся в специальном экранированном резервуаре, прежде чем подаваться в системы вооружения меха. Медленно пополняемые внутренними принтерами корпуса, пилоты должны расходовать их с осторожностью.\n\nАктивное — Арсенал «Трусильвер» (Протокол, Encounter): Вы можете использовать вашу черту «Трусильвер» ещё три раза в этой сцене.\n\nПассивное — Доктрина Хопкинса: Вы можете выполнить это действие, только если совершили действие «Скирмиш» в этом ходу. Выберите один из следующих эффектов:\n\nРеприза (Быстрое): Совершите «Скирмиш» оружием, перезаряженным с помощью «Динамической перезарядки» в этом ходу.\n\nОбновление (Быстрое): Всё оружие, не использованное для атаки в этом ходу, перезаряжается в конце хода.",
+      "tr": "Динамическая перезарядка: Оружие «Штёртебекера», кроме вспомогательного, получает следующие эффекты:\n• Рукопашное оружие получает: «При критическом попадании: перезарядите всё дальнобойное оружие, не использованное для атаки в этом ходу».\n• Дальнобойное оружие получает: «При критическом попадании: перезарядите всё рукопашное оружие, не использованное для атаки в этом ходу».\n\nТрусильвер: 1/сцену, после попадания оружием «Штёртебекер» может применить один из следующих эффектов в зависимости от типа оружия.\n• Оружие без перезарядки: попадание считается критическим попаданием. Полученный урон не бросается дважды.\n• Оружие с перезарядкой: полученный урон нельзя уменьшить.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 10,
+        "edef": 7,
+        "heatcap": 5,
+        "repcap": 5,
+        "sensor_range": 8,
+        "tech_attack": 0,
+        "save": 10,
+        "speed": 5,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Raleigh",
+      "ll": 2
+    },
+    "Viceroy": {
+      "m": [
+        "Aux/Aux",
+        "Flex",
+        "Heavy"
+      ],
+      "c": "SSC-41 Tengu-Assisted Missile Tubes",
+      "cd": "By redlining its integrated Vigilante launchers, the Viceroy can deliver a devastating saturation bombardment of its close surroundings. Weathering the onslaught thanks to its blast-resistant exterior, the Viceroy can utilize this salvo, when coupled with the miniaturized Tengu one-burst jump system, for a variety of advanced battlefield tactics. This allows it to either deliver a near-unstoppable alpha strike or make a dramatic exit. “Heaven’s downpour” is a technique that strikes fear in any that face a Viceroy pilot in combat.\n\nActive — Heaven’s Downpour (Quick, Encounter): Center a Burst 3 missile swarm on yourself. Hostile characters in the area must succeed on a Hull save or take 1d6+3 Explosive damage and be knocked Prone. On a successful save they take half damage and remain standing. You may consume an affected character’s Lock On to make them automatically fail the save.\nBefore or after taking this action you may Fly up to your Speed, ignoring Engagement and Reactions. You must end this movement on solid ground or begin falling.",
+      "t": "Near-Threat Targeting Processor: The Viceroy treats its LAUNCHER weapons as though they are also CQB weapons with THREAT 3.\n\nVigilante Omnidirectional Launchers: 1/Round, on a critical hit against a character, the Viceroy may immediately deal 2 Explosive damage to all characters of its choice within Range 3 of itself and knock them back 1 space.\n\nPressure Plating: The Viceroy has Resistance to Explosive Damage.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Вице-король",
+      "cr": "Ракетные установки SSC-41 с ассистентом «Тэнгу»",
+      "cdr": "Выведя свои встроенные пусковые установки «Виджиланте» на предельный режим, «Вице-король» может обрушить разрушительную бомбардировку насыщения на своё ближайшее окружение. Выдерживая натиск благодаря взрывостойкой внешней оболочке, «Вице-король» может использовать этот залп в сочетании с миниатюрной системой одноразового прыжка «Тэнгу» для различных продвинутых тактик на поле боя. Это позволяет ему либо нанести почти неостановимый первый удар, либо эффектно отступить. Техника «небесный ливень» внушает страх всем, кто сталкивается с пилотом «Вице-короля» в бою.\n\nАктивное — Небесный ливень (Быстрое, Encounter): Центрируйте рой ракет «Взрыв 3» на себе. Враждебные персонажи в области должны преуспеть в спасброске корпуса или получить 1d6+3 взрывного урона и быть сбитыми с ног. При успешном спасброске они получают половину урона и остаются на ногах. Вы можете потратить захват цели поражённого персонажа, чтобы он автоматически провалил спасбросок.\nДо или после этого действия вы можете пролететь до своей скорости, игнорируя вовлечённость и реакции. Вы должны завершить это перемещение на твёрдой земле, иначе начнёте падать.",
+      "tr": "Процессор наведения на ближние угрозы: «Вице-король» считает своё оружие «Пусковая установка» также оружием «Ближний бой» с угрозой 3.\n\nВсенаправленные пусковые установки «Виджиланте»: 1/раунд, при критическом попадании по персонажу «Вице-король» может немедленно нанести 2 взрывного урона всем персонажам по своему выбору в пределах дальности 3 от себя и отбросить их на 1 клетку.\n\nВзрывостойкая броня: «Вице-король» имеет сопротивление взрывному урону.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 8,
+        "edef": 8,
+        "heatcap": 6,
+        "repcap": 4,
+        "sensor_range": 10,
+        "tech_attack": 0,
+        "save": 11,
+        "speed": 5,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Monarch",
+      "ll": 2
+    },
+    "Empakaai": {
+      "m": [
+        "Heavy",
+        "Flex"
+      ],
+      "c": "The Descent to Kalunga",
+      "cd": "Upon Ololade Omotanwa’s sculpted mountain a message is inscribed under the cold-span limiters of Iku’s Hand.\n\n“I gift to you a mountain.\n\n Rolling hills, curvilinear egresses, a shattered spine, and a crown glazed in voluminous spires. Let this be a treaty to your foes. Your promise is that their eyes will witness the beauty that is Iku’s hands before they descend to Kalunga. Hell, fire and dark ash, together they will burn cavities in souls.\n\nI gift you my mountain.”\n\nActive — Marrow Anchors (Protocol, Mission): For the rest of the scene, while Grappling you count as 1 Size larger than the combined size of all targets you’re currently Grappling. Additionally, you gain these benefits for the rest of the scene:\n\nIku’s Hand (Free): After successfully hitting a character with a melee weapon attack, the Empakaai may Grapple the target as a free action. On a success, the target is pulled adjacent to you and Grappled.\n\nCatalytic Infusor (Free): At the end of the Empakaai's turn, it deals [its current Heat] in energy AP damage to a character of its choice it is Grappled with. It may also instead choose to divide this total amongst any characters it's currently Grappling.",
+      "t": "Untenable Power: 1/round. the Empakaai may give a Hull check or save it forced +1 difficulty.\n\nIndomitable Force: The Empakaai gains RESISTANCE to damage and HEAT dealt from characters it is GRAPPLING.",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Эмпакааи",
+      "cr": "Спуск в Калунгу",
+      "cdr": "На горе, высеченной Олотаде Оматанва, под холодными ограничителями Руки Ику высечено послание.\n\n«Я дарую тебе гору.\n\nХолмы, извилистые выходы, сломанный хребет и венец, покрытый глазурью объёмных шпилей. Пусть это будет договором с твоими врагами. Твоё обещание — что их глаза увидят красоту, что есть руки Ику, прежде чем они спустятся в Калунгу. Ад, огонь и тёмный пепел — вместе они выжгут полости в душах.\n\nЯ дарую тебе мою гору.»\n\nАктивное — Костные якоря (Протокол, Mission): До конца сцены, пока вы удерживаете кого-то в захвате, вы считаетесь на 1 размер больше суммарного размера всех целей, которые вы сейчас удерживаете в захвате. Кроме того, до конца сцены вы получаете следующие преимущества:\n\nРука Ику (Свободное): После успешного попадания по персонажу рукопашной атакой оружием «Эмпакааи» может захватить цель свободным действием. При успехе цель притягивается к вам вплотную и оказывается в захвате.\n\nКаталитический инфузор (Свободное): В конце хода «Эмпакааи» он наносит [своё текущее тепло] энергетического AP урона персонажу по своему выбору, которого он удерживает в захвате. Вместо этого он может разделить этот общий урон между любыми персонажами, которых он сейчас удерживает в захвате.",
+      "tr": "Нестерпимая мощь: 1/раунд «Эмпакааи» может дать +1 к сложности проверке корпуса или спасброску, который он заставляет пройти.\n\nНеукротимая сила: «Эмпакааи» получает сопротивление урону и теплу от персонажей, которых он удерживает в захвате.",
+      "s": {
+        "size": 1,
+        "stress": 4,
+        "structure": 4,
+        "armor": 2,
+        "hp": 10,
+        "evasion": 7,
+        "edef": 6,
+        "heatcap": 6,
+        "repcap": 4,
+        "sensor_range": 5,
+        "tech_attack": -2,
+        "save": 10,
+        "speed": 4,
+        "sp": 5
+      },
+      "iw": [
+        "Colossus Termo-Unguis"
+      ],
+      "lic": "Empakaai",
+      "ll": 2
+    },
+    "Gilgamesh": {
+      "m": [
+        "Main",
+        "Flex",
+        "Heavy"
+      ],
+      "c": "Exoframe Engineering",
+      "cd": "The Gilgamesh was designed from the ground up to be easy and inexpensive to both construct and maintain, but to Harrison Armory \"inexpensive\" does not equal shoddy or inefficient. Instead, the Gilgamesh utilizes a unique two-stage chassis design in which an inner \"core chassis\" is first created before a secondary outer \"exoframe\" is built upon that core, including additional armor, brachial/limb extensions, and hardpoints. The end result is a deceptively elegant design capable of not only extensive customization but also exceptionally simple field repairs. A series of interlocking clamps and explosive bolts anchor various exoframe components and appendages in place, and when sufficient structural integrity is compromised these sections can be swiftly jettisoned and just as quickly replaced, allowing Legionnaires to continue fighting through catastrophic damage that would render other chassis inoperable.\n\nThis construction also allows power to be selectively rerouted between the core chassis and exoframe components, bypassing system failures and even enhancing overall performance for brief periods, though the strain this puts on the exoframe necessarily limits its use to critical situations only.\n\nActive — Exo Amplification (Protocol): You gain Immunity to all conditions not caused by your own systems, talents, etc, until the end of your next turn, and clear all such conditions you already have (including that that can't be cleared normally). You also clear Exposed, stand from Prone, and gain Grit+4 Overshield. At the end of your next turn, clear this Overshield. This ability can be used even if you would not normally be able to take this action (e.g., if you are Stunned).\n\nUsing this ability during combat counts as expending a Limited charge.\n\nPassive — Exoframe Engineering: The Gilgamesh has a modular construction framework which allows it to easily make in-field repairs by blowing off and replacing damaged limbs and components with spares. 1/scene as a free action, you may choose one of the following:\n• Regain 1/2 of your total HP.\n• Repair a destroyed weapon or system.If you don't use this ability during combat, then when you next rest you may either regain all HP or automatically repair a destroyed weapon or system.\n\nUsing this ability during combat counts as expending a Limited charge.",
+      "t": "Load-Bearing Hardpoints: All Limited systems and weapons equipped to the Gilgamesh gain +1 charge.\n\nLocked and Loaded: The Gilgamesh has a Loadout Die, 1d6 starting at 6. Each time it expends a Limited charge, reduce the value of the Loadout Die by 1. When the Loadout Die reaches 1, you may reset it to 6 to reroll one attack, check, or save, though the second result must be kept. The value of the Loadout Die persists between scenes but resets to 6 when you perform a Full Repair.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Гильгамеш",
+      "cr": "Инженерия экзорам",
+      "cdr": "«Гильгамеш» с самого начала проектировался простым и недорогим как в производстве, так и в обслуживании, но для Harrison Armory «недорогой» не означает «некачественный» или «неэффективный». Вместо этого «Гильгамеш» использует уникальную двухступенчатую конструкцию шасси, в которой сначала создаётся внутреннее «основное шасси», а затем на него строится вторичная внешняя «экзорама», включающая дополнительную броню, удлинители рук и конечностей и узлы крепления. Конечный результат — обманчиво элегантная конструкция, способная не только к обширной кастомизации, но и к исключительно простому полевому ремонту. Серия взаимосвязанных зажимов и пироболтов удерживает различные компоненты и придатки экзорамы на месте, и когда структурная целостность достаточно нарушена, эти секции можно быстро сбросить и столь же быстро заменить, позволяя легионерам продолжать сражаться после катастрофических повреждений, которые вывели бы из строя другие шасси.\n\nТакая конструкция также позволяет избирательно перенаправлять мощность между основным шасси и компонентами экзорамы, обходя отказы систем и даже ненадолго повышая общую производительность, хотя нагрузка, которую это оказывает на экзораму, неизбежно ограничивает её использование только критическими ситуациями.\n\nАктивное — Экзоусиление (Протокол): Вы получаете иммунитет ко всем состояниям, вызванным не вашими собственными системами, талантами и т.д., до конца вашего следующего хода, и снимаете все такие состояния, которые у вас уже есть (включая те, что обычно нельзя снять). Вы также снимаете «Уязвимый», встаёте, если вы сбиты с ног, и получаете сверхщит, равный Стойкости+4. В конце вашего следующего хода снимите этот сверхщит. Эту способность можно использовать, даже если обычно вы не смогли бы выполнить это действие (например, если вы оглушены).\n\nИспользование этой способности во время боя считается тратой заряда «Ограниченное».\n\nПассивное — Инженерия экзорам: У «Гильгамеша» модульная конструкция, позволяющая легко проводить полевой ремонт, отстреливая и заменяя повреждённые конечности и компоненты запасными. 1/сцену свободным действием вы можете выбрать одно из следующего:\n• Восстановить половину вашего максимального HP.\n• Починить уничтоженное оружие или систему.\n\nЕсли вы не используете эту способность во время боя, то при следующем отдыхе вы можете либо восстановить все HP, либо автоматически починить уничтоженное оружие или систему.\n\nИспользование этой способности во время боя считается тратой заряда «Ограниченное».",
+      "tr": "Несущие узлы крепления: Все системы и оружие с «Ограниченное», установленные на «Гильгамеш», получают +1 заряд.\n\nЗаряжено и готово: У «Гильгамеша» есть кубик снаряжения — 1d6, начинающийся с 6. Каждый раз, когда он тратит заряд «Ограниченное», уменьшайте значение кубика снаряжения на 1. Когда кубик снаряжения достигает 1, вы можете сбросить его до 6, чтобы перебросить одну атаку, проверку или спасбросок, хотя второй результат должен быть сохранён. Значение кубика снаряжения сохраняется между сценами, но сбрасывается до 6, когда вы выполняете полный ремонт.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 8,
+        "edef": 8,
+        "heatcap": 7,
+        "repcap": 4,
+        "sensor_range": 10,
+        "tech_attack": 0,
+        "save": 11,
+        "speed": 4,
+        "sp": 6
+      },
+      "iw": [],
+      "lic": "Gilgamesh",
+      "ll": 2
+    },
+    "Amber Phantom": {
+      "m": [
+        "Flex",
+        "Main",
+        "Main/Aux"
+      ],
+      "c": "Possibility Mapping",
+      "cd": "SSC's precognitive neural bridging systems are not paracausal as the name might suggest. Using carefully modulated neural stimulation and acceleration, the operator's ability to consciously process and assimilate even subconsciously-derived sensory input is greatly amplified, reducing feedback delay and enhancing reaction time to near-instinctive levels. This then allows users to more accurately predict immediate future occurrences based on comprehensive sensory awareness and intuitive analysis, hence precognition.\n\nTo further enhance this system's capability, the Amber Phantom marries precognitive bridging with a chorus of predictive modeling and tactical simulation systems to provide the pilot with even more information. The result is the creation of a holistic battlefield timeline continuously extending forward several seconds in advance of realtime, granting users an unparalleled ability to choose the precise, optimal moment to act in all situations, reacting to ongoing events even before they occur.\n\nActive — Convergence Point (Protocol): Choose one allied character that has not taken their turn this round. That character may take their turn either immediately after your turn ends, or they may take their turn now before you do anything else, pausing your own turn until their turn ends. If they choose to act now, they count as acting before you in the PC turn order. This ability is Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.\n\nPassive — Possibility Mapping: At the start of each round, choose a point during the PC turn order to act (i.e. if there are three PCs, you can choose to act first, second, or third among them). 1/round, if you take your turn during that point, you may deal +1d6 bonus damage on hit with a ranged or melee attack against a target within Sensors. If you take your turn at another point in the round, you may still gain this bonus damage, but you take 1d6 heat when doing so.",
+      "t": "Hyperawareness: At the start of each round, until the Amber Phantom takes its turn, all attacks against it are made with +1 Difficulty and it makes all saves with +1 Accuracy.\n\nBattle Oracle: 1/round, when a hostile character misses the Amber Phantom with an attack, it may pull a character within Sensors up to 2 spaces in any direction.",
+      "src": "SSC",
+      "sf": "",
+      "role": [
+        "Striker"
+      ],
+      "roler": [
+        "Штурмовик"
+      ],
+      "nr": "Янтарный призрак",
+      "cr": "Картирование возможностей",
+      "cdr": "Прекогнитивные системы нейронного моста SSC не являются паракаузальными, как можно предположить по названию. Используя тщательно модулированную нейронную стимуляцию и ускорение, способность оператора сознательно обрабатывать и усваивать даже подсознательно полученную сенсорную информацию значительно усиливается, снижая задержку обратной связи и повышая время реакции почти до инстинктивного уровня. Это затем позволяет пользователям точнее предсказывать ближайшие будущие события на основе всесторонней сенсорной осведомлённости и интуитивного анализа, отсюда и прекогниция.\n\nЧтобы ещё больше усилить возможности этой системы, «Янтарный призрак» сочетает прекогнитивный нейромост с целым хором систем прогнозного моделирования и тактической симуляции, чтобы предоставить пилоту ещё больше информации. Результатом является создание целостной временной шкалы поля боя, непрерывно простирающейся вперёд на несколько секунд относительно реального времени, что даёт пользователям беспрецедентную способность выбирать точный, оптимальный момент для действий в любых ситуациях, реагируя на происходящие события ещё до того, как они произойдут.\n\nАктивное — Точка схождения (Протокол): Выберите одного союзного персонажа, который ещё не ходил в этом раунде. Этот персонаж может сделать свой ход либо сразу после окончания вашего хода, либо он может сделать свой ход прямо сейчас, до того как вы сделаете что-либо ещё, приостановив ваш собственный ход до окончания его хода. Если он решит действовать сейчас, он считается действующим раньше вас в порядке ходов игроков. Эта способность эффективна и вернёт 1 очко ядра в конце любой сцены, в которой она использовалась.\n\nПассивное — Картирование возможностей: В начале каждого раунда выберите момент в порядке ходов игроков, когда вы будете действовать (т.е. если игроков трое, вы можете выбрать, действовать первым, вторым или третьим среди них). 1/раунд, если вы ходите в этот момент, вы можете нанести +1d6 бонусного урона при попадании дальней или рукопашной атакой по цели в пределах сенсоров. Если вы ходите в другой момент раунда, вы всё равно можете получить этот бонусный урон, но при этом получаете 1d6 тепла.",
+      "tr": "Сверхвосприятие: В начале каждого раунда, пока «Янтарный призрак» не сделал свой ход, все атаки против него совершаются с +1 к сложности, а все свои спасброски он совершает с +1 к точности.\n\nБоевой оракул: 1/раунд, когда враждебный персонаж промахивается по «Янтарному призраку» атакой, он может притянуть персонажа в пределах сенсоров на 2 клетки в любом направлении.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 0,
+        "hp": 8,
+        "evasion": 12,
+        "edef": 6,
+        "heatcap": 5,
+        "repcap": 4,
+        "sensor_range": 10,
+        "tech_attack": 0,
+        "save": 10,
+        "speed": 5,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Amber Phantom",
+      "ll": 2
+    },
+    "Lycan": {
+      "m": [
+        "Flex",
+        "Heavy"
+      ],
+      "c": "Subversive Signature",
+      "cd": "As a chassis designed for covert operations, the Lycan leverages the Manticore's affinity for electromagnetics in order to further obscure its precise nature, wrapping itself in a layered mesh of sensor baffles and wideband interference signals that disrupt and distort recognition scans and targeting systems. The effects of this distortion field are so intense that they even cause sporadic, uncontrolled power fluctuations in nearby systems, and pilots who have survived combat with Lycan PG chassis report experiencing intermittent electronics blackouts and even reduced reactor output upon approach.\n\nHowever, the most distinctive feature of the Lycan by far is its ability to shift from its default, heavily-armored configuration to a more aggressive assault mode. This transformation is dramatic and known to cause panic among enemy forces as the Lycan's true nature is suddenly revealed in an explosive jettisoning of armor plating and a violent surge of power diverted towards the chassis' concealed shock claws, a series of retractable, high-temperature arc blades based on Manticore armament designs and embedded with a series of retaliatory \"self-sharpening\" heuristics.\n\nActive — Go Loud (Full): You violently jettison the Lycan's external carapace, extending brutal talons and supercharging its reactor. For the rest of the scene, your base Armor becomes 0, your base Speed becomes 6, Slag Carapace and Interference Field are disabled, and you gain the Shock Claws integrated weapon.Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.",
+      "t": "Slag Carapace: The Lycan has resistance to Energy Damage and Burn.\n\nInterference Field: All hostile characters within Range 3 of the Lycan take +1 Difficulty on all attacks that do not target the Lycan.\n\nPower Flux: 1/round, when the Lycan takes heat, a hostile character within Range 3 must pass a Systems save or become Impaired and Slowed until the end of their next turn.",
+      "src": "HORUS",
+      "sf": "",
+      "role": [
+        "Defender",
+        "Striker"
+      ],
+      "roler": [
+        "Защитник",
+        "Штурмовик"
+      ],
+      "nr": "Ликан",
+      "cr": "Подрывная сигнатура",
+      "cdr": "Как шасси, предназначенное для скрытных операций, «Ликан» использует склонность «Мантикоры» к электромагнетизму, чтобы ещё больше скрыть свою точную природу, окутывая себя многослойной сеткой сенсорных экранов и широкополосных сигналов помех, которые нарушают и искажают сканы распознавания и системы наведения. Эффекты этого поля искажения настолько сильны, что даже вызывают спорадические неконтролируемые колебания мощности в близлежащих системах, а пилоты, пережившие бой с шасси группы шаблонов «Ликан», сообщают о периодических отключениях электроники и даже о снижении выходной мощности реактора при приближении.\n\nОднако самой отличительной особенностью «Ликана», безусловно, является его способность переключаться с конфигурации по умолчанию с тяжёлой бронёй на более агрессивный штурмовой режим. Это превращение драматично и, как известно, вызывает панику среди вражеских сил, когда истинная природа «Ликана» внезапно раскрывается во взрывном сбросе броневых пластин и яростном всплеске мощности, перенаправленной на скрытые шоковые когти шасси — серию убирающихся высокотемпературных дуговых клинков, основанных на конструкциях вооружения «Мантикоры» и оснащённых серией ответных «самозатачивающихся» эвристик.\n\nАктивное — В полный голос (Полное): Вы яростно сбрасываете внешний панцирь «Ликана», выдвигая жестокие когти и перегружая его реактор. До конца сцены ваша базовая броня становится 0, ваша базовая скорость становится 6, «Шлаковый панцирь» и «Поле помех» отключаются, и вы получаете встроенное оружие «Шоковые когти».\n\nЗатем вы можете рвануться вперёд, чтобы нанести удар, переместившись на значение вашей скорости и совершив атаку по цели в пределах дальности, используя «Шоковые когти». Эта атака считается обстрелом для целей ограничений на повторяющиеся действия.\n\nПеред активацией выходная мощность этого оружия может быть усилена близостью к экстремальному урону структуре. В первый раз за сцену, когда союзный персонаж-мех в пределах сенсоров получает урон структуре от враждебного источника до того, как вы активируете «В полный голос», это оружие получает «Угроза 2». Если это происходит второй раз до его активации, это оружие теперь также наносит 4d6+6 энергетического урона вместо 3d6+6.\n\nЕсли союзный персонаж-мех уничтожен до того, как вы активируете «В полный голос», или если вы активируете его, имея 2 структуры или меньше, вы автоматически получаете оба этих дополнительных преимущества.\n\nЭта способность эффективна и вернёт 1 очко ядра в конце любой сцены, в которой она использовалась.",
+      "tr": "Шлаковый панцирь: «Ликан» имеет сопротивление энергетическому урону и ожогу.\n\nПоле помех: Все враждебные персонажи в пределах дальности 3 от «Ликана» получают +1 к сложности всех атак, нацеленных не на «Ликана».\n\nПоток мощности: 1/раунд, когда «Ликан» получает тепло, враждебный персонаж в пределах дальности 3 должен преуспеть в спасброске систем или стать ослабленным и замедленным до конца своего следующего хода.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 2,
+        "hp": 8,
+        "evasion": 6,
+        "edef": 10,
+        "heatcap": 6,
+        "repcap": 3,
+        "sensor_range": 8,
+        "tech_attack": 1,
+        "save": 10,
+        "speed": 3,
+        "sp": 6
+      },
+      "iw": [
+        "Shock Claws"
+      ],
+      "lic": "Lycan",
+      "ll": 2
+    },
+    "Kutuzov": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Parallel Projectors",
+      "cd": "One of the Kutuzov's most distinct features is its series of integrated parallel-tracked field emitters, allowing for the simultaneous modulation and projection of multiple overlapping waveform patterns. This includes standard superpositional barriers and stasis fields as well as more aggressively-tuned fields designed for the take-and-hold operations the Kutuzov is tasked with, forcefully displacing threats during close-quarters engagements and clearing zones for subsequent barrier deployment to establish reinforced strongpoints.\n\nAmong these other uses, these emitters are capable of \"flashing\" a single-plane form of the Napoleon's Trueblack Aegis as a short-lived interpositional countermeasure. Without the excessive demands of sustaining a total-coverage envelope, the operational range of the Aegis can be increased through a series of point-defense tracking protocols and set to neutralize all hostile engagement from selected targets. However, the drawback to this implementation is immediately obvious, with a reduced shield profile, unresolved interference with outgoing fire, and the field emitters requiring an extensive power-cycling period before they can be reactivated once more.\n\nActive — Projected Aegis (Quick): Choose an allied character within line of sight, and then choose a hostile character within line of sight. Until the end of your next turn, those characters can't attack each other or force saves against each other via actions. This ability counts as a system with the Shield tag.\n\nThis ability is Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.\n\nPassive — Parallel Projectors: 1/round, when you take the Stabilize action, Bolster Quick Tech action, or Activate or otherwise use a Shield system during your turn, you may grant an allied character within Sensors a benefit based on the overall cost of that action:\n• Free Action: They gain soft cover until the end of their next turn.\n• Quick Action: They ignore engagement, their movement doesn't provoke reactions, and they may pass through (but not stop in) spaces occupied by obstructions and other characters until the end of their next turn.\n• Full Action: They may clear a condition that wasn't caused by one of their own systems, talents, etc.\n\nYou can choose a benefit from a lower action cost if you like, instead (e.g., if you performed a full action, you could choose the quick action or free action options).",
+      "t": "Expulsion Zone: 1/round, when the Kutuzov Activates or otherwise uses a Shield system during its turn, it may knock all hostile characters of its choice within Sensors back 3 spaces.\n\nEmergency Blinkfields: Whenever the Kutuzov or any allied character within Sensors takes the Brace reaction, they clear Shredded (or ignore its effects if it can't be cleared normally) from hostile sources, and attacks they Brace against can't inflict Shredded.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Defender",
+        "Support"
+      ],
+      "roler": [
+        "Защитник",
+        "Поддержка"
+      ],
+      "nr": "Кутузов",
+      "cr": "Параллельные проекторы",
+      "cdr": "Одна из самых отличительных особенностей «Кутузова» — серия встроенных излучателей поля с параллельным наведением, позволяющих одновременно модулировать и проецировать несколько перекрывающихся волновых паттернов. Это включает стандартные суперпозиционные барьеры и стазис-поля, а также более агрессивно настроенные поля, предназначенные для операций по захвату и удержанию, на которые рассчитан «Кутузов», — они с силой вытесняют угрозы во время ближних боёв и расчищают зоны для последующего развёртывания барьеров, чтобы создать укреплённые опорные пункты.\n\nСреди прочих применений эти излучатели способны «вспыхивать» одноплоскостной формой «Эгиды истинной тьмы» «Наполеона» в виде краткоживущей контрмеры, встающей на пути угрозы. Без чрезмерных требований по поддержанию оболочки полного покрытия рабочую дальность «Эгиды» можно увеличить с помощью серии протоколов точечной обороны с наведением и настроить на нейтрализацию всех враждебных действий с выбранных целей. Однако недостаток этой реализации сразу очевиден: уменьшенный профиль щита, нерешённое взаимодействие с исходящим огнём и необходимость длительного периода перезарядки питания излучателей поля, прежде чем их можно будет снова активировать.\n\nАктивное — Проецируемая эгида (Быстрое): Выберите союзного персонажа в пределах линии видимости, а затем выберите враждебного персонажа в пределах линии видимости. До конца вашего следующего хода эти персонажи не могут атаковать друг друга или заставлять друг друга делать спасброски посредством действий. Эта способность считается системой с тегом «Щит».\n\nЭта способность эффективна и вернёт 1 очко ядра в конце любой сцены, в которой она использовалась.\n\nПассивное — Параллельные проекторы: 1/раунд, когда вы выполняете действие «Стабилизация», быстрое тех-действие «Укрепить» или активируете или иным образом используете систему со щитом в свой ход, вы можете дать союзному персонажу в пределах сенсоров преимущество, зависящее от общей стоимости этого действия:\n• Свободное действие: он получает мягкое укрытие до конца своего следующего хода.\n• Быстрое действие: он игнорирует вовлечённость, его перемещения не провоцируют реакций, и он может проходить через клетки, занятые препятствиями и другими персонажами (но не останавливаться в них), до конца своего следующего хода.\n• Полное действие: он может снять состояние, вызванное не одной из его собственных систем, талантов и т.д.\n\nВы можете выбрать преимущество меньшей стоимости, если хотите (например, если вы выполнили полное действие, вы могли бы выбрать преимущества быстрого или свободного действия).",
+      "tr": "Зона изгнания: 1/раунд, когда «Кутузов» активирует или иным образом использует систему со щитом в свой ход, он может отбросить всех враждебных персонажей по своему выбору в пределах сенсоров на 3 клетки назад.\n\nАварийные блинк-поля: Всякий раз, когда «Кутузов» или любой союзный персонаж в пределах сенсоров использует реакцию «Приготовиться», они снимают «Разорванный», полученный от враждебных источников (или игнорируют его эффекты, если его нельзя снять обычным образом), а атаки, против которых они приготовились, не могут наложить «Разорванный».",
+      "s": {
+        "size": 0.5,
+        "structure": 4,
+        "stress": 4,
+        "armor": 2,
+        "hp": 6,
+        "evasion": 8,
+        "edef": 10,
+        "heatcap": 8,
+        "repcap": 3,
+        "sensor_range": 5,
+        "tech_attack": 0,
+        "save": 11,
+        "speed": 4,
+        "sp": 7
+      },
+      "iw": [],
+      "lic": "Kutuzov",
+      "ll": 2
+    },
+    "Taraxacum": {
+      "m": [
+        "Main/Aux"
+      ],
+      "c": "Crossland-Pattern Survey Sensors",
+      "cd": "Initial Taraxacum design drafts called for a highly sensitive, custom-printed sensor suite. Unfortunately, a litany of design flaws forced engineers on Crossland to fit the first prototypes with existing sensor modules meant for high-altitude survey drones.\n\nTest pilots immediately took a shine to the replacement sensors despite their significant power draw, referring to them as “God’s eyes”. Their ability to resolve terrain through even the thickest vegetation massively simplified wilderness navigation and landing, while tuning them to pick up specific emission bands conferred an obvious combat advantage in high-density environments.\n\nActive — Omnispectrum Sensor Burst (Quick): Scan all hostile characters within and below a burst 4 area. You may apply Lock On to any characters scanned this way. This action is Efficient and will refund 1 Core Point at the end of any scene in which this action was used.\n\nPassive — Precision Fix: When you Scan a character, it cannot benefit from cover or being Invisible until the end of your next turn.",
+      "t": "ROC Superlifter Flight System: The Taraxacum may hover when it moves. As long as it is only carrying objects or allied characters, the Taraxacum may ignore restrictions on carrying caused by flight.\n\nAt the end of any of the Taraxacum’s turns in which it uses this trait, it takes heat equal to 1 + the total Size of objects and characters it is carrying.\n\nRelay Coupling: When the Taraxacum targets an allied character within sensors with a system or tech action, they may use the Taraxacum’s Sensors and line of sight for tech actions until the start of its next turn.",
+      "src": "IPS-N",
+      "sf": "",
+      "role": [
+        "Support"
+      ],
+      "roler": [
+        "Поддержка"
+      ],
+      "nr": "Тараксакум",
+      "cr": "Обзорные сенсоры образца Кроссленда",
+      "cdr": "В первоначальных проектах «Тараксакума» предусматривался высокочувствительный, специально напечатанный сенсорный комплекс. К сожалению, целый ряд конструктивных недостатков вынудил инженеров на Кроссленде оснастить первые прототипы существующими сенсорными модулями, предназначенными для высотных разведывательных дронов.\n\nПилоты-испытатели сразу полюбили заменённые сенсоры, несмотря на их значительное энергопотребление, называя их «глазами Бога». Их способность различать рельеф даже сквозь самую густую растительность значительно упростила навигацию в дикой местности и посадку, а настройка на приём определённых диапазонов излучения давала очевидное боевое преимущество в плотной среде.\n\nАктивное — Омниспектральный сенсорный всплеск (Быстрое): Сканируйте всех враждебных персонажей внутри области взрыва 4 и под ней. Вы можете наложить захват цели на любых персонажей, просканированных таким образом. Это действие эффективно (Efficient) и вернёт 1 очко ядра в конце любой сцены, в которой это действие было использовано.\n\nПассивное — Точная наводка: Когда вы сканируете персонажа, он не может пользоваться укрытием или невидимостью до конца вашего следующего хода.",
+      "tr": "Лётная система сверхподъёмника ROC: «Тараксакум» может зависать при перемещении. Пока он перевозит только объекты или союзных персонажей, «Тараксакум» может игнорировать ограничения на переноску, вызванные полётом.\n\nВ конце любого хода «Тараксакума», в котором он использует эту черту, он получает тепло, равное 1 + суммарный размер перевозимых им объектов и персонажей.\n\nРетрансляционная связь: Когда «Тараксакум» нацеливается на союзного персонажа в пределах сенсоров системным или тех-действием, этот персонаж может использовать сенсоры «Тараксакума» и линию видимости для тех-действий до начала следующего хода «Тараксакума».",
+      "s": {
+        "size": 2,
+        "structure": 4,
+        "stress": 4,
+        "armor": 1,
+        "hp": 6,
+        "evasion": 10,
+        "edef": 8,
+        "heatcap": 8,
+        "repcap": 4,
+        "sensor_range": 15,
+        "tech_attack": 1,
+        "save": 10,
+        "speed": 6,
+        "sp": 8
+      },
+      "iw": [],
+      "lic": "Taraxacum",
+      "ll": 2
+    },
+    "Hecatoncheires": {
+      "m": [
+        "Main",
+        "Heavy"
+      ],
+      "c": "MYRIOS Long-Leash Directed Greywash",
+      "cd": "Hard lessons were learned from the downfall of the Maw, harder even than those learned from the invisible, unstoppable consumption of Bo. From those lessons came visceral terror, perfected. Long-leash technology allows greywash swarms to operate persistently apart from their hives and draw power from alternate sources while remaining under failsafe control of their operator.\n\nThis level of operational safety comes as little comfort to the victims of MYRIOS swarms, however, as the swarms specialize in eating away at their targets in hideous acts of consumption barely tempered by their controllers’ instructions.\n\nActive — Enrage Swarm (Quick): Each hostile character in one or more areas created by your Drones takes 4 burn. This action is Efficient and will refund 1 Core Point at the end of any scene in which this action was used.\n\nPassive — Razor Hive: Deploy Razor Swarm (Quick): Deploy a Razor Swarm to a valid Blast 1 area within Sensors that contains no hostile characters. The Hecatoncheires may only have a single Razor Swarm deployed at any one time. The Razor Swarm persists until the end of the scene or until recalled or redeployed as a quick action.",
+      "t": "Dispersed Profile: When the Hecatoncheires is in soft cover, ranged attackers receive +2 Difficulty instead of +1 Difficulty.\n\nSmoke and Mirrors: The Hecatoncheires can always Hide in an area of soft cover, regardless of Engagement or enemy traits and systems.\n\nPanoptes Targeting: The Hecatoncheires' Smart weapons ignore the Invisible status of characters within sensors.",
+      "src": "HORUS",
+      "sf": "",
+      "role": [
+        "Striker",
+        "Controller"
+      ],
+      "roler": [
+        "Штурмовик",
+        "Контролёр"
+      ],
+      "nr": "Гекатонхейр",
+      "cr": "Направленный грейвош на длинном поводке MYRIOS",
+      "cdr": "Из падения Пасти были извлечены суровые уроки, ещё более суровые, чем уроки невидимого, неостановимого поглощения Бо. Из этих уроков родился первозданный ужас, доведённый до совершенства. Технология длинного поводка позволяет роям грейвоша постоянно действовать вдали от своих ульев и черпать энергию из альтернативных источников, оставаясь под контролем оператора с предохранителями.\n\nОднако этот уровень операционной безопасности мало утешает жертв роёв MYRIOS, поскольку рои специализируются на том, чтобы поедать свои цели в ужасающих актах потребления, едва сдерживаемых указаниями их контролёров.\n\nРазъярить рой (Быстрое): Каждый враждебный персонаж в одной или нескольких областях, созданных вашими дронами, получает 4 ожога. Это действие эффективно (Efficient) и вернёт 1 очко ядра в конце любой сцены, в которой это действие было использовано.\n\nПассивное — Бритвенный улей: Развернуть бритвенный рой (Быстрое): Разверните бритвенный рой в допустимой области взрыва 1 в пределах сенсоров, не содержащей враждебных персонажей. «Гекатонхейр» может иметь только один развёрнутый бритвенный рой одновременно. Бритвенный рой сохраняется до конца сцены или пока не будет отозван или повторно развёрнут быстрым действием.",
+      "tr": "Рассредоточенный профиль: Когда «Гекатонхейр» находится в мягком укрытии, дальнобойные атакующие получают +2 к сложности вместо +1 к сложности.\n\nДым и зеркала: «Гекатонхейр» всегда может скрываться в области мягкого укрытия, независимо от вовлечённости или черт и систем противника.\n\nНаведение Паноптеса: Умное оружие «Гекатонхейра» игнорирует невидимость персонажей в пределах сенсоров.",
+      "s": {
+        "size": 0.5,
+        "structure": 4,
+        "stress": 4,
+        "armor": 0,
+        "hp": 6,
+        "evasion": 10,
+        "edef": 10,
+        "heatcap": 5,
+        "repcap": 3,
+        "sensor_range": 10,
+        "tech_attack": 1,
+        "save": 10,
+        "speed": 5,
+        "sp": 6
+      },
+      "iw": [],
+      "lic": "Hecatoncheires",
+      "ll": 2
+    },
+    "Tagetes": {
+      "m": [
+        "Flex",
+        "Main",
+        "Heavy"
+      ],
+      "c": "Chorak Skirmish Gear",
+      "cd": "Tilimsan is a harsh proving ground for any mech. Baking heat, scouring sand, dry lightning, and treacherous terrain are challenge enough for designers, but Company Tempeste’s technical requirements are just as uncompromising as the landscape. Popular rumor has it that one headstrong Ispahsalari artisan who refused to integrate the company’s aftermarket modifications on aesthetic grounds simply never returned from the desert.\n\nActive — SANDSTORM Heat Dispersal System: When you stabilize, you may activate this system to create a stationary burst 2 zone of soft cover that lasts until the end of your next turn. While benefiting from this soft cover, you and allied characters may clear 1d3+1 heat as a protocol. This ability is Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.\n\nPassive — Tempeste Synchronized Long Scope: You can attack with Rifles as though they had +5 range, as long as Lock On is consumed during the attack.",
+      "t": "Fusilier: When you install a ranged weapon on the Tagetes (or during a Full Repair), you may change its weapon type to Rifle. Weapons with their type changed in this way gain Overkill.\n\nRank Discipline: While adjacent to an allied mech, the Tagetes gains +1 Accuracy on all skill checks and saves.\n\nEterane Construction: When you Stabilize, you may choose one of the following in addition to other options:\n• Reload all loading weapons\n• Clear any burn currently affecting your mech\n• Clear a condition that wasn’t caused by one of your own systems, talents, etc.\n• Clear an adjacent allied character’s condition that wasn’t caused by one of their own systems, talents, etc.",
+      "src": "HA",
+      "sf": "",
+      "role": [
+        "Artillery"
+      ],
+      "roler": [
+        "Артиллерия"
+      ],
+      "nr": "Тагетес",
+      "cr": "Снаряжение для перестрелок «Чорак»",
+      "cdr": "Тилимсан — суровый испытательный полигон для любого меха. Пекущая жара, секущий песок, сухие молнии и коварная местность — вызовы, достаточные для конструкторов, но технические требования Роты Темпесте столь же бескомпромиссны, как и ландшафт. По слухам, один упрямый испахсаларский ремесленник, отказавшийся интегрировать послепродажные модификации роты по эстетическим соображениям, просто так и не вернулся из пустыни.\n\nАктивное — Система рассеивания тепла SANDSTORM: Когда вы стабилизируетесь, вы можете активировать эту систему, чтобы создать неподвижную зону взрыва 2 мягкого укрытия, длящуюся до конца вашего следующего хода. Находясь под этим мягким укрытием, вы и союзные персонажи можете сбросить 1d3+1 тепла протоколом. Эта способность эффективна (Efficient) и вернёт 1 очко ядра в конце любой сцены, в которой эта способность была использована.\n\nПассивное — Синхронизированный дальний прицел Темпесте: Вы можете атаковать винтовками, как будто у них +5 к дальности, пока во время атаки расходуется захват цели.",
+      "tr": "Фузильер: Когда вы устанавливаете дальнобойное оружие на «Тагетес» (или во время полного ремонта), вы можете изменить его тип на «Винтовка». Оружие, тип которого изменён таким образом, получает «Перебор».\n\nДисциплина строя: Находясь рядом с союзным мехом, «Тагетес» получает +1 к точности всех проверок навыков и спасбросков.\n\nКонструкция этеран: Когда вы стабилизируетесь, вы можете выбрать один из следующих вариантов в дополнение к другим:\n• Перезарядить всё перезаряжаемое оружие\n• Снять весь ожог, действующий на ваш мех\n• Снять состояние, которое не было вызвано одной из ваших собственных систем, талантов и т.д.\n• Снять состояние соседнего союзного персонажа, которое не было вызвано одной из его собственных систем, талантов и т.д.",
+      "s": {
+        "size": 1,
+        "structure": 4,
+        "stress": 4,
+        "armor": 1,
+        "hp": 8,
+        "evasion": 7,
+        "edef": 8,
+        "heatcap": 8,
+        "repcap": 4,
+        "sensor_range": 8,
+        "tech_attack": -1,
+        "save": 10,
+        "speed": 3,
+        "sp": 5
+      },
+      "iw": [],
+      "lic": "Tagetes",
+      "ll": 2
     }
   },
   "talents": [
@@ -9166,6 +10946,162 @@ const DB = {
         "Вы рассматриваете спешивание как быстрое действие вместо полного действия. Когда вы спешиваетесь, ваш пилот получает личный щит. В следующий раз, когда ваш пилот получил бы урон, уменьшите этот урон до 0, после чего щит рассеивается. В противном случае он рассеивается в конце сцены. У вас может быть только один личный щит одновременно, и любые созданные щиты заменяют последний.",
         "Протоколом вы отдаёте управление, открываете люк на своём мехе и частично вылезаете наружу, начиная «Родео чёрного пальца» и получая личный щит (как выше). Находясь в родео, ваш пилот иммунен к недобровольному перемещению, занимает клетку вашего меха и перемещается, когда перемещается он. Это не считается спешиванием, и мехом нельзя управлять снаружи, поэтому он будет бездействовать, если только не способен действовать независимо (например, если у него есть NHP, которому было передано управление, что вы можете сделать как часть этого протокола).\nНаходясь в родео, ваш пилот становится допустимой целью и может получать урон обычным образом. Если вы теряете свой личный щит по любой причине, вас немедленно заставляют вернуться внутрь вашего меха, завершая эффект, и вы не можете начать родео снова на своём следующем ходу. Вы также можете завершить родео быстрым действием в любой из своих ходов.\nНаходясь в родео, ваш пилот может выполнять только действия «Тушение», «Полевой ремонт» или «Продувка вентиляции», предоставляемые «Чёрным пальцем».",
         "Ваши действия «Чёрного пальца» можно использовать на соседних союзных мехах."
+      ]
+    },
+    {
+      "n": "House Guard",
+      "t": "Improve your ability to defend your allies.",
+      "r": [
+        "Front Rank",
+        "Greater Guardian",
+        "Shield of the Legion"
+      ],
+      "d": [
+        "You count as adjacent when you are within Range 2 for the purposes of your effects on allied characters (from your traits, talents, systems, or weapons) that require adjacency to your mech.",
+        "Your mech gains the Guardian trait if it doesn’t already have it (adjacent allies can use your mech as hard cover). Guardian now additionally grants soft cover to all adjacent allies from all directions.",
+        "1/round, when you reduce damage to an allied character, cancel an attack against them, or cause one to miss, you may deal 2 energy damage to the attacker and knock them Prone."
+      ],
+      "nr": "Страж Дома",
+      "tr": "Улучшите свою способность защищать своих союзников.",
+      "rr": [
+        "Передний ряд",
+        "Великий защитник",
+        "Щит легиона"
+      ],
+      "dr": [
+        "Вы считаетесь соседним, когда находитесь в дальности 2, для целей ваших эффектов на союзных персонажей (от ваших черт, талантов, систем или оружия), требующих соседства с вашим мехом.",
+        "Ваш мех получает черту «Защитник», если у него её ещё нет (соседние союзники могут использовать ваш мех как твёрдое укрытие). «Защитник» теперь дополнительно даёт мягкое укрытие всем соседним союзникам со всех сторон.",
+        "1/раунд, когда вы уменьшаете урон союзному персонажу, отменяете атаку против него или заставляете её промахнуться, вы можете нанести 2 энергетического урона атакующему и сбить его с ног."
+      ]
+    },
+    {
+      "n": "Pankrati",
+      "t": "Rush and overpower slower opponents",
+      "r": [
+        "Veni",
+        "Vidi",
+        "Vici"
+      ],
+      "d": [
+        "You gain +1 Accuracy to melee attacks against Immobilized or Slowed targets.",
+        "1/scene, you can make a Valiant Charge as a free action on your turn, moving up to twice your Speed and ignoring terrain penalties. You must move in a straight line and end your charge adjacent to a hostile character, and you cannot start your charge adjacent to any hostile characters. When you end your charge, any adjacent hostile characters are Slowed until the end of their next turn.",
+        "If you start your Valiant Charge adjacent to any allied characters, they may immediately Boost as a reaction after your charge resolves."
+      ],
+      "nr": "Панкрати",
+      "tr": "Набрасывайтесь на более медленных противников и подавляйте их.",
+      "rr": [
+        "Вени",
+        "Види",
+        "Вици"
+      ],
+      "dr": [
+        "Вы получаете +1 точности к рукопашным атакам против обездвиженных или замедленных целей.",
+        "1/сцену вы можете совершить доблестный рывок свободным действием в свой ход, переместившись до удвоенной скорости и игнорируя штрафы местности. Вы должны двигаться по прямой линии и завершить рывок вплотную к враждебному персонажу, и вы не можете начать рывок вплотную к враждебным персонажам. Когда вы завершаете рывок, все соседние враждебные персонажи замедляются до конца своего следующего хода.",
+        "Если вы начинаете свой доблестный рывок вплотную к союзным персонажам, они могут немедленно ускориться как реакция после разрешения вашего рывка."
+      ]
+    },
+    {
+      "n": "Prospector",
+      "t": "",
+      "r": [
+        "Stake a Claim",
+        "Gold Fever",
+        "Mother Lode"
+      ],
+      "d": [
+        "Tunnel: When Tunneling, remove the character from the battlefield and then immediately place them in a free and valid space. This is considered moving 1 space and does trigger Reactions.\nGain the “Create Entrance” Quick Action which you may use 1/Scene.\nWhile completely within an Entrance you and allied characters gain the “Subterranean Reposition” Reaction during your own turns.",
+        "Hostile characters within the area when an Entrance is created must succeed on a Hull save or be knocked Prone.\nAdditionally, after you use “Create Entrance,” allied characters completely within your initial Entrance may use “Subterranean Reposition” even though it is not their turn.",
+        "“Create Entrance” becomes 1/Round and you may use it an additional time each Scene. All Entrances you create are connected for the purposes of Tunneling."
+      ],
+      "nr": "Старатель",
+      "tr": "Добыча и подземное перемещение союзников",
+      "rr": [
+        "Застолбить участок",
+        "Золотая лихорадка",
+        "Материнская жила"
+      ],
+      "dr": [
+        "Туннелирование: при туннелировании уберите персонажа с поля боя, а затем немедленно поместите его в свободное допустимое пространство. Это считается перемещением на 1 клетку и провоцирует реакции.\nПолучите быстрое действие «Создать вход», которое вы можете использовать 1/сцену.\nНаходясь полностью внутри входа, вы и союзные персонажи получаете реакцию «Подземное перемещение» на время своих ходов.",
+        "Враждебные персонажи внутри области, когда создаётся вход, должны преуспеть в спасброске корпуса или быть сбитыми с ног.\nКроме того, после того как вы используете «Создать вход», союзные персонажи, полностью находящиеся внутри вашего начального входа, могут использовать «Подземное перемещение», даже если сейчас не их ход.",
+        "«Создать вход» становится 1/раунд, и вы можете использовать его дополнительно один раз за сцену. Все входы, которые вы создаёте, связаны между собой для целей туннелирования."
+      ]
+    },
+    {
+      "n": "Iconoclast",
+      "t": "",
+      "r": [
+        "Transgression",
+        "Transmutation",
+        "Transcension"
+      ],
+      "d": [
+        "You may choose to equip your mech with an Unstable NHP system.",
+        "After performing any action granted to you by an NHP, excluding handing control of your mech over to the NHP as a protocol, you may immediately perform the TRANSMUTING SPARK free action. Each NHP may only trigger this action 1/round.",
+        "Gain a Transcendence Die, a d3 starting at 3. When you use “Transmuting Spark,” reduce the die by 1. If the die is at 1 when you use “Transmuting Spark,” you may immediately enter a transcendent state and reset the Transcendence Die to 3. This has the following effects until the end of your next turn:\n\n• Your Transcendence Die can’t decrease.\n• “Memetic Spark” gains +4 damage and +5 Range.\n• Unless flying or climbing, you are forced to permanently Hover exactly 1 Space above any surface at all times.\n• You gain Immunity to involuntary movement.\nWhenever you cascade and lose control of your mech, you enter a transcendent state for the duration. Cascading NHPs have access to the benefits of this Talent. Your Transcendence Die resets at the end of the Scene."
+      ],
+      "nr": "Иконоборец",
+      "tr": "Нестабильный NHP и запретная сила",
+      "rr": [
+        "Прегрешение",
+        "Трансмутация",
+        "Трансценденция"
+      ],
+      "dr": [
+        "Вы можете оснастить свой мех системой «Нестабильный NHP».",
+        "После выполнения любого действия, предоставленного вам NHP, за исключением передачи управления вашим мехом NHP как протокола, вы можете немедленно выполнить свободное действие «Трансмутирующая искра». Каждый NHP может вызывать это действие только 1/раунд.",
+        "Получите кубик трансценденции — d3, начинающийся с 3. Когда вы используете «Трансмутирующую искру», уменьшите кубик на 1. Если при использовании «Трансмутирующей искры» кубик равен 1, вы можете немедленно войти в трансцендентное состояние и сбросить кубик трансценденции до 3. Оно имеет следующие эффекты до конца вашего следующего хода:\n• Ваш кубик трансценденции не может уменьшаться.\n• «Меметическая искра» получает +4 к урону и +5 к дальности.\n• Если вы не летите и не карабкаетесь, вы вынуждены постоянно парить ровно в 1 клетке над любой поверхностью.\n• Вы получаете иммунитет к недобровольному перемещению.\nКогда вы входите в каскад и теряете контроль над своим мехом, вы входите в трансцендентное состояние на время каскада. Каскадные NHP имеют доступ к преимуществам этого таланта. Ваш кубик трансценденции сбрасывается в конце сцены."
+      ]
+    },
+    {
+      "n": "Field Analyst",
+      "t": "",
+      "r": [
+        "Tactical Intelligence",
+        "Information Handling",
+        "Active Interference"
+      ],
+      "d": [
+        "Whenever an allied character in line of sight misses with an attack, you know by how much it missed. Additionally, you gain the “Superior Intelligence” Reaction.",
+        "Gain an Intel Die, a d6 starting at 1.\nAt the end of your turn, if you didn’t take any actions that affected a hostile character during that turn other than Scan, your Intel Die increases by 2 to a maximum of 6.\nWhenever you use Superior Intelligence, you may increase the attack roll by the value of your Intel Die instead of by 1. Afterward, it is reset to 1.\n Your Intel Die resets at the end of each scene.",
+        "Whenever a hostile character in line of sight hits with an attack, you know what they rolled.\nYou may also use “Superior Intelligence” when a hostile character in Line of Sight has rolled an Attack Roll. Instead of adding to the attack roll, you subtract from it in the same manner. Each attack roll can only be affected this way once."
+      ],
+      "nr": "Полевой аналитик",
+      "tr": "Анализ боя и поддержка союзников",
+      "rr": [
+        "Тактическая разведка",
+        "Работа с информацией",
+        "Активное вмешательство"
+      ],
+      "dr": [
+        "Когда союзный персонаж в линии видимости промахивается атакой, вы знаете, на сколько он промахнулся. Кроме того, вы получаете реакцию «Высший разум».",
+        "Получите кубик разведданных — d6, начинающийся с 1.\nВ конце вашего хода, если вы не совершали никаких действий, затронувших враждебного персонажа в этом ходу, кроме сканирования, ваш кубик разведданных увеличивается на 2 до максимума 6.\nКогда вы используете «Высший разум», вы можете увеличить бросок атаки на значение вашего кубика разведданных вместо 1. После этого он сбрасывается до 1.\nВаш кубик разведданных сбрасывается в конце каждой сцены.",
+        "Когда враждебный персонаж в линии видимости попадает атакой, вы знаете, что он выбросил.\nВы также можете использовать «Высший разум», когда враждебный персонаж в линии видимости совершил бросок атаки. Вместо добавления к броску атаки вы вычитаете из него таким же образом. Каждый бросок атаки можно изменить таким образом только один раз."
+      ]
+    },
+    {
+      "n": "Orator",
+      "t": "The power of your words is undeniable, and can incapacitate your opponents more readily than any weapon could.",
+      "r": [
+        "Convincing Rhetoric",
+        "Voice of Reason",
+        "The March of the Ten Thousand"
+      ],
+      "d": [
+        "Gain the Convincing Rhetoric reaction.",
+        "You start combat with 1 Orator die - a d6 - representing your power of speech. At the end of your turn when you do not attack or force any saves from hostile characters that turn, you gain +1 Orator die up to a maximum of 3 Orator Die. They last until expended or the current scene ends. 1/round as a free action you can expend Orator Dice for one of the following effects as long as you can communicate with your target\n• Encourage (1 Die): An ally in line of sight may make a systems check against any non-self inflicted conditions affecting them, using the Orator Die at accuracy, ending that condition on a successful check.\n• Investigate (2 Dice): Choose a hostile character in line of sight. The next time you or an allied character makes an attack against them it is rolled twice, taking the highest result as final.\n• Cast Doubt (2 Dice): Choose a hostile character in line of sight. They cannot benefit from or be targeted by their allies' systems or traits until the end of their next turn.",
+        "Start combat with +1 additional Orator Dice. Additionally, gain an additional option for Voice of Reason\n\n• Demoralize (3 Dice): Choose a hostile character in line of sight. They cannot move, attack, force saves or take tech actions until the end of their next turn. They then gain Immunity to this effect until the end of the scene."
+      ],
+      "nr": "Оратор",
+      "tr": "Сила ваших слов неоспорима и может вывести противников из строя вернее любого оружия.",
+      "rr": [
+        "Убедительная риторика",
+        "Голос разума",
+        "Марш десяти тысяч"
+      ],
+      "dr": [
+        "Получите реакцию «Убедительная риторика».",
+        "Вы начинаете бой с 1 кубиком оратора — d6 — олицетворяющим силу вашей речи. В конце вашего хода, когда вы не атакуете и не заставляете враждебных персонажей проходить спасброски в этот ход, вы получаете +1 кубик оратора, максимум до 3 кубиков оратора. Они действуют, пока не будут потрачены или пока не закончится текущая сцена.\n1/раунд свободным действием вы можете потратить кубики оратора на один из следующих эффектов, пока вы можете общаться со своей целью:\n• Воодушевление (1 кубик): союзник в линии видимости может совершить проверку систем против любых состояний, действующих на него и не наложенных им самим, используя кубик оратора с точностью, снимая это состояние при успешной проверке.\n• Расследование (2 кубика): выберите враждебного персонажа в линии видимости. В следующий раз, когда вы или союзный персонаж совершите атаку против него, она бросается дважды, и за итоговый принимается наивысший результат.\n• Посеять сомнение (2 кубика): выберите враждебного персонажа в линии видимости. Он не может пользоваться системами или чертами своих союзников и не может быть их целью до конца своего следующего хода.",
+        "Начинайте бой с +1 дополнительным кубиком оратора. Кроме того, получите дополнительный вариант для «Голоса разума»:\n• Деморализация (3 кубика): выберите враждебного персонажа в линии видимости. Он не может перемещаться, атаковать, заставлять проходить спасброски или совершать тех-действия до конца своего следующего хода. Затем он получает иммунитет к этому эффекту до конца сцены."
       ]
     }
   ],
