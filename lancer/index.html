@@ -890,7 +890,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 226</span>
+      <span class="dim global-version">Версия трекера: 227</span>
     </div>
   </div>
 </main>
@@ -4036,8 +4036,8 @@ function talentDiceText(t){
     : [2].filter(k=>k < rank);
   return ranks.map(k=>({ k, n: dd.r[k], d: dd.d[k] }));
 }
-function showDiceDlg(i){
-  const t = S.talents[i]; const dc = diceFor(t); if (!dc) return;
+function showDiceDlgFor(t){
+  const dc = diceFor(t); if (!dc) return;
   const dlg = document.getElementById('refDialog');
   const nameEl = document.getElementById('refDlgName');
   const bodyEl = document.getElementById('refDlgBody');
@@ -4049,6 +4049,10 @@ function showDiceDlg(i){
   bindDlgHistory();
   if (!refDlgHist){ histPush(); refDlgHist = true; }
 }
+function showDiceDlg(i){ showDiceDlgFor(S.talents[i]); }
+// Чип кубика в поиске талантов: талант ещё не взят, поэтому чипа-счётчика нет —
+// только имя кубика, тап открывает диалог с полными правилами (все ранги).
+function showDiceDlgByIndex(i){ const t = DB.talents[i]; if (!t) return; showDiceDlgFor({ name: t.n, rank: (t.r||[]).length }); }
 // v226: тег ИИ на карточке меха. Лимит — одна система с тегом ИИ за раз;
 // Enlightenment-Class NHP в лимит не входит (корбук, раздел об NHP).
 function mechAi(){
@@ -4088,7 +4092,11 @@ function showTalentResults(q, box){
   box.innerHTML = shown.map(({ t, i })=>{
     const d = td(t);
     const key = 'tal:' + i;
-    const full = (d.r||[]).map((rn, k)=>['I','II','III'][k] + '. ' + rn + ': ' + (d.d[k]||'')).join('\n\n');
+    // v227: в поиске — тот же фильтр, что на карточке таланта: текст механики
+    // кубика не показывается, вместо него чип кубика (тап — полные правила).
+    const rds = talentRankDesc({ name: t.n, rank: (d.r||[]).length });
+    const full = rds.map(r=>['I','II','III'][r.k] + '. ' + r.n + ': ' + r.d).join('\n\n');
+    const dc = diceFor({ name: t.n, rank: (d.r||[]).length });
     const needsMore = full.length > 140;
     let descHtml = '';
     if (full && !needsMore) descHtml = esc(excerpt(full, 140));
@@ -4096,7 +4104,7 @@ function showTalentResults(q, box){
     else if (full) descHtml = esc(excerpt(full, 140)) + ' <button class="desc-more" onclick="openSearchDesc(\'' + key + '\')">' + esc(L('desc_more')) + '</button>';
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span>${descHtml ? `<br><span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(d.t)}</span>${dc ? `<br><button class="tag" style="margin-top:4px" onclick="showDiceDlgByIndex(${i})">${esc(L(dc.def.nameKey))}</button>` : ''}${descHtml ? `<br><span class="dim" style="white-space:pre-line">${descHtml}</span>` : ''}</div>
       <button class="btn search-add" style="flex:0 0 auto" onclick="addTalentByIndex(${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
