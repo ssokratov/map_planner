@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 238</span>
+      <span class="dim global-version">Версия трекера: 239</span>
     </div>
   </div>
 </main>
@@ -3558,10 +3558,28 @@ function grantKindLabel(kind){
   if (kind === 'weapon') return L('u253');
   return '';
 }
+// v239: источник айтема (книга), если не корбук. Ключ — вид + имя (англ.,
+// как в db.js). Списки сверены с официальным .lcp Wallflower v3.0.4
+// и с db.js; при импорте следующих книг дописывать сюда же.
+const WALLFLOWER_SRC = 'No Room for a Wallflower, Act 1';
+const SOLSTICE_SRC = 'Operation: Solstice Rain';
+const WALLFLOWER_FRAMES = ["Kidd", "Sagarmatha", "Enkidu", "“Worldkiller” Genghis Mk I", "Swallowtail (Ranger Variant)"];
+const WALLFLOWER_SYSTEMS = ["PEBCAC", "Omnibus Plate", "Field-Approved, Brass Ignorant Modifications", "FORGE-2 Subaltern Squad", "SMOKESTACK Heat Sink", "Snapdragon Anti-Chassis Guided Missile Launcher", "Cynosure", "Opportunity", "Markey’s Fusebox", "Carapace Cladding", "Fragment of Beggar One"];
+const WALLFLOWER_WEAPONS = ["Blackspot Targeting Laser", "Plasma Talons", "Plasma Maul", "“Sting” Heavy Anti-Armor Rifle", "“Steelpunch” Heavy Needlebeam", "Brood-Sibling’s Molt"];
+const WALLFLOWER_TALENTS = ["Empath"];
+const SOLSTICE_FRAMES = ["Chomolungma"];
+const ITEM_SOURCE = {};
+for (const [kind, names, src] of [
+  ['frame', WALLFLOWER_FRAMES, WALLFLOWER_SRC],
+  ['system', WALLFLOWER_SYSTEMS, WALLFLOWER_SRC],
+  ['weapon', WALLFLOWER_WEAPONS, WALLFLOWER_SRC],
+  ['talent', WALLFLOWER_TALENTS, WALLFLOWER_SRC],
+  ['frame', SOLSTICE_FRAMES, SOLSTICE_SRC],
+]) for (const n of names) ITEM_SOURCE[kind + ':' + n] = src;
+function itemSource(kind, key){ return ITEM_SOURCE[kind + ':' + key] || ''; }
 // v238: источник лицензии (книга), если не корбук. Пока только Kidd —
-// No Room for a Wallflower, Act 1 (официальный .lcp Massif Press v3.0.4);
-// при импорте следующих книг дописывать сюда же.
-const LICENSE_SOURCE = { 'Kidd': 'No Room for a Wallflower, Act 1' };
+// Wallflower; кор — без подписи.
+const LICENSE_SOURCE = { 'Kidd': WALLFLOWER_SRC };
 function licenseDetailHtml(name){
   const lic = licenseData().find(l=>l.name === name);
   if (!lic) return '';
@@ -3732,6 +3750,10 @@ function showRef(kind, key){
   } else return;
   nameEl.textContent = name;
   bodyEl.innerHTML = linkTagTerms(esc(body));
+  // v239: источник внизу карточки — только для айтемов не из корбука
+  // (системы, оружие, таланты; у фреймов — своя карточка frameDetailHtml).
+  const src = (kind === 'system' || kind === 'weapon' || kind === 'talent') ? itemSource(kind, key) : '';
+  if (src) bodyEl.innerHTML += `<p class="hint" style="margin-top:14px">${esc(L('u264'))}: ${esc(src)}</p>`;
   dlg.showModal();
   // v212: браузерное Назад закрывает диалог-референс (одна запись истории на открытие).
   bindDlgHistory();
@@ -3752,6 +3774,7 @@ function frameDetailHtml(key){
   if (!F) return '';
   const d = fd(key);
   const fg = grantsChipsHtml('frame', key);
+  const src = itemSource('frame', key);
   const st = F.s || {};
   // Статы — той же таблицей, что на вкладке Мех (.stat-table/.stat-row/.stat-cell):
   // mid (зелёный): Size/Speed/Sensors/Tech; bot (сталь): Armor/Evasion/E-Defense/Save;
@@ -3785,7 +3808,8 @@ function frameDetailHtml(key){
   ${traits ? `<h3 style="margin:10px 0 6px">${esc(L('u241'))}</h3><div class="hint" style="white-space:pre-line">${traits}</div>` : ''}
   ${fg ? `<div class="tags" style="margin-top:8px">${fg}</div>` : ''}
   ${d.c ? `<h3 style="margin:10px 0 6px">Core Power: ${esc(d.c)}</h3><div class="hint" style="white-space:pre-line">${linkTagTerms(esc(d.cd||''))}</div>` : ''}
-  <div class="row" style="margin-top:14px"><button class="btn primary" style="flex:1 1 auto" onclick="pickFrame('${esc(key)}');closeSearchDlg()">＋ ${esc(L('u239'))}</button></div>`;
+  <div class="row" style="margin-top:14px"><button class="btn primary" style="flex:1 1 auto" onclick="pickFrame('${esc(key)}');closeSearchDlg()">＋ ${esc(L('u239'))}</button></div>
+  ${src ? `<p class="hint" style="margin-top:14px">${esc(L('u264'))}: ${esc(src)}</p>` : ''}`;
 }
 function showFrameDetail(key, from){
   frameDetailKey = key;
