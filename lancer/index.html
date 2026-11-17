@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 253</span>
+      <span class="dim global-version">Версия трекера: 254</span>
     </div>
   </div>
 </main>
@@ -4532,11 +4532,18 @@ function tagWordStem(name){
 // и в диалоге справки. Применяется ПОСЛЕ linkTagTerms, чтобы не ломать
 // чипы тегов (у них число — часть подписи); HTML-теги и атрибуты
 // не трогаются (разбивка по <...>). Буквы рядом с числом (LL0) — не число.
+// v254: номер модели — не игровое значение, не подсвечивается: число после
+// «Мк»/«Mk» («Мк 3», «Шит Мк 3»), после «D/D» («D/D 288», включая полную
+// форму «Weapon 288»), после «Shotgun»/«дробовик» («Shotgun 155/075»),
+// а также склеенное дефисом/слешем с буквами («SSC-30», «T-1», «HHS-075»,
+// «FORGE-2», «Тип-3», «obj/00001»). Диапазоны («1-6») и значения
+// («Дальность 3», «+2») подсвечиваются как раньше: дефис блокирует только
+// если перед ним буква, а не цифра.
 function highlightNums(html){
   if (!html) return html;
   return String(html).split(/(<[^>]*>)/g).map(part=>{
     if (!part || part.startsWith('<')) return part;
-    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d])[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d])/g, '<span class="wnum">$&</span>');
+    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d]|[A-Za-zА-Яа-яЁё]-|[A-Za-zА-Яа-яЁё]\/|[Мм]к |[Mm]k |D\/D |[Ww]eapon |[Ss]hotgun |[Дд]робовик )[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d])/g, '<span class="wnum">$&</span>');
   }).join('');
 }
 function linkTagTerms(html){
