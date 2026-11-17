@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 236</span>
+      <span class="dim global-version">Версия трекера: 237</span>
     </div>
   </div>
 </main>
@@ -3327,7 +3327,7 @@ function frameMatches(key, q){
   const F = DB.frames[key];
   // v230: поиск фреймов ищет и по описанию фрейма из вайба его лицензии.
   const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
-  const hay = [key, F.nr, F.src, F.sf, (F.role||[]).join(' '), (F.roler||[]).join(' '), F.ll ? 'LL'+F.ll : '', vb ? vb.frame : ''].join(' ').toLowerCase();
+  const hay = [key, F.nr, F.src, F.sf, (F.role||[]).join(' '), (F.roler||[]).join(' '), F.ll ? 'LL'+F.ll : '', vb ? vb.frame : '', F.src === 'GMS' ? (GMS_FRAME_ROLE[key] || '') : ''].join(' ').toLowerCase();
   return toks.every(t=>hay.includes(t));
 }
 function showFrameResults(q, box){
@@ -3342,7 +3342,7 @@ function showFrameResults(q, box){
     <div class="dbrow dbrow-float">
       <button class="btn search-add" style="flex:0 0 auto" onclick="pickFrame('${esc(k)}');closeSearchDlg()">＋</button>
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}')">ⓘ</button>
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc(frameRowSub(k))}</span></div>
+      <div class="dbinfo"><b>${esc(frameDispName(k))}</b><span>${esc(frameRoleLine(k))}</span><span>${esc(frameRowSub(k))}</span></div>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
 }
@@ -3370,7 +3370,7 @@ function renderRulesFrameList(){
     return `
     <div class="dbrow dbrow-float">
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}','rules')">ⓘ</button>
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc(frameRowSub(k))}</span></div>
+      <div class="dbinfo"><b>${esc(frameDispName(k))}</b><span>${esc(frameRoleLine(k))}</span><span>${esc(frameRowSub(k))}</span></div>
     </div>`;
   }).join('');
 }
@@ -3468,6 +3468,23 @@ function licenseRowInfoHtml(lic){
 }
 // v232: строка фрейма везде одинаковая — поиск и список в Правилах:
 // имя + описание фрейма из вайба его лицензии (у GMS — название ядра).
+// v237: подпись роли для строки фрейма — из вайба его лицензии
+// (как у лицензий); у GMS-фреймов лицензии нет — подпись задана
+// пользователем (16.11): «LL0 Танк» и т.д. (сверено с ролями в db.js:
+// Sagarmatha — Defender, Chomolungma — Controller, Everest — Balanced).
+const GMS_FRAME_ROLE = { 'Sagarmatha':'LL0 Танк', 'Chomolungma':'LL0 Контролер-Хакер', 'Everest':'LL0 Универсал' };
+function frameRoleLine(k){
+  const F = DB.frames[k];
+  if (!F) return '';
+  if (F.src === 'GMS') return GMS_FRAME_ROLE[k] || '';
+  const v = F.lic ? LICENSE_VIBE[F.lic] : null;
+  return v ? capRole(v.role) : '';
+}
+// v237: имя фрейма с префиксом корпорации, как у лицензий («GMS: Эверест»).
+function frameDispName(k){
+  const F = DB.frames[k];
+  return (F && F.src ? F.src + ': ' : '') + fd(k).n;
+}
 function frameRowSub(k){
   const d = fd(k), F = DB.frames[k];
   const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
@@ -3744,11 +3761,14 @@ function frameDetailHtml(key){
   }).join(' ');
   // v232: карточка фрейма — то же, что и в строке: описание фрейма
   // из вайба его лицензии (у GMS — название ядра); wmeta с корп/ролями/LL нет.
+  // v237: заголовок — имя с префиксом корпорации, как в строке;
+  // строка роли — как в строке (у GMS — подпись «LL0 …»).
   return `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
-    <b style="flex:1 1 auto">${esc(d.n)}</b>
+    <b style="flex:1 1 auto">${esc(frameDispName(key))}</b>
   </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRoleLine(key))}</div>
   <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRowSub(key))}</div>
   <h3 style="margin:10px 0 6px">${esc(L('u240'))}</h3>
   ${statsHtml}
