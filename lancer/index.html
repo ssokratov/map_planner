@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 241</span>
+      <span class="dim global-version">Версия трекера: 242</span>
     </div>
   </div>
 </main>
@@ -3279,7 +3279,7 @@ function removePilotEquipment(key,index){
   if(!loadout||!Array.isArray(loadout[key])) return;
   loadout[key].splice(index,1); save(); renderPilotEquipment();
 }
-function pilotDamageType(type){ return ({Kinetic:'кинетический',Explosive:'взрывной',Energy:'энергетический',Burn:'ожог',variable:'выбранный'})[type]||type; }
+function pilotDamageType(type){ return ({Kinetic:'кинетический',Explosive:'взрывной',Energy:'энергетический',Burn:'ожог',variable:'выбранный',Variable:'выбранный'})[type]||type; }
 function pilotRangeType(type){ return ({Range:'Дальность',Threat:'Угроза',Blast:'Взрыв',Burst:'Радиус'})[type]||type; }
 function pilotEquipmentTags(data){
   const tags=Array.isArray(data?.tags)?data.tags:(Array.isArray(data?.tg)?data.tg:[]);
