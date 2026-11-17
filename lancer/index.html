@@ -590,7 +590,7 @@
       <button class="btn" style="width:100%;margin-top:12px" onclick="fullRepair()" data-i18n="u014">Полный ремонт (отдых)</button>
     </div>
     <div class="card" id="statsCard">
-      <div class="card-head"><h2 data-i18n="u165">Статы</h2><button type="button" class="toggle on" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u165">Статы</h2><button type="button" class="toggle" id="editToggleMech" onclick="toggleEdit('mech')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div class="grid">
         <div style="grid-column:1 / -1"><label data-i18n="u006">Имя меха</label><input type="text" data-f="mech.name" placeholder="Имя меха" data-i18n-ph="p001"></div>
         <div class="frame-field"><button class="frame-label" type="button" onclick="showStatRefIfView('size')"><span data-i18n="u147">Фрейм</span> (<span class="frame-size-text">Size <span id="mechSizeValue">1</span></span>)</button><div class="frame-ro" id="mechFrameName" style="flex:1 1 auto">Everest</div><span id="mechAiTag" style="flex:0 0 auto"></span><button class="btn icon" id="frameSearchBtn" style="flex:0 0 auto" onclick="openSearch('frame')">🔍</button></div>
@@ -618,12 +618,12 @@
       <div class="hint" id="haseHint" data-i18n="u061">На старте: 2 очка, потом +1 очко за уровень.<ul><li>Hull: +2 HP/очко, +1 Repair Cap за 2 очка.</li><li>Agility: +1 Evasion/очко, +1 Speed за 2.</li><li>Systems: +1 Tech Attack и E-Defense/очко, +1 SP за 2.</li><li>Engineering: +1 Heat Cap/очко, +1 к лимитному снаряжению за 2.</li></ul></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle on" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u065">Маунты и оружие</h2><button type="button" class="toggle" id="editToggleMounts" onclick="toggleEdit('mounts')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div id="mounts"></div>
       <button class="btn add" id="addMountBtn" onclick="addMount()" data-i18n="u067">+ Маунт</button>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle on" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u068">Системы</h2><button type="button" class="toggle" id="editToggleSystems" onclick="toggleEdit('systems')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" id="spCounterRow" style="padding:0 0 8px"><button class="stat-help-label" id="spCounter" type="button" onclick="showStatRef('sp')"></button></p>
       <div id="systems"></div>
       <div class="row" id="systemAddRow" style="margin-top:10px">
@@ -636,7 +636,7 @@
       <div id="traitsBox"></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle on" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u062">Таланты</h2><button type="button" class="toggle" id="editToggleTalents" onclick="toggleEdit('talents')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" id="talentsHint" style="padding:0 0 8px" data-i18n="u063">На LL0: три таланта ранга I. База: <span id="dbTalentCount"></span> талантов из открытых данных Massif Press (lancer-data). Поиск ищет по названию, описанию и рангам; выбор подставляет описание текущего ранга.</p>
       <div id="talents"></div>
       <div class="row" id="talentAddRow" style="margin-top:10px">
@@ -653,7 +653,7 @@
   <!-- ============ PILOT ============ -->
   <section id="tab-pilot" class="tab">
     <div class="card" id="pilotCard">
-      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle on" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u081">Пилот</h2><button type="button" class="toggle" id="editTogglePilot" onclick="toggleEdit('pilot')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div class="grid">
         <div><label data-i18n="u082">Имя пилота</label><input type="text" data-f="pilot.name" placeholder="Имя" data-i18n-ph="p006"></div>
         <div><label data-i18n="u083">Позывной / Callsign</label><input type="text" data-f="pilot.callsign" placeholder="Позывной" data-i18n-ph="p007"></div>
@@ -667,7 +667,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle on" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u086">Triggers — триггеры</h2><button type="button" class="toggle" id="editToggleTriggers" onclick="toggleEdit('triggers')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u087">На LL0: четыре триггера по +2. При росте LL: +2 к одному триггеру за уровень, максимум +6.</p>
       <div id="triggers" class="trig-table"></div>
       <div class="row" id="triggerAddRow" style="margin-top:10px">
@@ -676,7 +676,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle on" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u089">Лицензии</h2><button type="button" class="toggle" id="editToggleLicenses" onclick="toggleEdit('licenses')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <label id="licenseFilterRow" style="display:flex;gap:8px;align-items:center;font-weight:600" data-i18n="u090"><input type="checkbox" id="licenseFilterToggle" onchange="toggleLicenseFilter(this.checked)" style="width:auto"> Фильтровать оружие, системы и фреймы по лицензиям</label>
       <p class="hint" id="licensesHint" style="padding:8px 0" data-i18n="u091">Когда фильтр включён, в поиске видны только GMS (LL0) и снаряжение лицензий пилота; фрейм доступен со II ранга лицензии. Отключи фильтр, чтобы увидеть всю базу.</p>
       <div id="licenses"></div>
@@ -688,7 +688,7 @@
       <p class="hint" style="padding:4px 0 0" id="licensesNote"></p>
     </div>
     <div class="card">
-      <div class="card-head"><h2 data-i18n="u161">Core Bonuses</h2><button type="button" class="toggle on" id="editToggleCoreBonuses" onclick="toggleEdit('coreBonuses')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="u161">Core Bonuses</h2><button type="button" class="toggle" id="editToggleCoreBonuses" onclick="toggleEdit('coreBonuses')"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <p class="hint" style="padding:0 0 8px" data-i18n="u162">Новый бонус — каждые 3 LL (LL3, LL6, LL9). GMS — всегда доступен; для бонуса другого производителя нужно 3 ранга его лицензий (ещё +3 за каждый следующий бонус того же производителя).</p>
       <div id="coreBonuses"></div>
       <div class="row" id="coreBonusAddRow" style="margin-top:10px">
@@ -697,7 +697,7 @@
       <p class="hint" style="padding:8px 0 0" id="cbSummary"></p>
     </div>
     <div class="card" id="pilotEquipmentCard">
-      <div class="card-head"><h2 data-i18n="pilot_equipment">Снаряжение пилота</h2><button type="button" class="toggle on" id="editTogglePilotEquipment" onclick="toggleEdit('pilotEquipment')" aria-label="Редактирование снаряжения пилота"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
+      <div class="card-head"><h2 data-i18n="pilot_equipment">Снаряжение пилота</h2><button type="button" class="toggle" id="editTogglePilotEquipment" onclick="toggleEdit('pilotEquipment')" aria-label="Редактирование снаряжения пилота"><span class="knob"><svg viewBox="8 1 15 14" width="24" height="22" fill="" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button></div>
       <div id="pilotEquipment"></div>
     </div>
   </section>
@@ -898,7 +898,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 239</span>
+      <span class="dim global-version">Версия трекера: 240</span>
     </div>
   </div>
 </main>
@@ -1354,7 +1354,9 @@ const DEFAULTS = {
   ],
   systems: [{name:'Pattern-B HEX Charges',sp:2,desc:'Frag Grenade (Quick): Throw a Frag Grenade within Range 5. All characters within a Blast 1 area must pass an Agility save or take 1d6 Explosive damage. On a success, they take half damage.\n\nExplosive Mine (Mine, Quick, Burst 1): All characters within a Burst 1 area must pass an Agility save or take 2d6 Explosive damage. On a success, they take half damage.'},{name:'Rapid Burst Jump Jet System',sp:2,desc:'You can fly when you Boost; however, you must end the movement on the ground or another solid surface, or else immediately begin falling.'},{name:'Type-3 Projected Shield',sp:2,desc:'Project Shield (Protocol): Nominate a character within line of sight: all ranged or melee attacks that they make against you or that you make against them gain +2 Difficulty until the start of your next turn.\n\nThe GMS Type-3 Projected Shield traps and denies incoming projectiles by projecting an aggressive, superpositional anti-ballistic barrier.'}],
   statuses: [],
-  settings: {licenseFilter: true, lang: 'ru', editMounts: true, editTalents: true, editTriggers: true, editSystems: true, editLicenses: true, editMech: true, editPilot: true, editPilotEquipment: true, editCore: true, editCoreBonuses: true, wizardDismissed: false}
+  // v240: редактирование по умолчанию ВЫКЛЮЧЕНО везде (новый персонаж /
+  // сброс — чистый вид без кнопок правки; включается тоглом-гаечным ключом).
+  settings: {licenseFilter: true, lang: 'ru', editMounts: false, editTalents: false, editTriggers: false, editSystems: false, editLicenses: false, editMech: false, editPilot: false, editPilotEquipment: false, editCore: false, editCoreBonuses: false, wizardDismissed: false}
 };
 const ROMAN = {I:1, II:2, III:3};
 function parseLicensesText(t){
@@ -1494,16 +1496,16 @@ function migrate(d){
   if (!Array.isArray(d.pilot.licenses)) d.pilot.licenses = [];
   if (!d.settings) d.settings = {};
   if (typeof d.settings.licenseFilter !== 'boolean') d.settings.licenseFilter = true;
-  if (typeof d.settings.editMounts !== 'boolean') d.settings.editMounts = true;
-  if (typeof d.settings.editTalents !== 'boolean') d.settings.editTalents = true;
-  if (typeof d.settings.editTriggers !== 'boolean') d.settings.editTriggers = true;
-  if (typeof d.settings.editSystems !== 'boolean') d.settings.editSystems = true;
-  if (typeof d.settings.editLicenses !== 'boolean') d.settings.editLicenses = true;
-  if (typeof d.settings.editMech !== 'boolean') d.settings.editMech = true;
-  if (typeof d.settings.editPilot !== 'boolean') d.settings.editPilot = true;
-  if (typeof d.settings.editPilotEquipment !== 'boolean') d.settings.editPilotEquipment = true;
-  if (typeof d.settings.editCore !== 'boolean') d.settings.editCore = true;
-  if (typeof d.settings.editCoreBonuses !== 'boolean') d.settings.editCoreBonuses = true;
+  if (typeof d.settings.editMounts !== 'boolean') d.settings.editMounts = false;
+  if (typeof d.settings.editTalents !== 'boolean') d.settings.editTalents = false;
+  if (typeof d.settings.editTriggers !== 'boolean') d.settings.editTriggers = false;
+  if (typeof d.settings.editSystems !== 'boolean') d.settings.editSystems = false;
+  if (typeof d.settings.editLicenses !== 'boolean') d.settings.editLicenses = false;
+  if (typeof d.settings.editMech !== 'boolean') d.settings.editMech = false;
+  if (typeof d.settings.editPilot !== 'boolean') d.settings.editPilot = false;
+  if (typeof d.settings.editPilotEquipment !== 'boolean') d.settings.editPilotEquipment = false;
+  if (typeof d.settings.editCore !== 'boolean') d.settings.editCore = false;
+  if (typeof d.settings.editCoreBonuses !== 'boolean') d.settings.editCoreBonuses = false;
   if (d.settings.lang !== 'ru' && d.settings.lang !== 'en') d.settings.lang = 'ru';
   // fill missing top-level sections from defaults (partial/old saves must not crash)
   const D = JSON.parse(JSON.stringify(DEFAULTS));
