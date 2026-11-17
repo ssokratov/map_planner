@@ -313,6 +313,11 @@
   .vibe-lines { margin:10px 0 0; font-size:12px; color:var(--text); }
   .vibe-lines p { margin:6px 0 0; border-top:1px solid var(--line); padding:6px 0 0; }
   .vibe-lines p:first-child { margin-top:0; }
+  /* v247: строка лицензии без волосяных линий (.vibe-lines больше не
+     применяется — класс оставлен в CSS, не удалять). */
+  .lic-vibe { margin:10px 0 0; font-size:12px; color:var(--text); }
+  .lic-vibe p { margin:6px 0 0; }
+  .lic-vibe p:first-child { margin-top:0; }
   /* v234: строки лицензий/фреймов — кнопки float:right, текст обтекает их
      и занимает всю ширину карточки (без пустой колонки справа). */
   .dbrow-float { display:block; overflow:hidden; }
@@ -898,7 +903,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 246</span>
+      <span class="dim global-version">Версия трекера: 247</span>
     </div>
   </div>
 </main>
@@ -3602,7 +3607,7 @@ const LICENSE_VIBE = {
   "Empakaai": {role: "штурмовик, ближний бой", frame: "захват", weapons: "", systems: ""},
   "Emperor": {role: "поддержка, артиллерия, средняя дистанция", frame: "сверхщит", weapons: "нексус", systems: "система щита, система контроля, система энергии"},
   "Genghis": {role: "штурмовик-поджигатель, ближний бой", frame: "", weapons: "огнемёт", systems: "система перегрева, система ловушки, НHP"},
-  "Gilgamesh": {role: "штурмовик, ближний бой", frame: "заряды", weapons: "винтовка, клинок, нексус", systems: "система ремонта, система дронов, система ловушки"},
+  "Gilgamesh": {role: "штурмовик, ближний бой", frame: "больше зарядов", weapons: "винтовка, клинок, нексус", systems: "система ремонта, система дронов, система ловушки"},
   "Goblin": {role: "контролер-хакер, средняя дистанция", frame: "маленький", weapons: "лаунчер", systems: "система взлома, система маскировки, НHP, система контроля, 1 система"},
   "Gorgon": {role: "танк-защитник, наказание, ближний бой", frame: "оглушение, гигант", weapons: "пушка", systems: "система разведки, система дронов, система взлома, система контроля, НHP"},
   "Hecatoncheires": {role: "штурмовик, контролер, средняя дистанция", frame: "дроны, маленький", weapons: "", systems: ""},
@@ -3649,9 +3654,10 @@ function capRole(role){
 // v246: новый формат строки лицензии — вместо прозы «Фрейм/Оружие/Системы»:
 // «Оружие и системы: [короткие теги]» + «Фрейм: [теги]» (или «Фрейм 1:/Фрейм 2:»
 // при двух фреймах). Теги оружия/систем — из v.weapons/v.systems.
-// Фреймы — из грантов лицензии (lic.ranks); тег фрейма — из v.frame
-// (базовой лицензии); если тега нет (Genghis, Hydra, Raleigh) — показываем
-// имя фрейма, чтобы строка не была пустой.
+// v247: у каждого фрейма — имя + ровно та же строка тегов, что в списке
+// фреймов (frameRowSub — та же функция, тот же результат). Без тега
+// (Genghis, Hydra, Raleigh) — только имя, без тире. Волосяные линии
+// убраны: блок — .lic-vibe вместо .vibe-lines.
 function licenseVibeFullHtml(v, lic){
   const ws = [v.weapons, v.systems].filter(Boolean).join(', ');
   // фреймы лицензии: из всех рангов, базовый (ключ === имя лицензии) первым
@@ -3662,9 +3668,10 @@ function licenseVibeFullHtml(v, lic){
   } else if (v.frame){
     frames = [''];
   }
-  const frameTag = v.frame ? esc(capFirst(v.frame)) : '';
   const frameLine = (key, label)=>{
-    const body = frameTag || (key ? esc(fd(key).n) : '');
+    const name = key ? esc(fd(key).n) : '';
+    const sub = key ? frameRowSub(key) : capFirst(v.frame || '');
+    const body = name ? (sub ? `${name} — ${esc(sub)}` : name) : esc(sub);
     return body ? `<p><b>${label}:</b> ${body}</p>` : '';
   };
   let frameHtml = '';
@@ -3674,7 +3681,7 @@ function licenseVibeFullHtml(v, lic){
     frameHtml = frames.map((k, i)=>frameLine(k, 'Фрейм ' + (i + 1))).join('');
   }
   const wsHtml = ws ? `<p><b>Оружие и системы:</b> ${esc(capFirst(ws))}</p>` : '';
-  return `<div class="vibe-lines">${wsHtml}${frameHtml}</div>`;
+  return `<div class="lic-vibe">${wsHtml}${frameHtml}</div>`;
 }
 // v233: ранг дистанции боя из роли вайба (последняя часть после запятой):
 // ближний → средний → средний-дальний → дальний → без дистанции (в конец).
