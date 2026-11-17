@@ -314,8 +314,10 @@
   .vibe-lines p { margin:6px 0 0; border-top:1px solid var(--line); padding:6px 0 0; }
   .vibe-lines p:first-child { margin-top:0; }
   /* v247: строка лицензии без волосяных линий (.vibe-lines больше не
-     применяется — класс оставлен в CSS, не удалять). */
-  .lic-vibe { margin:10px 0 0; font-size:12px; color:var(--text); }
+     применяется — класс оставлен в CSS, не удалять).
+     v249: описание лицензии dim (цвет перенесён со строки роли, которая
+     удалена из строки лицензии) — имя остаётся ярким. */
+  .lic-vibe { margin:10px 0 0; font-size:12px; color:var(--dim); }
   .lic-vibe p { margin:6px 0 0; }
   .lic-vibe p:first-child { margin-top:0; }
   /* v234: строки лицензий/фреймов — кнопки float:right, текст обтекает их
@@ -903,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 248</span>
+      <span class="dim global-version">Версия трекера: 249</span>
     </div>
   </div>
 </main>
@@ -3662,9 +3664,9 @@ function capList(s){ return (s || '').split(', ').map(capFirst).join(', '); }
 // (Genghis, Hydra, Raleigh) — только имя, без тире. Волосяные линии
 // убраны: блок — .lic-vibe вместо .vibe-lines.
 // v248: строка фрейма — та же объединённая строка, что в списке фреймов
-// (frameRowFull: роль + теги). Для однофреймовых лицензий роль при этом
-// дублируется (она уже есть строкой выше) — по правилу пользователя
-// «та же строка в точности»; решение — за пользователем.
+// (frameRowFull: роль + теги).
+// v249: отдельная строка роли из строки лицензии удалена — роль теперь
+// только внутри строк фреймов (все фреймы лицензии делят одну роль).
 function licenseVibeFullHtml(v, lic){
   const ws = [v.weapons, v.systems].filter(Boolean).join(', ');
   // фреймы лицензии: из всех рангов, базовый (ключ === имя лицензии) первым
@@ -3724,7 +3726,9 @@ function sortFrameKeys(keys){
   });
 }
 // v232: строка лицензии везде одинаковая — поиск и список в Правилах:
-// имя «КОРП: Имя», роль отдельной строкой, полный вайб-текст.
+// имя «КОРП: Имя» + полный вайб-текст.
+// v249: отдельная строка роли удалена (роль теперь только внутри строк
+// фреймов — все фреймы лицензии делят одну роль); описание dim.
 function licenseRowInfoHtml(lic){
   const v = LICENSE_VIBE[lic.name];
   if (!v){
@@ -3732,7 +3736,7 @@ function licenseRowInfoHtml(lic){
     const F = fk ? DB.frames[fk] : null;
     return `<b>${esc(licenseDispName(lic))}</b><span>${esc(F ? frameLabel(F) : lic.src)}</span>`;
   }
-  return `<b>${esc(licenseDispName(lic))}</b><span>${esc(capRole(v.role))}</span>${licenseVibeFullHtml(v, lic)}`;
+  return `<b>${esc(licenseDispName(lic))}</b>${licenseVibeFullHtml(v, lic)}`;
 }
 // v232: строка фрейма везде одинаковая — поиск и список в Правилах:
 // имя + описание фрейма из вайба его лицензии (у GMS — название ядра).
