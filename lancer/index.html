@@ -890,7 +890,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 231</span>
+      <span class="dim global-version">Версия трекера: 232</span>
     </div>
   </div>
 </main>
@@ -1184,11 +1184,9 @@ function showLicenseResults(q, box){
   if (!box) return;
   const lics = licenseData().filter(lic=>licenseMatches(lic, q));
   box.innerHTML = lics.map(lic=>{
-    const dispName = licenseDispName(lic);
-    const v = LICENSE_VIBE[lic.name];
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(dispName)}</b>${v ? `<span>${esc(v.role)}</span>${licenseVibeFullHtml(v)}` : ''}</div>
+      <div class="dbinfo">${licenseRowInfoHtml(lic)}</div>
       <button class="btn" style="flex:0 0 auto" onclick="showLicenseDetail('${esc(lic.name)}','search')">ⓘ</button>
       <button class="btn search-add" style="flex:0 0 auto" onclick="addLicenseByName('${esc(lic.name)}');closeSearchDlg()">＋</button>
     </div>`;
@@ -3329,15 +3327,10 @@ function showFrameResults(q, box){
   const matches = Object.keys(DB.frames).filter(k=>frameAvailable(k) && frameMatches(k, query));
   const shown = matches;
   box.innerHTML = shown.map(k=>{
-    const d = fd(k), F = DB.frames[k];
-    // v230: вместо названия ядра — описание фрейма из вайба его лицензии
-    // (у GMS-фреймов лицензии нет — остаётся название ядра).
-    // v231: строка — только имя и описание фрейма (лейбл корп · роли · LL убран).
-    const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
-    const sub = vb ? vb.frame : (d.c || '');
+    const d = fd(k);
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(sub)}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(frameRowSub(k))}</span></div>
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}')">ⓘ</button>
       <button class="btn search-add" style="flex:0 0 auto" onclick="pickFrame('${esc(k)}');closeSearchDlg()">＋</button>
     </div>`;
@@ -3367,14 +3360,10 @@ function renderRulesFrameList(){
     return a.localeCompare(b);
   });
   box.innerHTML = keys.map(k=>{
-    const d = fd(k), F = DB.frames[k];
-    // v231: как в поиске фреймов — только описание фрейма из вайба его
-    // лицензии (у GMS-фреймов лицензии нет — остаётся название ядра).
-    const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
-    const sub = vb ? vb.frame : (d.c || '');
+    const d = fd(k);
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(sub)}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span class="dim">${esc(frameRowSub(k))}</span></div>
       <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}','rules')">ⓘ</button>
     </div>`;
   }).join('');
@@ -3414,10 +3403,36 @@ const LICENSE_VIBE = {
   "Tortuga": {role: "танк-штурмовик, таран, ближний бой", frame: "бонус точности всем атакам-реакциям, союзники прячутся за тобой как за укрытием.", weapons: "дробовик чистит палубы в упор, «Ромашка» ставит дымовую завесу, а каталитический молот при крите оглушает.", systems: "осадный таран наносит массивный урон объектам и местности — ты проходишь сквозь стены. Сверхуплотнённая броня даёт сопротивление почти всему урону."},
   "Vlad": {role: "контролер-штурмовик, ловчий, ближний бой", frame: "когда ты обездвиживаешь врага, он заодно становится изорванным; а кто атакует тебя в радиусе, сначала сам получает урон.", weapons: "гвоздомёт обездвиживает с дистанции, ударное копьё бьёт всех на линии, а дрель добивает лежачих, обездвиженных и оглушённых — с растущим уроном.", systems: "ловушка «Паутинная челюсть» хватает наступившего, калтропы делают область труднопроходимой и взрываются под ногами, а заряженный кол пригвождает соседнего врага."},
 };
+// v232: вайб-текст хранится строчными, а показывается с заглавных:
+// роль — каждое слово-позиция с заглавной («Контролер-Штурмовик, Ловчий,
+// Ближний бой»), описание — первая буква («Когда ты…»). Последующие
+// предложения в тексте уже начинаются с заглавной.
+function capFirst(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function capRole(role){
+  return (role || '').split(', ').map(part=>part.replace(/(^|[-/])([а-яa-z])/g, (m, sep, ch)=>sep + ch.toUpperCase())).join(', ');
+}
 // v231: полный вайб-текст лицензии (Фрейм/Оружие/Системы) — для строки
 // поиска лицензий и для карточки лицензии. Русский текст, EN нет.
 function licenseVibeFullHtml(v){
-  return `<div style="margin:2px 0 0;font-size:12px;color:var(--dim)"><p style="margin:0 0 4px"><b>Фрейм:</b> ${esc(v.frame)}</p><p style="margin:0 0 4px"><b>Оружие:</b> ${esc(v.weapons)}</p><p style="margin:0"><b>Системы:</b> ${esc(v.systems)}</p></div>`;
+  return `<div style="margin:2px 0 0;font-size:12px;color:var(--dim)"><p style="margin:0 0 4px"><b>Фрейм:</b> ${esc(capFirst(v.frame))}</p><p style="margin:0 0 4px"><b>Оружие:</b> ${esc(capFirst(v.weapons))}</p><p style="margin:0"><b>Системы:</b> ${esc(capFirst(v.systems))}</p></div>`;
+}
+// v232: строка лицензии везде одинаковая — поиск и список в Правилах:
+// имя «КОРП: Имя», роль отдельной строкой, полный вайб-текст.
+function licenseRowInfoHtml(lic){
+  const v = LICENSE_VIBE[lic.name];
+  if (!v){
+    const fk = licenseFrameKey(lic.name);
+    const F = fk ? DB.frames[fk] : null;
+    return `<b>${esc(licenseDispName(lic))}</b><span>${esc(F ? frameLabel(F) : lic.src)}</span>`;
+  }
+  return `<b>${esc(licenseDispName(lic))}</b><span>${esc(capRole(v.role))}</span>${licenseVibeFullHtml(v)}`;
+}
+// v232: строка фрейма везде одинаковая — поиск и список в Правилах:
+// имя + описание фрейма из вайба его лицензии (у GMS — название ядра).
+function frameRowSub(k){
+  const d = fd(k), F = DB.frames[k];
+  const vb = F.lic ? LICENSE_VIBE[F.lic] : null;
+  return vb ? capFirst(vb.frame) : (d.c || '');
 }
 
 // v205: лицензии — отдельные сущности, а не фреймы. В lancer-data нет
@@ -3470,16 +3485,9 @@ function renderRulesLicenseList(){
   const box = document.getElementById('rulesLicenseList');
   if (!box || !DB.frames) return;
   box.innerHTML = licenseData().map(lic=>{
-    const dispName = licenseDispName(lic);
-    // v231: в Правилах строка компактнее, чем в поиске, — только роль
-    // и описание фрейма (полный текст — в поиске и в карточке).
-    const v = LICENSE_VIBE[lic.name];
-    let lines = '';
-    if (v) lines = `<span>${esc(v.role)}</span><span class="dim">${esc(v.frame)}</span>`;
-    else { const fk = licenseFrameKey(lic.name); const F = fk ? DB.frames[fk] : null; lines = `<span>${esc(F ? frameLabel(F) : lic.src)}</span>`; }
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(dispName)}</b>${lines}</div>
+      <div class="dbinfo">${licenseRowInfoHtml(lic)}</div>
       <button class="btn" style="flex:0 0 auto" onclick="showLicenseDetail('${esc(lic.name)}','rules')">ⓘ</button>
     </div>`;
   }).join('');
@@ -3500,14 +3508,15 @@ function licenseDetailHtml(name){
   const F = fk ? DB.frames[fk] : null;
   const owned = (S.pilot.licenses || []).find(l=>l.name === name);
   const rn = ['I', 'II', 'III'];
+  // v232: карточка лицензии — то же, что и в строке (имя, роль, полный
+  // текст), без компактной версии; wmeta с корп/ролями/LL больше нет.
+  const vb = LICENSE_VIBE[name];
   let h = `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="licenseDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(licenseDispName(lic))}</b>
   </div>
-  <div class="wmeta" style="margin-bottom:10px">${esc(F ? frameLabel(F) : lic.src)}</div>`;
-  // v230: вайб-описание лицензии (Фрейм/Оружие/Системы) — русский текст, EN нет.
-  const vb = LICENSE_VIBE[name];
+  ${vb ? `<div style="margin-bottom:10px;font-size:13px">${esc(capRole(vb.role))}</div>` : `<div class="wmeta" style="margin-bottom:10px">${esc(F ? frameLabel(F) : lic.src)}</div>`}`;
   if (vb) h += licenseVibeFullHtml(vb);
   if (owned) h += `<p class="hint">${esc(L('u247'))}: ${esc(L('u245'))} ${esc(rn[(owned.rank || 1) - 1])}</p>`;
   for (let r = 1; r <= 3; r++){
@@ -3693,12 +3702,14 @@ function frameDetailHtml(key){
     const ms = MOUNT_STYLE[m] || MOUNT_STYLE['Main'];
     return `<span class="mount-badge" title="${esc(m)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span><span class="mb-name">${esc(m)}</span></span>`;
   }).join(' ');
+  // v232: карточка фрейма — то же, что и в строке: описание фрейма
+  // из вайба его лицензии (у GMS — название ядра); wmeta с корп/ролями/LL нет.
   return `
   <div class="row" style="margin-bottom:10px">
     <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(d.n)}</b>
   </div>
-  <div class="wmeta" style="margin-bottom:10px">${esc(frameLabel(F))}</div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRowSub(key))}</div>
   <h3 style="margin:10px 0 6px">${esc(L('u240'))}</h3>
   ${statsHtml}
   ${mounts ? `<h3 style="margin:10px 0 6px">${esc(L('u242'))}</h3><div class="tags">${mounts}</div>` : ''}
