@@ -72,6 +72,24 @@
   .ring-wrap svg { width:150px; height:150px; transform:rotate(-90deg); display:block; }
   .ring-track { fill:none; stroke:var(--line); stroke-width:11; }
   .ring-fill { fill:none; stroke:var(--good); stroke-width:11; stroke-linecap:round; transition:stroke-dashoffset .25s ease, stroke .25s ease; }
+  /* v273: cumulative delta tracker (click counter) above the HP ring and the
+     heat thermometer — like the hp-tracker demo: each +/- click adds to the
+     cumulative delta, slam on every update, pop on structure/stress loss,
+     hides 2 s after the last click and resets. */
+  .delta-container { position:absolute; bottom:calc(100% + 4px); left:50%; display:flex; flex-direction:column; align-items:center; pointer-events:none; opacity:0; transform:translateX(-50%) translateY(8px) scale(.85); transition:opacity .25s ease, transform .25s cubic-bezier(.22,1,.36,1); z-index:5; }
+  .delta-container.visible { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+  .delta-val { font-size:24px; font-weight:800; letter-spacing:-.5px; line-height:1.05; text-shadow:0 2px 10px rgba(0,0,0,.75); transition:color .15s ease; }
+  .delta-val.damage { color:var(--bad); }
+  .delta-val.heal { color:var(--good); }
+  .delta-val.heat-up { color:var(--accent); }
+  .delta-val.heat-down { color:var(--good); }
+  .delta-val.neutral { color:var(--dim); }
+  .delta-sub { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:var(--accent); text-shadow:0 2px 8px rgba(0,0,0,.85); margin-top:2px; display:none; }
+  .delta-sub.active { display:block; }
+  @keyframes delta-slam { 0% { transform:translateY(-4px) scale(1.38); } 60% { transform:translateY(1px) scale(.95); } 100% { transform:translateY(0) scale(1); } }
+  @keyframes delta-pop { 0% { transform:scale(.7); opacity:0; } 65% { transform:scale(1.18); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+  .delta-slam { animation:delta-slam .24s cubic-bezier(.18,.89,.32,1.28); }
+  .delta-pop { animation:delta-pop .28s cubic-bezier(.18,.89,.32,1.28); }
   .ring-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; z-index:1; }
   .ring-main { display:flex; flex-direction:row; align-items:baseline; gap:5px; }
   .ring-max { font-size:12px; color:var(--dim); margin-top:2px; }
@@ -83,7 +101,7 @@
   .ring-minus, .ring-plus { position:absolute; top:50%; transform:translateY(-50%); width:25px; height:88px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:rgba(255,255,255,.85); text-shadow:0 1px 3px rgba(0,0,0,.8); cursor:pointer; z-index:2; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none; }
   .ring-minus { left:15px; padding-left:3px; border-right:1px solid var(--line); }
   .ring-plus { right:15px; padding-right:3px; border-left:1px solid var(--line); }
-  .heat-thermo { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; }
+  .heat-thermo { position:relative; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; }
   .thermo { position:relative; width:58px; height:150px; border:2px solid var(--line); border-radius:999px; background:var(--panel2); overflow:hidden; }
   .thermo-fill { position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(to top,#e8590c,#ffd43b); transition:height .25s ease; transform-origin:bottom; }
   .thermo-fill.hot { background:linear-gradient(to top,#c92a2a,#ff6b6b); }
@@ -588,6 +606,10 @@
               <circle class="ring-track" cx="70" cy="70" r="58"/>
               <circle class="ring-fill" id="hpRingFill" cx="70" cy="70" r="58"/>
             </svg>
+            <div class="delta-container" id="deltaHpContainer">
+              <div class="delta-val" id="deltaHpVal">0 hp</div>
+              <div class="delta-sub" id="deltaHpSub">−1 Structure</div>
+            </div>
             <div class="ring-minus" onclick="step('mech.hp',-1)" role="button" aria-label="HP минус">−</div>
             <div class="ring-val"><div class="ring-main"><div class="val" id="v-mech.hp" onclick="showStatRef('hp')">10</div><button class="stat-label ring-hp" type="button" onclick="showStatRef('hp')">hp</button></div><div class="ring-max" id="max-mech.hp">max: 10</div></div>
             <div class="ring-plus" onclick="step('mech.hp',1)" role="button" aria-label="HP плюс">+</div>
@@ -602,6 +624,10 @@
             <div class="thermo-plus" onclick="step('mech.heat',1)" role="button" aria-label="Heat плюс">+</div>
             <div class="thermo-val"><div class="val" id="v-mech.heat" onclick="showStatRef('heat')">0</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
             <div class="thermo-minus" onclick="step('mech.heat',-1)" role="button" aria-label="Heat минус">−</div>
+          </div>
+          <div class="delta-container" id="deltaHeatContainer">
+            <div class="delta-val" id="deltaHeatVal">0 heat</div>
+            <div class="delta-sub" id="deltaHeatSub">−1 Stress</div>
           </div>
           <span class="dz-label">ZONE</span>
           <input type="hidden" data-f="mech.heat" value="0"><input type="hidden" data-f="mech.heatMax" value="6">
@@ -932,7 +958,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 272</span>
+      <span class="dim global-version">Версия трекера: 273</span>
     </div>
   </div>
 </main>
@@ -2260,31 +2286,96 @@ function shake(kind){
 // точки переполнения переносится). Сидеть ровно на максимуме можно —
 // переполнения нет. Прямое изменение Structure/Stress своими кнопками
 // (не через step) не трогается.
+// v273: cumulative delta tracker (click counter) above the HP ring and the
+// heat thermometer — like the hp-tracker demo: each +/- click adds its d to
+// the cumulative delta so the player never counts clicks; the container
+// shows on the first click, slams on every update, hides 2 s after the
+// last click and resets. The structure/stress line shows the ACTUAL
+// structure/stress lost to overflow during the series (not derived from
+// the delta). No-effect clicks (clamped, nothing changed) do not count.
+const DELTA_HIDE_MS = 2000;
+const deltaTrack = {
+  hp: { delta: 0, lost: 0, t: null },
+  heat: { delta: 0, lost: 0, t: null }
+};
+function bumpDelta(kind, d, lost){
+  const tr = deltaTrack[kind];
+  const cont = document.getElementById(kind === 'hp' ? 'deltaHpContainer' : 'deltaHeatContainer');
+  const valEl = document.getElementById(kind === 'hp' ? 'deltaHpVal' : 'deltaHeatVal');
+  const subEl = document.getElementById(kind === 'hp' ? 'deltaHpSub' : 'deltaHeatSub');
+  if (!tr || !cont || !valEl || !subEl) return;
+  tr.delta += d;
+  const lostBefore = tr.lost;
+  tr.lost += lost;
+  const unit = kind === 'hp' ? 'hp' : 'heat';
+  valEl.textContent = (tr.delta > 0 ? '+' : tr.delta < 0 ? '−' : '') + Math.abs(tr.delta) + ' ' + unit;
+  ['damage', 'heal', 'neutral', 'heat-up', 'heat-down', 'delta-slam'].forEach(function(c){ valEl.classList.remove(c); });
+  if (kind === 'hp') valEl.classList.add(tr.delta < 0 ? 'damage' : tr.delta > 0 ? 'heal' : 'neutral');
+  else valEl.classList.add(tr.delta > 0 ? 'heat-up' : tr.delta < 0 ? 'heat-down' : 'neutral');
+  void valEl.offsetWidth;
+  valEl.classList.add('delta-slam');
+  if (tr.lost > 0){
+    subEl.textContent = '−' + tr.lost + ' ' + (kind === 'hp' ? 'Structure' : 'Stress');
+    subEl.classList.add('active');
+    if (tr.lost > lostBefore){
+      subEl.classList.remove('delta-pop');
+      void subEl.offsetWidth;
+      subEl.classList.add('delta-pop');
+    }
+  } else {
+    subEl.classList.remove('active');
+    subEl.classList.remove('delta-pop');
+  }
+  cont.classList.add('visible');
+  clearTimeout(tr.t);
+  tr.t = setTimeout(function(){
+    cont.classList.remove('visible');
+    setTimeout(function(){
+      if (!cont.classList.contains('visible')){
+        tr.delta = 0; tr.lost = 0;
+        subEl.classList.remove('active');
+        subEl.classList.remove('delta-pop');
+      }
+    }, 250);
+  }, DELTA_HIDE_MS);
+}
 function step(path, d){
   const max = get(path+'Max');
   const old = get(path)||0;
   let v = old + d;
   let lostStruct = false;
+  let lostN = 0; // v273: how many Structure/Stress this click actually cost
   if (path === 'mech.hp' && v <= 0 && max > 0){
     let st = get('mech.structure')||0;
+    const st0 = st;
     // v272: сброс HP на максимум — только если после потери структуры
     // она ещё осталась; потеря ПОСЛЕДНЕЙ структуры (мех уничтожен) —
     // без сброса, HP остаётся 0.
     while (v <= 0 && st > 0){ st--; if (st > 0) v = max + v; else v = 0; lostStruct = true; }
+    lostN = st0 - st;
     if (st !== (get('mech.structure')||0)) set('mech.structure', st);
     if (v <= 0) v = 0;
   } else if (path === 'mech.heat' && v > max && max >= 0){
     let st = get('mech.stress')||0;
+    const st0 = st;
     // v272: сброс Heat в 0 — только если после потери стресса он ещё
     // остался; потеря ПОСЛЕДНЕГО стресса (плавление неминуемо) —
     // без сброса, Heat остаётся на максимуме.
     while (v > max && st > 0){ st--; if (st > 0) v = v - (max + 1); else v = max; }
+    lostN = st0 - st;
     if (st !== (get('mech.stress')||0)) set('mech.stress', st);
     if (v > max) v = max;
   } else {
     v = Math.max(0, Math.min(max, v));
   }
   set(path, v); syncDangerZone(); save(); renderCounters();
+  // v273: cumulative delta tracker — count the click only if it changed
+  // anything (the value, or Structure/Stress); a clamped no-op click
+  // does not count. The delta accumulates the click d, not the value
+  // jump, so an overflow click counts -1/+1, not the HP/Heat reset.
+  if ((path === 'mech.hp' || path === 'mech.heat') && (v !== old || lostN > 0)){
+    bumpDelta(path === 'mech.hp' ? 'hp' : 'heat', d, lostN);
+  }
   if (path === 'mech.hp'){
     if (lostStruct || (v === 0 && old > 0)) shake('shake-big');
     else if (v < old) shake('shake-small');
