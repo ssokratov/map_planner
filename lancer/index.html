@@ -114,6 +114,10 @@
   .tag { display:inline-block; background:var(--panel2); border:1px solid var(--hud-amber-dim); color:var(--hud-amber); border-radius:0; padding:2px 10px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
   .tag:hover { border-color:var(--hud-amber); }
   .tag.warn { border-color:#e5484d; color:#e5484d; }
+  /* v265 (доп.): чип Loading — зелёный когда заряжен, красный когда разряжен
+     (зелёный — var(--good), красный — как у .tag.warn, чтобы ряд выглядел цельно). */
+  .tag.load-on { border-color:var(--good); color:var(--good); }
+  .tag.load-off { border-color:#e5484d; color:#e5484d; }
   dialog { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:16px 18px; max-width:450px; width:calc(100% - 40px); }
   dialog::backdrop { background:rgba(0,0,0,.6); }
   dialog h3 { margin:0 0 8px; font-size:16px; }
@@ -130,8 +134,6 @@
   .btn.danger { border-color:var(--accent); color:var(--accent); padding:6px 10px; font-size:13px; }
   .btn.x { border-color:transparent; background:transparent; color:var(--accent); padding:6px 10px; font-size:13px; }
   .btn.primary { background:var(--hud-amber); border-color:var(--hud-amber); color:#0e1116; font-weight:700; }
-  .load-toggle.on { border-color:var(--hud-amber); color:var(--hud-amber); }
-  .load-toggle.off { border-color:var(--bad); color:var(--bad); }
   /* v218: тонкие разделители между элементами списков — тот же приём, что у
      снаряжения пилота (.pilot-equip-item): волосная линия 1px var(--line),
      без акцента. Рамок не добавляем, только линию между соседями. */
@@ -302,6 +304,11 @@
   #statsCard .frame-field { grid-column:1 / -1; display:flex; align-items:center; gap:8px; min-width:0; }
   .oc-next { text-align:center; font-size:13px; color:var(--dim); margin-top:4px; }
   .oc-help { appearance:none; -webkit-appearance:none; border:0; background:transparent; padding:0; cursor:pointer; }
+  /* v265 (доп.): «непрочитанный» урон на кнопке «отмечено N» — жёлтая кнопка
+     с кружком «!» в начале: отметок стало больше с последнего открытия
+     диалога броска. Лейблы Structure/Stress не трогаем — только «отмечено N». */
+  .mark-count.attn { background:var(--hud-amber); color:#1a1a1a; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .mark-count.attn::before { content:'!'; display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; background:#1a1a1a; color:var(--hud-amber); font-size:11px; font-weight:700; margin-right:5px; vertical-align:middle; }
   .mount { background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px; }
   .mount-head { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .mount-head select { flex:1 1 auto; min-width:0; }
@@ -370,7 +377,24 @@
   .sys.open .sys-body { display:block; }
   /* v264: уничтоженное оружие/система — название перечёркнуто. */
   .wcard.destroyed .weap-name, .sec.sys.destroyed .sys-name { text-decoration: line-through; }
+  /* v265 (доп., уточнение пользователя — отмена правки про .tags):
+     у уничтоженного перечёркнуты строки мета-информации (.wmeta: урон/дальность
+     и источник у оружия, мета у системы). Стандартные теги НЕ перечёркиваются;
+     чипы «Уничтожено»/Loading — тоже нет, они остаются читаемыми. */
+  .wcard.destroyed .wmeta, .sec.sys.destroyed .wmeta { text-decoration: line-through; }
+  /* v265 (доп.): .tags несёт margin 2px 0 8px; как flex-элемент ряда рядом с
+     чипами-кнопками он из-за асимметрии съезжал бы на 3px вверх — обнуляем. */
+  .weap-head-sub > .tags, .sys-head-sub > .tags { margin:0; }
   .dmg-roll-line { font-weight:700; font-size:15px; margin:0 0 10px; color:var(--text); }
+  /* v265: строки таблицы в диалоге броска — сворачиваемые по умолчанию (как
+     описания систем/оружия): виден только заголовок (бросок + название),
+     описание скрыто; тап по заголовку разворачивает. При каждом открытии
+     диалога строки снова свёрнуты (свежий рендер, состояние не персистится). */
+  .dmg-row-head { cursor:pointer; }
+  .dmg-row-arrow { color:var(--text); font-size:11px; line-height:1; transition:transform .15s; flex:0 0 auto; margin-right:6px; }
+  .dmg-row.open .dmg-row-arrow { transform:rotate(90deg); }
+  .dmg-row .dmg-row-desc { display:none; }
+  .dmg-row.open .dmg-row-desc { display:block; }
   /* Оружие — сворачиваемые карточки (v262), как системы: мета, теги, заряды
      и Loading — в шапке, описание — только в развёрнутом теле, в обоих режимах. */
   .weap-head { cursor:pointer; }
@@ -933,7 +957,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 264</span>
+      <span class="dim global-version">Версия трекера: 265</span>
     </div>
   </div>
 </main>
@@ -1336,6 +1360,11 @@ let openPilotEquip = new Set(); // открытые (развёрнутые) к�
 // v263: состояние свёрнуто/развёрнуто — в отдельном профиль-независимом ключе
 // localStorage: переживает перезагрузку страницы И смену профиля (в KEY не
 // кладём — данные пилота пер-профиль и перезаписываются при переключении).
+// v265 (доп.): «непрочитанный» урон — сколько отметок структуры/стресса
+// пользователь видел в последний раз при открытии диалога броска. Хранится
+// в том же профиль-независимом ключе, что и свёрнуто/развёрнуто (в KEY не
+// кладём — это UI-состояние, а не данные пилота).
+let seenDmg = {};
 const UI_STATE_KEY = 'lancer-tracker-ui-v1';
 function loadOpenState(){
   try {
@@ -1347,10 +1376,12 @@ function loadOpenState(){
     openSys = new Set(arr(d.sys));
     openWeap = new Set(arr(d.weap));
     openPilotEquip = new Set(arr(d.pilotEquip));
+    const num = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? Math.floor(v) : undefined;
+    seenDmg = { structure: num(d.seen && d.seen.structure), stress: num(d.seen && d.seen.stress) };
   } catch(e){}
 }
 function persistOpenState(){
-  try { localStorage.setItem(UI_STATE_KEY, JSON.stringify({sys:[...openSys], weap:[...openWeap], pilotEquip:[...openPilotEquip]})); } catch(e){}
+  try { localStorage.setItem(UI_STATE_KEY, JSON.stringify({sys:[...openSys], weap:[...openWeap], pilotEquip:[...openPilotEquip], seen:seenDmg})); } catch(e){}
 }
 loadOpenState();
 let openSearchDescs = new Set();
@@ -1476,7 +1507,7 @@ STR.dmg_destroy_btn = {ru:'Уничтожить оружие/систему', en
 STR.destroy_none = {ru:'Нечего уничтожать: нет оружия и систем', en:'Nothing to destroy: no weapons or systems'};
 STR.dmg_destroy_mount = {ru:'всё оружие маунта', en:'all weapons on this mount'};
 STR.repair_howto = {ru:'Стандартно: 1 Repair во время Отдыха (см. правила). Но бывают и другие способы (таланты, системы, кор-бонусы), поэтому трекер сам ремонты не списывает — кнопка лишь отмечает предмет починенным.', en:'Standard: 1 Repair during a Rest (see the rules). But there are other ways (talents, systems, core bonuses), so the tracker does not spend Repairs itself — the button only marks the item repaired.'};
-STR.repair_now = {ru:'Починить сейчас', en:'Repair now'};
+STR.repair_now = {ru:'Починить', en:'Repair'};
 STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
 STR.pilot_spend_charge = {ru:'Потратить заряд', en:'Spend a charge'};
 STR.pilot_restore_charge = {ru:'Восстановить заряд', en:'Restore a charge'};
@@ -3095,6 +3126,14 @@ function renderCounters(){
     if (!el) return;
     const marked = Math.max(0, (+get('mech.'+k+'Max')||0) - (+get('mech.'+k)||0));
     el.textContent = (lang()==='ru' ? 'отмечено: ' : 'Marked: ') + marked;
+    // v265 (доп.): «непрочитанный» урон — отметок стало больше с тех пор, как
+    // пользователь открывал диалог броска: кнопка жёлтая с «!». Базу (seen)
+    // при первом появлении берём из текущих отметок, чтобы старые отметки
+    // не светились; если отметок стало меньше (починка/правка) — базу
+    // опускаем до текущих, чтобы будущий урон снова дал индикатор.
+    if (seenDmg[k] === undefined || seenDmg[k] === null) { seenDmg[k] = marked; persistOpenState(); }
+    else if (marked < seenDmg[k]) { seenDmg[k] = marked; persistOpenState(); }
+    el.classList.toggle('attn', marked > seenDmg[k]);
   });
   // v65: HP-кольцо (r=58) и термометр Heat — они и есть трекеры, отдельных счётчиков больше нет.
   const hpRing = document.getElementById('hpRingFill');
@@ -3327,12 +3366,11 @@ function renderLists(){
     return `
     <div class="wcard${wOpen ? ' open' : ''}${w.destroyed ? ' destroyed' : ''}" data-weap="${esc(wKey)}">
       <div class="weap-head" onclick="toggleWeapCard(this)">
-        <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${em ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
+        <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${em ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
         ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
         <div class="wmeta">${esc(lab)}</div>
-        ${wtg.length ? `<div class="weap-head-sub"><span class="tags" style="display:inline-flex">${tagChips(wtg)}</span></div>` : ''}
+        ${(wtg.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? '✓ ' + esc(L('u254')) : '✕ ' + esc(L('u255'))}</button>` : ''}${wtg.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtg)}</span>` : ''}</div>` : ''}
         ${(wlim || wlimU) ? `<div class="weap-head-sub"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},1)">+</button></span></div>` : ''}
-        ${weapLoading(w) ? `<div class="weap-head-sub"><button class="btn load-toggle ${weapLoaded(w) ? 'on' : 'off'}" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? '✓ ' + L('u254') : '✕ ' + L('u255')}</button></div>` : ''}
       </div>
       <div class="weap-body">
         ${descBox('w-'+mi+'-'+wi, '', descDisp, L('ph_weapdesc'), "S.mounts["+mi+"].weapons["+wi+"].desc=this.value;save()", false)}
@@ -3366,9 +3404,9 @@ function renderLists(){
     return `
     <div class="sec sys${isOpen ? ' open' : ''}${s.destroyed ? ' destroyed' : ''}" data-sys="${esc(s.name)}">
       <div class="sys-head" onclick="toggleSysCard(this)">
-        <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${s.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('system',${i})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
+        <div class="sys-head-row"><span class="sys-arrow">▶</span><span class="sys-name">${esc(sDisp)}</span>${ed ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delRow('systems',${i})">✕</button>` : ''}</div>
         <div class="wmeta">${esc(meta)}</div>
-        ${(stg.length || lim || limU) ? `<div class="sys-head-sub">${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${(lim || limU) ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${lim ? `${left} <small>/ ${lim}</small>` : `${left}`}</span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
+        ${(stg.length || lim || limU || s.destroyed) ? `<div class="sys-head-sub">${s.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('system',${i})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${stg.length ? `<span class="tags" style="display:inline-flex">${tagChips(stg)}</span>` : ''}${(lim || limU) ? `<span class="sys-charges"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepSysCharges(${i},-1)">−</button><span class="val">${lim ? `${left} <small>/ ${lim}</small>` : `${left}`}</span><button onclick="event.stopPropagation();stepSysCharges(${i},1)">+</button></span></span>` : ''}</div>` : ''}
         ${sysGrants ? `<div class="sys-head-sub"><span class="tags" style="display:inline-flex">${sysGrants}</span></div>` : ''}
       </div>
       <div class="sys-body">
@@ -3572,6 +3610,20 @@ function pilotEquipmentMaxUses(item,data=item?.data||item){
   const limited=pilotEquipmentTags(data).find(tag=>tag.id==='tg_limited');
   return Math.max(0,+(item?.maxUses||limited?.val||0));
 }
+// v265 (доп.): Loading у снаряжения пилота — тот же чип, что у оружия меха.
+// В данных Loading есть только у 3 предметов, все — оружие пилота
+// (Heavy Signature, Anti-Armor Signature Weapon, Madrigal Shoulder Launcher);
+// у систем Loading нет ни у одной. Состояние — item.loaded (по умолчанию заряжен).
+// Чип рендерится только для предметов в loadout'е (chargeKey) — у спецснаряжения
+// нет адреса для переключения.
+function pilotEquipLoading(item){ return pilotEquipmentTags(item?.data || item).some(t=>t.id==='tg_loading'); }
+function pilotEquipLoaded(item){ return item.loaded !== false; }
+function togglePilotEquipLoaded(key, index){
+  const loadouts=S.pilot.loadouts||[], loadout=loadouts[Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0))];
+  const item=loadout?.[key]?.[index]; if(!item) return;
+  item.loaded = !pilotEquipLoaded(item);
+  save(); renderPilotEquipment();
+}
 function stepPilotEquipmentCharges(key,index,delta){
   const loadouts=S.pilot.loadouts||[], loadout=loadouts[Math.max(0,Math.min(loadouts.length-1,+S.pilot.activeLoadout||0))];
   const item=loadout?.[key]?.[index]; if(!item) return;
@@ -3604,7 +3656,8 @@ function renderPilotEquipment(){
     if(Array.isArray(data.range)) data.range.forEach(x=>{ if(x?.val!==undefined&&x.val!==null&&x.val!=='') stats.push(`<span>${esc(ru?pilotRangeType(x.type):x.type||'')} <span class="wnum">${esc(x.val)}</span></span>`); });
     if(Array.isArray(data.bonuses)&&data.bonuses.length) stats.push(esc(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · ')));
     const status=[item.destroyed?L('pilot_equip_destroyed'):'',item.isUsed?L('pilot_equip_used'):'',item.note||''].filter(Boolean);
-    const tags=pilotEquipmentTags(data), tagHtml=tags.length?`<div class="tags pilot-equip-tags">${pilotEquipmentTagChips(tags)}</div>`:'';
+    const tags=pilotEquipmentTags(data), isLoading=pilotEquipLoading(item), showLoadChip=isLoading&&chargeKey,
+      tagHtml=(tags.length||showLoadChip)?`<div class="tags pilot-equip-tags">${showLoadChip?`<button class="tag ${pilotEquipLoaded(item)?'load-on':'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();togglePilotEquipLoaded('${chargeKey}',${chargeIndex})">${pilotEquipLoaded(item)?'✓ '+esc(L('u254')):'✕ '+esc(L('u255'))}</button>`:''}${pilotEquipmentTagChips(tags)}</div>`:'';
     const max=pilotEquipmentMaxUses(item,data), used=Math.max(0,Math.min(max,+item.currentUses||0)), remaining=max-used;
     const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
     // v263: сворачиваемая карточка, как системы/оружие; ключ — id снаряжения
@@ -5047,15 +5100,28 @@ function showOverchargeRef(){
 // v264: диалог броска при потере структуры/стресса (кнопка «отмечено N» в HUD).
 // Таблица — те же строки STR, что и во вкладке «Правила» (u026–u034 / u040–u049),
 // чтобы RU/EN оставались консистентными; число кубов — текущее число отметок.
+// v265: строки таблицы — сворачиваемые по умолчанию (как описания систем/оружия):
+// виден только заголовок (бросок + название), описание скрыто; тап по заголовку
+// разворачивает. При каждом открытии диалога строки снова свёрнуты (свежий рендер,
+// состояние не персистится). Описание расплавления (u049, только стресс) — тоже
+// сворачиваемая строка: заголовок — жирный префикс, тело — остаток.
 function dmgRollRows(kind){
   const rows = kind === 'structure'
     ? [['5–6','u026','u027'],['2–4','u028','u029'],['1','u030','u031'],[L('u032'),'u033','u034']]
     : [['5–6','u040','u041'],['2–4','u042','u043'],['1','u044','u045'],[L('u046'),'u047','u048']];
   let html = rows.map(([roll, titleKey, descKey]) =>
-    `<div class="tbl-row"><div><span class="tbl-roll">${esc(roll)}</span><span>${L(titleKey)}</span></div><div>${L(descKey)}</div></div>`
+    `<div class="tbl-row dmg-row"><div class="dmg-row-head" onclick="toggleDmgRow(this.parentNode)"><span class="dmg-row-arrow">▶</span><span class="tbl-roll">${esc(roll)}</span><span>${L(titleKey)}</span></div><div class="dmg-row-desc">${L(descKey)}</div></div>`
   ).join('');
-  if (kind !== 'structure') html += `<p>${L('u049')}</p>`;
+  if (kind !== 'structure'){
+    const m = L('u049').match(/^<b>(.*?)<\/b>\s*/);
+    html += m
+      ? `<div class="tbl-row dmg-row"><div class="dmg-row-head" onclick="toggleDmgRow(this.parentNode)"><span class="dmg-row-arrow">▶</span><span>${m[1]}</span></div><div class="dmg-row-desc">${L('u049').slice(m[0].length)}</div></div>`
+      : `<p>${L('u049')}</p>`;
+  }
   return html;
+}
+function toggleDmgRow(row){
+  if (row && row.classList) row.classList.toggle('open');
 }
 function showDamageRoll(kind){
   const dlg = document.getElementById('dmgRollDlg');
@@ -5065,6 +5131,11 @@ function showDamageRoll(kind){
   if (!dlg || !nameEl || !bodyEl || !actEl) return;
   const isStruct = kind === 'structure';
   const marked = Math.max(0, (+get('mech.'+kind+'Max')||0) - (+get('mech.'+kind)||0));
+  // v265 (доп.): диалог открыт — урон «прочитан»: база = текущие отметки,
+  // индикатор снимается сразу (к закрытию диалога кнопка уже обычная).
+  seenDmg[kind] = marked;
+  persistOpenState();
+  renderCounters();
   nameEl.textContent = isStruct ? L('u021') : L('u035');
   const dice = marked > 0
     ? esc(L('dmg_roll_dice').replace('{N}', marked))
@@ -5080,7 +5151,7 @@ function closeDamageRollDlg(){
   const dlg = document.getElementById('dmgRollDlg');
   if (dlg && dlg.open) dlg.close();
 }
-// v264: диалог чипа «Уничтожено» — как починить и кнопка «Починить сейчас».
+// v264: диалог чипа «Уничтожено» — как починить и кнопка «Починить» (v265: короче, в 1 строку).
 // Кнопка ремонты НЕ тратит (у пользователя могут быть другие способы чинить —
 // таланты, системы, кор-бонусы): она лишь отмечает предмет починенным.
 function showDestroyedRepair(kind, a, b){
