@@ -932,7 +932,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 271</span>
+      <span class="dim global-version">Версия трекера: 272</span>
     </div>
   </div>
 </main>
@@ -2267,12 +2267,18 @@ function step(path, d){
   let lostStruct = false;
   if (path === 'mech.hp' && v <= 0 && max > 0){
     let st = get('mech.structure')||0;
-    while (v <= 0 && st > 0){ st--; v = max + v; lostStruct = true; }
+    // v272: сброс HP на максимум — только если после потери структуры
+    // она ещё осталась; потеря ПОСЛЕДНЕЙ структуры (мех уничтожен) —
+    // без сброса, HP остаётся 0.
+    while (v <= 0 && st > 0){ st--; if (st > 0) v = max + v; else v = 0; lostStruct = true; }
     if (st !== (get('mech.structure')||0)) set('mech.structure', st);
     if (v <= 0) v = 0;
   } else if (path === 'mech.heat' && v > max && max >= 0){
     let st = get('mech.stress')||0;
-    while (v > max && st > 0){ st--; v = v - (max + 1); }
+    // v272: сброс Heat в 0 — только если после потери стресса он ещё
+    // остался; потеря ПОСЛЕДНЕГО стресса (плавление неминуемо) —
+    // без сброса, Heat остаётся на максимуме.
+    while (v > max && st > 0){ st--; if (st > 0) v = v - (max + 1); else v = max; }
     if (st !== (get('mech.stress')||0)) set('mech.stress', st);
     if (v > max) v = max;
   } else {
