@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 254</span>
+      <span class="dim global-version">Версия трекера: 255</span>
     </div>
   </div>
 </main>
@@ -3162,7 +3162,8 @@ function renderLists(){
     const rngDisp = dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range;
     const descDisp = dbw ? dispVal(w.desc, dbw.x, dbw.xr) : w.desc;
     const meta = [dmgDisp, rngDisp].filter(x=>x).join(' · ');
-    const lab = dbw ? wd(dbw).lab : L('u149');
+    const wsp = weapSp(w); // v255: SP пушки — в строке lab, чтобы счётчик был проверяем
+    const lab = [dbw ? wd(dbw).lab : L('u149'), wsp ? wsp + ' SP' : ''].filter(x=>x).join(' · ');
     return `
     <div class="wcard">
       <div class="row"><b style="flex:1 1 auto">${esc(wDisp)}</b>
@@ -3275,7 +3276,7 @@ function showWeaponResults(mi, q, box){
     const d = wd(w);
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.d, d.r].filter(x=>x).join(' · '))}</span><span class="dim">${esc([d.g, d.lab].filter(x=>x).join(' · '))}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.d, d.r].filter(x=>x).join(' · '))}</span><span class="dim">${esc([d.g, d.lab, (w.sp ? w.sp + ' SP' : '')].filter(x=>x).join(' · '))}</span></div>
       <button class="btn search-add" style="flex:0 0 auto" onclick="addWeaponByIndex(${mi},${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
@@ -4144,7 +4145,8 @@ function showRef(kind, key){
   } else if (kind === 'weapon'){
     const w = findWeapon(key); if (!w) return;
     const d = wd(w); name = d.n;
-    body = [d.lab, [d.d, d.r].filter(Boolean).join(', '), d.x].filter(Boolean).join('\n\n');
+    const wlab = [d.lab, (w.sp ? w.sp + ' SP' : '')].filter(Boolean).join(' · '); // v255: SP пушки — в строке lab
+    body = [wlab, [d.d, d.r].filter(Boolean).join(', '), d.x].filter(Boolean).join('\n\n');
   } else if (kind === 'talent'){
     const t = DB.talents.find(x=>x.n === key); if (!t) return;
     const d = td(t); name = d.n;
@@ -4303,7 +4305,7 @@ function syncEditToggles(){
   show('addMountBtn', em);
   show('talentsHint', et); show('talentAddRow', et);
   show('triggerAddRow', eg);
-  show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', es); show('spCapRow', es);
+  show('systemsHint', es); show('systemAddRow', es); show('spCounterRow', true); // v255: SP-счётчик виден всегда (и в просмотре); spCapRow удалён — элемента нет
   show('haseHint', editOn('mech'));
   show('licenseFilterRow', el2); show('licensesHint', el2); show('licenseAddRow', el2); show('licensesNote', el2 && !!S.pilot.licensesNote);
   show('coreBonusAddRow', editOn('coreBonuses'));
@@ -4457,7 +4459,7 @@ function addSystemByIndex(i){
 function updateSpCounter(){
   const spEl = document.getElementById('spCounter');
   if (!spEl) return;
-  const used = S.systems.reduce((a,s)=>a+sysSp(s),0);
+  const used = S.systems.reduce((a,s)=>a+sysSp(s),0) + S.mounts.reduce((a,m)=>a+m.weapons.reduce((b,w)=>b+weapSp(w),0),0); // v255: + SP всех пушек на всех маунтах (включая Integrated и встроенное оружие)
   const total = +get('mech.sp')||0;
   const free = total - used;
   spEl.textContent = L('sp_used') + used + L('sp_of') + total + L('sp_free') + free;
@@ -4488,6 +4490,7 @@ function toggleWeapLoaded(mi, wi){ const w = S.mounts[mi].weapons[wi]; w.loaded 
 function sysLim(s){ let base; if (typeof s.lim === 'number') base = s.lim; else { const d = findSystem(s.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
 function sysLeft(s){ if (sysLimUnknown(s)) return Math.max((typeof s.left === 'number' ? s.left : 0), 0); const lim = sysLim(s); return (typeof s.left === 'number') ? Math.min(Math.max(s.left,0), lim) : lim; }
 function sysSp(s){ const d = findSystem(s.name); return d ? (d.p||0) : (+s.sp||0); }
+function weapSp(w){ const d = findWeapon(w.name); return d ? (d.sp||0) : (+w.sp||0); } // v255: SP пушки — поле sp в db.js, fallback на собственное w.sp для кастомных
 function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
 function weapLeft(w){ if (weapLimUnknown(w)) return Math.max((typeof w.left === 'number' ? w.left : 0), 0); const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
@@ -4539,11 +4542,16 @@ function tagWordStem(name){
 // «FORGE-2», «Тип-3», «obj/00001»). Диапазоны («1-6») и значения
 // («Дальность 3», «+2») подсвечиваются как раньше: дефис блокирует только
 // если перед ним буква, а не цифра.
+// v255: «N SP» — не игровое значение, не подсвечивается: число перед «SP»
+// как отдельным словом («3 SP», «2 SP» в lab систем и в описаниях).
+// «3SP» и так не подсвечивалось (буква вплотную); «SPs» — не «SP»,
+// подсвечивается как раньше. Обратная форма «SP: N» (строка цены SP
+// в описаниях 7 коровых пушек) — тоже без подсветки (lookbehind «SP: »).
 function highlightNums(html){
   if (!html) return html;
   return String(html).split(/(<[^>]*>)/g).map(part=>{
     if (!part || part.startsWith('<')) return part;
-    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d]|[A-Za-zА-Яа-яЁё]-|[A-Za-zА-Яа-яЁё]\/|[Мм]к |[Mm]k |D\/D |[Ww]eapon |[Ss]hotgun |[Дд]робовик )[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d])/g, '<span class="wnum">$&</span>');
+    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d]|[A-Za-zА-Яа-яЁё]-|[A-Za-zА-Яа-яЁё]\/|[Мм]к |[Mm]k |D\/D |[Ww]eapon |[Ss]hotgun |[Дд]робовик |SP: )[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d]|\s+SP(?![A-Za-zА-Яа-яЁё\d]))/g, '<span class="wnum">$&</span>');
   }).join('');
 }
 function linkTagTerms(html){

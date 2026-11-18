@@ -1332,6 +1332,7 @@ const DB = {
       "lic": "Monarch",
       "ll": 2,
       "lim": 0,
+      "sp": 1,
       "x": "SP: 1\n\nGandiva missiles are a reliable mainstay from Smith-Shimano’s BELLA CIAO line. Like the heavier Pinaka, the Gandiva is equipped with jet-assisted midflight repositioning systems, enhancing target navigation in rapidly changing battlefield environments. The Gandiva’s delivery platform is administered by a hivemind COMP/CON drone AI, giving it the capacity to learn from each right-of-launch experience."
     },
     {
@@ -1475,6 +1476,7 @@ const DB = {
       "lic": "Swallowtail",
       "ll": 2,
       "lim": 0,
+      "sp": 1,
       "x": "SP: 1\n\nThe Oracle Indirect Light Machine Gun (designated O/LMG-I) packs a subsentient, high-volume DOWNPOUR static quad-barrel system into a single cylinder typically installed on the dorsal panel of a chassis. Paired with a firing system, the Oracle is capable of directing persistent defilade-ignorant kinetic fire at targets."
     },
     {
@@ -1502,6 +1504,7 @@ const DB = {
       "lic": "Balor",
       "ll": 3,
       "lim": 0,
+      "sp": 2,
       "x": "On crit: Pull your target to a free space adjacent to you, or as close as possible.\n\nSP: 2\n\nUsing swarm-coding and legion directives, HORUS collectivists created a framework to organize a swarm of nanites into a whip-like weapon. Nanobot whips can retract into their base blister for stowing, detach in melee combat to restrain nearby enemies, and return to their base unit when summoned."
     },
     {
@@ -1564,6 +1567,7 @@ const DB = {
       "lic": "Goblin",
       "ll": 1,
       "lim": 0,
+      "sp": 1,
       "x": "Instead of using any kind of trigger mechanism, this weapon automatically scans for target locks, firing spinning, razor-sharp disks upon successful IDs. Gain the Autonomous Assault reaction, which is the only way you can attack with the Autopod\n\nAutonomous Assault (Reaction — 1/round): Trigger: Another character attacks a target within range 15 of you and consumes Lock On\nYou may automatically hit their target with the Autopod.\n\nSP: 1\n\nThe autopod is a small antipersonnel weapon apparently devised by HORUS communocyphers to continue offensive action in the event of its operator’s death. Each unit is, in theory, governed by a spur of INSTINCT’s protomind. No new models have been encountered since DHIYED, and all extant versions of the Autopod are to be considered extremely dangerous as the INSTINCT code powering their onboard protominds is likely to have corrupted further since their creation."
     },
     {
@@ -1764,6 +1768,7 @@ const DB = {
       "lic": "Pegasus",
       "ll": 1,
       "lim": 0,
+      "sp": 2,
       "x": "SP: 2\n\n“Smart weapon” is a broad term that describes any and all weapons capable of interacting with onboard systems in order to boost their combat efficacy. Smartguns are weapons that come pre-loaded with companion software and the necessary hardware in order to interact with targeting systems and host NHPs. A popular addition to many HORUS mechs, smart weapons make for reliable kinetic delivery systems."
     },
     {
@@ -1808,6 +1813,7 @@ const DB = {
       "lic": "Pegasus",
       "ll": 3,
       "lim": 0,
+      "sp": 1,
       "x": "This weapon can’t make normal attacks. Instead, you can attack with it as a free action at the end of your turn. It doesn’t benefit from or trigger your talents.\n\nFire Autogun (Free): This weapon can’t make normal attacks. Instead, you can attack with it as a free action at the end of your turn. It doesn’t benefit from or trigger your talents.\n\nSP: 1\n\nAs the name implies, autoguns are automated weapons. Similar to point-defense systems, autoguns are chambered to provide effective fire against armored targets. Typically mounted on a stabilized, secondary arm, a reliably tuned autogun can be trusted to track and eliminate designated enemy units while a pilot concentrates on more specialized weapons or processes. Cheap, with malleable codebases, autoguns are common among active, armed HORUS cells."
     },
     {
@@ -1998,6 +2004,7 @@ const DB = {
       "lic": "Saladin",
       "ll": 1,
       "lim": 0,
+      "sp": 1,
       "x": "The final attack roll for this weapon can never be affected by difficulty.\n\nSP: 1\n\nDeveloped following costly urban and naval boarding engagements in the Interest War, Shatterhead Colony Missiles are now a standard part of the arsenal fielded by Armory interdiction teams. When they reach an optimal distance, Shatterheads break open in a burst of high-catalyst fuel to reveal a cluster of small thermobaric pellets that spread out and ignite, choking the affected area with flame. The effect overloads energy shielding and saturates cover, though only a small percent of the projectiles actually reach their target."
     },
     {
@@ -2413,6 +2420,7 @@ const DB = {
       "lic": "Kidd",
       "ll": 1,
       "lim": 0,
+      "sp": 1,
       "x": "“Who tipped me the black spot the day we landed and began this dance?” – Treasure Island (1883)\n\nOn hit: DRONE, SEEKING, and NEXUS weapons and systems gain +1 Accuracy to attack the target until the end of their next turn.\n\nOn crit: The target also receives Lock On."
     },
     {
@@ -2634,6 +2642,7 @@ const DB = {
       "lic": "Atlas",
       "ll": 3,
       "lim": 0,
+      "sp": 2,
       "x": "Forged in the fire of a corralled star in the Constellation, each of these blades bears a unique name and history defined by its users. Terashima blades are perfectly balanced and tempered, scalable from personal use up to Schedule 3. When combined with the weapon and sensor suites of a frame, they have been proven fast and durable enough to deflect weapons fire. Each blade crafted by the Terashima enclave is an heirloom produced once and delivered via conventional travel – their loss is considered an indescribable humiliation for the owner and an incredible triumph by the one who has taken it. The Terashima enclave keeps the casting mold of each blade it produces and displays them in their central hall alongside records of their known histories.\n\nYou may begin any fight in any of this weapon's stances and may take a stance or shift between stances as a protocol. Once you have taken a stance, you remain in it until you take a new stance, this weapon is destroyed, or you are STUNNED or JAMMED. You can also drop a stance as a free action.\n\nProfile — No Stance: 1d6 Kinetic; Threat 1.\n\nProfile — Troll Stance: 1d6+3 Kinetic; Threat 1; tags: Inaccurate, Armor-Piercing (AP).\n\nProfile — Storm Stance: 1d6 Kinetic; Threat 1; You gain the Storm Stance Reaction.\nStorm Stance Reaction (Reaction): You may immediately deal 2 kinetic to all other characters adjacent to you and your target.\n\nProfile — Lord's Stance: 1d6 Kinetic; Threat 1; You cannot make ranged or tech attacks, but any ranged attack against you that misses deflects off your sword, dealing 2 damage (same type as the attack) to a character of your choice in range 3 and line of sight from you. Any melee attack that misses you forces the attacker to pass a HULL save or be knocked PRONE.\n\nProfile — Wind Stance: 1d6 Kinetic; Threat 2; tags: Reliable 2, Knockback 2; After attacking with this weapon, hit or miss, you may move 2 spaces in any direction, ignoring engagement and reactions.\n\nChange Stance (Protocol): Change this weapon's stance.\n\nDrop Stance (Free): Drop this weapon's stance."
     },
     {
@@ -2807,6 +2816,7 @@ const DB = {
       "lic": "Sunzi",
       "ll": 2,
       "lim": 0,
+      "sp": 1,
       "x": "Es una abominación. Dicen que \"es como los arados de las espadas; tú también debes aprender a defender tu hogar ”. Ptah, escupí su lógica de espada. Ni siquiera sabíamos de los arados compartidos antes de convertirlos en espadas, y éramos felices.\nHiciste la puerta, la abriste. No es nuestra responsabilidad cerrarla.\n[It is an abomination. They say “it is like plowshares to swords; you too must learn to defend your home.” Ptah, I spit on their blade-law. We did not even know of plowshares before they beat them into swords, and we were happy.\nYou made the door, you swung it open — it is not our responsibility to close it.]\n\nOn hit: The target must pass an ENGINEERING save or be teleported a number of spaces equal to the damage you dealt with this weapon (including bonus damage, etc.; no more than 10 spaces), in a direction of your choice. They must end in a free, valid space."
     },
     {
@@ -3050,6 +3060,7 @@ const DB = {
       "lic": "GMS",
       "ll": 0,
       "lim": 0,
+      "sp": 1,
       "x": "The signature weapon of the former perpetual champion of Crater Pit. Since Brutus’s defeat in glorious combat, someone else now wields this relatively advanced slab shield. Incorporating surprisingly complex Harrison Armory technology, this shield can project a localized force field of significant strength.\n\nBrutus’s Shield (Protocol): As a protocol, you may raise this Shield to gain 4+Grit Overshield until the start of your next turn, at which point you lose all Overshield. You are Slowed while you have this Overshield.\nYou may not use this Protocol two turns in a row."
     },
     {
@@ -3112,6 +3123,7 @@ const DB = {
       "lic": "GMS",
       "ll": 0,
       "lim": 0,
+      "sp": 1,
       "x": "The shock baton is a relatively recent development in the field of mech-to-mech “less-lethal” weaponry. A popular choice for law enforcement seeking to disable frames instead of destroying them, allowing their pilots to be taken alive.\n\nOn Crit: Your target must succeed on a Systems save or become Jammed until the end of their next turn. On a success, they become Impaired for the same duration. Each character can only be affected this way 1/Scene."
     },
     {
@@ -3367,6 +3379,7 @@ const DB = {
       "lic": "Gilgamesh",
       "ll": 3,
       "lim": 3,
+      "sp": 2,
       "x": "The PRAETORIAN combat subaltern is one of the Armory's latest and most advanced models, designed for shock assault, seize-and-hold, and combined arms doctrines. Utilizing a tiered hierarchy/command structure allowing them to operate at levels ranging from individual fire teams to brigade strength under local comp/con or NHP command, a squadron of PRAETORIAN subalterns can also be seconded to pilots under local nexus node control, and one or more squadrons are often assigned to legionnaire units during combat operations to provide integrated support.\n\n1/round, after attacking with this weapon, you may expend a charge as a free action to task a team of subalterns to operate independently from the main unit. This counts as a Drone deployed in a free space adjacent to you. You may attack with this weapon without expending or requiring charges, and this weapon can be destroyed (due to critical damage or other effects) even if it has no charges remaining."
     },
     {
