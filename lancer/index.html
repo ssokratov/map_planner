@@ -395,6 +395,9 @@
   .dmg-row.open .dmg-row-arrow { transform:rotate(90deg); }
   .dmg-row .dmg-row-desc { display:none; }
   .dmg-row.open .dmg-row-desc { display:block; }
+  /* v266: дропдаун уничтожения внутри диалога броска (вместо отдельного
+     полноэкранного вида): список раскрывается под кнопками, отделён линией. */
+  #dmgDestroyDrop { border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
   /* Оружие — сворачиваемые карточки (v262), как системы: мета, теги, заряды
      и Loading — в шапке, описание — только в развёрнутом теле, в обоих режимах. */
   .weap-head { cursor:pointer; }
@@ -957,7 +960,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 265</span>
+      <span class="dim global-version">Версия трекера: 266</span>
     </div>
   </div>
 </main>
@@ -980,6 +983,7 @@
   <h3 id="dmgRollName"></h3>
   <div id="dmgRollBody"></div>
   <div class="row" id="dmgRollActions" style="margin-top:12px"></div>
+  <div id="dmgDestroyDrop" hidden></div>
 </dialog>
 
 <dialog id="customWeaponDlg" onclick="if(event.target===this)this.close()">
@@ -1040,17 +1044,6 @@
     <div id="cbList"></div>
   </div>
   <div class="view-close-bar"><button type="button" onclick="closeCoreBonusPicker()" data-i18n="u145">Закрыть</button></div>
-</div>
-<!-- v264: пикер уничтожения (System Trauma): маунт — всё его оружие, система — одна. -->
-<div id="destroyView">
-  <div class="search-dlg">
-    <div class="row" style="margin-bottom:12px">
-      <h3 style="flex:1 1 auto;margin:0" id="destroyTitle"></h3>
-      <button class="btn danger" style="flex:0 0 auto" onclick="closeDestroyPicker()">✕</button>
-    </div>
-    <div id="destroyList"></div>
-  </div>
-  <div class="view-close-bar"><button type="button" onclick="closeDestroyPicker()" data-i18n="u145">Закрыть</button></div>
 </div>
 <dialog id="driveResumeDlg" onclick="if(event.target===this)closeDriveResumePrompt()">
   <div class="row profile-dialog-head" style="margin-bottom:10px"><h3 style="margin:0">Google Drive не подключён</h3><button class="btn danger profile-close" onclick="closeDriveResumePrompt()">✕</button></div>
@@ -1141,7 +1134,6 @@ let searchDlgStack = [];
 let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
 let cbHist = false;  // то же для вида кор-бонусов (v260)
 let pilotGearHist = false;  // то же для вида снаряжения пилота (v260)
-let destroyHist = false;  // то же для вида уничтожения (v264)
 let refDlgHist = false;     // то же для refDialog
 // v219: история вкладок — Назад с не-главной вкладки возвращает на главную (Мех).
 let tabHist = false;  // pushState сделан для текущего ухода с главной вкладки
@@ -1170,8 +1162,6 @@ function onDlgPopstate(){
   // v260: виды пикеров — как вид поиска: Назад закрывает вид, вкладку не трогаем.
   if (cbViewOpen()){ cbHist = false; fullscreenViewHide('cbView'); return; }
   if (pilotGearViewOpen()){ pilotGearHist = false; fullscreenViewHide('pilotGearView'); return; }
-  // v264: вид уничтожения — как остальные пикеры.
-  if (destroyViewOpen()){ destroyHist = false; fullscreenViewHide('destroyView'); return; }
   // v219: диалогов нет — Назад с не-главной вкладки ведёт на главную (Мех).
   // Запись уже снята самим нажатием Назад: tabHist сбрасываем ДО showTab,
   // иначе showTab снял бы ещё одну запись истории. На главной — ничего
@@ -1229,7 +1219,6 @@ function searchViewHide(){ fullscreenViewHide('searchView'); }
 function searchViewOpen(){ return fullscreenViewOpen('searchView'); }
 function cbViewOpen(){ return fullscreenViewOpen('cbView'); }
 function pilotGearViewOpen(){ return fullscreenViewOpen('pilotGearView'); }
-function destroyViewOpen(){ return fullscreenViewOpen('destroyView'); }
 function searchDlgOpen(){
   bindDlgHistory();
   // v261: запись истории — ДО показа вида: иначе запись создавалась уже
@@ -3369,7 +3358,7 @@ function renderLists(){
         <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${em ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
         ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
         <div class="wmeta">${esc(lab)}</div>
-        ${(wtg.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? '✓ ' + esc(L('u254')) : '✕ ' + esc(L('u255'))}</button>` : ''}${wtg.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtg)}</span>` : ''}</div>` : ''}
+        ${(wtg.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? esc(L('u254')) : esc(L('u255'))}</button>` : ''}${wtg.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtg)}</span>` : ''}</div>` : ''}
         ${(wlim || wlimU) ? `<div class="weap-head-sub"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},1)">+</button></span></div>` : ''}
       </div>
       <div class="weap-body">
@@ -3657,7 +3646,7 @@ function renderPilotEquipment(){
     if(Array.isArray(data.bonuses)&&data.bonuses.length) stats.push(esc(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · ')));
     const status=[item.destroyed?L('pilot_equip_destroyed'):'',item.isUsed?L('pilot_equip_used'):'',item.note||''].filter(Boolean);
     const tags=pilotEquipmentTags(data), isLoading=pilotEquipLoading(item), showLoadChip=isLoading&&chargeKey,
-      tagHtml=(tags.length||showLoadChip)?`<div class="tags pilot-equip-tags">${showLoadChip?`<button class="tag ${pilotEquipLoaded(item)?'load-on':'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();togglePilotEquipLoaded('${chargeKey}',${chargeIndex})">${pilotEquipLoaded(item)?'✓ '+esc(L('u254')):'✕ '+esc(L('u255'))}</button>`:''}${pilotEquipmentTagChips(tags)}</div>`:'';
+      tagHtml=(tags.length||showLoadChip)?`<div class="tags pilot-equip-tags">${showLoadChip?`<button class="tag ${pilotEquipLoaded(item)?'load-on':'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();togglePilotEquipLoaded('${chargeKey}',${chargeIndex})">${pilotEquipLoaded(item)?esc(L('u254')):esc(L('u255'))}</button>`:''}${pilotEquipmentTagChips(tags)}</div>`:'';
     const max=pilotEquipmentMaxUses(item,data), used=Math.max(0,Math.min(max,+item.currentUses||0)), remaining=max-used;
     const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
     // v263: сворачиваемая карточка, как системы/оружие; ключ — id снаряжения
@@ -5128,7 +5117,10 @@ function showDamageRoll(kind){
   const nameEl = document.getElementById('dmgRollName');
   const bodyEl = document.getElementById('dmgRollBody');
   const actEl = document.getElementById('dmgRollActions');
+  const dropEl = document.getElementById('dmgDestroyDrop');
   if (!dlg || !nameEl || !bodyEl || !actEl) return;
+  // v266: дропдаун уничтожения при открытии диалога всегда свёрнут.
+  if (dropEl) dropEl.hidden = true;
   const isStruct = kind === 'structure';
   const marked = Math.max(0, (+get('mech.'+kind+'Max')||0) - (+get('mech.'+kind)||0));
   // v265 (доп.): диалог открыт — урон «прочитан»: база = текущие отметки,
@@ -5142,7 +5134,7 @@ function showDamageRoll(kind){
     : esc(L('dmg_roll_none'));
   bodyEl.innerHTML = `<div class="dmg-roll-line">${dice}</div>` + dmgRollRows(kind);
   actEl.innerHTML = (isStruct
-    ? `<button class="btn danger" onclick="closeDamageRollDlg();openDestroyPicker()">${esc(L('dmg_destroy_btn'))}</button>`
+    ? `<button class="btn danger" onclick="toggleDestroyDropdown()">${esc(L('dmg_destroy_btn'))}</button>`
     : '')
     + `<button class="btn primary" onclick="closeDamageRollDlg()">${esc(L('u145'))}</button>`;
   dlg.showModal();
@@ -5159,7 +5151,10 @@ function showDestroyedRepair(kind, a, b){
   const nameEl = document.getElementById('dmgRollName');
   const bodyEl = document.getElementById('dmgRollBody');
   const actEl = document.getElementById('dmgRollActions');
+  const dropEl = document.getElementById('dmgDestroyDrop');
   if (!dlg || !nameEl || !bodyEl || !actEl) return;
+  // v266: дропдаун уничтожения в диалоге починки не показывается.
+  if (dropEl) dropEl.hidden = true;
   let name = '';
   if (kind === 'weapon'){
     const w = S.mounts[a] && S.mounts[a].weapons[b];
@@ -5191,13 +5186,17 @@ function repairDestroyed(kind, a, b){
   save(); renderLists();
   closeDamageRollDlg();
 }
-// v264: пикер уничтожения (System Trauma, u029): тап по маунту уничтожает всё
-// его оружие, тап по системе — одну систему. Видны только неуничтоженные.
-function openDestroyPicker(){
-  const list = document.getElementById('destroyList');
-  const title = document.getElementById('destroyTitle');
-  if (!list) return;
-  if (title) title.textContent = L('dmg_destroy_btn');
+// v266: уничтожение — дропдаун внутри диалога броска (вместо отдельного
+// полноэкранного вида, v264): тап по маунту уничтожает всё его оружие, тап по системе —
+// одну систему. Видны только неуничтоженные. Повторный тап по кнопке сворачивает.
+function toggleDestroyDropdown(){
+  const drop = document.getElementById('dmgDestroyDrop');
+  if (!drop) return;
+  if (!drop.hidden){ drop.hidden = true; return; }
+  drop.innerHTML = destroyDropdownHtml();
+  drop.hidden = false;
+}
+function destroyDropdownHtml(){
   let html = '';
   S.mounts.forEach((mt, mi)=>{
     const alive = (mt.weapons||[]).filter(w=>!w.destroyed);
@@ -5217,29 +5216,25 @@ function openDestroyPicker(){
     html += `<div class="row" style="cursor:pointer" onclick="destroySystem(${i})"><div style="flex:1 1 auto"><b>${esc(disp)}</b></div></div>`;
   });
   if (!html) html = `<p class="hint">${esc(L('destroy_none'))}</p>`;
-  list.innerHTML = html;
-  // v261: запись истории — ДО показа вида.
-  bindDlgHistory();
-  if (!destroyHist){ histPush(); destroyHist = true; }
-  fullscreenViewShow('destroyView');
-}
-function closeDestroyPicker(){
-  fullscreenViewHide('destroyView');
-  if (destroyHist){ destroyHist = false; suppressNextPopstate = true; histBack(); }
+  return html;
 }
 function destroyMountWeapons(mi){
   const mt = S.mounts[mi];
   if (!mt) return;
   (mt.weapons||[]).forEach(w=>{ if (!w.destroyed) w.destroyed = true; });
   save(); renderLists();
-  closeDestroyPicker();
+  // v266: дропдаун закрывается, диалог броска остаётся открытым.
+  const drop = document.getElementById('dmgDestroyDrop');
+  if (drop) drop.hidden = true;
 }
 function destroySystem(i){
   const s = S.systems[i];
   if (!s || s.destroyed) return;
   s.destroyed = true;
   save(); renderLists();
-  closeDestroyPicker();
+  // v266: дропдаун закрывается, диалог броска остаётся открытым.
+  const drop = document.getElementById('dmgDestroyDrop');
+  if (drop) drop.hidden = true;
 }
 function showStatRefIfView(key){
   if (editOn('mech')) return;
@@ -5604,8 +5599,8 @@ function fullRepair(){
   if (!confirm(L('u256'))) return;
   ['mech.hp','mech.structure','mech.stress','mech.heat','mech.repairs'].forEach(p=>set(p, get(p+'Max')));
   set('mech.heat', 0); set('mech.coreUsed', 0); set('mech.overcharge', 0); S.statuses = [];
-  S.systems.forEach(s=>{ const lim = sysLim(s); if (lim > 0) s.left = lim; else if (sysLimUnknown(s)) s.left = 0; });
-  S.mounts.forEach(m=>m.weapons.forEach(w=>{ const lim = weapLim(w); if (lim > 0) w.left = lim; else if (weapLimUnknown(w)) w.left = 0; if (weapLoading(w)) w.loaded = true; }));
+  S.systems.forEach(s=>{ s.destroyed = false; const lim = sysLim(s); if (lim > 0) s.left = lim; else if (sysLimUnknown(s)) s.left = 0; });
+  S.mounts.forEach(m=>m.weapons.forEach(w=>{ w.destroyed = false; const lim = weapLim(w); if (lim > 0) w.left = lim; else if (weapLimUnknown(w)) w.left = 0; if (weapLoading(w)) w.loaded = true; }));
   S.talents.forEach(t=>{ const dc = diceFor(t); if (dc) t.dice = dc.defVal; });
   save(); renderCounters(); renderLists();
 }
