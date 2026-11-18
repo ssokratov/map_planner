@@ -445,9 +445,7 @@
      заменяет основной экран целиком (как отдельный таб), фон не скроллится,
      инпут — обычное видимое поле. Нижний отступ — под панель «Закрыть»,
      как у main под навбар. */
-  #searchView { display:none; max-width:450px; margin:0 auto; padding:16px 16px 72px; }
-  dialog#pilotGearDlg { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; border:none; border-radius:0; background:var(--bg); color:var(--text); padding:16px; }
-  dialog#pilotGearDlg::backdrop { background:rgba(0,0,0,.6); }
+  #searchView, #cbView, #pilotGearView { display:none; max-width:450px; margin:0 auto; padding:16px 16px 72px; }
   .search-dlg { max-width:450px; margin:0 auto; }
   .btn.icon { padding:8px 12px; font-size:18px; line-height:1; }
   /* Плюс в кнопках добавления внутри поисков (v172): жёлтый, шрифт крупнее, а размер кнопки тот же,
@@ -912,7 +910,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 259</span>
+      <span class="dim global-version">Версия трекера: 260</span>
     </div>
   </div>
 </main>
@@ -966,7 +964,7 @@
   </div>
   <div class="view-close-bar"><button type="button" onclick="closeSearchDlg()" data-i18n="u145">Закрыть</button></div>
 </div>
-<dialog id="pilotGearDlg" onclick="if(event.target===this)closePilotGearPicker()">
+<div id="pilotGearView">
   <div class="search-dlg">
     <h3 id="pilotGearTitle" style="margin:0 0 12px">Снаряжение из базы</h3>
     <div class="row" style="margin-bottom:12px">
@@ -975,14 +973,18 @@
     </div>
     <div id="pilotGearResults"></div>
   </div>
-</dialog>
-<dialog id="cbDlg" onclick="if(event.target===this)this.close()">
-  <div class="row" style="margin-bottom:12px">
-    <h3 style="flex:1 1 auto;margin:0" data-i18n="u164">Выбрать Core Bonus</h3>
-    <button class="btn danger" style="flex:0 0 auto" onclick="document.getElementById('cbDlg').close()">✕</button>
+  <div class="view-close-bar"><button type="button" onclick="closePilotGearPicker()" data-i18n="u145">Закрыть</button></div>
+</div>
+<div id="cbView">
+  <div class="search-dlg">
+    <div class="row" style="margin-bottom:12px">
+      <h3 style="flex:1 1 auto;margin:0" data-i18n="u164">Выбрать Core Bonus</h3>
+      <button class="btn danger" style="flex:0 0 auto" onclick="closeCoreBonusPicker()">✕</button>
+    </div>
+    <div id="cbList"></div>
   </div>
-  <div id="cbList"></div>
-</dialog>
+  <div class="view-close-bar"><button type="button" onclick="closeCoreBonusPicker()" data-i18n="u145">Закрыть</button></div>
+</div>
 <dialog id="driveResumeDlg" onclick="if(event.target===this)closeDriveResumePrompt()">
   <div class="row profile-dialog-head" style="margin-bottom:10px"><h3 style="margin:0">Google Drive не подключён</h3><button class="btn danger profile-close" onclick="closeDriveResumePrompt()">✕</button></div>
   <p>На этом устройстве сохранено подключение Google Drive, но после перезагрузки нужно возобновить доступ.</p>
@@ -1070,6 +1072,8 @@ function closeSearchDlg(){
 // один вид и перевооружается (pushState заново), на верхнем виде — закрывает вид.
 let searchDlgStack = [];
 let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
+let cbHist = false;  // то же для вида кор-бонусов (v260)
+let pilotGearHist = false;  // то же для вида снаряжения пилота (v260)
 let refDlgHist = false;     // то же для refDialog
 // v219: история вкладок — Назад с не-главной вкладки возвращает на главную (Мех).
 let tabHist = false;  // pushState сделан для текущего ухода с главной вкладки
@@ -1095,6 +1099,9 @@ function onDlgPopstate(){
     // вкладку не трогаем — иначе одно нажатие делало два шага сразу.
     return;
   }
+  // v260: виды пикеров — как вид поиска: Назад закрывает вид, вкладку не трогаем.
+  if (cbViewOpen()){ cbHist = false; fullscreenViewHide('cbView'); return; }
+  if (pilotGearViewOpen()){ pilotGearHist = false; fullscreenViewHide('pilotGearView'); return; }
   // v219: диалогов нет — Назад с не-главной вкладки ведёт на главную (Мех).
   // Запись уже снята самим нажатием Назад: tabHist сбрасываем ДО showTab,
   // иначе showTab снял бы ещё одну запись истории. На главной — ничего
@@ -1109,13 +1116,15 @@ function bindDlgHistory(){
   if (typeof window === 'undefined' || !window.addEventListener) return;
   window.addEventListener('popstate', onDlgPopstate);
 }
-// v258: полноэкранный вид поиска/деталей (как отдельный таб): основное
-// содержимое и навбар прячутся, виден только вид. Позицию скролла вкладки
-// запоминаем, чтобы вернуть её при закрытии вида.
-let searchViewReturnScroll = 0;
-function searchViewShow(){
-  searchViewReturnScroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
-  const v = document.getElementById('searchView');
+// v260: общий механизм полноэкранных видов (поиск, кор-бонусы, снаряжение
+// пилота) — как отдельный таб: основное содержимое и навбар прячутся,
+// виден только вид. Позицию скролла вкладки запоминаем, чтобы вернуть её
+// при закрытии вида отложенно двойным rAF, как в showTab (v259): синхронный
+// scrollTo сразу после display='' не прилипал, и страница открывалась вверху.
+let fullscreenReturnScroll = 0;
+function fullscreenViewShow(viewId){
+  fullscreenReturnScroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
+  const v = document.getElementById(viewId);
   if (v) v.style.display = 'block';
   const m = document.getElementById('mainContent');
   if (m) m.style.display = 'none';
@@ -1123,26 +1132,28 @@ function searchViewShow(){
   if (n) n.style.display = 'none';
   if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
 }
-function searchViewHide(){
-  const v = document.getElementById('searchView');
+function fullscreenViewHide(viewId){
+  const v = document.getElementById(viewId);
   if (v) v.style.display = 'none';
   const m = document.getElementById('mainContent');
   if (m) m.style.display = '';
   const n = document.getElementById('mainNav');
   if (n) n.style.display = '';
-  // v259: скролл возвращаем отложенно, как в showTab (двойной rAF) — ждём,
-  // пока layout вновь показанного контента (только что перерендеренного
-  // после добавления из поиска) осядет. Синхронный scrollTo сразу после
-  // display='' не прилипал, и страница открывалась в самом верху.
   if (typeof window !== 'undefined' && window.scrollTo) {
-    const y = searchViewReturnScroll;
+    const y = fullscreenReturnScroll;
     requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
   }
 }
-function searchViewOpen(){
-  const v = document.getElementById('searchView');
+function fullscreenViewOpen(viewId){
+  const v = document.getElementById(viewId);
   return !!(v && v.style.display && v.style.display !== 'none');
 }
+// v258: вид поиска — через общий механизм (v260).
+function searchViewShow(){ fullscreenViewShow('searchView'); }
+function searchViewHide(){ fullscreenViewHide('searchView'); }
+function searchViewOpen(){ return fullscreenViewOpen('searchView'); }
+function cbViewOpen(){ return fullscreenViewOpen('cbView'); }
+function pilotGearViewOpen(){ return fullscreenViewOpen('pilotGearView'); }
 function searchDlgOpen(){
   bindDlgHistory();
   searchViewShow();
@@ -3131,9 +3142,8 @@ function renderCoreBonuses(){
   }).join('');
 }
 function openCoreBonusPicker(){
-  const dlg = document.getElementById('cbDlg');
   const list = document.getElementById('cbList');
-  if (!dlg || !list) return;
+  if (!list) return;
   const slots = coreBonusSlots();
   const chosen = S.pilot.coreBonuses||[];
   let html = '';
@@ -3154,7 +3164,14 @@ function openCoreBonusPicker(){
     });
   });
   list.innerHTML = html;
-  if (dlg.showModal) dlg.showModal();
+  // v260: пикер — полноэкранный вид, как поиск (v258): история — как у поиска.
+  bindDlgHistory();
+  fullscreenViewShow('cbView');
+  if (!cbHist){ histPush(); cbHist = true; }
+}
+function closeCoreBonusPicker(){
+  fullscreenViewHide('cbView');
+  if (cbHist){ cbHist = false; suppressNextPopstate = true; histBack(); }
 }
 function addCoreBonusByIdx(idx){
   const cb = CORE_BONUSES[idx];
@@ -3166,8 +3183,7 @@ function addCoreBonusByIdx(idx){
   chosen.push(cb.n);
   S.pilot.coreBonuses = chosen;
   save(); recalcDerived(); renderCounters(); renderLists();
-  const dlg = document.getElementById('cbDlg');
-  if (dlg && dlg.close) dlg.close();
+  closeCoreBonusPicker();
 }
 function removeCoreBonus(i){
   S.pilot.coreBonuses.splice(i,1);
@@ -3395,15 +3411,21 @@ function findPilotGear(item,data=item?.data||item){
 }
 function openPilotGearPicker(type){
   pilotGearPickerType=type;
-  const input=document.getElementById('pilotGearSearch'), dlg=document.getElementById('pilotGearDlg');
+  const input=document.getElementById('pilotGearSearch');
   if(input){ input.value=''; input.placeholder=L('pilot_gear_search'); }
   const title=document.getElementById('pilotGearTitle');
   if(title) title.textContent=L('pilot_gear_title')+' · '+L(type==='Armor'?'pilot_armor':type==='Weapon'?'pilot_weapons':'pilot_gear');
   renderPilotGearResults('');
-  if(dlg?.showModal) dlg.showModal();
-  if(document.activeElement?.blur) document.activeElement.blur();
+  // v260: пикер — полноэкранный вид, как поиск (v258): инпут — обычное
+  // видимое поле, автофокуса и blur-хака нет; история — как у поиска.
+  bindDlgHistory();
+  fullscreenViewShow('pilotGearView');
+  if (!pilotGearHist){ histPush(); pilotGearHist = true; }
 }
-function closePilotGearPicker(){ const dlg=document.getElementById('pilotGearDlg'); if(dlg?.close) dlg.close(); }
+function closePilotGearPicker(){
+  fullscreenViewHide('pilotGearView');
+  if (pilotGearHist){ pilotGearHist = false; suppressNextPopstate = true; histBack(); }
+}
 function renderPilotGearResults(query=''){
   const box=document.getElementById('pilotGearResults'); if(!box) return;
   const q=String(query||'').trim().toLowerCase();
