@@ -43,6 +43,10 @@
   @keyframes shakeBig { 0%,100% { transform:translateX(0); } 15% { transform:translateX(-7px); } 30% { transform:translateX(7px); } 45% { transform:translateX(-6px); } 60% { transform:translateX(6px); } 75% { transform:translateX(-4px); } 90% { transform:translateX(4px); } }
   main.shake-small { animation:shakeSmall .3s ease; }
   main.shake-big { animation:shakeBig .45s ease; }
+  /* v268: диалог броска — в top layer, тряска main за ним не видна;
+     трясётся и сам диалог, когда он открыт (те же keyframes). */
+  dialog#dmgRollDlg.shake-small { animation:shakeSmall .3s ease; }
+  dialog#dmgRollDlg.shake-big { animation:shakeBig .45s ease; }
   /* Пульс критического HP (v85): кольцо краснеет-пульсирует, пока HP <= 25% */
   @keyframes critPulse { 0%,100% { filter:drop-shadow(0 0 2px rgba(255,60,60,.35)); } 50% { filter:drop-shadow(0 0 14px rgba(255,60,60,.85)); } }
   .ring-wrap.crit { animation:critPulse 1.2s ease-in-out infinite; }
@@ -967,7 +971,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 267</span>
+      <span class="dim global-version">Версия трекера: 268</span>
     </div>
   </div>
 </main>
@@ -1499,6 +1503,8 @@ STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
 STR.dmg_roll_dice = {ru:'Брось {N}d6 — берётся наименьший результат', en:'Roll {N}d6 — take the lowest result'};
 STR.dmg_roll_none = {ru:'Отметок пока нет — бросать нечего, таблица ниже для справки', en:'No marks yet — nothing to roll, table below for reference'};
 STR.dmg_destroy_btn = {ru:'Уничтожить оружие/систему', en:'Destroy a weapon/system'};
+STR.dmg_apply_status = {ru:'Наложить {S}', en:'Apply {S}'};
+STR.dmg_remove_status = {ru:'Снять {S}', en:'Remove {S}'};
 STR.destroy_none = {ru:'Нечего уничтожать: нет оружия и систем', en:'Nothing to destroy: no weapons or systems'};
 STR.repair_howto = {ru:'Стандартно: 1 Repair во время Отдыха (см. правила). Но бывают и другие способы (таланты, системы, кор-бонусы), поэтому трекер сам ремонты не списывает — кнопка лишь отмечает предмет починенным.', en:'Standard: 1 Repair during a Rest (see the rules). But there are other ways (talents, systems, core bonuses), so the tracker does not spend Repairs itself — the button only marks the item repaired.'};
 STR.repair_now = {ru:'Починить', en:'Repair'};
@@ -2257,11 +2263,24 @@ function swipeTab(dir){
 })();
 function shake(kind){
   const m = document.querySelector('main');
-  if (!m) return;
-  m.classList.remove('shake-small');
-  m.classList.remove('shake-big');
-  void m.offsetWidth;
-  m.classList.add(kind);
+  if (m){
+    m.classList.remove('shake-small');
+    m.classList.remove('shake-big');
+    void m.offsetWidth;
+    m.classList.add(kind);
+  }
+  // v268: диалог броска — в top layer, тряска main за ним не видна;
+  // трясём и сам диалог, когда он открыт (классы снимаются всегда,
+  // чтобы не висели после закрытия диалога).
+  const d = document.getElementById('dmgRollDlg');
+  if (d){
+    d.classList.remove('shake-small');
+    d.classList.remove('shake-big');
+    if (d.open){
+      void d.offsetWidth;
+      d.classList.add(kind);
+    }
+  }
 }
 function step(path, d){
   const max = get(path+'Max');
@@ -5099,13 +5118,20 @@ function showOverchargeRef(){
 // разворачивает. При каждом открытии диалога строки снова свёрнуты (свежий рендер,
 // состояние не персистится). Описание расплавления (u049, только стресс) — тоже
 // сворачиваемая строка: заголовок — жирный префикс, тело — остаток.
+// v268: строки, чей результат даёт статус, — с кнопкой его наложения/снятия
+// (toggleStatus: нет — накладывает, есть — снимает; условность Direct Hit /
+// Meltdown не автоматизируется — когда жать, решает пользователь по тексту).
+const DMG_ROW_STATUS = {u027:'Impaired', u031:'Stunned', u041:'Impaired', u043:'Exposed', u045:'Exposed'};
 function dmgRollRows(kind){
   const rows = kind === 'structure'
     ? [['5–6','u026','u027'],['2–4','u028','u029'],['1','u030','u031'],[L('u032'),'u033','u034']]
     : [['5–6','u040','u041'],['2–4','u042','u043'],['1','u044','u045'],[L('u046'),'u047','u048']];
-  let html = rows.map(([roll, titleKey, descKey]) =>
-    `<div class="tbl-row dmg-row"><div class="dmg-row-head" onclick="toggleDmgRow(this.parentNode)"><span class="dmg-row-arrow">▶</span><span class="tbl-roll">${esc(roll)}</span><span>${L(titleKey)}</span></div><div class="dmg-row-desc">${L(descKey)}</div></div>`
-  ).join('');
+  let html = rows.map(([roll, titleKey, descKey]) => {
+    const st = DMG_ROW_STATUS[descKey];
+    const on = st && (S.statuses || []).includes(st);
+    const btn = st ? `<div style="margin-top:8px"><button class="btn${on ? ' primary' : ''}" type="button" onclick="toggleDmgStatus('${st}', this)">${esc((on ? L('dmg_remove_status') : L('dmg_apply_status')).replace('{S}', st))}</button></div>` : '';
+    return `<div class="tbl-row dmg-row"><div class="dmg-row-head" onclick="toggleDmgRow(this.parentNode)"><span class="dmg-row-arrow">▶</span><span class="tbl-roll">${esc(roll)}</span><span>${L(titleKey)}</span></div><div class="dmg-row-desc">${L(descKey)}${btn}</div></div>`;
+  }).join('');
   if (kind !== 'structure'){
     const m = L('u049').match(/^<b>(.*?)<\/b>\s*/);
     html += m
@@ -5116,6 +5142,18 @@ function dmgRollRows(kind){
 }
 function toggleDmgRow(row){
   if (row && row.classList) row.classList.toggle('open');
+}
+// v268: кнопка статуса в строке таблицы броска — переключает статус через
+// toggleStatus (save + renderLists, теги статусов в HUD обновляются).
+// renderLists диалог не трогает, поэтому саму кнопку в открытом диалоге
+// обновляем на месте: подсвечена (primary) и «Снять», когда статус наложен.
+function toggleDmgStatus(status, btn){
+  toggleStatus(status);
+  if (btn){
+    const on = (S.statuses || []).includes(status);
+    btn.classList.toggle('primary', on);
+    btn.textContent = (on ? L('dmg_remove_status') : L('dmg_apply_status')).replace('{S}', status);
+  }
 }
 function showDamageRoll(kind){
   const dlg = document.getElementById('dmgRollDlg');
@@ -5250,6 +5288,7 @@ function destroyMountWeapons(mi){
   if (!mt) return;
   (mt.weapons||[]).forEach(w=>{ if (!w.destroyed) w.destroyed = true; });
   save(); renderLists();
+  shake('shake-small'); // v268: уничтожение трясёт, как урон
   // v267: меню закрывается, диалог броска остаётся открытым.
   closeDestroyDropdown();
 }
@@ -5258,6 +5297,7 @@ function destroySystem(i){
   if (!s || s.destroyed) return;
   s.destroyed = true;
   save(); renderLists();
+  shake('shake-small'); // v268: уничтожение трясёт, как урон
   // v267: меню закрывается, диалог броска остаётся открытым.
   closeDestroyDropdown();
 }
