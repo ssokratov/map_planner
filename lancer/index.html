@@ -912,7 +912,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 258</span>
+      <span class="dim global-version">Версия трекера: 259</span>
     </div>
   </div>
 </main>
@@ -1130,7 +1130,14 @@ function searchViewHide(){
   if (m) m.style.display = '';
   const n = document.getElementById('mainNav');
   if (n) n.style.display = '';
-  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, searchViewReturnScroll);
+  // v259: скролл возвращаем отложенно, как в showTab (двойной rAF) — ждём,
+  // пока layout вновь показанного контента (только что перерендеренного
+  // после добавления из поиска) осядет. Синхронный scrollTo сразу после
+  // display='' не прилипал, и страница открывалась в самом верху.
+  if (typeof window !== 'undefined' && window.scrollTo) {
+    const y = searchViewReturnScroll;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+  }
 }
 function searchViewOpen(){
   const v = document.getElementById('searchView');
