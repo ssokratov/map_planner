@@ -13,13 +13,17 @@
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html { overflow-x:clip; }
   body { margin:0; background-color:var(--bg); background-image:linear-gradient(var(--hud-grid) 1px, transparent 1px), linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px); background-size:28px 28px; color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden; }
-  nav { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:450px; bottom:0; z-index:50; display:flex; padding:4px 8px calc(4px + env(safe-area-inset-bottom));
+  /* v258: нижняя панель «Закрыть» полноэкранных видов — тот же навбар
+     (фон, высота, оформление), только вместо вкладок одна кнопка закрытия,
+     чтобы казалось, что навбар на месте. */
+  nav, .view-close-bar { position:fixed; left:50%; transform:translateX(-50%); will-change:transform; width:100%; max-width:450px; bottom:0; z-index:50; display:flex; padding:4px 8px calc(4px + env(safe-area-inset-bottom));
     background:
       linear-gradient(180deg, rgba(255,176,0,.10), rgba(255,176,0,0) 30%),
       linear-gradient(180deg, #2b333f 0%, #1d232d 55%, #14181f 100%);
     box-shadow:0 -6px 20px rgba(0,0,0,.55), 0 -2px 16px rgb(0 0 0 / 18%), inset 0 1px 0 rgba(255,255,255,.07); }
 
-  nav button { position:relative; z-index:1; flex:1; min-height:48px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; -webkit-tap-highlight-color:transparent; }
+  nav button, .view-close-bar button { position:relative; z-index:1; flex:1; min-height:48px; padding:8px 0 6px; background:none; border:none; border-radius:0; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .2s ease; -webkit-tap-highlight-color:transparent; }
+  .view-close-bar button { color:var(--hud-amber); font-size:15px; font-weight:700; letter-spacing:.04em; }
   nav button svg { width:30px; height:30px; display:block; transition:transform .2s ease, filter .2s ease; }
   nav button.active { background:none; color:var(--hud-amber); }
   nav button.active svg { filter:drop-shadow(0 3px 2px rgba(0,0,0,1)); transform:scale(1.3); }
@@ -437,8 +441,11 @@
   .card.view input { border-color:transparent; background:transparent; pointer-events:none; padding-left:0; }
   .card.view input[type="number"] { -moz-appearance:textfield; appearance:textfield; }
   .dlg-fields > div { margin-bottom:10px; }
-  dialog#searchDlg { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; border:none; border-radius:0; background:var(--bg); color:var(--text); padding:16px; }
-  dialog#searchDlg::backdrop { background:rgba(0,0,0,.6); }
+  /* v258: поиск и детали лицензии/фрейма — полноэкранный вид вместо диалога:
+     заменяет основной экран целиком (как отдельный таб), фон не скроллится,
+     инпут — обычное видимое поле. Нижний отступ — под панель «Закрыть»,
+     как у main под навбар. */
+  #searchView { display:none; max-width:450px; margin:0 auto; padding:16px 16px 72px; }
   dialog#pilotGearDlg { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; border:none; border-radius:0; background:var(--bg); color:var(--text); padding:16px; }
   dialog#pilotGearDlg::backdrop { background:rgba(0,0,0,.6); }
   .search-dlg { max-width:450px; margin:0 auto; }
@@ -502,13 +509,13 @@
 </style>
 </head>
 <body>
-<nav>
+<nav id="mainNav">
   <div class="nav-lens" id="navLens"></div>
   <button id="tabMechBtn" class="active" onclick="showTab('mech')" aria-label="Мех"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="7" x2="12" y2="4.5"/><rect x="10.8" y="2.5" width="2.4" height="2" fill="currentColor" stroke="none"/><rect x="3" y="7" width="18" height="13" rx="1"/><rect x="7" y="11" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="14.4" y="11" width="2.6" height="2.6" fill="currentColor" stroke="none"/><line x1="9" y1="16.5" x2="15" y2="16.5"/></svg></button>
   <button id="tabPilotBtn" onclick="showTab('pilot')" aria-label="Пилот"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M5.2 20c.6-3.6 3.4-5.4 6.8-5.4s6.2 1.8 6.8 5.4"/></svg></button>
   <button id="tabRulesBtn" onclick="showTab('rules')" aria-label="Правила"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10.5 5 8 4.5 5 4.5v14c3 0 5.5.5 7 2 1.5-1.5 4-2 7-2v-14c-3 0-5.5.5-7 2z"/><line x1="12" y1="6.5" x2="12" y2="20.5"/></svg></button>
 </nav>
-<main>
+<main id="mainContent">
   <!-- ============ MECH ============ -->
   <section id="tab-mech" class="tab active">
     <div class="card">
@@ -905,7 +912,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 257</span>
+      <span class="dim global-version">Версия трекера: 258</span>
     </div>
   </div>
 </main>
@@ -949,7 +956,7 @@
     <button class="btn" onclick="document.getElementById('customSystemDlg').close()" data-i18n="u152">Отмена</button>
   </div>
 </dialog>
-<dialog id="searchDlg" onclick="if(event.target===this)closeSearchDlg()" onclose="searchDlgClosed()">
+<div id="searchView">
   <div class="search-dlg">
     <div class="row" id="searchDlgTop" style="margin-bottom:12px">
       <input type="text" id="searchDlgInput" oninput="renderSearchResults(this.value)">
@@ -957,7 +964,8 @@
     </div>
     <div id="searchDlgResults"></div>
   </div>
-</dialog>
+  <div class="view-close-bar"><button type="button" onclick="closeSearchDlg()" data-i18n="u145">Закрыть</button></div>
+</div>
 <dialog id="pilotGearDlg" onclick="if(event.target===this)closePilotGearPicker()">
   <div class="search-dlg">
     <h3 id="pilotGearTitle" style="margin:0 0 12px">Снаряжение из базы</h3>
@@ -1032,7 +1040,7 @@
 </div>
 <script src="./db.js"></script>
 <script src="./pilot_gear_db.js"></script>
-<script>// Единая модалка поиска (v25): полноэкранный поиск вместо встроенных полей.
+<script>// Единый вид поиска (v25, v258 — полноэкранный вид вместо диалога): поиск вместо встроенных полей.
 // kind: weapon (ctx = индекс маунта), system, talent, trigger, license, frame.
 let searchKind = null, searchCtx = null;
 function openSearch(kind, ctx){
@@ -1043,18 +1051,23 @@ function openSearch(kind, ctx){
   searchDlgStack = [{v:'search'}];
   renderSearchResults('');
   searchDlgOpen();
-  // v61 убрала явный inp.focus(), но этого мало: showModal() сам фокусит
-  // первый фокусабельный элемент диалога (поле поиска) — и на телефоне
-  // клавиатура всё равно открывается. Снимаем фокус сразу после открытия.
-  // Кто хочет искать — тапнет в поле сам.
-  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  // v258: инпут — обычное видимое поле на экране поиска, его никто не
+  // фокусит сам (v61/v62 и blur-хак убраны: фокуса и клавиатуры при
+  // открытии нет, а когда экран закрыт — поля нет на экране вовсе).
 }
-function closeSearchDlg(){ const dlg = document.getElementById('searchDlg'); if (dlg && dlg.close) dlg.close(); searchDlgStack = []; }
-// v212: стек видов диалога поиска — «Назад» (кнопка и браузерное Назад) идёт по нему:
+function closeSearchDlg(){
+  // v258: закрытие вида кнопкой/выбором: убрать вид, вернуть основной экран
+  // и снять свою запись истории (эхо-popstate подавить флагом — раньше это
+  // делал onclose диалога).
+  searchViewHide();
+  searchDlgStack = [];
+  if (searchDlgHist){ searchDlgHist = false; suppressNextPopstate = true; histBack(); }
+}
+// v212: стек видов поиска — «Назад» (кнопка и браузерное Назад) идёт по нему:
 // поиск → лицензия → фрейм → …, а не теряет контекст (было: из фрейма, открытого
 // из лицензии, «Назад» вёл в результаты поиска, а лицензия пропадала).
-// Одна запись истории на сессию диалога: браузерное Назад на глубине > 1 снимает
-// один вид и перевооружается (pushState заново), на верхнем виде — закрывает диалог.
+// Одна запись истории на сессию вида: браузерное Назад на глубине > 1 снимает
+// один вид и перевооружается (pushState заново), на верхнем виде — закрывает вид.
 let searchDlgStack = [];
 let searchDlgHist = false;  // pushState сделан для текущей сессии searchDlg
 let refDlgHist = false;     // то же для refDialog
@@ -1075,11 +1088,10 @@ function onDlgPopstate(){
   if (suppressNextPopstate){ suppressNextPopstate = false; return; }
   const ref = document.getElementById('refDialog');
   if (ref && ref.open){ dlgPopClosing = true; refDlgHist = false; ref.close(); dlgPopClosing = false; return; }
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.open){
+  if (searchViewOpen()){
     if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
-    else { dlgPopClosing = true; searchDlgHist = false; searchDlgStack = []; dlg.close(); dlgPopClosing = false; }
-    // v221: одно Назад — один шаг: диалог закрыт (или вид в его стеке сменён),
+    else { searchDlgHist = false; searchDlgStack = []; searchViewHide(); }
+    // v221: одно Назад — один шаг: вид закрыт (или вид в его стеке сменён),
     // вкладку не трогаем — иначе одно нажатие делало два шага сразу.
     return;
   }
@@ -1097,10 +1109,36 @@ function bindDlgHistory(){
   if (typeof window === 'undefined' || !window.addEventListener) return;
   window.addEventListener('popstate', onDlgPopstate);
 }
+// v258: полноэкранный вид поиска/деталей (как отдельный таб): основное
+// содержимое и навбар прячутся, виден только вид. Позицию скролла вкладки
+// запоминаем, чтобы вернуть её при закрытии вида.
+let searchViewReturnScroll = 0;
+function searchViewShow(){
+  searchViewReturnScroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
+  const v = document.getElementById('searchView');
+  if (v) v.style.display = 'block';
+  const m = document.getElementById('mainContent');
+  if (m) m.style.display = 'none';
+  const n = document.getElementById('mainNav');
+  if (n) n.style.display = 'none';
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
+}
+function searchViewHide(){
+  const v = document.getElementById('searchView');
+  if (v) v.style.display = 'none';
+  const m = document.getElementById('mainContent');
+  if (m) m.style.display = '';
+  const n = document.getElementById('mainNav');
+  if (n) n.style.display = '';
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, searchViewReturnScroll);
+}
+function searchViewOpen(){
+  const v = document.getElementById('searchView');
+  return !!(v && v.style.display && v.style.display !== 'none');
+}
 function searchDlgOpen(){
   bindDlgHistory();
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.showModal && !dlg.open) dlg.showModal();
+  searchViewShow();
   if (!searchDlgHist){ histPush(); searchDlgHist = true; }
 }
 function searchDlgRenderTop(){
@@ -1130,20 +1168,13 @@ function searchDlgBack(){
   if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); return; }
   closeSearchDlg();
 }
-function searchDlgClosed(){
-  // Диалог закрыт кнопкой/фоном/Esc — убрать запись истории, которую мы пушили.
-  // Следующий popstate — эхо нашего history.back(), а не нажатие Назад: подавить его.
-  searchDlgStack = [];
-  if (searchDlgHist){ searchDlgHist = false; if (!dlgPopClosing){ suppressNextPopstate = true; histBack(); } }
-}
 function refDlgClosed(){
   if (refDlgHist){ refDlgHist = false; if (!dlgPopClosing){ suppressNextPopstate = true; histBack(); } }
 }
 function dlgEnsureBase(from){
-  // Диалог открывается свежим: база стека — поиск (из поиска) или пусто (из Правил,
-  // где «Назад» с единственного вида закрывает диалог, как раньше).
-  const dlg = document.getElementById('searchDlg');
-  if (dlg && dlg.open) return;
+  // Вид открывается свежим: база стека — поиск (из поиска) или пусто (из Правил,
+  // где «Назад» с единственного вида закрывает вид, как раньше).
+  if (searchViewOpen()) return;
   searchDlgStack = (from === 'rules') ? [] : [{v:'search'}];
 }
 function renderSearchResults(q){
