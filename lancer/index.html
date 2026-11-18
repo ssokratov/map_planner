@@ -932,7 +932,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 270</span>
+      <span class="dim global-version">Версия трекера: 271</span>
     </div>
   </div>
 </main>
@@ -1463,6 +1463,8 @@ STR.pilot_equip_uses = {ru:'Использовано: {C} / {M}', en:'Uses: {C} 
 STR.pilot_equip_destroyed = {ru:'Уничтожено', en:'Destroyed'};
 STR.dmg_roll_dice = {ru:'Брось {N}d6 — берётся наименьший результат', en:'Roll {N}d6 — take the lowest result'};
 STR.dmg_roll_none = {ru:'Отметок пока нет — бросать нечего, таблица ниже для справки', en:'No marks yet — nothing to roll, table below for reference'};
+STR.dmg_destroyed = {ru:'Мех уничтожен: при 0 Structure он повреждён без возможности ремонта. Выйти из него можно как обычно.', en:'The mech is destroyed: at 0 Structure it is damaged beyond repair. You can exit it as normal.'};
+STR.dmg_meltdown = {ru:'При 0 Stress мех получает расплавление реактора в конце своего следующего хода.', en:'At 0 Stress the mech suffers a reactor meltdown at the end of your next turn.'};
 STR.dmg_destroy_btn = {ru:'Уничтожить оружие/систему', en:'Destroy a weapon/system'};
 STR.dmg_apply_status = {ru:'Наложить {S}', en:'Apply {S}'};
 STR.dmg_remove_status = {ru:'Снять {S}', en:'Remove {S}'};
@@ -2250,14 +2252,37 @@ function shake(kind){
     else { d.classList.remove('shake-small'); d.classList.remove('shake-big'); }
   }
 }
+// v271: переполнение — HP до 0 забирает структуру и восстанавливает HP в
+// максимум (излишек урона переносится дальше и повторяется, пока HP <= 0
+// или структура не кончится; при 0 структуры HP просто 0 — мех уничтожен);
+// тепло сверх Heat Cap забирает стресс и сбрасывает нагрев в 0 (точка,
+// вызвавшая переполнение, «сгорает» на потере стресса; излишек сверх
+// точки переполнения переносится). Сидеть ровно на максимуме можно —
+// переполнения нет. Прямое изменение Structure/Stress своими кнопками
+// (не через step) не трогается.
 function step(path, d){
   const max = get(path+'Max');
   const old = get(path)||0;
   let v = old + d;
-  v = Math.max(0, Math.min(max, v));
+  let lostStruct = false;
+  if (path === 'mech.hp' && v <= 0 && max > 0){
+    let st = get('mech.structure')||0;
+    while (v <= 0 && st > 0){ st--; v = max + v; lostStruct = true; }
+    if (st !== (get('mech.structure')||0)) set('mech.structure', st);
+    if (v <= 0) v = 0;
+  } else if (path === 'mech.heat' && v > max && max >= 0){
+    let st = get('mech.stress')||0;
+    while (v > max && st > 0){ st--; v = v - (max + 1); }
+    if (st !== (get('mech.stress')||0)) set('mech.stress', st);
+    if (v > max) v = max;
+  } else {
+    v = Math.max(0, Math.min(max, v));
+  }
   set(path, v); syncDangerZone(); save(); renderCounters();
-  if (v < old && path === 'mech.hp') shake('shake-small');
-  if (v < old && path === 'mech.structure') shake('shake-big');
+  if (path === 'mech.hp'){
+    if (lostStruct || (v === 0 && old > 0)) shake('shake-big');
+    else if (v < old) shake('shake-small');
+  } else if (path === 'mech.structure' && v < old) shake('shake-big');
 }
 function stepOC(d){
   let v = Math.max(0, Math.min(4, (get('mech.overcharge')||0) + d));
@@ -5140,9 +5165,15 @@ function showDamageRoll(kind){
   persistOpenState();
   renderCounters();
   nameEl.textContent = isStruct ? L('u021') : L('u035');
-  const dice = marked > 0
-    ? esc(L('dmg_roll_dice').replace('{N}', marked))
-    : esc(L('dmg_roll_none'));
+  // v271: при 0 структуры/стресса бросать нечего — вместо строки броска
+  // сообщение о последствиях по правилам (мех уничтожен / расплавление
+  // реактора в конце следующего хода). Таблица строк остаётся для справки.
+  const cur = +get('mech.'+kind)||0;
+  const dice = cur === 0
+    ? esc(L(isStruct ? 'dmg_destroyed' : 'dmg_meltdown'))
+    : (marked > 0
+      ? esc(L('dmg_roll_dice').replace('{N}', marked))
+      : esc(L('dmg_roll_none')));
   bodyEl.innerHTML = `<div class="dmg-roll-line">${dice}</div>` + dmgRollRows(kind);
   // v267: меню уничтожения — настоящее выпадающее (как импорт/экспорт):
   // div меню — ребёнок ряда действий, открывается вверх на всю его ширину.
