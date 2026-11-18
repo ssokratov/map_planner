@@ -409,7 +409,9 @@
      (было inline-div, v266): абсолютно позиционированное,
      открывается вверх от кнопок, на всю ширину ряда действий. */
   #dmgRollActions { position:relative; }
-  .destroy-dropdown-menu { max-height:55vh; overflow-y:auto; }
+  /* v270: рамка цвета кнопки уничтожения (.btn.danger, var(--accent)) —
+     дропдаун визуально принадлежит кнопке; у меню импорта/экспорта рамки нет. */
+  .destroy-dropdown-menu { max-height:55vh; overflow-y:auto; border:1px solid var(--accent); }
   /* Оружие — сворачиваемые карточки (v262), как системы: мета, теги, заряды
      и Loading — в шапке, описание — только в развёрнутом теле, в обоих режимах. */
   .weap-head { cursor:pointer; }
@@ -930,7 +932,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 269</span>
+      <span class="dim global-version">Версия трекера: 270</span>
     </div>
   </div>
 </main>
@@ -2220,25 +2222,32 @@ function swipeTab(dir){
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) swipeTab(dx < 0 ? 1 : -1);
   }, {passive:true});
 })();
+// v270: класс тряски снимается по таймауту после конца анимации —
+// иначе он висит на элементе, и при следующем показе (showModal после
+// close у диалога) браузер переигрывает анимацию заново: ложная тряска
+// при открытии таблицы и при клике по чипу «Уничтожено» (его диалог —
+// тот же dmgRollDlg). Таймаут на элемент сбрасывается при повторном
+// вызове, чтобы не снять класс посреди новой анимации. Длительности:
+// shakeSmall .3s, shakeBig .45s — 500 мс покрывает обе.
+const shakeTimers = new WeakMap();
+function shakeOne(el, kind){
+  if (!el) return;
+  const t = shakeTimers.get(el);
+  if (t) clearTimeout(t);
+  el.classList.remove('shake-small');
+  el.classList.remove('shake-big');
+  void el.offsetWidth;
+  el.classList.add(kind);
+  shakeTimers.set(el, setTimeout(function(){ el.classList.remove(kind); }, 500));
+}
 function shake(kind){
-  const m = document.querySelector('main');
-  if (m){
-    m.classList.remove('shake-small');
-    m.classList.remove('shake-big');
-    void m.offsetWidth;
-    m.classList.add(kind);
-  }
+  shakeOne(document.querySelector('main'), kind);
   // v268: диалог броска — в top layer, тряска main за ним не видна;
-  // трясём и сам диалог, когда он открыт (классы снимаются всегда,
-  // чтобы не висели после закрытия диалога).
+  // трясём и сам диалог, когда он открыт.
   const d = document.getElementById('dmgRollDlg');
   if (d){
-    d.classList.remove('shake-small');
-    d.classList.remove('shake-big');
-    if (d.open){
-      void d.offsetWidth;
-      d.classList.add(kind);
-    }
+    if (d.open) shakeOne(d, kind);
+    else { d.classList.remove('shake-small'); d.classList.remove('shake-big'); }
   }
 }
 function step(path, d){
