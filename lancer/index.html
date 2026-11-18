@@ -308,7 +308,7 @@
   .dbrow { display:flex; gap:8px; align-items:flex-start; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
   .dbinfo { flex:1; min-width:0; }
   .dbinfo > b { display:block; font-size:14px; }
-  .dbinfo span { display:block; font-size:13px; color:var(--dim); }
+  .dbinfo > span { display:block; font-size:13px; color:var(--dim); }
   .dbinfo span.dim { color:var(--dim); font-size:12px; }
   .vibe-lines { margin:10px 0 0; font-size:12px; color:var(--text); }
   .vibe-lines p { margin:6px 0 0; border-top:1px solid var(--line); padding:6px 0 0; }
@@ -905,7 +905,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 256</span>
+      <span class="dim global-version">Версия трекера: 257</span>
     </div>
   </div>
 </main>
@@ -4564,11 +4564,14 @@ function tagWordStem(name){
 // «3SP» и так не подсвечивалось (буква вплотную); «SPs» — не «SP»,
 // подсвечивается как раньше. Обратная форма «SP: N» (строка цены SP
 // в описаниях 7 коровых пушек) — тоже без подсветки (lookbehind «SP: »).
+// v257: дроби («1/2» — 21 вхождение в базе, «1/4» — 4) не подсвечиваются:
+// lookahead «\/\d» блокирует числитель, lookbehind «\d\/» — знаменатель.
+// «1/раунд» подсвечивается как раньше: после «/» буква, а не цифра.
 function highlightNums(html){
   if (!html) return html;
   return String(html).split(/(<[^>]*>)/g).map(part=>{
     if (!part || part.startsWith('<')) return part;
-    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d]|[A-Za-zА-Яа-яЁё]-|[A-Za-zА-Яа-яЁё]\/|[Мм]к |[Mm]k |D\/D |[Ww]eapon |[Ss]hotgun |[Дд]робовик |SP: )[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d]|\s+SP(?![A-Za-zА-Яа-яЁё\d]))/g, '<span class="wnum">$&</span>');
+    return part.replace(/(?<![A-Za-zА-Яа-яЁё\d]|[A-Za-zА-Яа-яЁё]-|[A-Za-zА-Яа-яЁё]\/|[Мм]к |[Mm]k |D\/D |[Ww]eapon |[Ss]hotgun |[Дд]робовик |SP: |\d\/)[+-]?(?:\d+d\d+(?:\+\d+)?|\d+)(?![A-Za-zА-Яа-яЁё\d]|\s+SP(?![A-Za-zА-Яа-яЁё\d])|\/\d)/g, '<span class="wnum">$&</span>');
   }).join('');
 }
 function linkTagTerms(html){
