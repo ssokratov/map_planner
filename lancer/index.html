@@ -379,6 +379,16 @@
   .weap-head .wmeta { padding-left:20px; margin-top:4px; }
   .weap-body { display:none; margin-top:10px; margin-left: 18px; }
   .wcard.open .weap-body { display:block; }
+  /* Снаряжение пилота — сворачиваемые карточки (v263), как системы/оружие:
+     статы, теги и заряды — в шапке, описание — только в развёрнутом теле. */
+  .pilot-equip-head { cursor:pointer; }
+  .pilot-equip-head-row { display:flex; align-items:center; gap:8px; }
+  .pilot-equip-arrow { color:var(--text); font-size:12px; line-height:1; transition:transform .15s; flex:0 0 auto; }
+  .pilot-equip-item.open .pilot-equip-arrow { transform:rotate(90deg); }
+  .pilot-equip-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); }
+  .pilot-equip-head .pilot-equip-meta, .pilot-equip-head .pilot-equip-tags, .pilot-equip-head .pilot-equip-charges { padding-left:20px; }
+  .pilot-equip-body { display:none; margin-top:10px; margin-left:18px; }
+  .pilot-equip-item.open .pilot-equip-body { display:block; }
   .tbl-row { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:6px 0 8px; background:var(--panel2); font-size:14px; line-height:1.5; }
   .tbl-row > div:first-child { margin-bottom:4px; }
   .tbl-row ul, #haseHint ul { margin:6px 0; padding-left:20px; }
@@ -406,9 +416,8 @@
   .export-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
   .pilot-equipment-select { width:100%; margin:0 0 12px; }
   .pilot-equip-category { margin:14px 0 6px; color:var(--hud-amber); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
-  .pilot-equip-item { display:flex; gap:8px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line); }
+  .pilot-equip-item { padding:9px 0; border-top:1px solid var(--line); }
   .pilot-equip-item:first-child { border-top:0; }
-  .pilot-equip-main { flex:1 1 auto; min-width:0; }
   .pilot-equip-meta { color:var(--dim); font-size:13px; margin-top:3px; }
   .pilot-equip-meta .wnum { color:var(--accent); font-weight:700; }
   .pilot-equip-tags { margin:5px 0 0; }
@@ -921,7 +930,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 262</span>
+      <span class="dim global-version">Версия трекера: 263</span>
     </div>
   </div>
 </main>
@@ -1297,6 +1306,27 @@ const STR = {"u006": {"ru": "Имя меха", "en": "Mech Name"}, "u007": {"ru"
 let openDescs = new Set();
 let openSys = new Set(); // открытые (развёрнутые) системы — переживают перерисовку (v188)
 let openWeap = new Set(); // открытые (развёрнутые) карточки оружия — переживают перерисовку (v262), ключ «маунт:имя»
+let openPilotEquip = new Set(); // открытые (развёрнутые) карточки снаряжения пилота — переживают перерисовку (v263), ключ — id снаряжения, иначе имя
+// v263: состояние свёрнуто/развёрнуто — в отдельном профиль-независимом ключе
+// localStorage: переживает перезагрузку страницы И смену профиля (в KEY не
+// кладём — данные пилота пер-профиль и перезаписываются при переключении).
+const UI_STATE_KEY = 'lancer-tracker-ui-v1';
+function loadOpenState(){
+  try {
+    const raw = localStorage.getItem(UI_STATE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object') return;
+    const arr = v => Array.isArray(v) ? v.filter(x=>typeof x==='string') : [];
+    openSys = new Set(arr(d.sys));
+    openWeap = new Set(arr(d.weap));
+    openPilotEquip = new Set(arr(d.pilotEquip));
+  } catch(e){}
+}
+function persistOpenState(){
+  try { localStorage.setItem(UI_STATE_KEY, JSON.stringify({sys:[...openSys], weap:[...openWeap], pilotEquip:[...openPilotEquip]})); } catch(e){}
+}
+loadOpenState();
 let openSearchDescs = new Set();
 function rerenderSearch(){ const inp = document.getElementById('searchDlgInput'); renderSearchResults(inp ? inp.value : ''); }
 function openSearchDesc(key){ openSearchDescs.add(key); rerenderSearch(); }
@@ -3501,7 +3531,7 @@ function pilotEquipmentTagChips(tags){
   return tags.map(tag=>{
     const known=!!DB.tags[tag.id], val=tag.val??'';
     const label=known?tagLabel(tag.id,val):fallback[tag.id]?.[lang()]||tag.id.replace(/^tg_/,'').replace(/_/g,' ')+(val!==''?' '+val:'');
-    const click=known?` onclick="showTag('${tag.id}','${encodeURIComponent(String(val))}')"`:'';
+    const click=known?` onclick="event.stopPropagation();showTag('${tag.id}','${encodeURIComponent(String(val))}')"`:'';
     return `<span class="tag"${click}>${esc(label)}</span>`;
   }).join('');
 }
@@ -3543,8 +3573,12 @@ function renderPilotEquipment(){
     const status=[item.destroyed?L('pilot_equip_destroyed'):'',item.isUsed?L('pilot_equip_used'):'',item.note||''].filter(Boolean);
     const tags=pilotEquipmentTags(data), tagHtml=tags.length?`<div class="tags pilot-equip-tags">${pilotEquipmentTagChips(tags)}</div>`:'';
     const max=pilotEquipmentMaxUses(item,data), used=Math.max(0,Math.min(max,+item.currentUses||0)), remaining=max-used;
-    const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
-    return `<div class="pilot-equip-item"><div class="pilot-equip-main"><b>${esc(name)}</b>${stats.length?`<div class="pilot-equip-meta">${stats.join(' · ')}</div>`:''}${tagHtml}${charges}${status.length?`<div class="pilot-equip-meta">${esc(status.join(' · '))}</div>`:''}${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div>${remove?`<button type="button" class="btn x" aria-label="Remove ${esc(name)}" onclick="${remove}">✕</button>`:''}</div>`;
+    const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
+    // v263: сворачиваемая карточка, как системы/оружие; ключ — id снаряжения
+    // (переживает перезагрузку и смену loadout'а), иначе имя (спецснаряжение).
+    const peKey = item.id || name;
+    const peOpen = openPilotEquip.has(peKey);
+    return `<div class="pilot-equip-item${peOpen ? ' open' : ''}" data-pequip="${esc(peKey)}"><div class="pilot-equip-head" onclick="togglePilotEquipCard(this)"><div class="pilot-equip-head-row"><span class="pilot-equip-arrow">▶</span><span class="pilot-equip-name">${esc(name)}</span>${remove?`<button type="button" class="btn x" style="flex:0 0 auto" aria-label="Remove ${esc(name)}" onclick="event.stopPropagation();${remove}">✕</button>`:''}</div>${stats.length?`<div class="pilot-equip-meta">${stats.join(' · ')}</div>`:''}${tagHtml}${charges}${status.length?`<div class="pilot-equip-meta">${esc(status.join(' · '))}</div>`:''}</div><div class="pilot-equip-body">${description?`<div class="pilot-equip-desc">${linkTagTerms(esc(description))}</div>`:''}</div></div>`;
   };
   const groups=[['armor','pilot_armor'],['weapons','pilot_weapons'],['gear','pilot_gear']];
   let content='';
@@ -4373,10 +4407,11 @@ function descBox(key, label, text, ph, saveExpr, editable, alwaysFull){
 function openDesc(key){ openDescs.add(key); renderLists(); }
 function closeDesc(key){ openDescs.delete(key); renderLists(); }
 // Сворачивание систем (v189, div-based): состояние хранится по имени системы.
-function toggleSysCard(head){ const card = head.closest('.sys'); if(!card) return; const n = card.getAttribute('data-sys'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openSys.add(n); else openSys.delete(n); }
+function toggleSysCard(head){ const card = head.closest('.sys'); if(!card) return; const n = card.getAttribute('data-sys'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openSys.add(n); else openSys.delete(n); persistOpenState(); }
 // Сворачивание оружия (v262, как системы): состояние хранится по «маунт:имя» —
 // одно и то же оружие может стоять в двух маунтах, голое имя не подходит.
-function toggleWeapCard(head){ const card = head.closest('.wcard'); if(!card) return; const n = card.getAttribute('data-weap'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openWeap.add(n); else openWeap.delete(n); }
+function toggleWeapCard(head){ const card = head.closest('.wcard'); if(!card) return; const n = card.getAttribute('data-weap'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openWeap.add(n); else openWeap.delete(n); persistOpenState(); }
+function togglePilotEquipCard(head){ const card = head.closest('.pilot-equip-item'); if(!card) return; const n = card.getAttribute('data-pequip'); const isOpen = card.classList.toggle('open'); if(!n) return; if(isOpen) openPilotEquip.add(n); else openPilotEquip.delete(n); persistOpenState(); }
 function editDesc(key){ editingDesc = key; renderLists(); const el = document.getElementById('editingDesc'); if (el && el.focus) el.focus(); }
 function renderDescBoxes(){
   const cb = document.getElementById('coreDescBox');
@@ -4698,7 +4733,7 @@ function linkTagTerms(html){
       if (wstem === stem || (wstem.startsWith(stem) && wstem.length - stem.length <= 2)){
         const val = num ? num.trim() : '';
         const label = tagLabel(id, val).replace(/\s*\([A-ZА-ЯЁ]{2,4}\)\s*$/, '');
-        return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val)}')">${esc(label)}</span>`;
+        return `<span class="tag" onclick="event.stopPropagation();showTag('${id}','${encodeURIComponent(val)}')">${esc(label)}</span>`;
       }
     }
     return m;
@@ -4707,7 +4742,7 @@ function linkTagTerms(html){
 function tagChips(tg){
   return tg.map(([id, val])=>{
     if (!DB.tags[id]) return '';
-    return `<span class="tag" onclick="showTag('${id}','${encodeURIComponent(val ?? '')}')">${esc(tagLabel(id, val))}</span>`;
+    return `<span class="tag" onclick="event.stopPropagation();showTag('${id}','${encodeURIComponent(val ?? '')}')">${esc(tagLabel(id, val))}</span>`;
   }).join('');
 }
 // v207: описание в диалоге справки — с той же подсветкой чисел
