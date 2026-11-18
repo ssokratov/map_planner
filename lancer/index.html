@@ -118,6 +118,12 @@
      (зелёный — var(--good), красный — как у .tag.warn, чтобы ряд выглядел цельно). */
   .tag.load-on { border-color:var(--good); color:var(--good); }
   .tag.load-off { border-color:#e5484d; color:#e5484d; }
+  /* v267: ✓/✕ вернулись в чип Loading (v266 их убирал), а высота выровнена
+     через CSS, а не удалением символов: чип — inline-flex с центрированием,
+     символ — в отдельном span с line-height:1 и чуть меньшим шрифтом, чтобы
+     глиф не раздувал строку; все чипы в ряду тегов одной высоты. */
+  .tag.load-on, .tag.load-off { display:inline-flex; align-items:center; gap:4px; }
+  .tag .load-ico { line-height:1; font-size:11px; }
   dialog { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:16px 18px; max-width:450px; width:calc(100% - 40px); }
   dialog::backdrop { background:rgba(0,0,0,.6); }
   dialog h3 { margin:0 0 8px; font-size:16px; }
@@ -395,9 +401,11 @@
   .dmg-row.open .dmg-row-arrow { transform:rotate(90deg); }
   .dmg-row .dmg-row-desc { display:none; }
   .dmg-row.open .dmg-row-desc { display:block; }
-  /* v266: дропдаун уничтожения внутри диалога броска (вместо отдельного
-     полноэкранного вида): список раскрывается под кнопками, отделён линией. */
-  #dmgDestroyDrop { border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
+  /* v267: меню уничтожения — настоящее выпадающее, как импорт/экспорт
+     (было inline-div, v266): абсолютно позиционированное,
+     открывается вверх от кнопок, на всю ширину ряда действий. */
+  #dmgRollActions { position:relative; }
+  .destroy-dropdown-menu { max-height:55vh; overflow-y:auto; }
   /* Оружие — сворачиваемые карточки (v262), как системы: мета, теги, заряды
      и Loading — в шапке, описание — только в развёрнутом теле, в обоих режимах. */
   .weap-head { cursor:pointer; }
@@ -432,18 +440,17 @@
   .global-action-grid .drive-action svg { width:20px; height:20px; }
   .import-dropdown { position:relative; min-width:0; }
   .import-dropdown > .btn { width:100%; }
-  .import-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% + 4px); display:none; gap:2px; padding:4px 0; background:var(--panel); box-shadow:0 6px 16px #0008; }
-  .import-dropdown.open .import-dropdown-menu { display:grid; }
-  .import-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
-  .import-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
-  .import-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
+  /* v267: меню импорта/экспорта и меню уничтожения — один общий паттерн
+     (было две копии одних и тех же правил): абсолютное меню, открытие вверх,
+     разделители между опциями, hover-подсветка. */
+  .import-dropdown-menu, .export-dropdown-menu, .destroy-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% + 4px); display:none; gap:2px; padding:4px 0; background:var(--panel); box-shadow:0 6px 16px #0008; }
+  .import-dropdown.open .import-dropdown-menu, .export-dropdown.open .export-dropdown-menu { display:grid; }
+  #dmgRollActions.destroy-open .destroy-dropdown-menu { display:grid; }
+  .import-dropdown-menu .btn, .export-dropdown-menu .btn, .destroy-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
+  .import-dropdown-menu .btn + .btn, .export-dropdown-menu .btn + .btn, .destroy-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
+  .import-dropdown-menu .btn:hover, .export-dropdown-menu .btn:hover, .destroy-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
   .export-dropdown { position:relative; min-width:0; }
   .export-dropdown > .btn { width:100%; }
-  .export-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% + 4px); display:none; gap:2px; padding:4px 0; background:var(--panel); box-shadow:0 6px 16px #0008; }
-  .export-dropdown.open .export-dropdown-menu { display:grid; }
-  .export-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
-  .export-dropdown-menu .btn + .btn { border-top:1px solid var(--line); }
-  .export-dropdown-menu .btn:hover { background:var(--panel2); color:var(--hud-amber); }
   .pilot-equipment-select { width:100%; margin:0 0 12px; }
   .pilot-equip-category { margin:14px 0 6px; color:var(--hud-amber); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
   .pilot-equip-item { padding:9px 0; border-top:1px solid var(--line); }
@@ -960,7 +967,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 266</span>
+      <span class="dim global-version">Версия трекера: 267</span>
     </div>
   </div>
 </main>
@@ -979,11 +986,10 @@
 
 <!-- v264: диалог броска при потере структуры/стресса и починки уничтоженного
      оружия/системы (один диалог, содержимое задаётся функциями). -->
-<dialog id="dmgRollDlg" onclick="if(event.target===this)this.close()">
+<dialog id="dmgRollDlg" onclick="if(event.target===this)this.close()" oncancel="if(destroyMenuOpen()){event.preventDefault();closeDestroyDropdown();}">
   <h3 id="dmgRollName"></h3>
   <div id="dmgRollBody"></div>
   <div class="row" id="dmgRollActions" style="margin-top:12px"></div>
-  <div id="dmgDestroyDrop" hidden></div>
 </dialog>
 
 <dialog id="customWeaponDlg" onclick="if(event.target===this)this.close()">
@@ -1494,7 +1500,6 @@ STR.dmg_roll_dice = {ru:'Брось {N}d6 — берётся наименьши�
 STR.dmg_roll_none = {ru:'Отметок пока нет — бросать нечего, таблица ниже для справки', en:'No marks yet — nothing to roll, table below for reference'};
 STR.dmg_destroy_btn = {ru:'Уничтожить оружие/систему', en:'Destroy a weapon/system'};
 STR.destroy_none = {ru:'Нечего уничтожать: нет оружия и систем', en:'Nothing to destroy: no weapons or systems'};
-STR.dmg_destroy_mount = {ru:'всё оружие маунта', en:'all weapons on this mount'};
 STR.repair_howto = {ru:'Стандартно: 1 Repair во время Отдыха (см. правила). Но бывают и другие способы (таланты, системы, кор-бонусы), поэтому трекер сам ремонты не списывает — кнопка лишь отмечает предмет починенным.', en:'Standard: 1 Repair during a Rest (see the rules). But there are other ways (talents, systems, core bonuses), so the tracker does not spend Repairs itself — the button only marks the item repaired.'};
 STR.repair_now = {ru:'Починить', en:'Repair'};
 STR.pilot_equip_used = {ru:'Использовано', en:'Used'};
@@ -3358,7 +3363,7 @@ function renderLists(){
         <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${em ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
         ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
         <div class="wmeta">${esc(lab)}</div>
-        ${(wtg.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? esc(L('u254')) : esc(L('u255'))}</button>` : ''}${wtg.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtg)}</span>` : ''}</div>` : ''}
+        ${(wtg.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? `<span class="load-ico" aria-hidden="true">✓</span>${esc(L('u254'))}` : `<span class="load-ico" aria-hidden="true">✕</span>${esc(L('u255'))}`}</button>` : ''}${wtg.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtg)}</span>` : ''}</div>` : ''}
         ${(wlim || wlimU) ? `<div class="weap-head-sub"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},1)">+</button></span></div>` : ''}
       </div>
       <div class="weap-body">
@@ -3646,7 +3651,7 @@ function renderPilotEquipment(){
     if(Array.isArray(data.bonuses)&&data.bonuses.length) stats.push(esc(data.bonuses.map(x=>`${x.val>0?'+':''}${x.val} ${ru?({pilot_armor:'Броня',pilot_evasion:'Уклонение',pilot_edef:'Э-защита',pilot_speed:'Скорость',pilot_hp:'HP'}[x.id]||x.id):String(x.id||'').replace(/^pilot_/,'').replace(/_/g,' ')}`).join(' · ')));
     const status=[item.destroyed?L('pilot_equip_destroyed'):'',item.isUsed?L('pilot_equip_used'):'',item.note||''].filter(Boolean);
     const tags=pilotEquipmentTags(data), isLoading=pilotEquipLoading(item), showLoadChip=isLoading&&chargeKey,
-      tagHtml=(tags.length||showLoadChip)?`<div class="tags pilot-equip-tags">${showLoadChip?`<button class="tag ${pilotEquipLoaded(item)?'load-on':'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();togglePilotEquipLoaded('${chargeKey}',${chargeIndex})">${pilotEquipLoaded(item)?esc(L('u254')):esc(L('u255'))}</button>`:''}${pilotEquipmentTagChips(tags)}</div>`:'';
+      tagHtml=(tags.length||showLoadChip)?`<div class="tags pilot-equip-tags">${showLoadChip?`<button class="tag ${pilotEquipLoaded(item)?'load-on':'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();togglePilotEquipLoaded('${chargeKey}',${chargeIndex})">${pilotEquipLoaded(item)?`<span class="load-ico" aria-hidden="true">✓</span>${esc(L('u254'))}`:`<span class="load-ico" aria-hidden="true">✕</span>${esc(L('u255'))}`}</button>`:''}${pilotEquipmentTagChips(tags)}</div>`:'';
     const max=pilotEquipmentMaxUses(item,data), used=Math.max(0,Math.min(max,+item.currentUses||0)), remaining=max-used;
     const charges=max>0&&chargeKey?`<div class="pilot-equip-charges"><span>${L('charges')}</span><div class="counter small"><button aria-label="${L('pilot_spend_charge')}" title="${L('pilot_spend_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},1)">−</button><div class="val">${remaining} <small>/ ${max}</small></div><button aria-label="${L('pilot_restore_charge')}" title="${L('pilot_restore_charge')}" onclick="event.stopPropagation();stepPilotEquipmentCharges('${chargeKey}',${chargeIndex},-1)">+</button></div></div>`:'';
     // v263: сворачиваемая карточка, как системы/оружие; ключ — id снаряжения
@@ -5117,10 +5122,10 @@ function showDamageRoll(kind){
   const nameEl = document.getElementById('dmgRollName');
   const bodyEl = document.getElementById('dmgRollBody');
   const actEl = document.getElementById('dmgRollActions');
-  const dropEl = document.getElementById('dmgDestroyDrop');
   if (!dlg || !nameEl || !bodyEl || !actEl) return;
-  // v266: дропдаун уничтожения при открытии диалога всегда свёрнут.
-  if (dropEl) dropEl.hidden = true;
+  // v267: меню уничтожения при открытии диалога всегда свёрнуто (класс
+  // снимается — innerHTML его не сбрасывает, т.к. класс на самом контейнере).
+  actEl.classList.remove('destroy-open');
   const isStruct = kind === 'structure';
   const marked = Math.max(0, (+get('mech.'+kind+'Max')||0) - (+get('mech.'+kind)||0));
   // v265 (доп.): диалог открыт — урон «прочитан»: база = текущие отметки,
@@ -5133,10 +5138,13 @@ function showDamageRoll(kind){
     ? esc(L('dmg_roll_dice').replace('{N}', marked))
     : esc(L('dmg_roll_none'));
   bodyEl.innerHTML = `<div class="dmg-roll-line">${dice}</div>` + dmgRollRows(kind);
+  // v267: меню уничтожения — настоящее выпадающее (как импорт/экспорт):
+  // div меню — ребёнок ряда действий, открывается вверх на всю его ширину.
   actEl.innerHTML = (isStruct
-    ? `<button class="btn danger" onclick="toggleDestroyDropdown()">${esc(L('dmg_destroy_btn'))}</button>`
+    ? `<button class="btn danger" type="button" onclick="toggleDestroyDropdown(event)" aria-haspopup="true" aria-expanded="false">${esc(L('dmg_destroy_btn'))} <span aria-hidden="true">▴</span></button>`
     : '')
-    + `<button class="btn primary" onclick="closeDamageRollDlg()">${esc(L('u145'))}</button>`;
+    + `<button class="btn primary" onclick="closeDamageRollDlg()">${esc(L('u145'))}</button>`
+    + (isStruct ? `<div class="destroy-dropdown-menu" role="menu" id="destroyDropdownMenu"></div>` : '');
   dlg.showModal();
 }
 function closeDamageRollDlg(){
@@ -5151,10 +5159,9 @@ function showDestroyedRepair(kind, a, b){
   const nameEl = document.getElementById('dmgRollName');
   const bodyEl = document.getElementById('dmgRollBody');
   const actEl = document.getElementById('dmgRollActions');
-  const dropEl = document.getElementById('dmgDestroyDrop');
   if (!dlg || !nameEl || !bodyEl || !actEl) return;
-  // v266: дропдаун уничтожения в диалоге починки не показывается.
-  if (dropEl) dropEl.hidden = true;
+  // v267: меню уничтожения в диалоге починки не показывается.
+  actEl.classList.remove('destroy-open');
   let name = '';
   if (kind === 'weapon'){
     const w = S.mounts[a] && S.mounts[a].weapons[b];
@@ -5186,15 +5193,34 @@ function repairDestroyed(kind, a, b){
   save(); renderLists();
   closeDamageRollDlg();
 }
-// v266: уничтожение — дропдаун внутри диалога броска (вместо отдельного
-// полноэкранного вида, v264): тап по маунту уничтожает всё его оружие, тап по системе —
-// одну систему. Видны только неуничтоженные. Повторный тап по кнопке сворачивает.
-function toggleDestroyDropdown(){
-  const drop = document.getElementById('dmgDestroyDrop');
-  if (!drop) return;
-  if (!drop.hidden){ drop.hidden = true; return; }
-  drop.innerHTML = destroyDropdownHtml();
-  drop.hidden = false;
+// v267: уничтожение — настоящее выпадающее меню (как импорт/экспорт):
+// открывается вверх от кнопки на всю ширину ряда действий; тап по маунту
+// уничтожает всё его оружие, тап по системе — одну систему. Видны только
+// неуничтоженные. Повторный тап по кнопке сворачивает. Закрытие — также по
+// клику вне (см. document-обработчик) и по Escape (oncancel у диалога).
+function toggleDestroyDropdown(ev){
+  if (ev) ev.stopPropagation();
+  const act = document.getElementById('dmgRollActions');
+  if (!act) return;
+  const menu = document.getElementById('destroyDropdownMenu');
+  // NB: classList.toggle() не возвращает значение в смоук-стабе — состояние
+  // читаем через contains(), как в реальном DOM.
+  act.classList.toggle('destroy-open');
+  const open = act.classList.contains('destroy-open');
+  const btn = act.querySelector(':scope > button.btn.danger');
+  if (btn) btn.setAttribute('aria-expanded', String(open));
+  if (open && menu) menu.innerHTML = destroyDropdownHtml();
+}
+function closeDestroyDropdown(){
+  const act = document.getElementById('dmgRollActions');
+  if (!act) return;
+  act.classList.remove('destroy-open');
+  const btn = act.querySelector(':scope > button.btn.danger');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+function destroyMenuOpen(){
+  const act = document.getElementById('dmgRollActions');
+  return !!act && act.classList.contains('destroy-open');
 }
 function destroyDropdownHtml(){
   let html = '';
@@ -5207,13 +5233,14 @@ function destroyDropdownHtml(){
     }).join(', ');
     const ms = MOUNT_STYLE[mt.type] || MOUNT_STYLE['Main'];
     const badge = `<span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span><span class="mb-name">${esc(mt.type)}</span></span>`;
-    html += `<div class="row" style="cursor:pointer" onclick="destroyMountWeapons(${mi})"><div style="flex:1 1 auto">${badge} <span class="dim">— ${esc(L('dmg_destroy_mount'))}</span><br><span class="dim" style="font-size:13px">${esc(names)}</span></div></div>`;
+    // v267: без «— всё оружие маунта» — это уже сказано в таблице System Trauma.
+    html += `<button class="btn" type="button" role="menuitem" onclick="destroyMountWeapons(${mi})">${badge}<br><span class="dim" style="font-size:13px">${esc(names)}</span></button>`;
   });
   S.systems.forEach((s, i)=>{
     if (s.destroyed) return;
     const dbs = findSystem(s.name);
     const disp = dbs ? sd(dbs).n : s.name;
-    html += `<div class="row" style="cursor:pointer" onclick="destroySystem(${i})"><div style="flex:1 1 auto"><b>${esc(disp)}</b></div></div>`;
+    html += `<button class="btn" type="button" role="menuitem" onclick="destroySystem(${i})"><b>${esc(disp)}</b></button>`;
   });
   if (!html) html = `<p class="hint">${esc(L('destroy_none'))}</p>`;
   return html;
@@ -5223,18 +5250,16 @@ function destroyMountWeapons(mi){
   if (!mt) return;
   (mt.weapons||[]).forEach(w=>{ if (!w.destroyed) w.destroyed = true; });
   save(); renderLists();
-  // v266: дропдаун закрывается, диалог броска остаётся открытым.
-  const drop = document.getElementById('dmgDestroyDrop');
-  if (drop) drop.hidden = true;
+  // v267: меню закрывается, диалог броска остаётся открытым.
+  closeDestroyDropdown();
 }
 function destroySystem(i){
   const s = S.systems[i];
   if (!s || s.destroyed) return;
   s.destroyed = true;
   save(); renderLists();
-  // v266: дропдаун закрывается, диалог броска остаётся открытым.
-  const drop = document.getElementById('dmgDestroyDrop');
-  if (drop) drop.hidden = true;
+  // v267: меню закрывается, диалог броска остаётся открытым.
+  closeDestroyDropdown();
 }
 function showStatRefIfView(key){
   if (editOn('mech')) return;
@@ -5291,7 +5316,7 @@ function closeImportMenu(){
   const button=box.querySelector(':scope > button'); if(button) button.setAttribute('aria-expanded','false');
 }
 function chooseImportFile(id){ closeImportMenu(); const input=document.getElementById(id); if(input) input.click(); }
-document.addEventListener('click',ev=>{ if(!ev.target.closest('#importDropdown')) closeImportMenu(); if(!ev.target.closest('#exportDropdown')) closeExportMenu(); });
+document.addEventListener('click',ev=>{ if(!ev.target.closest('#importDropdown')) closeImportMenu(); if(!ev.target.closest('#exportDropdown')) closeExportMenu(); if(!ev.target.closest('#dmgRollActions')) closeDestroyDropdown(); });
 function isPlainObject(value){ return !!value && typeof value==='object' && !Array.isArray(value); }
 function readImportFile(ev,handler){
   const input=ev.target, file=input.files&&input.files[0]; if(!file) return;
