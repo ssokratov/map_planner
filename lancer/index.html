@@ -910,7 +910,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 260</span>
+      <span class="dim global-version">Версия трекера: 261</span>
     </div>
   </div>
 </main>
@@ -957,6 +957,7 @@
 <div id="searchView">
   <div class="search-dlg">
     <div class="row" id="searchDlgTop" style="margin-bottom:12px">
+      <button class="btn" id="searchDlgBackBtn" style="flex:0 0 auto;visibility:hidden" onclick="searchDlgBack()" data-i18n="u238">← Назад</button>
       <input type="text" id="searchDlgInput" oninput="renderSearchResults(this.value)">
       <button class="btn danger" style="flex:0 0 auto" onclick="closeSearchDlg()">✕</button>
     </div>
@@ -1113,6 +1114,11 @@ function bindDlgHistory(){
   // Один раз: браузерное Назад закрывает верхний диалог / идёт по стеку видов.
   if (bindDlgHistory.done) return;
   bindDlgHistory.done = true;
+  // v261: браузер по умолчанию сам восстанавливает скролл при навигации по
+  // истории ('auto') — и перебивал двойной rAF приложения при закрытии вида:
+  // запись истории создавалась уже после scrollTo(0,0), т.е. с позицией 0.
+  // 'manual' — скролл при Назад трогает только приложение.
+  try { if (typeof history !== 'undefined' && history) history.scrollRestoration = 'manual'; } catch(e){}
   if (typeof window === 'undefined' || !window.addEventListener) return;
   window.addEventListener('popstate', onDlgPopstate);
 }
@@ -1156,8 +1162,10 @@ function cbViewOpen(){ return fullscreenViewOpen('cbView'); }
 function pilotGearViewOpen(){ return fullscreenViewOpen('pilotGearView'); }
 function searchDlgOpen(){
   bindDlgHistory();
-  searchViewShow();
+  // v261: запись истории — ДО показа вида: иначе запись создавалась уже
+  // после scrollTo(0,0), и браузерное восстановление скролла возвращало 0.
   if (!searchDlgHist){ histPush(); searchDlgHist = true; }
+  searchViewShow();
 }
 function searchDlgRenderTop(){
   const top = searchDlgStack[searchDlgStack.length - 1];
@@ -1170,8 +1178,10 @@ function searchDlgRenderTop(){
   }
   const inp = document.getElementById('searchDlgInput');
   if (inp) inp.style.display = 'none';
+  const backBtn = document.getElementById('searchDlgBackBtn');
+  if (backBtn) backBtn.style.visibility = 'visible';
   const topEl = document.getElementById('searchDlgTop');
-  if (topEl) topEl.style.justifyContent = 'flex-end';
+  if (topEl) topEl.style.justifyContent = 'space-between';
   box.innerHTML = top.v === 'license' ? licenseDetailHtml(top.key) : frameDetailHtml(top.key);
 }
 function searchDlgPush(view){
@@ -1201,6 +1211,8 @@ function renderSearchResults(q){
   frameDetailFrom = 'search';
   const inp = document.getElementById('searchDlgInput');
   if (inp) inp.style.display = '';
+  const backBtn = document.getElementById('searchDlgBackBtn');
+  if (backBtn) backBtn.style.visibility = 'hidden';
   const top = document.getElementById('searchDlgTop');
   if (top) top.style.justifyContent = '';
   const box = document.getElementById('searchDlgResults');
@@ -3165,9 +3177,10 @@ function openCoreBonusPicker(){
   });
   list.innerHTML = html;
   // v260: пикер — полноэкранный вид, как поиск (v258): история — как у поиска.
+  // v261: запись истории — ДО показа вида (см. searchDlgOpen).
   bindDlgHistory();
-  fullscreenViewShow('cbView');
   if (!cbHist){ histPush(); cbHist = true; }
+  fullscreenViewShow('cbView');
 }
 function closeCoreBonusPicker(){
   fullscreenViewHide('cbView');
@@ -3418,9 +3431,10 @@ function openPilotGearPicker(type){
   renderPilotGearResults('');
   // v260: пикер — полноэкранный вид, как поиск (v258): инпут — обычное
   // видимое поле, автофокуса и blur-хака нет; история — как у поиска.
+  // v261: запись истории — ДО показа вида (см. searchDlgOpen).
   bindDlgHistory();
-  fullscreenViewShow('pilotGearView');
   if (!pilotGearHist){ histPush(); pilotGearHist = true; }
+  fullscreenViewShow('pilotGearView');
 }
 function closePilotGearPicker(){
   fullscreenViewHide('pilotGearView');
@@ -4080,9 +4094,10 @@ function licenseDetailHtml(name){
   // v250: строка роли из карточки УБРАНА — роль лицензии из отображения
   // лицензий убрана полностью (карточка: имя, гранты по рангам, кнопка
   // «Взять лицензию», источник внизу, если лицензия не из корбука).
+  // v261: «← Назад» теперь в верхней строке вида (#searchDlgTop) на одной
+  // высоте с ✕; здесь — только заголовок.
   let h = `
   <div class="row" style="margin-bottom:10px">
-    <button class="btn" style="flex:0 0 auto" onclick="licenseDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(licenseDispName(lic))}</b>
   </div>`;
   if (owned) h += `<p class="hint">${esc(L('u247'))}: ${esc(L('u245'))} ${esc(rn[(owned.rank || 1) - 1])}</p>`;
@@ -4288,9 +4303,10 @@ function frameDetailHtml(key){
   // как у лицензии с v238. Механика (статы, трейты, ядро) и так в карточке.
   // v248: в карточке — та же объединённая строка, что в списке (роль + теги);
   // правило v244/v245 «тег — только в списке» для этой строки отменено.
+  // v261: «← Назад» теперь в верхней строке вида (#searchDlgTop) на одной
+  // высоте с ✕; здесь — только заголовок.
   return `
   <div class="row" style="margin-bottom:10px">
-    <button class="btn" style="flex:0 0 auto" onclick="frameDetailBack()">${esc(L('u238'))}</button>
     <b style="flex:1 1 auto">${esc(frameDispName(key))}</b>
   </div>
   <div style="margin-bottom:10px;font-size:12px;color:var(--dim)">${esc(frameRowFull(key))}</div>
