@@ -66,7 +66,7 @@
   .counter button { width:44px; height:44px; font-size:22px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:0; cursor:pointer; flex:none; }
   .counter .val { flex:1; text-align:center; font-size:22px; font-weight:700; }
   .res-grid { margin-bottom:16px; }
-  .res-top { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; margin-bottom:16px; padding-top:32px; }
+  .res-top { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; margin-bottom:16px; padding-top:36px; }
   .hp-ring { display:flex; flex-direction:column; align-items:center; gap:6px; }
   .ring-wrap { position:relative; width:150px; height:150px; }
   .ring-wrap svg { width:150px; height:150px; transform:rotate(-90deg); display:block; }
@@ -76,15 +76,15 @@
      heat thermometer — like the hp-tracker demo: each +/- click adds to the
      cumulative delta, slam on every update, pop on structure/stress loss,
      hides 2 s after the last click and resets. */
-  .delta-container { position:absolute; bottom:calc(100% + 4px); left:50%; display:flex; flex-direction:row; align-items:baseline; pointer-events:none; opacity:0; transform:translateX(-50%) translateY(8px) scale(.85); transition:opacity .25s ease, transform .25s cubic-bezier(.22,1,.36,1); z-index:5; }
+  .delta-container { position:absolute; bottom:calc(100% + 4px); left:50%; display:flex; flex-direction:row; align-items:baseline; white-space:nowrap; pointer-events:none; opacity:0; transform:translateX(-50%) translateY(8px) scale(.85); transition:opacity .25s ease, transform .25s cubic-bezier(.22,1,.36,1); z-index:5; }
   .delta-container.visible { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
-  .delta-val { font-size:24px; font-weight:800; letter-spacing:-.5px; line-height:1.05; text-shadow:0 2px 10px rgba(0,0,0,.75); transition:color .15s ease; }
+  .delta-val { font-size:24px; font-weight:800; letter-spacing:-.5px; line-height:1.05; flex-shrink:0; text-shadow:0 2px 10px rgba(0,0,0,.75); transition:color .15s ease; }
   .delta-val.damage { color:var(--bad); }
   .delta-val.heal { color:var(--good); }
   .delta-val.heat-up { color:var(--accent); }
   .delta-val.heat-down { color:var(--good); }
   .delta-val.neutral { color:var(--dim); }
-  .delta-sub { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:var(--accent); text-shadow:0 2px 8px rgba(0,0,0,.85); display:none; }
+  .delta-sub { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; flex-shrink:0; color:var(--accent); text-shadow:0 2px 8px rgba(0,0,0,.85); display:none; }
   .delta-sub::before { content:'·'; margin:0 6px; color:var(--dim); }
   .delta-sub.active { display:block; }
   @keyframes delta-slam { 0% { transform:translateY(-4px) scale(1.38); } 60% { transform:translateY(1px) scale(.95); } 100% { transform:translateY(0) scale(1); } }
@@ -958,7 +958,7 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 274</span>
+      <span class="dim global-version">Версия трекера: 275</span>
     </div>
   </div>
 </main>
