@@ -611,7 +611,7 @@
               <div class="delta-sub" id="deltaHpSub">−1 Structure</div>
             </div>
             <div class="ring-minus" onpointerdown="holdStart('mech.hp',-1,event)" onpointerup="holdStop()" onpointerleave="holdStop()" onpointercancel="holdStop()" oncontextmenu="return false" role="button" aria-label="HP минус">−</div>
-            <div class="ring-val"><div class="ring-main"><div class="val" id="v-mech.hp" onclick="showStatRef('hp')">10</div><button class="stat-label ring-hp" type="button" onclick="showStatRef('hp')">hp</button></div><div class="ring-max" id="max-mech.hp">max: 10</div></div>
+            <div class="ring-val"><div class="ring-main"><div class="val" id="v-mech.hp">10</div><button class="stat-label ring-hp" type="button">hp</button></div><div class="ring-max" id="max-mech.hp" onclick="showStatRef('hp')">max: 10</div></div>
             <div class="ring-plus" onpointerdown="holdStart('mech.hp',1,event)" onpointerup="holdStop()" onpointerleave="holdStop()" onpointercancel="holdStop()" oncontextmenu="return false" role="button" aria-label="HP плюс">+</div>
           </div>
           <input type="hidden" data-f="mech.hp" value="10"><input type="hidden" data-f="mech.hpMax" value="10">
@@ -620,9 +620,9 @@
           <span class="dz-label">DANGER</span>
           <div class="thermo">
             <div class="thermo-fill" id="heatThermoFill"></div>
-            <button class="thermo-ico" id="heatFlame" type="button" onclick="showStatRef('heat')" aria-label="Heat">🔥</button>
+            <button class="thermo-ico" id="heatFlame" type="button" aria-label="Heat">🔥</button>
             <div class="thermo-plus" onpointerdown="holdStart('mech.heat',1,event)" onpointerup="holdStop()" onpointerleave="holdStop()" onpointercancel="holdStop()" oncontextmenu="return false" role="button" aria-label="Heat плюс">+</div>
-            <div class="thermo-val"><div class="val" id="v-mech.heat" onclick="showStatRef('heat')">0</div><div class="thermo-max" id="max-mech.heat">max: 6</div></div>
+            <div class="thermo-val"><div class="val" id="v-mech.heat">0</div><div class="thermo-max" id="max-mech.heat" onclick="showStatRef('heat')">max: 6</div></div>
             <div class="thermo-minus" onpointerdown="holdStart('mech.heat',-1,event)" onpointerup="holdStop()" onpointerleave="holdStop()" onpointercancel="holdStop()" oncontextmenu="return false" role="button" aria-label="Heat минус">−</div>
           </div>
           <div class="delta-container" id="deltaHeatContainer">
