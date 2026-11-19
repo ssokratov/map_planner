@@ -149,6 +149,8 @@
      чтобы отличаться от обычных янтарных чипов тегов. */
   .tag.grant { border-color:var(--accent2); color:var(--accent2); }
   .tag.grant:hover { border-color:var(--accent2); }
+  /* v290: «Твои действия» — чип с новой строки */
+  .myact-chip { margin:5px 0; }
   /* v267: ✓/✕ вернулись в чип Loading (v266 их убирал), а высота выровнена
      через CSS, а не удалением символов: чип — inline-flex с центрированием,
      символ — в отдельном span с line-height:1 и чуть меньшим шрифтом, чтобы
@@ -971,7 +973,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v289</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v290</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3222,10 +3224,12 @@ function actionHeatBadge(a){
   if (!h || !h[1]) return '';
   return ' ' + tagChips([['tg_heat_self', h[1]]]);
 }
+// v290: «Твои действия» — просто список синих чипов, каждый с новой строки;
+// разбивка по типам (быстрые/реакции/протоколы) сохранена. Триггер/эффект,
+// лимит и источник — в модалке по тапу на чип (как у чипов на карточках).
 function renderMyActions(){
   const box = document.getElementById('myActions');
   if(!box) return;
-  const en = lang()==='en';
   const myQk = (ACTIONS_REF.quick||[]).filter(a=>actionGranted(a));
   const myRe = ACTIONS_REF.reactions.filter(a=>!a.def && actionGranted(a));
   const myPr = ACTIONS_REF.protocols.filter(a=>actionGranted(a));
@@ -3233,30 +3237,19 @@ function renderMyActions(){
     box.innerHTML = '<p class="hint">' + esc(L('u232')) + '</p>';
     return;
   }
+  const chip = a => '<div class="myact-chip">' + refChip('action', a.key, actionLabel(a.key), false, 'grant') + '</div>';
   let h = '';
   if(myQk.length){
-    h += '<h3>' + esc(L('u235')) + '</h3><ul>';
-    for(const a of myQk){
-      const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
-    }
-    h += '</ul>';
+    h += '<h3>' + esc(L('u235')) + '</h3>';
+    for(const a of myQk) h += chip(a);
   }
   if(myRe.length){
-    h += '<h3>' + esc(L('u230')) + '</h3><ul>';
-    for(const a of myRe){
-      const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + (a.per ? ' (' + esc(a.per) + ')' : ' (1/раунд)') + '</b>' + actionHeatBadge(a) + ' — <i>' + esc(en ? 'Trigger' : 'Триггер') + ':</i> ' + linkTagTerms(esc(en ? a.tr_en : a.tr_ru)) + ' <i>' + esc(en ? 'Effect' : 'Эффект') + ':</i> ' + linkTagTerms(esc(en ? a.ef_en : a.ef_ru)) + actionSource(a) + '</li>';
-    }
-    h += '</ul>';
+    h += '<h3>' + esc(L('u230')) + '</h3>';
+    for(const a of myRe) h += chip(a);
   }
   if(myPr.length){
-    h += '<h3>' + esc(L('u231')) + '</h3><ul>';
-    for(const a of myPr){
-      const nm = en ? a.name : (a.ru || a.name);
-      h += '<li><b>' + esc(nm) + '</b>' + actionHeatBadge(a) + ' — ' + linkTagTerms(esc(en ? a.tx_en : a.tx_ru)) + actionSource(a) + '</li>';
-    }
-    h += '</ul>';
+    h += '<h3>' + esc(L('u231')) + '</h3>';
+    for(const a of myPr) h += chip(a);
   }
   box.innerHTML = h;
 }
@@ -3429,10 +3422,12 @@ function renderCoreBonuses(){
     const disp = lang()==='ru' ? cb.ru : cb.n;
     const desc = lang()==='ru' ? cb.d : cb.de;
     const nameHtml = lang()==='ru' ? `<b>${esc(disp)}</b> <span class="dim">(${esc(cb.n)})</span>` : `<b>${esc(disp)}</b>`;
+    // v290: действие от Core Bonus — синий чип, как у систем/оружия/талантов
+    const cbGrants = grantsChipsHtml('coreBonus', n);
     return editOn('coreBonuses') ? `
-    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div>
+    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span>${cbGrants ? '<br>' + cbGrants : ''}</div>
     <button class="btn x" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>` : `
-    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span></div></div>`;
+    <div class="row cb-item" style="align-items:flex-start"><div style="flex:1 1 auto">${nameHtml}<br><span class="dim" style="font-size:13px">${esc(desc)}</span>${cbGrants ? '<br>' + cbGrants : ''}</div></div>`;
   }).join('');
 }
 function openCoreBonusPicker(){
@@ -4429,6 +4424,8 @@ function grantLabel(g){
     const t = findTalent(g.talent);
     return (t ? td(t).n : g.talent) + ' ' + ['I', 'II', 'III'][(g.rank || 1) - 1];
   }
+  // v290: действие от Core Bonus (напр. «Урок удерживаемого образа»)
+  if (g.coreBonus){ const cb = findCoreBonus(g.coreBonus); return cb ? (lang()==='ru' ? cb.ru : cb.n) : g.coreBonus; }
   return '';
 }
 // v206: обратный индекс «фича → что она даёт». Строится из грантов
@@ -4501,6 +4498,7 @@ function grantsOf(kind, key, rank){
       if (kind === 'talent' && g.talent === key && (g.rank || 1) <= (rank || 1)) out.push({kind:'action', key:a.key});
       if (kind === 'frame' && g.frame === key) out.push({kind:'action', key:a.key});
       if (kind === 'weapon' && g.weapon === key) out.push({kind:'action', key:a.key});
+      if (kind === 'coreBonus' && g.coreBonus === key) out.push({kind:'action', key:a.key});
     }
   }
   if (kind === 'frame'){
@@ -4531,7 +4529,7 @@ function showRef(kind, key){
   const bodyEl = document.getElementById('refDlgBody');
   if (!dlg || !nameEl || !bodyEl) return;
   const en = lang() === 'en';
-  let name = '', body = '';
+  let name = '', body = '', hb = '';
   if (kind === 'action'){
     const a = [...(ACTIONS_REF.reactions || []), ...(ACTIONS_REF.protocols || []), ...(ACTIONS_REF.quick || [])].find(x=>x.key === key);
     if (!a) return;
@@ -4546,6 +4544,9 @@ function showRef(kind, key){
     body = tx || ((tr ? (en ? 'Trigger' : 'Триггер') + ': ' + tr + '\n' : '') + (ef ? (en ? 'Effect' : 'Эффект') + ': ' + ef : ''));
     const grant = grantLabel(a.grant);
     if (grant) body = actionTypeLabel(a) + '. ' + L('grant_from') + ' ' + grant + '\n\n' + body;
+    // v290: цена в тепле — в модалке действия (в списке «Твои действия» теперь
+    // только синие чипы; CL: цена не должна теряться)
+    hb = actionHeatBadge(a);
   } else if (kind === 'system'){
     const s = findSystem(key); if (!s) return;
     const d = sd(s); name = d.n;
@@ -4569,6 +4570,7 @@ function showRef(kind, key){
   } else return;
   nameEl.textContent = name;
   bodyEl.innerHTML = linkTagTerms(esc(body));
+  if (hb) bodyEl.innerHTML += '<p style="margin-top:10px">' + hb.trim() + '</p>';
   // v239: источник внизу карточки — только для айтемов не из корбука
   // (системы, оружие, таланты; у фреймов — своя карточка frameDetailHtml).
   const src = (kind === 'system' || kind === 'weapon' || kind === 'talent') ? itemSource(kind, key) : '';
