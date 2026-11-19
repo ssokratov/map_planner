@@ -163,6 +163,7 @@
   .btn.danger { border-color:var(--accent); color:var(--accent); text-wrap: nowrap; }
   .btn.x { border-color:transparent; background:transparent; color:var(--accent); padding:6px 10px; font-size:13px; }
   .btn.primary { background:var(--hud-amber); border-color:var(--hud-amber); color:#0e1116; font-weight:700; }
+  .btn.link { padding:0; border:none; background:none; }
   /* v218: тонкие разделители между элементами списков — тот же приём, что у
      снаряжения пилота (.pilot-equip-item): волосная линия 1px var(--line),
      без акцента. Рамок не добавляем, только линию между соседями. */
@@ -5298,7 +5299,7 @@ function showDamageRoll(kind){
   // v267: меню уничтожения — настоящее выпадающее (как импорт/экспорт):
   // div меню — ребёнок ряда действий, открывается вверх на всю его ширину.
   actEl.innerHTML = (isStruct
-    ? `<button class="btn danger" type="button" onclick="toggleDestroyDropdown(event)" aria-haspopup="true" aria-expanded="false">${esc(L('dmg_destroy_btn'))} <span aria-hidden="true">▴</span></button>`
+    ? `<button class="btn danger link" type="button" onclick="toggleDestroyDropdown(event)" aria-haspopup="true" aria-expanded="false">${esc(L('dmg_destroy_btn'))} <span aria-hidden="true">▴</span></button>`
     : '')
     + `<button class="btn primary" onclick="closeDamageRollDlg()">${esc(L('u145'))}</button>`
     + (isStruct ? `<div class="destroy-dropdown-menu" role="menu" id="destroyDropdownMenu"></div>` : '');
