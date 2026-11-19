@@ -493,6 +493,10 @@
   .global-version-row { margin:0; justify-content:space-between; }
   .global-version-row > #langToggle { flex:0 0 86px; }
   .global-version-row > .global-version { flex:0 0 auto; margin-left:auto; text-align:right; }
+  .footer-links { display:flex; justify-content:center; align-items:center; gap:8px; margin:0; }
+  .footer-links a { color:var(--dim); font-size:13px; text-decoration:none; }
+  .footer-links a:hover { color:var(--hud-amber); text-decoration:underline; }
+  .footer-links .sep { color:var(--dim); font-size:13px; }
   .hint { color:var(--dim); font-size:13px; padding:0 16px 16px; }
   .card .hint { padding:8px 0 0; }
   details.sec > .hint { margin-top:4px; }
@@ -960,10 +964,11 @@
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
     <div class="row global-version-row">
       <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">Версия трекера: 276</span>
+      <span class="dim global-version">v277</span>
     </div>
-    <div class="row" style="justify-content:center; gap:16px;">
+    <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a>
+      <span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
     </div>
   </div>
