@@ -967,7 +967,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v285</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v286</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1036,7 +1036,7 @@
     </div>
     <div id="searchDlgResults"></div>
   </div>
-  <div class="view-close-bar"><button type="button" onclick="closeSearchDlg()" data-i18n="u145">Закрыть</button></div>
+  <div class="view-close-bar"><button type="button" onclick="searchDlgBack()" data-i18n="u145">Закрыть</button></div>
 </div>
 <div id="pilotGearView">
   <div class="search-dlg">
@@ -1171,7 +1171,7 @@ function onDlgPopstate(){
   const ref = document.getElementById('refDialog');
   if (ref && ref.open){ dlgPopClosing = true; refDlgHist = false; ref.close(); dlgPopClosing = false; return; }
   if (searchViewOpen()){
-    if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); histPush(); }
+    if (searchDlgPopOne()){ histPush(); }
     else { searchDlgHist = false; searchDlgStack = []; searchViewHide(); }
     // v221: одно Назад — один шаг: вид закрыт (или вид в его стеке сменён),
     // вкладку не трогаем — иначе одно нажатие делало два шага сразу.
@@ -1206,14 +1206,18 @@ function bindDlgHistory(){
 // scrollTo сразу после display='' не прилипал, и страница открывалась вверху.
 let fullscreenReturnScroll = 0;
 function fullscreenViewShow(viewId){
-  fullscreenReturnScroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
   const v = document.getElementById(viewId);
+  // v286: вид уже открыт (переход внутри поиска: список → деталь) — скролл
+  // возврата главной и scrollTo(0,0) не трогаем, иначе уход в деталь затирал
+  // бы скролл главной скроллом списка, а закрытие возвращало бы не туда.
+  const alreadyOpen = !!(v && v.style.display && v.style.display !== 'none');
+  if (!alreadyOpen) fullscreenReturnScroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
   if (v) v.style.display = 'block';
   const m = document.getElementById('mainContent');
   if (m) m.style.display = 'none';
   const n = document.getElementById('mainNav');
   if (n) n.style.display = 'none';
-  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
+  if (!alreadyOpen && typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
 }
 function fullscreenViewHide(viewId){
   const v = document.getElementById(viewId);
@@ -1264,13 +1268,30 @@ function searchDlgRenderTop(){
 function searchDlgPush(view){
   const top = searchDlgStack[searchDlgStack.length - 1];
   if (top && top.v === view.v && top.key === view.key){ searchDlgRenderTop(); return; }
+  // v286: запомнить скролл уходящего вида — возврат «Назад» вернёт его
+  if (top) top.scroll = (typeof window !== 'undefined' && window.scrollY) || (document.documentElement && document.documentElement.scrollTop) || 0;
   searchDlgStack.push(view);
   searchDlgOpen();
   searchDlgRenderTop();
+  // новый вид открывается сверху
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
+}
+// v286: снять один вид и вернуться к предыдущему, восстановив его скролл.
+// Возвращает true, если был куда возвращаться.
+function searchDlgPopOne(){
+  if (searchDlgStack.length <= 1) return false;
+  searchDlgStack.pop();
+  searchDlgRenderTop();
+  const top = searchDlgStack[searchDlgStack.length - 1];
+  const y = (top && top.scroll) || 0;
+  if (typeof window !== 'undefined' && window.scrollTo){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+  }
+  return true;
 }
 function searchDlgBack(){
   // Кнопка «← Назад» внутри диалога: снять один вид; на верхнем виде — закрыть диалог.
-  if (searchDlgStack.length > 1){ searchDlgStack.pop(); searchDlgRenderTop(); return; }
+  if (searchDlgPopOne()) return;
   closeSearchDlg();
 }
 function refDlgClosed(){
