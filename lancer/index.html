@@ -490,10 +490,7 @@
   .pilot-equip-desc { color:var(--dim); font-size:13px; line-height:1.45; margin-top:5px; }
   .pilot-equip-add { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
   .pilot-equip-add .btn { min-width:0; padding:8px 5px; font-size:12px; }
-  .global-version-row { margin:0; justify-content:space-between; }
-  .global-version-row > #langToggle { flex:0 0 86px; }
-  .global-version-row > .global-version { flex:0 0 auto; margin-left:auto; text-align:right; }
-  .footer-links { display:flex; justify-content:center; align-items:center; gap:8px; margin:0; }
+  .footer-links { display:flex; justify-content:space-evenly; align-items:center; gap:8px; margin:0; margin-top:10px; }
   .footer-links a { color:var(--dim); font-size:13px; text-decoration:none; }
   .footer-links a:hover { color:var(--hud-amber); text-decoration:underline; }
   .footer-links .sep { color:var(--dim); font-size:13px; }
@@ -962,14 +959,10 @@
     </div>
     <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importJSON(event)">
     <input type="file" id="compconImportFile" accept="application/json,.json" style="display:none" onchange="importCompconJSON(event)">
-    <div class="row global-version-row">
-      <button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
-      <span class="dim global-version">v277</span>
-    </div>
     <div class="footer-links">
-      <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a>
-      <span class="sep" aria-hidden="true">·</span>
+      <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v278</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
