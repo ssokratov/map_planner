@@ -289,7 +289,6 @@
   .stat-row.cols-4 { grid-template-columns:repeat(4, minmax(0,1fr)); }
   .stat-row.cols-2 { grid-template-columns:repeat(2, minmax(0,1fr)); }
   .stat-cell .stat-val { font-size:20px; font-weight:700; text-align:center; }
-  #rulesFrameList { margin-top:10px; }
   .stat-row.res { background:linear-gradient(180deg, rgba(77,171,247,.48), rgba(77,171,247,.24)); }
   .stat-row.res .stat-cell label { color:#a5d8ff; }
   .stat-cell { display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; min-width:0; box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.30); }
@@ -392,8 +391,10 @@
   #coreBtn.cp-used .cp-core { fill:#2c3542; }
   #coreBtn.cp-used .cp-rim { stroke:#3a4556; }
   #coreBtn.cp-used .cp-label { fill:#7a8794; }
-  details.sec { background:var(--panel); border:1px solid var(--line); border-top:2px solid var(--hud-amber); border-radius:0; padding:12px 14px; }
-  details.sec summary { cursor:pointer; font-weight:700; font-size:15px; color:var(--hud-amber); text-transform:uppercase; letter-spacing:.08em; }
+  details.sec, div.sec-link { background:var(--panel); border:1px solid var(--line); border-top:2px solid var(--hud-amber); border-radius:0; padding:12px 14px; }
+  details.sec summary, div.sec-link .sec-link-title { cursor:pointer; font-weight:700; font-size:15px; color:var(--hud-amber); text-transform:uppercase; letter-spacing:.08em; }
+  div.sec-link { cursor:pointer; }
+  div.sec-link .sec-link-title { display:flex; align-items:center; gap:8px; }
   details.sec h3 { margin:14px 0 6px; font-size:14px; color:var(--text); }
   details.sec ul { margin:4px 0 10px; padding-left:20px; }
   details.sec li { margin-bottom:7px; font-size:14px; line-height:1.5; }
@@ -501,7 +502,6 @@
   .footer-links .sep { color:var(--dim); font-size:13px; }
   .hint { color:var(--dim); font-size:13px; padding:0 16px 16px; }
   .card .hint { padding:8px 0 0; }
-  details.sec > .hint { margin-top:4px; }
   .saved { color:var(--good); font-size:13px; }
   .desc-label { font-weight:600; }
   .desc-more { color:var(--hud-amber); background:none; border:none; padding:0; font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; cursor:pointer; }
@@ -934,15 +934,12 @@
         <li data-i18n="u185"><b>LL12:</b> GRIT 6 · Навыки 14 · Лицензии 12 · Таланты 15 · Core 4 · Триггеры 32</li>
       </ul>
     </details>
-    <details class="sec">
-      <summary data-i18n="u244">Список лицензий</summary>
-      <p class="hint" data-i18n="u248">GMS — без лицензии, доступно всегда</p>
-      <div id="rulesLicenseList"></div>
-    </details>
-    <details class="sec">
-      <summary data-i18n="u243">Список мехов (фреймов)</summary>
-      <div id="rulesFrameList"></div>
-    </details>
+    <div class="sec sec-link" role="button" onclick="openSearch('license')">
+      <span class="sec-link-title"><span aria-hidden="true">🔍</span><span data-i18n="u244">Список лицензий</span></span>
+    </div>
+    <div class="sec sec-link" role="button" onclick="openSearch('frame', null, true)">
+      <span class="sec-link-title"><span aria-hidden="true">🔍</span><span data-i18n="u243">Список мехов (фреймов)</span></span>
+    </div>
   </section>
   <div class="global-footer">
     <div class="global-action-grid">
@@ -970,7 +967,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v283</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v284</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1033,7 +1030,7 @@
 <div id="searchView">
   <div class="search-dlg">
     <div class="row" id="searchDlgTop" style="margin-bottom:12px">
-      <button class="btn" id="searchDlgBackBtn" style="flex:0 0 auto;visibility:hidden" onclick="searchDlgBack()" data-i18n="u238">← Назад</button>
+      <button class="btn" id="searchDlgBackBtn" style="flex:0 0 auto;display:none" onclick="searchDlgBack()" data-i18n="u238">← Назад</button>
       <input type="text" id="searchDlgInput" oninput="renderSearchResults(this.value)">
       <button class="btn danger" style="flex:0 0 auto" onclick="closeSearchDlg()">✕</button>
     </div>
@@ -1121,9 +1118,12 @@
 <script src="./pilot_gear_db.js"></script>
 <script>// Единый вид поиска (v25, v258 — полноэкранный вид вместо диалога): поиск вместо встроенных полей.
 // kind: weapon (ctx = индекс маунта), system, talent, trigger, license, frame.
-let searchKind = null, searchCtx = null;
-function openSearch(kind, ctx){
+let searchKind = null, searchCtx = null, searchFrameAll = false;
+function openSearch(kind, ctx, all){
   searchKind = kind; searchCtx = ctx === undefined ? null : ctx;
+  // v284: поиск фреймов из Правил — без фильтра по лицензиям (все 55 фреймов);
+  // обычный поиск фреймов (с вкладки Мех) по-прежнему фильтруется.
+  searchFrameAll = (kind === 'frame' && !!all);
   const inp = document.getElementById('searchDlgInput');
   const ph = {weapon: L('ph_weapsearch'), system: L('p003'), talent: L('p002'), trigger: L('p010'), license: L('search_ph_license'), frame: L('p009')}[kind] || '';
   if (inp){ inp.placeholder = ph; inp.value = ''; }
@@ -1140,6 +1140,7 @@ function closeSearchDlg(){
   // делал onclose диалога).
   searchViewHide();
   searchDlgStack = [];
+  searchFrameAll = false;
   if (searchDlgHist){ searchDlgHist = false; suppressNextPopstate = true; histBack(); }
 }
 // v212: стек видов поиска — «Назад» (кнопка и браузерное Назад) идёт по нему:
@@ -1255,7 +1256,7 @@ function searchDlgRenderTop(){
   const inp = document.getElementById('searchDlgInput');
   if (inp) inp.style.display = 'none';
   const backBtn = document.getElementById('searchDlgBackBtn');
-  if (backBtn) backBtn.style.visibility = 'visible';
+  if (backBtn) backBtn.style.display = '';
   const topEl = document.getElementById('searchDlgTop');
   if (topEl) topEl.style.justifyContent = 'space-between';
   box.innerHTML = top.v === 'license' ? licenseDetailHtml(top.key) : frameDetailHtml(top.key);
@@ -1288,7 +1289,7 @@ function renderSearchResults(q){
   const inp = document.getElementById('searchDlgInput');
   if (inp) inp.style.display = '';
   const backBtn = document.getElementById('searchDlgBackBtn');
-  if (backBtn) backBtn.style.visibility = 'hidden';
+  if (backBtn) backBtn.style.display = 'none';
   const top = document.getElementById('searchDlgTop');
   if (top) top.style.justifyContent = '';
   const box = document.getElementById('searchDlgResults');
@@ -1439,7 +1440,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const e=STR[el.dataset.i18n]; if(e) el.innerHTML = e[lang()] || e.ru; });
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ const e=STR[el.dataset.i18nPh]; if(e) el.placeholder = e[lang()] || e.ru; });
   const lt = document.getElementById('langToggle'); if (lt) lt.classList.toggle('on', lang()==='en');
-  syncInputs(); renderLists(); renderCounters(); renderRulesFrameList(); renderRulesLicenseList();
+  syncInputs(); renderLists(); renderCounters();
 }
 function setLang(l){ S.settings.lang=l; save(); applyLang(); }
 function toggleLang(){ setLang(lang()==='ru' ? 'en' : 'ru'); }
@@ -3923,7 +3924,7 @@ function showFrameResults(q, box){
   box = box || document.getElementById('frameResults');
   if (!box) return;
   const query = (q||'').trim().toLowerCase();
-  const matches = sortFrameKeys(Object.keys(DB.frames).filter(k=>frameAvailable(k) && frameMatches(k, query)));
+  const matches = sortFrameKeys(Object.keys(DB.frames).filter(k=>(searchFrameAll || frameAvailable(k)) && frameMatches(k, query)));
   const shown = matches;
   box.innerHTML = shown.map(k=>{
     const d = fd(k);
@@ -3948,25 +3949,9 @@ function pickFrame(key){
 // «Назад» возвращает к результатам поиска.
 let frameDetailKey = null;
 let frameDetailFrom = 'search';
-// Список мехов (фреймов) (v177): все 29 фреймов в Правилах — для исследования
-// до получения лицензии (в поиске фреймов без лицензии их нет). Строка (v231) —
-// имя + описание фрейма из вайба его лицензии; кнопка ⓘ на полные статы.
-// Сортировка (v233) — Корпорация → Дистанция боя → Название.
-function renderRulesFrameList(){
-  const box = document.getElementById('rulesFrameList');
-  if (!box || !DB.frames) return;
-  const keys = sortFrameKeys(Object.keys(DB.frames));
-  box.innerHTML = keys.map(k=>{
-    const d = fd(k);
-    // v248: одна строка — роль + теги (у GMS — только роль, название ядра убрано)
-    const sub = frameRowFull(k);
-    return `
-    <div class="dbrow dbrow-float">
-      <button class="btn" style="flex:0 0 auto" onclick="showFrameDetail('${esc(k)}','rules')">ⓘ</button>
-      <div class="dbinfo"><b>${esc(frameDispName(k))}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div>
-    </div>`;
-  }).join('');
-}
+// Список мехов (фреймов) (v177, убран в v284): был отдельным списком всех фреймов
+// в Правилах — для исследования до получения лицензии; теперь это обычный поиск
+// фреймов из Правил (openSearch('frame', null, true) — без фильтра по лицензиям).
 // v230: вайб-описания лицензий (черновик 2026-11-16, утверждён пользователем):
 // роль + что делает фрейм, оружие и системы — вместо считалки рангов
 // («Ранг I: 1 оружие...»). Только русский текст (EN-перевода пока нет);
@@ -4267,17 +4252,8 @@ function plural(n, ru, en){
   if (d === 1) return n + ' ' + ru[0];
   return n + ' ' + ru[2];
 }
-function renderRulesLicenseList(){
-  const box = document.getElementById('rulesLicenseList');
-  if (!box || !DB.frames) return;
-  box.innerHTML = licenseData().map(lic=>{
-    return `
-    <div class="dbrow dbrow-float">
-      <button class="btn" style="flex:0 0 auto" onclick="showLicenseDetail('${esc(lic.name)}','rules')">ⓘ</button>
-      <div class="dbinfo">${licenseRowInfoHtml(lic)}</div>
-    </div>`;
-  }).join('');
-}
+// Список лицензий в Правилах (убран в v284): был отдельным списком всех лицензий;
+// теперь это обычный поиск лицензий из Правил (openSearch('license')).
 let licenseDetailKey = null;
 let licenseDetailFrom = 'search';
 function grantKindLabel(kind){
