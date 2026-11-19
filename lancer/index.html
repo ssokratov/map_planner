@@ -470,7 +470,7 @@
   /* v267: меню импорта/экспорта и меню уничтожения — один общий паттерн
      (было две копии одних и тех же правил): абсолютное меню, открытие вверх,
      разделители между опциями, hover-подсветка. */
-  .import-dropdown-menu, .export-dropdown-menu, .destroy-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% -6px); display:none; gap:2px; padding:0; background:var(--panel); box-shadow:0px 0px 8px 3px #e8590c30; }
+  .import-dropdown-menu, .export-dropdown-menu, .destroy-dropdown-menu { position:absolute; z-index:30; left:0; right:0; bottom:calc(100% - 6px); display:none; gap:2px; padding:0; background:var(--panel); box-shadow:0px 0px 8px 3px #e8590c30; }
   .import-dropdown.open .import-dropdown-menu, .export-dropdown.open .export-dropdown-menu { display:grid; }
   #dmgRollActions.destroy-open .destroy-dropdown-menu { display:grid; }
   .import-dropdown-menu .btn, .export-dropdown-menu .btn, .destroy-dropdown-menu .btn { justify-content:flex-start; text-align:left; height:auto; min-height:40px; padding:8px 10px; white-space:normal; border:0; background:transparent; }
