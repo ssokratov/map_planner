@@ -1,0 +1,59 @@
+name: Deploy Lancer tracker to GitHub Pages
+
+# Публикует трекер Lancer. Godot НЕ собирает: берёт готовый экспорт карты
+# из последнего успешного запуска deploy-map.yml и докладывает свежий lancer/.
+# Запускается только когда меняется lancer/ или сам этот файл,
+# поэтому деплой трекера занимает секунды вместо минут.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lancer/**'
+      - '.github/workflows/deploy-lancer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+# Та же группа, что и у карты: деплои идут строго по очереди.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # Карта (Godot-экспорт) в репозитории не лежит — берём её из артефакта
+      # map-build последнего успешного запуска deploy-map.yml.
+      - name: Download last map build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RUN_ID=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-map.yml/runs?status=completed&per_page=10" \
+            | jq -r '[.workflow_runs[] | select(.conclusion == "success")][0].id // empty')
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::No successful deploy-map run found yet. Run the map workflow once first (push a change under project/ or run it manually from the Actions tab)."
+            exit 1
+          fi
+          echo "Using map build from run $RUN_ID"
+          mkdir -p build/web
+          gh run download "$RUN_ID" --name map-build --dir build/web
+          ls build/web
+      - name: Copy Lancer tracker into the site
+        run: cp -r lancer build/web/lancer
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

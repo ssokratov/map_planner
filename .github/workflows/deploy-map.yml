@@ -1,14 +1,23 @@
-name: Deploy to GitHub Pages
+name: Deploy map builder to GitHub Pages
 
+# Публикует карту (Godot-экспорт) + трекер Lancer (копируется из репозитория).
+# Запускается только когда меняется проект карты или сам этот файл,
+# поэтому правки трекера его не трогают.
 on:
   push:
     branches: [main]
+    paths:
+      - 'project/**'
+      - '.github/workflows/deploy-map.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Деплои на Pages идут строго по очереди (та же группа, что и у трекера),
+# иначе два деплоя могут перезаписать друг друга.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -43,6 +52,16 @@ jobs:
         run: |
           mkdir -p build/web
           ./Godot_v4.7.2-stable_linux.x86_64 --headless --path project --export-release "Web" "$GITHUB_WORKSPACE/build/web/index.html"
+      # Артефакт с чистым экспортом карты — его забирает workflow трекера,
+      # чтобы не собирать Godot заново при каждой правке Lancer.
+      # Хранится 90 дней (максимум); если протухнет — трекер честно упадёт
+      # с понятной ошибкой, и надо будет один раз запустить этот workflow вручную.
+      - name: Save map build for the Lancer workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-build
+          path: build/web
+          retention-days: 90
       - name: Copy Lancer tracker into the site
         run: cp -r lancer build/web/lancer
       - name: Upload Pages artifact
