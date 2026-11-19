@@ -971,7 +971,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v288</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v289</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -4535,7 +4535,11 @@ function showRef(kind, key){
   if (kind === 'action'){
     const a = [...(ACTIONS_REF.reactions || []), ...(ACTIONS_REF.protocols || []), ...(ACTIONS_REF.quick || [])].find(x=>x.key === key);
     if (!a) return;
-    name = (en ? a.name : (a.ru || a.name)) + (a.per ? ' (' + a.per + ')' : '');
+    // v289: реакции без явного per — по умолчанию 1/раунд, как в «Твоих действиях»
+    // (иначе модалка теряет лимит — напр. «Автономная атака» автопода)
+    const isRe = (ACTIONS_REF.reactions||[]).some(x=>x.key===key);
+    const perDisp = a.per || (isRe ? (en ? '1/round' : '1/раунд') : '');
+    name = (en ? a.name : (a.ru || a.name)) + (perDisp ? ' (' + perDisp + ')' : '');
     const tx = en ? (a.tx_en || '') : (a.tx_ru || '');
     const tr = en ? (a.tr_en || '') : (a.tr_ru || '');
     const ef = en ? (a.ef_en || '') : (a.ef_ru || '');
