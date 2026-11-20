@@ -200,6 +200,7 @@
   .talent-item:first-child { border-top:0; }
   .cb-item { margin-bottom:0; padding:9px 0; border-top:1px solid var(--line); }
   .cb-item:first-child { border-top:0; }
+  .dim { color:var(--dim); }
   .trait-item { padding:9px 0; border-top:1px solid var(--line); }
   .trait-item:first-child { border-top:0; }
   .add { width:100%; margin-top:4px; }
@@ -1002,7 +1003,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v326</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v327</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -5008,10 +5009,11 @@ function showRef(kind, key){
 // та же волосная линия, что у снаряжения пилота (.trait-item). Разбор —
 // по абзацам (\n\n), имя — до первого «: »; база не меняется (tr/t — строки).
 function traitsHtml(text){
+  // v327: начало (имя трейта) яркое, описание dim 13px — как у кор бонусов
   return (text||'').split(/\n\n+/).map(p=>p.trim()).filter(Boolean).map(p=>{
     const i = p.indexOf(': ');
-    if (i < 0) return `<div class="trait-item">${linkTagTerms(esc(p))}</div>`;
-    return `<div class="trait-item"><b>${esc(p.slice(0,i))}:</b> ${linkTagTerms(esc(p.slice(i+2)))}</div>`;
+    if (i < 0) return `<div class="trait-item"><span class="dim" style="font-size:13px">${linkTagTerms(esc(p))}</span></div>`;
+    return `<div class="trait-item"><b>${esc(p.slice(0,i))}:</b> <span class="dim" style="font-size:13px">${linkTagTerms(esc(p.slice(i+2)))}</span></div>`;
   }).join('');
 }
 function frameDetailHtml(key){
