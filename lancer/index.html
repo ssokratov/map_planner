@@ -997,7 +997,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v321</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v322</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -4859,9 +4859,9 @@ function isQuickTech(a){
 // v319: иконка типа действия для синих чипов. Текстовая, как ✓/✕ в чипе
 // перезарядки, высота чипа не ломается. Форма = техника или нет,
 // заливка = стоимость: ○ свободное, ◐ быстрое, ● полное; ромб = техника
-// (◈ быстрая, ◆ полная); ↩ реакция, ≡ протокол.
+// (◈ быстрая, ◆ полная); ↪ реакция (зеркальная, стрелка на текст), ≡ протокол.
 function actionTypeIcon(a){
-  if ((ACTIONS_REF.reactions||[]).some(x=>x.key===a.key)) return '↩';
+  if ((ACTIONS_REF.reactions||[]).some(x=>x.key===a.key)) return '↪';
   if ((ACTIONS_REF.protocols||[]).some(x=>x.key===a.key)) return '≡';
   if (isFreeAction(a)) return '○';
   if (isFullAction(a)) return isFullTech(a) ? '◆' : '●';
