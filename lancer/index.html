@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v297</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v298</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -2004,6 +2004,33 @@ async function uploadDirtyActiveDriveProfile(){
   if(hasPending) await flushPendingDriveSave(profile.id);
   else await uploadActiveProfile(makeDriveSnapshot(profile,S));
 }
+// v298: тихий рефреш токена Google Drive. Access-токен Google живёт всего 1 час —
+// продлить его нельзя, но можно молча получить новый через requestAccessToken({prompt:''}):
+// если пользователь залогинен в Google и уже давал согласие, GIS выдаёт токен без попапа.
+// Возвращает true, если новый токен получен, и false, если нет (тогда показываем кнопку).
+let driveSilentRefreshInFlight = null;
+function tryRefreshDriveTokenSilently(){
+  if (driveSilentRefreshInFlight) return driveSilentRefreshInFlight;
+  driveSilentRefreshInFlight = (async()=>{
+    try {
+      if (!window.google?.accounts?.oauth2) return false;
+      const token = await new Promise((resolve)=>{
+        const client = google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID, scope:'https://www.googleapis.com/auth/drive.file', callback:(response)=>{
+          if (response?.error || !response?.access_token) { resolve(null); return; }
+          resolve(response.access_token);
+        }});
+        try { client.requestAccessToken({prompt:''}); } catch(e){ resolve(null); }
+        // Страховка: если GIS не ответил за 8 секунд — считаем, что молча не получилось.
+        setTimeout(()=>resolve(null), 8000);
+      });
+      if (!token) return false;
+      driveAccessToken = token; saveDriveToken(token, 3600); driveRemembered = true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton();
+      return true;
+    } catch(e){ return false; }
+    finally { driveSilentRefreshInFlight = null; }
+  })();
+  return driveSilentRefreshInFlight;
+}
 function connectDrive(){
   return withDriveLoading(driveRemembered?'Возобновляю подключение к Google Drive…':'Подключаю Google Drive…',async()=>{
   const start=()=>{
@@ -2041,7 +2068,15 @@ function disconnectDrive(){
 async function driveRequest(url, options={}){
   const bodySize=typeof options.body==='string'?new Blob([options.body]).size:0;
   const allowKeepalive=(options.keepalive??drivePageIsHiding)&&bodySize<60000;
-  const response=await fetch(url,{...options,keepalive:allowKeepalive,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
+  let response=await fetch(url,{...options,keepalive:allowKeepalive,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
+  // v298: 401 — токен протух; сначала пробуем молча обновить и повторить запрос, и только
+  // если молча не вышло — чистим токен и показываем кнопку возобновления.
+  if(response.status===401 && driveRemembered && !options._retried){
+    const refreshed = await tryRefreshDriveTokenSilently();
+    if (refreshed){
+      response = await fetch(url,{...options,keepalive:allowKeepalive,headers:{Authorization:'Bearer '+driveAccessToken,...(options.headers||{})}});
+    }
+  }
   if(!response.ok){ const body=await response.text(); if(response.status===401){ driveAccessToken=null; clearCachedDriveToken(); updateDriveAuthButton(); driveResumePromptShown=false; if(driveRemembered&&!drivePageIsHiding) maybeShowDriveResumePrompt(); } throw new Error('Drive '+response.status+(body?': '+body.slice(0,180):'')); }
   if(response.status===204) return null;
   return response.json();
@@ -6596,6 +6631,12 @@ const cachedDriveToken=loadCachedDriveToken();
 if(cachedDriveToken){
   driveAccessToken=cachedDriveToken; driveRemembered=true; localStorage.setItem(DRIVE_REMEMBER_KEY,'1'); updateDriveAuthButton();
   void syncDriveProfiles().then(synced=>synced?uploadDirtyActiveDriveProfile().catch(showDriveSyncError):undefined);
+} else if (driveRemembered){
+  // v298: токен протух, но Drive подключён — пробуем молча обновить; кнопка — только если не вышло.
+  void tryRefreshDriveTokenSilently().then(ok=>{
+    if (ok){ void syncDriveProfiles().then(synced=>synced?uploadDirtyActiveDriveProfile().catch(showDriveSyncError):undefined); }
+    else maybeShowDriveResumePrompt();
+  });
 } else maybeShowDriveResumePrompt();
 </script>
 <script>
