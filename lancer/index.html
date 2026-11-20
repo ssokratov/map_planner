@@ -996,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v315</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v316</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3473,7 +3473,58 @@ const ACTIONS_REF = {
      tx_en:'Free Action: At the end of your turn, if you did not move and took the Lock On Quick Tech action, you may Lock On once as a free action.'},
     {key:'spacebornmove', name:'Spaceborn Recovery Move', ru:'Восстановительное перемещение', grant:{talent:'Spaceborn',rank:2},
      tx_ru:'Свободное действие: Когда ваш мех встаёт после сбития с ног, вы можете переместиться на 2 клетки в любом направлении свободным действием. Это перемещение игнорирует контакт и не провоцирует реакций.',
-     tx_en:'Free Action: When your mech clears Prone, you may move 2 spaces in any direction as a free action. This movement ignores engagement and doesn’t provoke reactions.'}
+     tx_en:'Free Action: When your mech clears Prone, you may move 2 spaces in any direction as a free action. This movement ignores engagement and doesn’t provoke reactions.'},
+    {key:'duelistfeint', name:'Feint', ru:'Финт', grant:{talent:'Duelist',rank:2},
+     tx_ru:'Свободное действие: Потратьте кость мастера клинка, чтобы выбрать соседнего персонажа: при перемещении вы игнорируете контакт и не провоцируете реакции от вашей цели до начала вашего следующего хода.',
+     tx_en:'Free Action: Spend a Blademaster Die to choose an adjacent character: when moving, you ignore engagement and don’t provoke reactions from your target until the start of your next turn.'},
+    {key:'duelistgrappleram', name:'Duelist Grapple or Ram', ru:'Захват или таран «Дуэлянта»', grant:{talent:'Duelist',rank:3}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд, когда вы попадаете атакой ближнего боя в свой ход, потратьте кость мастера клинка, чтобы немедленно совершить захват или таран вашей цели свободным действием после разрешения атаки.',
+     tx_en:'Free Action: 1/round, when you hit with a melee attack on your turn, spend a Blademaster Die to immediately Grapple or Ram your target as a free action after the attack has been resolved.'},
+    {key:'hunterthrow', name:'Hunter Throw', ru:'Бросок «Охотника»', grant:{talent:'Hunter',rank:3}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд, когда вы попадаете по персонажу атакой ближнего боя, метните вспомогательное оружие ближнего боя в качестве атаки по любому персонажу в пределах дальности свободным действием. Эта атака не может наносить бонусный урон.',
+     tx_en:'Free Action: 1/round, when you hit a character with a melee attack, throw an Auxiliary melee weapon as an attack against any character within Range as a free action. This attack can’t deal bonus damage.'},
+    {key:'oratorexpend', name:'Expend Orator Dice', ru:'Потратить кубики оратора', grant:{talent:'Orator',rank:2}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд свободным действием потратьте кубики оратора на один из следующих эффектов, пока вы можете общаться со своей целью: Воодушевление (1 кубик) — союзник в линии видимости может совершить проверку систем против любых состояний, действующих на него и не наложенных им самим, используя кубик оратора с точностью, снимая это состояние при успешной проверке; Расследование (2 кубика) — выберите враждебного персонажа в линии видимости: в следующий раз, когда вы или союзный персонаж совершите атаку против него, она бросается дважды, за итоговый принимается наивысший результат; Посеять сомнение (2 кубика) — выберите враждебного персонажа в линии видимости: он не может пользоваться системами или чертами своих союзников и не может быть их целью до конца своего следующего хода.',
+     tx_en:'Free Action: 1/round, as a free action, expend Orator Dice for one of the following effects as long as you can communicate with your target: Encourage (1 Die) — an ally in line of sight may make a systems check against any non-self inflicted conditions affecting them, using the Orator Die at accuracy, ending that condition on a successful check; Investigate (2 Dice) — choose a hostile character in line of sight: the next time you or an allied character makes an attack against them it is rolled twice, taking the highest result; Cast Doubt (2 Dice) — choose a hostile character in line of sight: they cannot benefit from or be targeted by their allies’ systems or traits until the end of their next turn.'},
+    {key:'exemplarduel', name:'Challenge to the Death', ru:'Вызов на дуэль насмерть', grant:{talent:'Exemplar',rank:3},
+     tx_ru:'Свободное действие: Когда вы помечаете персонажа, вызовите его на дуэль насмерть свободным действием: вы и персонаж с вашей меткой получаете +3 к сложности атак по персонажам или объектам, кроме друг друга, до конца текущей сцены или пока один из ваших мехов не будет уничтожен. Если он совершает любое действие, включающее бросок атаки по вам, попал он или нет, этот эффект прекращается для него до начала вашего следующего хода. Пока «До смерти» активна, вы не можете добровольно отходить от персонажа с вашей меткой; ваша метка действует до конца текущей сцены или пока один из ваших мехов не будет уничтожен, и вы не можете помечать новых персонажей.',
+     tx_en:'Free Action: When you mark a character, challenge them in a duel to the death as a free action: you and the character with your Mark receive +3 Difficulty on attacks against characters or objects other than each other until either the end of the current scene or one of your mechs are destroyed. If they take any action that includes an attack roll against you, hit or miss, this effect ceases for them until the start of your next turn. While To The Death is active, you cannot voluntarily move away from the character with your Mark; your Mark lasts until the end of the current scene or one of your mechs are destroyed, and you cannot Mark any new characters.'},
+    {key:'pcpfly', name:'Perimeter Command Plate Flight', ru:'Полёт с периметральной плиты', grant:{system:'Perimeter Command Plate'},
+     tx_ru:'Свободное действие: Когда союзный персонаж входит в пространство периметральной командной плиты (режим «Отталкивание»), он может немедленно пролететь 3 клетки в любом направлении свободным действием.',
+     tx_en:'Free Action: When an allied character enters the Perimeter Command Plate’s space (Repulse setting), they may immediately fly 3 spaces in any direction as a free action.'},
+    {key:'mistfeathersboost', name:'Mist Feathers Boost', ru:'Ускорение «Туманных перьев»', grant:{system:'Mist Feathers'}, per:'1/turn',
+     tx_ru:'Свободное действие: Пока «Туманные перья» активны, вы можете ускоряться свободным действием, 1/ход.',
+     tx_en:'Free Action: While Mist Feathers is active, you may Boost as a free action, 1/turn.'},
+    {key:'sunjiteleport', name:'Sunzi Slip', ru:'Скольжение «Сунь-цзы»', grant:{frame:'Sunzi'}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд телепортируйтесь на 2 клетки свободным действием.',
+     tx_en:'Free Action: 1/round, teleport 2 spaces as a free action.'},
+    {key:'raleighreload', name:'Raleigh Reload', ru:'Перезарядка «Роли»', grant:{frame:'Raleigh'},
+     tx_ru:'Свободное действие: В конце своего хода, если «Роли» не совершал атак и не заставлял никого делать спасброски, перезарядите всё оружие с перезарядкой как свободное действие.',
+     tx_en:'Free Action: At the end of its turn, if the Raleigh hasn’t made any attacks or forced any saves, reload all Loading weapons as a free action.'},
+    {key:'ushabtiomnigun', name:'Ushabti Omnigun', ru:'Омнипушка «Ушабти»', grant:{frame:'Pegasus'}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд как свободное действие в свой ход используйте омнипушку «Ушабти», чтобы нанести 1 бронебойного (AP) кинетического урона персонажу в пределах дальности 15 и в прямой видимости. Это не считается атакой, попадает автоматически, игнорирует укрытие, обходит иммунитет, а его урон нельзя уменьшить или игнорировать никаким образом.',
+     tx_en:'Free Action: 1/round, as a free action during your turn, use the Ushabti Omnigun to deal 1 AP kinetic damage to a character within Range 15 and line of sight. This doesn’t count as an attack, hits automatically, ignores cover, bypasses Immunity, and its damage can’t be reduced or ignored in any way.'},
+    {key:'empakaaiigrapple', name:'Iku’s Hand Grapple', ru:'Захват «Руки Ику»', grant:{frame:'Empakaai'},
+     tx_ru:'Свободное действие: Пока активны «Костные якоря», после успешного попадания по персонажу рукопашной атакой оружием захватите цель свободным действием. При успехе цель притягивается к вам вплотную и оказывается в захвате.',
+     tx_en:'Free Action: While Marrow Anchors is active, after successfully hitting a character with a melee weapon attack, Grapple the target as a free action. On a success, the target is pulled adjacent to you and Grappled.'},
+    {key:'gilgameshrepair', name:'Gilgamesh Field Repair', ru:'Полевой ремонт «Гильгамеша»', grant:{frame:'Gilgamesh'}, per:'1/scene',
+     tx_ru:'Свободное действие: 1/сцену свободным действием выберите одно из следующего: восстановить половину вашего максимального HP или починить уничтоженное оружие или систему.',
+     tx_en:'Free Action: 1/scene, as a free action, choose one of the following: regain 1/2 of your total HP, or repair a destroyed weapon or system.'},
+    {key:'everestboost', name:'Everest Power Up Boost', ru:'Ускорение «Усиления»', grant:{frame:'Everest'}, per:'1/turn',
+     tx_ru:'Свободное действие: Пока активно «Усиление», вы можете выполнить ускорение как свободное действие, 1/ход.',
+     tx_en:'Free Action: While Power Up is active, you may Boost as a free action, 1/turn.'},
+    {key:'enkiduboost', name:'Enkidu Crush Boost', ru:'Ускорение «Энкиду»', grant:{frame:'Enkidu'},
+     tx_ru:'Свободное действие: После того как «Разорвать» уничтожает персонажа, «Энкиду» может выполнить ускорение как свободное действие.',
+     tx_en:'Free Action: After Bifurcate destroys a character, the Enkidu can BOOST as a free action.'},
+    {key:'minotaurmount', name:'Minotaur Mount/Dismount', ru:'Посадка/высадка «Минотавра»', grant:{frame:'Minotaur'}, per:'1/round',
+     tx_ru:'Свободное действие: Сесть в «Минотавра» или покинуть его в первый раз за каждый раунд как свободное действие.',
+     tx_en:'Free Action: Mount or Dismount the Minotaur for the first time each round as a free action.'},
+    {key:'iskandermines', name:'Iskander Extra Mines', ru:'Дополнительные мины «Искандера»', grant:{frame:'Iskander'}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд, когда вы устанавливаете мину (даже используя трейт «Штурмовая пусковая установка»), установите до двух других мин в свободных клетках, соседних с собой, как свободное действие.',
+     tx_en:'Free Action: 1/round, when you plant a Mine (even using the Assault Launcher trait), plant up to two other Mines in free spaces adjacent to yourself as a free action.'},
+    {key:'kidddeploy', name:'Kidd Rapid Deployment', ru:'Быстрое развёртывание «Кидда»', grant:{frame:'Kidd'},
+     tx_ru:'Свободное действие: В первый ход любой боевой сцены разверните или активируйте любую одну систему с тегом дрона или развёртываемого устройства как свободное действие.',
+     tx_en:'Free Action: On its first turn in any combat scene, deploy or activate any one system with the drone or deployable tag as a free action.'}
   ]
 };
 // Проверка, есть ли у игрока фича, дающая действие (талант с нужным рангом или система).
