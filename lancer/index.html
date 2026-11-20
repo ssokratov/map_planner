@@ -167,7 +167,8 @@
      глиф не раздувал строку; все чипы в ряду тегов одной высоты. */
   .tag.load-on, .tag.load-off { display:inline-flex; align-items:center; gap:4px; }
   .tag .load-ico { line-height:1; font-size:11px; }
-  .tag .act-ico { line-height:1; font-size:16px; margin-right:4px; }
+  .tag .act-ico { line-height:1; font-size:18px; margin-right:4px; }
+  .tag .act-ico.act-shift { transform:translateY(-2px); }
   dialog { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:16px 18px; max-width:450px; width:calc(100% - 40px); }
   dialog::backdrop { background:rgba(0,0,0,.6); }
   dialog h3 { margin:0 0 8px; font-size:16px; }
@@ -997,7 +998,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v322</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v323</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -4770,11 +4771,18 @@ function refChip(kind, key, label, stop, extraCls){
   // stop — для чипов внутри сворачиваемой шапки карточки: тап не должен
   // сворачивать/разворачивать карточку (toggleSysCard).
   const pre = stop ? 'event.stopPropagation();' : '';
-  // v319: у чипов действий — иконка типа (○ ◐ ● ◈ ◆ ↩ ≡) перед названием
+  // v319: у чипов действий — иконка типа (○ ◐ ● ◈ ◆ ↪ ≡) перед названием
+  // v323: глифы кругов/ромбов/стрелок сидят низко в строке шрифта, поэтому
+  // честное центрирование их не центрирует — не-≡ иконки сдвигаются вверх
+  // классом act-shift, а ≡ (он и так по центру) — без сдвига.
   let ico = '';
   if (kind === 'action'){
     const a = [...(ACTIONS_REF.reactions||[]), ...(ACTIONS_REF.protocols||[]), ...(ACTIONS_REF.quick||[])].find(x=>x.key===key);
-    if (a) ico = '<span class="act-ico">' + actionTypeIcon(a) + '</span> ';
+    if (a){
+      const ic = actionTypeIcon(a);
+      const cls = ic === '≡' ? 'act-ico' : 'act-ico act-shift';
+      ico = '<span class="' + cls + '">' + ic + '</span> ';
+    }
   }
   return `<span class="tag${extraCls ? ' ' + extraCls : ''}" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${ico}${esc(label)}</span>`;
 }
