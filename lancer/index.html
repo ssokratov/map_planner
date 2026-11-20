@@ -160,8 +160,7 @@
   .preset-card:hover { border-color:var(--accent2); }
   .preset-card b { font-size:16px; }
   .preset-card .dim { font-size:13px; color:var(--dim); }
-  .ready-item { display:block; width:100%; text-align:left; padding:8px 10px; margin:0 0 6px; border:1px solid var(--hatch-widget-border); border-radius:8px; background:var(--hatch-widget-surface); cursor:pointer; font-size:14px; color:var(--text); }
-  .ready-item:hover { border-color:var(--accent2); }
+  .preset-sep { height:1px; background:var(--hatch-widget-border); margin:0 0 10px; }
   /* v267: ✓/✕ вернулись в чип Loading (v266 их убирал), а высота выровнена
      через CSS, а не удалением символов: чип — inline-flex с центрированием,
      символ — в отдельном span с line-height:1 и чуть меньшим шрифтом, чтобы
@@ -833,10 +832,6 @@
 
   <!-- ============ RULES ============ -->
   <section id="tab-rules" class="tab">
-    <details class="sec" id="readySec">
-      <summary><span data-i18n="ready_title">Готовность пилота</span> <span id="readySummary" class="ready-msg"></span></summary>
-      <div id="readyChecklist"></div>
-    </details>
     <details class="sec">
       <summary data-i18n="u229">Твои действия</summary>
       <div id="myActions"></div>
@@ -991,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v296</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v297</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1086,7 +1081,6 @@
 <div id="startView">
   <div class="search-dlg">
     <h2 style="margin:0 0 6px" data-i18n="start_title">Выбери своего меха</h2>
-    <p class="hint" style="margin:0 0 14px" data-i18n="start_sub">Готовый мех — и сразу в бой. Или пустой лист, если хочешь собрать всё сам.</p>
     <div id="startList"></div>
   </div>
   <div class="view-close-bar"><button type="button" onclick="closeStart()" data-i18n="u145">Закрыть</button></div>
@@ -1415,16 +1409,12 @@ const STR = {"u006": {"ru": "Имя меха", "en": "Mech Name"}, "u007": {"ru"
 Object.assign(STR, {
   "new_pilot": {"ru": "Новый пилот", "en": "New pilot"},
   "start_title": {"ru": "Выбери своего меха", "en": "Choose your mech"},
-  "start_sub": {"ru": "Готовый мех — и сразу в бой. Или пустой лист, если хочешь собрать всё сам.", "en": "A ready-made mech — straight into battle. Or a blank sheet if you want to build it yourself."},
   "start_blank": {"ru": "Пустой лист", "en": "Blank sheet"},
   "start_blank_desc": {"ru": "Голый Эверест LL0 — ничего не выбрано", "en": "A bare LL0 Everest — nothing picked yet"},
   "start_replace": {"ru": "Заменить текущего пилота «{N}» на «{M}»? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with «{M}»? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
   "start_replace_blank": {"ru": "Заменить текущего пилота «{N}» пустым листом? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with a blank sheet? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
   "start_replace_drive": {"ru": "Заменить текущего пилота «{N}» на «{M}»? «{N}» останется в списке профилей (Google Drive) — его можно будет вернуть кнопкой «Активировать».", "en": "Replace the current pilot «{N}» with «{M}»? «{N}» will stay in the profile list (Google Drive) — you can bring them back with «Activate»."},
   "start_replace_blank_drive": {"ru": "Заменить текущего пилота «{N}» пустым листом? «{N}» останется в списке профилей (Google Drive) — его можно будет вернуть кнопкой «Активировать».", "en": "Replace the current pilot «{N}» with a blank sheet? «{N}» will stay in the profile list (Google Drive) — you can bring them back with «Activate»."},
-  "ready_title": {"ru": "Готовность пилота", "en": "Pilot readiness"},
-  "ready_done": {"ru": "Пилот готов ✓", "en": "Pilot ready ✓"},
-  "ready_missing": {"ru": "Осталось собрать:", "en": "Still to pick:"},
   "ck_talents": {"ru": "Таланты", "en": "Talents"},
   "ck_triggers": {"ru": "Триггеры", "en": "Triggers"},
   "ck_core": {"ru": "Core Bonus", "en": "Core Bonus"},
@@ -1629,49 +1619,115 @@ const DEFAULTS = {
 // (Main/Flex/Heavy), триггеры — 4×+2 = 8 (норма LL0), HASE — 2 очка.
 const PRESETS = [
   { id:'assault',
+    ll:0, frame:'Everest',
     role:{ru:'Штурмовик', en:'Assault'},
     roleDesc:{ru:'Ближний бой и врыв', en:'Close combat and breach'},
-    ll:0,
     mech:'Гроза', pilot:{name:'Даня Соколов', callsign:'Гром', background:'Бывший штурмовик'},
-    hase:{hull:1, agility:1, systems:0, engineering:0},
-    talents:['Skirmisher','Gunslinger','Brutal'],
+    hase:{hull:2, agility:0, systems:0, engineering:0},
+    talents:[{name:'Skirmisher',rank:1},{name:'Gunslinger',rank:1},{name:'Brutal',rank:1}],
     triggers:[{name:'Assault',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Survive',bonus:2}],
     systems:['Rapid Burst Jump Jet System','Pattern-A Smoke Charges'],
-    mounts:{Main:'Assault Rifle', Flex:'Shotgun', Heavy:'Thermal Lance'},
+    mounts:[{type:'Main',weapons:['Assault Rifle']},{type:'Flex',weapons:['Shotgun']},{type:'Heavy',weapons:['Thermal Lance']}],
     gear:['Assault Hardsuit','Medium A/C','Frag Grenades','Stims'] },
   { id:'tank',
+    ll:0, frame:'Everest',
     role:{ru:'Танк', en:'Tank'},
     roleDesc:{ru:'Держит удар и прикрывает', en:'Takes hits and covers allies'},
-    ll:0,
     mech:'Стена', pilot:{name:'Борис Волков', callsign:'Крепость', background:'Бывший телохранитель'},
     hase:{hull:2, agility:0, systems:0, engineering:0},
-    talents:['Juggernaut','Vanguard','House Guard'],
+    talents:[{name:'Juggernaut',rank:1},{name:'Vanguard',rank:1},{name:'House Guard',rank:1}],
     triggers:[{name:'Survive',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Threaten',bonus:2},{name:'Patch',bonus:2}],
     systems:['Type-3 Projected Shield','Stable Structure','Personalizations'],
-    mounts:{Main:'Shotgun', Flex:['Tactical Knife','Thermal Pistol'], Heavy:'Heavy Machine Gun'},
+    mounts:[{type:'Main',weapons:['Shotgun']},{type:'Flex',weapons:['Tactical Knife','Thermal Pistol']},{type:'Heavy',weapons:['Heavy Machine Gun']}],
     gear:['Heavy Hardsuit','Light A/C','Patch','Nanite Spray'] },
   { id:'sniper',
+    ll:0, frame:'Everest',
     role:{ru:'Снайпер', en:'Sniper'},
     roleDesc:{ru:'Дальний бой и точность', en:'Long range and precision'},
-    ll:0,
     mech:'Игла', pilot:{name:'Вера Ковалёва', callsign:'Тишина', background:'Бывший снайпер'},
-    hase:{hull:0, agility:1, systems:1, engineering:0},
-    talents:['Hunter','Spotter','Gunslinger'],
+    hase:{hull:0, agility:2, systems:0, engineering:0},
+    talents:[{name:'Hunter',rank:1},{name:'Spotter',rank:1},{name:'Gunslinger',rank:1}],
     triggers:[{name:'Take Someone Out',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2},{name:'Get Somewhere Quickly',bonus:2}],
     systems:['Pattern-A Smoke Charges','Pattern-A Jericho Deployable Cover'],
-    mounts:{Main:'Thermal Rifle', Flex:['Thermal Pistol','Tactical Knife'], Heavy:'Anti-Materiel Rifle'},
+    mounts:[{type:'Main',weapons:['Thermal Rifle']},{type:'Flex',weapons:['Thermal Pistol','Tactical Knife']},{type:'Heavy',weapons:['Anti-Materiel Rifle']}],
     gear:['Stealth Hardsuit','Light Signature','Smart Scope','Camo Cloth'] },
   { id:'hacker',
+    ll:0, frame:'Everest',
     role:{ru:'Хакер', en:'Hacker'},
     roleDesc:{ru:'Тех-атаки и NHP', en:'Tech attacks and NHP'},
-    ll:0,
     mech:'Призрак', pilot:{name:'Лёва Орлов', callsign:'Баг', background:'Бывший хакер'},
     hase:{hull:0, agility:0, systems:2, engineering:0},
-    talents:['Hacker','Technophile','Black Thumb'],
+    talents:[{name:'Hacker',rank:1},{name:'Technophile',rank:1},{name:'Black Thumb',rank:1}],
     triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2}],
     systems:['Servant-Class NHP','Pattern-B HEX Charges'],
-    mounts:{Main:'Nexus (Hunter-Killer)', Flex:['Thermal Pistol','Segment Knife'], Heavy:'Heavy Machine Gun'},
-    gear:['Light Hardsuit','Light A/C','Dataplating','Handheld Printer'] }
+    mounts:[{type:'Main',weapons:['Nexus (Hunter-Killer)']},{type:'Flex',weapons:['Thermal Pistol','Segment Knife']},{type:'Heavy',weapons:['Heavy Machine Gun']}],
+    gear:['Light Hardsuit','Light A/C','Dataplating','Handheld Printer'] },
+  { id:'blackbeard',
+    ll:2, frame:'Blackbeard', license:{name:'Blackbeard', rank:2},
+    role:{ru:'Мясник', en:'Butcher'},
+    roleDesc:{ru:'Ближний бой, захваты и разрывы', en:'Melee, grapples and tearing'},
+    mech:'Мясник', pilot:{name:'Гриша Волков', callsign:'Громила', background:'Бывший докер'},
+    hase:{hull:2, agility:2, systems:0, engineering:0},
+    talents:[{name:'Brutal',rank:2},{name:'Skirmisher',rank:2},{name:'Vanguard',rank:1}],
+    triggers:[{name:'Get a Hold of Something',bonus:2},{name:'Assault',bonus:2},{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2}],
+    systems:['Synthetic Muscle Netting','Rapid Burst Jump Jet System','Pattern-A Smoke Charges'],
+    mounts:[{type:'Flex',weapons:['Tactical Knife','Thermal Pistol']},{type:'Main',weapons:['Chain Axe']},{type:'Heavy',weapons:['Nanocarbon Sword']}],
+    gear:['Assault Hardsuit','Medium A/C','Frag Grenades','Stims'] },
+  { id:'tokugawa',
+    ll:2, frame:'Tokugawa', license:{name:'Tokugawa', rank:2},
+    role:{ru:'Ронин', en:'Ronin'},
+    roleDesc:{ru:'Жаркий ближний бой на пределе', en:'Hot melee at the limit'},
+    mech:'Ронин', pilot:{name:'Рю Танака', callsign:'Катана', background:'Бывший дуэлянт'},
+    hase:{hull:0, agility:2, systems:0, engineering:2},
+    talents:[{name:'Duelist',rank:2},{name:'Skirmisher',rank:2},{name:'Brutal',rank:1}],
+    triggers:[{name:'Assault',bonus:2},{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Take Someone Out',bonus:2}],
+    systems:['External Batteries','Deep Well Heat Sink'],
+    mounts:[{type:'Flex',weapons:['Thermal Pistol','Tactical Knife']},{type:'Main',weapons:['Annihilator']},{type:'Main',weapons:['Torch']}],
+    gear:['Light Hardsuit','Medium A/C','Stims','Thermite Charge'] },
+  { id:'minotaur',
+    ll:2, frame:'Minotaur', license:{name:'Minotaur', rank:2},
+    role:{ru:'Лабиринт', en:'Labyrinth'},
+    roleDesc:{ru:'Хакер и контроль поля боя', en:'Hacker and battlefield control'},
+    mech:'Лабиринт', pilot:{name:'Маша Соколова', callsign:'Архитектор', background:'Бывший архитектор'},
+    hase:{hull:2, agility:0, systems:2, engineering:0},
+    talents:[{name:'Hacker',rank:2},{name:'Technophile',rank:2},{name:'Black Thumb',rank:1}],
+    triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2}],
+    systems:['Viral Logic Suite','Aggressive System Sync','Mesmer Charges','Metafold Carver','Servant-Class NHP'],
+    mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
+    gear:['Light Hardsuit','Dataplating','Handheld Printer','Personal Drone'] },
+  { id:'mourningcloak',
+    ll:2, frame:'Mourning Cloak', license:{name:'Mourning Cloak', rank:2},
+    role:{ru:'Тень', en:'Shadow'},
+    roleDesc:{ru:'Скрытность и точные удары', en:'Stealth and precise strikes'},
+    mech:'Тень', pilot:{name:'Ника Волкова', callsign:'Шёпот', background:'Бывший разведчик'},
+    hase:{hull:2, agility:2, systems:0, engineering:0},
+    talents:[{name:'Hunter',rank:2},{name:'Spotter',rank:2},{name:'Gunslinger',rank:1}],
+    triggers:[{name:'Take Someone Out',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2}],
+    systems:['Hunter Logic Suite','Singularity Motivator','Pattern-A Smoke Charges'],
+    mounts:[{type:'Flex',weapons:['Fold Knife','Vijaya Rockets']},{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
+    gear:['Stealth Hardsuit','Light A/C','Camo Cloth','Antiphoton Visor'] },
+  { id:'napoleon',
+    ll:2, frame:'Napoleon', license:{name:'Napoleon', rank:2},
+    role:{ru:'Бастион', en:'Bastion'},
+    roleDesc:{ru:'Непробиваемая оборона', en:'Impenetrable defense'},
+    mech:'Бастион', pilot:{name:'Дмитрий Орлов', callsign:'Титан', background:'Бывший охранник'},
+    hase:{hull:2, agility:0, systems:0, engineering:2},
+    talents:[{name:'Juggernaut',rank:2},{name:'Vanguard',rank:2},{name:'House Guard',rank:1}],
+    triggers:[{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Patch',bonus:2},{name:'Take Someone Out',bonus:2},{name:'Read a Situation',bonus:2}],
+    systems:['Stasis Bolt','Stasis Generator','Stasis Barrier','Type-3 Projected Shield'],
+    mounts:[{type:'Main/Aux',weapons:['Shotgun','Thermal Pistol']}],
+    gear:['Heavy Hardsuit','Medium A/C','Patch','Stims'] },
+  { id:'lancaster',
+    ll:2, frame:'Lancaster', license:{name:'Lancaster', rank:2},
+    role:{ru:'Обоз', en:'Supply Train'},
+    roleDesc:{ru:'Поддержка и ремонт', en:'Support and repair'},
+    mech:'Обоз', pilot:{name:'Анна Ковалёва', callsign:'Запас', background:'Бывший инженер'},
+    hase:{hull:2, agility:0, systems:0, engineering:2},
+    talents:[{name:'Engineer',rank:2},{name:'Vanguard',rank:2},{name:'House Guard',rank:1}],
+    triggers:[{name:'Patch',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Survive',bonus:2},{name:'Hack or Fix',bonus:2},{name:'Invent or Create',bonus:2},{name:'Read a Situation',bonus:2}],
+    systems:['Cable Winch System','Restock Drone','MULE Harness','Whitewash Sealant Spray','Pattern-A Smoke Charges'],
+    mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
+    gear:['Light Hardsuit','Handheld Printer','Nanite Spray','Extra Rations'] }
 ];
 const ROMAN = {I:1, II:2, III:3};
 function parseLicensesText(t){
@@ -5961,21 +6017,22 @@ function renderStart(){
   const box = document.getElementById('startList');
   if (!box) return;
   const en = lang() === 'en';
-  let h = PRESETS.map(p=>{
+  const cards = [];
+  cards.push(`<button class="preset-card" onclick="applyBlank()">`
+    + `<b>${esc(L('start_blank'))}</b><br>`
+    + `<span class="dim">${esc(L('start_blank_desc'))}</span></button>`);
+  PRESETS.forEach(p=>{
     const role = en ? p.role.en : p.role.ru;
     const desc = en ? p.roleDesc.en : p.roleDesc.ru;
-    const weapons = [p.mounts.Main, p.mounts.Flex, p.mounts.Heavy].reduce((a,w)=>a.concat(Array.isArray(w)?w:[w]), []).map(w=>{ const d = findWeapon(w); return d ? wd(d).n : w; }).join(' · ');
-    const talents = p.talents.map(t=>{ const d = findTalent(t); return d ? td(d).n : t; }).join(', ');
-    return `<button class="preset-card" onclick="applyPreset('${p.id}')">`
+    const weapons = (p.mounts || []).reduce((a,m)=>a.concat(m.weapons || []), []).map(w=>{ const d = findWeapon(w); return d ? wd(d).n : w; }).join(' · ');
+    const talents = p.talents.map(t=>{ const d = findTalent(t.name); return d ? td(d).n : t.name; }).join(', ');
+    cards.push(`<button class="preset-card" onclick="applyPreset('${p.id}')">`
       + `<b>${esc(role)} «${esc(p.mech)}» · LL${p.ll ?? 0}</b><br>`
       + `<span class="dim">${esc(p.pilot.name)} «${esc(p.pilot.callsign)}» — ${esc(desc)}</span><br>`
       + `<span class="dim">${esc(weapons)}</span><br>`
-      + `<span class="dim">${esc(talents)}</span></button>`;
-  }).join('');
-  h += `<button class="preset-card" onclick="applyBlank()">`
-    + `<b>${esc(L('start_blank'))}</b><br>`
-    + `<span class="dim">${esc(L('start_blank_desc'))}</span></button>`;
-  box.innerHTML = h;
+      + `<span class="dim">${esc(talents)}</span></button>`);
+  });
+  box.innerHTML = cards.join('<div class="preset-sep"></div>');
 }
 function startConfirmReplace(name){
   // Первый запуск — терять нечего, без подтверждения.
@@ -6000,10 +6057,26 @@ function applyPreset(id){
   st.pilot.hull = p.hase.hull; st.pilot.agility = p.hase.agility; st.pilot.systems = p.hase.systems; st.pilot.engineering = p.hase.engineering;
   st.mech.name = p.mech;
   st.triggers = p.triggers.map(t=>({name:t.name, bonus:t.bonus}));
-  st.talents = p.talents.map(t=>({name:t, rank:1}));
+  st.talents = p.talents.map(t=>({name:t.name, rank:t.rank || 1}));
   st.systems = p.systems.map(n=>{ const s = findSystem(n); const row = {name:n, sp:s?s.p:0, desc:s?s.x:''}; const lim = sysLim(row); if (lim > 0) row.left = lim; return row; });
-  const mkMount = (type, w) => ({type, weapons:(Array.isArray(w) ? w : [w]).map(weapRow)});
-  st.mounts = [mkMount('Main', p.mounts.Main), mkMount('Flex', p.mounts.Flex), mkMount('Heavy', p.mounts.Heavy)];
+  // v297: лицензии и фрейм пресета (LL2 — лицензионный фрейм).
+  st.pilot.licenses = p.license ? [{name:p.license.name, rank:p.license.rank}] : [];
+  const F = DB.frames[frameKey(p.frame || 'Everest')] || DB.frames['Everest'];
+  st.mech.frame = frameKey(p.frame || 'Everest');
+  st.mech.coreSystem = F.c; st.mech.coreDesc = F.cd; st.mech.traits = F.t;
+  st.mounts = F.m.map(t=>({type:t, weapons:[]}));
+  (p.mounts || []).forEach(pm=>{
+    const mount = st.mounts.find(m=>m.type===pm.type && m.weapons.length===0);
+    if (!mount) return;
+    mount.weapons = (pm.weapons || []).map(weapRow);
+  });
+  (F.iw || []).forEach(nm=>{
+    const w = DB.weapons.find(x=>x.n===nm);
+    if (!w) return;
+    let im = st.mounts.find(m=>m.type==='Integrated');
+    if (!im) { im = {type:'Integrated', weapons:[]}; st.mounts.push(im); }
+    im.weapons.push({name:w.n, dmg:w.d, range:w.r, desc:w.x});
+  });
   // v296: снаряжение пилота из пресета (в описании карточки не показывается).
   if (Array.isArray(p.gear) && p.gear.length) {
     const loadout = {id:compconUUID(), name:'Primary', armor:[], weapons:[], gear:[]};
@@ -6087,36 +6160,6 @@ function updateCompleteness(){
     // Тогда при росте LL (лицензии) сразу видно все блоки, где что-то не выбрано.
     el.style.display = (ok && !editOn(it.edit)) ? 'none' : '';
   }
-  renderReadiness(items);
-}
-function renderReadiness(items){
-  const box = document.getElementById('readyChecklist');
-  const sec = document.getElementById('readySec');
-  const sum = document.getElementById('readySummary');
-  if (!box) return;
-  items = items || completeness();
-  const missing = items.filter(it=>it.problemOnly ? it.have > it.need : it.have < it.need);
-  if (sum){
-    sum.textContent = missing.length ? '' : L('ready_done');
-    sum.classList.toggle('ok', missing.length === 0);
-  }
-  if (sec) sec.open = missing.length > 0;
-  if (!missing.length){
-    box.innerHTML = '<p class="hint">' + esc(L('ready_done')) + '</p>';
-    return;
-  }
-  box.innerHTML = '<p class="hint">' + esc(L('ready_missing')) + '</p>' + missing.map(it=>{
-    const txt = it.problemOnly ? (it.label + ' ' + it.have + '/' + it.need) : readyMsgText(it.id, it.have, it.need);
-    return `<button class="ready-item" onclick="jumpToBlock('${it.tab}','${it.el||''}')">▸ ${esc(txt)}</button>`;
-  }).join('');
-}
-function jumpToBlock(tab, elId){
-  showTab(tab);
-  if (!elId) return;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    const el = document.getElementById(elId);
-    if (el) el.scrollIntoView({block:'start'});
-  }));
 }
 function fullRepair(){
   if (!confirm(L('u256'))) return;
