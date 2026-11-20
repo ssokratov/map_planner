@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v303</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v304</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1706,16 +1706,16 @@ const PRESETS = [
     systems:['Hunter Logic Suite','Singularity Motivator','Pattern-A Smoke Charges'],
     mounts:[{type:'Flex',weapons:['Fold Knife','Vijaya Rockets']},{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
     gear:['Stealth Hardsuit','Light A/C','Camo Cloth','Antiphoton Visor'] },
-  { id:'napoleon',
-    ll:2, frame:'Napoleon', license:{name:'Napoleon', rank:2},
-    role:{ru:'Цитадель', en:'Citadel'},
+  { id:'drake',
+    ll:2, frame:'Drake', license:{name:'Drake', rank:2},
+    role:{ru:'Защитник', en:'Defender'},
     roleDesc:{ru:'Непробиваемая оборона', en:'Impenetrable defense'},
-    mech:'Бастион', pilot:{name:'Алёша Попович', callsign:'Кузнечик', background:'Маленький, юркий бывший охранник'},
+    mech:'Крепость', pilot:{name:'Алёша Попович', callsign:'Оплот', background:'Маленький, юркий бывший охранник'},
     hase:{hull:2, agility:0, systems:0, engineering:2},
     talents:[{name:'Juggernaut',rank:2},{name:'Vanguard',rank:2},{name:'House Guard',rank:1}],
     triggers:[{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Patch',bonus:2},{name:'Take Someone Out',bonus:2},{name:'Read a Situation',bonus:2}],
-    systems:['Stasis Bolt','Stasis Generator','Stasis Barrier','Type-3 Projected Shield'],
-    mounts:[{type:'Main/Aux',weapons:['Mortar','Thermal Pistol']}],
+    systems:['Argonaut Shield','Aegis Shield Generator','Type-3 Projected Shield'],
+    mounts:[{type:'Main',weapons:['Assault Rifle']},{type:'Main',weapons:['Shotgun']},{type:'Heavy',weapons:['Nanocarbon Sword']}],
     gear:['Heavy Hardsuit','Medium A/C','Patch','Stims'] },
   { id:'lancaster',
     ll:2, frame:'Lancaster', license:{name:'Lancaster', rank:2},
@@ -1727,7 +1727,29 @@ const PRESETS = [
     triggers:[{name:'Patch',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Survive',bonus:2},{name:'Hack or Fix',bonus:2},{name:'Invent or Create',bonus:2},{name:'Read a Situation',bonus:2}],
     systems:['Cable Winch System','Restock Drone','MULE Harness','Whitewash Sealant Spray','Pattern-A Smoke Charges'],
     mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
-    gear:['Light Hardsuit','Handheld Printer','Nanite Spray','Extra Rations'] }
+    gear:['Light Hardsuit','Handheld Printer','Nanite Spray','Extra Rations'] },
+  { id:'atlas',
+    ll:2, frame:'Atlas', license:{name:'Atlas', rank:2},
+    role:{ru:'Убийца гигантов', en:'Giantkiller'},
+    roleDesc:{ru:'Маленький, но бьёт больших', en:'Small, but hits big'},
+    mech:'Давид', pilot:{name:'Петя Синицын', callsign:'Праща', background:'Маленький бывший охотник'},
+    hase:{hull:2, agility:2, systems:0, engineering:0},
+    talents:[{name:'Skirmisher',rank:2},{name:'Duelist',rank:2},{name:'Brutal',rank:1}],
+    triggers:[{name:'Assault',bonus:2},{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Take Someone Out',bonus:2}],
+    systems:['Multi-Gear Maneuver System','Jäger Kunst I','Ricochet Blades'],
+    mounts:[{type:'Flex',weapons:['Tactical Knife','Thermal Pistol']},{type:'Main',weapons:['Chain Axe']}],
+    gear:['Light Hardsuit','Light A/C','Stims','Camo Cloth'] },
+  { id:'sherman',
+    ll:2, frame:'Sherman', license:{name:'Sherman', rank:2},
+    role:{ru:'Артиллерия', en:'Artillery'},
+    roleDesc:{ru:'Огонь издалека, много и больно', en:'Fire from afar, lots of it, and it hurts'},
+    mech:'Катюша', pilot:{name:'Миша Громов', callsign:'Град', background:'Бывший артиллерист'},
+    hase:{hull:2, agility:0, systems:0, engineering:2},
+    talents:[{name:'Siege Specialist',rank:2},{name:'Heavy Gunner',rank:2},{name:'Demolitionist',rank:1}],
+    triggers:[{name:'Blow Something Up',bonus:2},{name:'Assault',bonus:2},{name:'Spot',bonus:2},{name:'Take Someone Out',bonus:2},{name:'Survive',bonus:2},{name:'Read a Situation',bonus:2}],
+    systems:['Reactor Stabilizer','Redundant Systems Upgrade'],
+    mounts:[{type:'Flex',weapons:['Tactical Knife','Thermal Pistol']},{type:'Main',weapons:['Mortar']},{type:'Heavy',weapons:['Howitzer']}],
+    gear:['Light Hardsuit','Medium A/C','Stims','Thermite Charge'] }
 ];
 const ROMAN = {I:1, II:2, III:3};
 function parseLicensesText(t){
