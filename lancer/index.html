@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v305</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v306</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1630,7 +1630,7 @@ const PRESETS = [
     mounts:[{type:'Main',weapons:['Assault Rifle']},{type:'Flex',weapons:['Shotgun']},{type:'Heavy',weapons:['Thermal Lance']}],
     gear:['Assault Hardsuit','Medium A/C','Frag Grenades','Stims'] },
   { id:'tank',
-    ll:0, frame:'Everest',
+    ll:0, frame:'Sagarmatha',
     role:{ru:'Танк', en:'Tank'},
     roleDesc:{ru:'Держит удар и прикрывает', en:'Takes hits and covers allies'},
     mech:'Стена', pilot:{name:'Борис Волков', callsign:'Крепость', background:'Бывший телохранитель'},
@@ -1652,7 +1652,7 @@ const PRESETS = [
     mounts:[{type:'Main',weapons:['Thermal Rifle']},{type:'Flex',weapons:['Thermal Pistol','Tactical Knife']},{type:'Heavy',weapons:['Anti-Materiel Rifle']}],
     gear:['Stealth Hardsuit','Light Signature','Smart Scope','Camo Cloth'] },
   { id:'hacker',
-    ll:0, frame:'Everest',
+    ll:0, frame:'Chomolungma',
     role:{ru:'Хакер', en:'Hacker'},
     roleDesc:{ru:'Тех-атаки и NHP', en:'Tech attacks and NHP'},
     mech:'Призрак', pilot:{name:'Лёва Орлов', callsign:'Баг', background:'Бывший хакер'},
@@ -1660,7 +1660,7 @@ const PRESETS = [
     talents:[{name:'Hacker',rank:1},{name:'Technophile',rank:1},{name:'Black Thumb',rank:1}],
     triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2}],
     systems:['Servant-Class NHP','Pattern-B HEX Charges'],
-    mounts:[{type:'Main',weapons:['Nexus (Hunter-Killer)']},{type:'Flex',weapons:['Thermal Pistol','Segment Knife']},{type:'Heavy',weapons:['Heavy Machine Gun']}],
+    mounts:[{type:'Main/Aux',weapons:['Nexus (Hunter-Killer)','Tactical Knife']},{type:'Flex',weapons:['Thermal Pistol','Segment Knife']}],
     gear:['Light Hardsuit','Light A/C','Dataplating','Handheld Printer'] },
   { id:'blackbeard',
     ll:2, frame:'Blackbeard', license:{name:'Blackbeard', rank:2},
