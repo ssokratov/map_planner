@@ -464,6 +464,16 @@
   .wcard.open .weap-arrow { transform:rotate(90deg); }
   .weap-name { flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); }
   .weap-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
+  /* v309: слайдер профиля встроенной пушки — круглая янтарная ручка, подписи остановок */
+  .prof-row { gap:10px; }
+  .prof-slider { flex:1 1 auto; min-width:110px; -webkit-appearance:none; appearance:none; background:transparent; height:32px; cursor:pointer; }
+  .prof-slider::-webkit-slider-runnable-track { height:4px; background:var(--line); border-radius:2px; }
+  .prof-slider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); margin-top:-9px; }
+  .prof-slider::-moz-range-track { height:4px; background:var(--line); border-radius:2px; }
+  .prof-slider::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); }
+  .prof-stops { display:flex; gap:8px; flex:0 0 auto; }
+  .prof-stops span { color:var(--dim); font-size:12px; }
+  .prof-stops span.on { color:var(--accent); font-weight:700; }
   .weap-head .wmeta { padding-left:20px; margin-top:4px; }
   .weap-body { display:none; margin-top:10px; margin-left: 18px; }
   .wcard.open .weap-body { display:block; }
@@ -986,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v308</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v309</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3348,6 +3358,9 @@ const ACTIONS_REF = {
     {key:'chargedd288', name:'Charge D/D 288', ru:'Зарядить D/D 288', grant:{weapon:'D/D 288'},
      tx_ru:'Зарядите D/D 288. В начале любого из ваших ходов, пока D/D 288 заряжен, он использует профиль «Заряженный». Вы становитесь замедленным и пользуетесь мягким укрытием. Кроме того, получайте 2 тепла в начале вашего хода.\nПрофиль «Заряженный» нельзя использовать для Скирмиша.',
      tx_en:'Charge the D/D 288. At the start of any of your turns while the D/D 288 is Charged, it uses the "Charged" profile. You become SLOWED, and benefit from soft cover. Additionally, gain 2 Heat at the start of your turn.\nThe "Charged" profile cannot be used to Skirmish.'},
+    {key:'firemjolnir', name:'Fire Mjolnir', ru:'Выстрел из Мьёльнира', grant:{weapon:'M35 Mjolnir'}, per:'1/round',
+     tx_ru:'Свободное действие: 1/раунд, когда вы перезаряжаете любое оружие, из этого оружия можно выстрелить свободным действием.',
+     tx_en:'Free Action: 1/round, when you reload any weapon, this weapon can be fired as a free action.'},
     {key:'blackthumbdismount', name:'Black Thumb Dismount', ru:'Спешивание «Чёрного пальца»', grant:{talent:'Black Thumb',rank:1},
      tx_ru:'Спешьтесь как при обычном действии спешивания. Когда вы спешиваетесь, ваш пилот получает личный щит. В следующий раз, когда ваш пилот получил бы урон, уменьшите этот урон до 0, после чего щит рассеивается. В противном случае он рассеивается в конце сцены. У вас может быть только один личный щит одновременно, и любые созданные щиты заменяют последний.',
      tx_en:'Dismount as per the normal Dismount action. When you DISMOUNT, your pilot gains a personal shield. The next time your pilot would take damage, reduce that damage to 0, then the shield disperses. Otherwise, it disperses at the end of the scene. You can only have one personal shield at once, and any shields created replace the last one.'},
@@ -3738,8 +3751,10 @@ function renderLists(){
     const wtgVis = noUnique(wtg); // v288: «Уникальное» — не чип, а текст в lab перед SP
     const dbw = findWeapon(w.name);
     const wDisp = dbw ? wd(dbw).n : w.name;
-    const dmgDisp = dbw ? dispVal(w.dmg, dbw.d, dbw.dr) : w.dmg;
-    const rngDisp = dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range;
+    const profDef = weapProfDef(w); // v309: живой профиль встроенной пушки
+    const profOpt = profDef ? profDef.opts[weapProfIdx(w)] : null;
+    const dmgDisp = profOpt ? (lang()==='en' ? profOpt.d : profOpt.dr) : (dbw ? dispVal(w.dmg, dbw.d, dbw.dr) : w.dmg);
+    const rngDisp = profOpt ? (lang()==='en' ? profOpt.r : profOpt.rr) : (dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range);
     const descDisp = dbw ? dispVal(w.desc, dbw.x, dbw.xr) : w.desc;
     const typeDisp = dbw ? wd(dbw).t : '';
     const meta = [typeDisp, dmgDisp, rngDisp].filter(x=>x).join(' · ');
@@ -3757,6 +3772,7 @@ function renderLists(){
         ${(wtgVis.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? `<span class="load-ico" aria-hidden="true">✓</span>${esc(L('u254'))}` : `<span class="load-ico" aria-hidden="true">✕</span>${esc(L('u255'))}`}</button>` : ''}${wtgVis.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtgVis)}</span>` : ''}</div>` : ''}
         ${wGrants ? `<div class="weap-head-sub"><span class="tags" style="display:inline-flex">${wGrants}</span></div>` : ''}
         ${(wlim || wlimU) ? `<div class="weap-head-sub"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},1)">+</button></span></div>` : ''}
+        ${profDef ? `<div class="weap-head-sub prof-row"><span class="dim">${esc(lang()==='en' ? profDef.label.en : profDef.label.ru)}</span><input type="range" class="prof-slider" min="0" max="${profDef.opts.length-1}" step="1" value="${weapProfIdx(w)}" onclick="event.stopPropagation()" onchange="setWeaponProfile(${mi},${wi},+this.value)"><span class="prof-stops">${profDef.opts.map((o,i)=>`<span class="${i===weapProfIdx(w)?'on':''}">${esc(lang()==='en' && o.tagEn ? o.tagEn : o.tag)}</span>`).join('')}</span></div>` : ''}
       </div>
       <div class="weap-body">
         ${descBox('w-'+mi+'-'+wi, '', descDisp, L('ph_weapdesc'), "S.mounts["+mi+"].weapons["+wi+"].desc=this.value;save()", false)}
@@ -5142,6 +5158,54 @@ function sysSp(s){ const d = findSystem(s.name); return d ? (d.p||0) : (+s.sp||0
 function weapSp(w){ const d = findWeapon(w.name); return d ? (d.sp||0) : (+w.sp||0); } // v255: SP пушки — поле sp в db.js, fallback на собственное w.sp для кастомных
 function weapLim(w){ let base; if (typeof w.lim === 'number') base = w.lim; else { const d = findWeapon(w.name); base = d ? (d.lim||0) : 0; } return base > 0 ? base + limBonus() : 0; }
 function weapLeft(w){ if (weapLimUnknown(w)) return Math.max((typeof w.left === 'number' ? w.left : 0), 0); const lim = weapLim(w); return (typeof w.left === 'number') ? Math.min(Math.max(w.left,0), lim) : lim; }
+// v309: встроенные пушки с переключаемыми профилями. Профиль меняет живой
+// урон/дальность на карточке; состояние — индекс на самой пушке (w.prof),
+// переживает сейвы. Это НЕ Limited: максимум задаёт сама пушка, Engineering
+// (limBonus) сюда не лезет. resetOnRepair — индекс после полного ремонта
+// (только у зарядов/кубика, которые правила сбрасывают; конфигурация вроде
+// авто-choke — нет).
+const WEAPON_PROFILES = {
+  'ZF4 SOLIDCORE': {
+    label: {ru:'Заряды', en:'Charges'},
+    opts: [
+      {tag:'1', d:'1d6 Energy', dr:'1d6 энергетический', r:'Line 4', rr:'Линия 4'},
+      {tag:'2', d:'2d6 Energy', dr:'2d6 энергетический', r:'Line 8', rr:'Линия 8'},
+      {tag:'3', d:'3d6 Energy', dr:'3d6 энергетический', r:'Line 12', rr:'Линия 12'},
+      {tag:'4', d:'4d6 Energy', dr:'4d6 энергетический', r:'Line 16', rr:'Линия 16'},
+    ],
+    def: 0, resetOnRepair: 0,
+  },
+  'Apocalypse Rail': {
+    label: {ru:'Кубик Апокалипсиса', en:'Apocalypse Die'},
+    opts: [
+      {tag:'4', d:'—', dr:'—', r:'Cannot be fired', rr:'Стрелять нельзя'},
+      {tag:'3', d:'2d6 Explosive', dr:'2d6 взрывной', r:'Range 20, Blast 2', rr:'Дальность 20, Взрыв 2'},
+      {tag:'2', d:'3d6 Explosive', dr:'3d6 взрывной', r:'Range 25, Blast 2', rr:'Дальность 25, Взрыв 2'},
+      {tag:'1', d:'4d6 Explosive', dr:'4d6 взрывной', r:'Range 30, Blast 2', rr:'Дальность 30, Взрыв 2'},
+    ],
+    def: 0, resetOnRepair: 0,
+  },
+  'HHS-075 “Flayer” Shotgun': {
+    label: {ru:'Профиль', en:'Profile'},
+    opts: [
+      {tag:'Стандарт', tagEn:'Standard', d:'1d6+1 Kinetic', dr:'1d6+1 кинетический', r:'Range 3, Threat 3', rr:'Дальность 3, Угроза 3'},
+      {tag:'Авто-чок', tagEn:'Autochoke', d:'1d6+2 Kinetic', dr:'1d6+2 кинетический', r:'Cone 3, Threat 3', rr:'Конус 3, Угроза 3'},
+    ],
+    def: 0,
+  },
+  'Shock Claws': {
+    label: {ru:'Профиль', en:'Profile'},
+    opts: [
+      {tag:'Обычные', tagEn:'Normal', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 1', rr:'Угроза 1'},
+      {tag:'Повреждённые', tagEn:'Damaged', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 2', rr:'Угроза 2'},
+    ],
+    def: 0,
+  },
+};
+function weapProfDef(w){ return WEAPON_PROFILES[w.name] || null; }
+function weapProfIdx(w){ const d = weapProfDef(w); if (!d) return -1; return (typeof w.prof === 'number') ? Math.min(Math.max(w.prof, 0), d.opts.length - 1) : d.def; }
+function weapProfOpt(w){ const d = weapProfDef(w); if (!d) return null; return d.opts[weapProfIdx(w)]; }
+function setWeaponProfile(mi, wi, idx){ const w = S.mounts[mi].weapons[wi]; const d = weapProfDef(w); if (!d) return; w.prof = Math.min(Math.max(idx, 0), d.opts.length - 1); save(); renderLists(); }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
 function sysTags(s){ if (Array.isArray(s.tg) && s.tg.length) return s.tg; const d = findSystem(s.name); return d ? (d.tg||[]) : []; }
 function tagLabel(id, val){
@@ -6227,7 +6291,7 @@ function fullRepair(){
   ['mech.hp','mech.structure','mech.stress','mech.heat','mech.repairs'].forEach(p=>set(p, get(p+'Max')));
   set('mech.heat', 0); set('mech.coreUsed', 0); set('mech.overcharge', 0); S.statuses = [];
   S.systems.forEach(s=>{ s.destroyed = false; const lim = sysLim(s); if (lim > 0) s.left = lim; else if (sysLimUnknown(s)) s.left = 0; });
-  S.mounts.forEach(m=>m.weapons.forEach(w=>{ w.destroyed = false; const lim = weapLim(w); if (lim > 0) w.left = lim; else if (weapLimUnknown(w)) w.left = 0; if (weapLoading(w)) w.loaded = true; }));
+  S.mounts.forEach(m=>m.weapons.forEach(w=>{ w.destroyed = false; const lim = weapLim(w); if (lim > 0) w.left = lim; else if (weapLimUnknown(w)) w.left = 0; if (weapLoading(w)) w.loaded = true; const pd = weapProfDef(w); if (pd && typeof pd.resetOnRepair === 'number') w.prof = pd.resetOnRepair; })); // v309: ZF4 → 1 заряд, Кубик Апокалипсиса → 4
   S.talents.forEach(t=>{ const dc = diceFor(t); if (dc) t.dice = dc.defVal; });
   save(); renderCounters(); renderLists();
 }
