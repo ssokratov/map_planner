@@ -149,6 +149,8 @@
      чтобы отличаться от обычных янтарных чипов тегов. */
   .tag.grant { border-color:var(--accent2); color:var(--accent2); display:inline-flex; align-items:center; }
   .tag.grant:hover { border-color:var(--accent2); }
+  .tag.grant.weapon { border-color:var(--dim); color:var(--dim); }
+  .tag.grant.weapon:hover { border-color:var(--dim); }
   /* v290: «Твои действия» — чип с новой строки */
   .myact-chip { margin:5px 0; }
   /* v293: сообщение готовности блока — отдельная строка под заголовком; зелёное = готово, янтарное = не хватает */
@@ -1000,7 +1002,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v324</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v325</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -4791,7 +4793,10 @@ function refChip(kind, key, label, stop, extraCls){
       ico = '<span class="' + cls + '">' + ic + '</span> ';
     }
   }
-  return `<span class="tag${extraCls ? ' ' + extraCls : ''}" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${ico}${esc(label)}</span>`;
+  // v325: чип оружия — стального цвета, не синий; иконки у него нет и не надо
+  let cls = 'tag' + (extraCls ? ' ' + extraCls : '');
+  if (kind === 'weapon') cls += ' weapon';
+  return `<span class="${cls}" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${ico}${esc(label)}</span>`;
 }
 function grantLabel(g){
   if (!g) return '';
