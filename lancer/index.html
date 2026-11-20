@@ -991,7 +991,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v295</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v296</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1631,39 +1631,47 @@ const PRESETS = [
   { id:'assault',
     role:{ru:'Штурмовик', en:'Assault'},
     roleDesc:{ru:'Ближний бой и врыв', en:'Close combat and breach'},
+    ll:0,
     mech:'Гроза', pilot:{name:'Даня Соколов', callsign:'Гром', background:'Бывший штурмовик'},
     hase:{hull:1, agility:1, systems:0, engineering:0},
     talents:['Skirmisher','Gunslinger','Brutal'],
     triggers:[{name:'Assault',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Survive',bonus:2}],
     systems:['Rapid Burst Jump Jet System','Pattern-A Smoke Charges'],
-    mounts:{Main:'Assault Rifle', Flex:'Shotgun', Heavy:'Thermal Lance'} },
+    mounts:{Main:'Assault Rifle', Flex:'Shotgun', Heavy:'Thermal Lance'},
+    gear:['Assault Hardsuit','Medium A/C','Frag Grenades','Stims'] },
   { id:'tank',
     role:{ru:'Танк', en:'Tank'},
     roleDesc:{ru:'Держит удар и прикрывает', en:'Takes hits and covers allies'},
+    ll:0,
     mech:'Стена', pilot:{name:'Борис Волков', callsign:'Крепость', background:'Бывший телохранитель'},
     hase:{hull:2, agility:0, systems:0, engineering:0},
     talents:['Juggernaut','Vanguard','House Guard'],
     triggers:[{name:'Survive',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Threaten',bonus:2},{name:'Patch',bonus:2}],
     systems:['Type-3 Projected Shield','Stable Structure','Personalizations'],
-    mounts:{Main:'Shotgun', Flex:'Tactical Knife', Heavy:'Heavy Machine Gun'} },
+    mounts:{Main:'Shotgun', Flex:['Tactical Knife','Thermal Pistol'], Heavy:'Heavy Machine Gun'},
+    gear:['Heavy Hardsuit','Light A/C','Patch','Nanite Spray'] },
   { id:'sniper',
     role:{ru:'Снайпер', en:'Sniper'},
     roleDesc:{ru:'Дальний бой и точность', en:'Long range and precision'},
+    ll:0,
     mech:'Игла', pilot:{name:'Вера Ковалёва', callsign:'Тишина', background:'Бывший снайпер'},
     hase:{hull:0, agility:1, systems:1, engineering:0},
     talents:['Hunter','Spotter','Gunslinger'],
     triggers:[{name:'Take Someone Out',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2},{name:'Get Somewhere Quickly',bonus:2}],
     systems:['Pattern-A Smoke Charges','Pattern-A Jericho Deployable Cover'],
-    mounts:{Main:'Thermal Rifle', Flex:'Thermal Pistol', Heavy:'Anti-Materiel Rifle'} },
+    mounts:{Main:'Thermal Rifle', Flex:['Thermal Pistol','Tactical Knife'], Heavy:'Anti-Materiel Rifle'},
+    gear:['Stealth Hardsuit','Light Signature','Smart Scope','Camo Cloth'] },
   { id:'hacker',
     role:{ru:'Хакер', en:'Hacker'},
     roleDesc:{ru:'Тех-атаки и NHP', en:'Tech attacks and NHP'},
+    ll:0,
     mech:'Призрак', pilot:{name:'Лёва Орлов', callsign:'Баг', background:'Бывший хакер'},
     hase:{hull:0, agility:0, systems:2, engineering:0},
     talents:['Hacker','Technophile','Black Thumb'],
     triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2}],
     systems:['Servant-Class NHP','Pattern-B HEX Charges'],
-    mounts:{Main:'Nexus (Hunter-Killer)', Flex:'Thermal Pistol', Heavy:'Heavy Machine Gun'} }
+    mounts:{Main:'Nexus (Hunter-Killer)', Flex:['Thermal Pistol','Segment Knife'], Heavy:'Heavy Machine Gun'},
+    gear:['Light Hardsuit','Light A/C','Dataplating','Handheld Printer'] }
 ];
 const ROMAN = {I:1, II:2, III:3};
 function parseLicensesText(t){
@@ -5956,10 +5964,10 @@ function renderStart(){
   let h = PRESETS.map(p=>{
     const role = en ? p.role.en : p.role.ru;
     const desc = en ? p.roleDesc.en : p.roleDesc.ru;
-    const weapons = [p.mounts.Main, p.mounts.Flex, p.mounts.Heavy].map(w=>{ const d = findWeapon(w); return d ? wd(d).n : w; }).join(' · ');
+    const weapons = [p.mounts.Main, p.mounts.Flex, p.mounts.Heavy].reduce((a,w)=>a.concat(Array.isArray(w)?w:[w]), []).map(w=>{ const d = findWeapon(w); return d ? wd(d).n : w; }).join(' · ');
     const talents = p.talents.map(t=>{ const d = findTalent(t); return d ? td(d).n : t; }).join(', ');
     return `<button class="preset-card" onclick="applyPreset('${p.id}')">`
-      + `<b>${esc(role)} «${esc(p.mech)}»</b><br>`
+      + `<b>${esc(role)} «${esc(p.mech)}» · LL${p.ll ?? 0}</b><br>`
       + `<span class="dim">${esc(p.pilot.name)} «${esc(p.pilot.callsign)}» — ${esc(desc)}</span><br>`
       + `<span class="dim">${esc(weapons)}</span><br>`
       + `<span class="dim">${esc(talents)}</span></button>`;
@@ -5994,11 +6002,21 @@ function applyPreset(id){
   st.triggers = p.triggers.map(t=>({name:t.name, bonus:t.bonus}));
   st.talents = p.talents.map(t=>({name:t, rank:1}));
   st.systems = p.systems.map(n=>{ const s = findSystem(n); const row = {name:n, sp:s?s.p:0, desc:s?s.x:''}; const lim = sysLim(row); if (lim > 0) row.left = lim; return row; });
-  st.mounts = [
-    {type:'Main', weapons:[weapRow(p.mounts.Main)]},
-    {type:'Flex', weapons:[weapRow(p.mounts.Flex)]},
-    {type:'Heavy', weapons:[weapRow(p.mounts.Heavy)]}
-  ];
+  const mkMount = (type, w) => ({type, weapons:(Array.isArray(w) ? w : [w]).map(weapRow)});
+  st.mounts = [mkMount('Main', p.mounts.Main), mkMount('Flex', p.mounts.Flex), mkMount('Heavy', p.mounts.Heavy)];
+  // v296: снаряжение пилота из пресета (в описании карточки не показывается).
+  if (Array.isArray(p.gear) && p.gear.length) {
+    const loadout = {id:compconUUID(), name:'Primary', armor:[], weapons:[], gear:[]};
+    p.gear.forEach(n=>{
+      const item = PILOT_GEAR_DB.find(x=>x.name===n); if (!item) return;
+      const key = item.type === 'Armor' ? 'armor' : item.type === 'Weapon' ? 'weapons' : 'gear';
+      const data = compconCopy(item); delete data.ru;
+      const maxUses = (data.tags || []).find(t=>t.id === 'tg_limited')?.val || 0;
+      loadout[key].push({id:item.id, instanceId:compconUUID(), type:item.type === 'Armor' ? 'PilotArmor' : item.type === 'Weapon' ? 'PilotWeapon' : 'PilotGear', note:'', data, flavorName:'', flavorDescription:'', maxUses, currentUses:0, destroyed:false, isUsed:false});
+    });
+    st.pilot.loadouts = [loadout];
+    st.pilot.activeLoadout = 0;
+  }
   st.settings.startChosen = true;
   S = st;
   recalcDerived();
