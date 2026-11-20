@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v301</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v302</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -6061,12 +6061,13 @@ function renderStart(){
     const desc = en ? p.roleDesc.en : p.roleDesc.ru;
     const weapons = (p.mounts || []).reduce((a,m)=>a.concat(m.weapons || []), []).map(w=>{ const d = findWeapon(w); return d ? wd(d).n : w; }).join(' · ');
     const fr = fd(p.frame || 'Everest');
-    const frameCore = fr.n + ' · ' + fr.c;
+    const F = DB.frames[frameKey(p.frame || 'Everest')];
+    const corpFrame = (F && F.src ? F.src + ' · ' : '') + fr.n;
     cards.push(`<button class="preset-card" onclick="applyPreset('${p.id}')">`
       + `<b>${esc(role)} «${esc(p.mech)}» · LL${p.ll ?? 0}</b><br>`
       + `<span class="dim">${esc(p.pilot.name)} «${esc(p.pilot.callsign)}» — ${esc(desc)}</span><br>`
       + `<span class="dim">${esc(weapons)}</span><br>`
-      + `<span class="dim">${esc(frameCore)}</span></button>`);
+      + `<span class="dim">${esc(corpFrame)}</span></button>`);
   });
   box.innerHTML = cards.join('<div class="preset-sep"></div>');
 }
