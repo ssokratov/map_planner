@@ -944,7 +944,7 @@ const { X: XAA, S: SAA, DB: DBAA, elements: elAA, g: gAA } = runEval({});
 // v328: чистый лист без стартовых систем — добавляем систему явно для теста описаний
 XAA.addSystemByIndex(DBAA.systems.findIndex(s => s.n === 'Pattern-B HEX Charges'));
 // версия трекера в подвале страницы
-if (!staticHtml.includes('>v330</span>')) throw new Error('AA: the footer must show the tracker version');
+if (!staticHtml.includes('>v331</span>')) throw new Error('AA: the footer must show the tracker version');
 // descBox: короткое описание — целиком, без <details>
 const shortHtml = XAA.descBox('t-short', '', 'Короткое описание в одно предложение.', '', '', false);
 if (shortHtml.includes('<details')) throw new Error('AA: a short description must not collapse into <details>');
@@ -1525,7 +1525,7 @@ if (!htmlAX.includes("openSearchDesc('" + keyAX + "')")) throw new Error('AX: af
 if (html.includes('Полный ремонт — кнопка в карточке')) throw new Error('AY: the footer disclaimer text (u144) must be gone');
 if (!staticHtml.includes('id="langToggle"')) throw new Error('AY: the language slider must exist in the Rules tab');
 if (staticHtml.includes('data-lang-btn')) throw new Error('AY: the old RUS/ENG buttons must be gone');
-if (!staticHtml.includes('>v330</span>')) throw new Error('AY: the footer must still show the tracker version');
+if (!staticHtml.includes('>v331</span>')) throw new Error('AY: the footer must still show the tracker version');
 // слайдер переключает язык и отражает состояние
 const { X: XAY, S: SAY, elements: elAY } = runEval({});
 if (XAY.lang() !== 'ru') throw new Error('AY: default language must be ru');
@@ -1710,7 +1710,7 @@ if (!rBD2.X.luVisibleSteps().some(s=>s.id==='core')) throw new Error('BD: LL5->L
 
 // PHASE BE (v64): справочник действий — свои реакции и протоколы, только те, что даёт сборка
 if (!html.includes('id="myActions"')) throw new Error('BE: the Rules tab must have a #myActions container');
-if (!html.includes('>v330</span>')) throw new Error('BE: footer must say version 330');
+if (!html.includes('>v331</span>')) throw new Error('BE: footer must say version 331');
 const ABE = global.__x.ACTIONS_REF;
 if (!ABE || ABE.reactions.length !== 35) throw new Error('BE: ACTIONS_REF must have 35 reactions, got ' + (ABE && ABE.reactions.length));
 if (ABE.protocols.length !== 30) throw new Error('BE: ACTIONS_REF must have 30 protocols, got ' + ABE.protocols.length);
@@ -1936,7 +1936,7 @@ const rulesHtmlBN = staticHtml.slice(rulesIdxBN);
 // divider line — it is a plain flex column
 if (!rulesHtmlBN.includes('class="global-footer"')) throw new Error('BN: the Rules tab must have the .global-footer block at the bottom');
 if (rulesHtmlBN.includes('class="rules-foot"')) throw new Error('BN: the old .rules-foot block must be gone');
-for (const id of ['exportJSON()', 'importFile', 'openStart()', 'openWizard()', 'id="langToggle"', '>v330</span>', 'class="footer-links"', 'https://ssokratov.github.io/map_planner/lancer/privacy.html', 'https://ssokratov.github.io/map_planner/lancer/terms.html', 'id="startView"']) {
+for (const id of ['exportJSON()', 'importFile', 'openStart()', 'openWizard()', 'id="langToggle"', '>v331</span>', 'class="footer-links"', 'https://ssokratov.github.io/map_planner/lancer/privacy.html', 'https://ssokratov.github.io/map_planner/lancer/terms.html', 'id="startView"']) {
   if (!rulesHtmlBN.includes(id)) throw new Error('BN: Rules tab must contain ' + id);
 }
 if (!/\.global-footer\s*\{[^}]*display:flex/.test(staticHtml)) throw new Error('BN: .global-footer must be a flex column');
