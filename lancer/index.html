@@ -472,9 +472,6 @@
   .prof-slider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); margin-top:-9px; }
   .prof-slider::-moz-range-track { height:4px; background:var(--line); border-radius:2px; }
   .prof-slider::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); }
-  .prof-stops { display:flex; gap:8px; flex:0 0 auto; }
-  .prof-stops span { color:var(--dim); font-size:12px; }
-  .prof-stops span.on { color:var(--accent); font-weight:700; }
   .prof-stop { color:var(--dim); font-size:12px; flex:0 0 auto; }
   .prof-stop.on { color:var(--accent); font-weight:700; }
   .weap-head .wmeta { padding-left:20px; margin-top:4px; }
@@ -999,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v314</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v315</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1943,6 +1940,14 @@ function migrate(d){
   if (Array.isArray(d.mounts)) for (const m of d.mounts) for (const w of (m.weapons||[])) {
     if (w && w.name === 'ZF4 SOLIDCORE' && typeof w.desc === 'string' && (w.desc.includes('Profile —') || w.desc.includes('Профиль —'))) {
       const dbw = (typeof DB !== 'undefined' && DB.weapons) ? DB.weapons.find(x=>x.n==='ZF4 SOLIDCORE') : null;
+      if (dbw) w.desc = dbw.x;
+    }
+    // v315: Шоковые когти — в базе было «Overkill {VAL}» (плейсхолдер без значения).
+    // У старых сейвов сохранённое desc — старый текст с {VAL}, и dispVal принимает
+    // его за правку пользователя. Сбрасываем к базе (теперь «Overkill 1»);
+    // настоящая правка пользователя «{VAL}» не содержит.
+    if (w && w.name === 'Shock Claws' && typeof w.desc === 'string' && w.desc.includes('{VAL}')) {
+      const dbw = (typeof DB !== 'undefined' && DB.weapons) ? DB.weapons.find(x=>x.n==='Shock Claws') : null;
       if (dbw) w.desc = dbw.x;
     }
   }
@@ -3823,6 +3828,7 @@ function renderLists(){
     const dmgDisp = profOpt ? (lang()==='en' ? profOpt.d : profOpt.dr) : (dbw ? dispVal(w.dmg, dbw.d, dbw.dr) : w.dmg);
     const rngDisp = profOpt ? (lang()==='en' ? profOpt.r : profOpt.rr) : (dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range);
     const descDisp = dbw ? dispVal(w.desc, dbw.x, dbw.xr) : w.desc;
+    const descProf = profDef ? profDescSection(descDisp, weapProfIdx(w)) : descDisp; // v315: в описании — только текущий профиль
     const typeDisp = dbw ? wd(dbw).t : '';
     const meta = [typeDisp, dmgDisp, rngDisp].filter(x=>x).join(' · ');
     const wsp = weapSp(w); // v255: SP пушки — в строке lab, чтобы счётчик был проверяем
@@ -3839,10 +3845,10 @@ function renderLists(){
         ${(wtgVis.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? `<span class="load-ico" aria-hidden="true">✓</span>${esc(L('u254'))}` : `<span class="load-ico" aria-hidden="true">✕</span>${esc(L('u255'))}`}</button>` : ''}${wtgVis.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtgVis)}</span>` : ''}</div>` : ''}
         ${wGrants ? `<div class="weap-head-sub"><span class="tags" style="display:inline-flex">${wGrants}</span></div>` : ''}
         ${(wlim || wlimU) ? `<div class="weap-head-sub"><span class="dim">${L('charges')}</span><span class="counter small" style="display:inline-flex;flex:0 0 auto"><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},-1)">−</button><div class="val">${wlim ? `${wleft} <small>/ ${wlim}</small>` : `${wleft}`}</div><button onclick="event.stopPropagation();stepWeapCharges(${mi},${wi},1)">+</button></span></div>` : ''}
-        ${profDef ? `<div class="weap-head-sub prof-row">${profDef.opts.length===2 ? `<span class="prof-stop${weapProfIdx(w)===0?' on':''}">${esc(profStopTag(profDef.opts[0]))}</span><input type="range" class="prof-slider" min="0" max="1" step="1" value="${weapProfIdx(w)}" onclick="event.stopPropagation()" onchange="setWeaponProfile(${mi},${wi},+this.value)"><span class="prof-stop${weapProfIdx(w)===1?' on':''}">${esc(profStopTag(profDef.opts[1]))}</span>` : `<span class="dim">${esc(lang()==='en' ? profDef.label.en : profDef.label.ru)}</span><input type="range" class="prof-slider" min="0" max="${profDef.opts.length-1}" step="1" value="${weapProfIdx(w)}" onclick="event.stopPropagation()" onchange="setWeaponProfile(${mi},${wi},+this.value)"><span class="prof-stops">${profDef.opts.map((o,i)=>`<span class="${i===weapProfIdx(w)?'on':''}">${esc(profStopTag(o))}</span>`).join('')}</span>`}</div>` : ''}
+        ${profDef ? `<div class="weap-head-sub prof-row"><span class="dim">${esc(lang()==='en' ? profDef.label.en : profDef.label.ru)}:</span><input type="range" class="prof-slider" min="0" max="${profDef.opts.length-1}" step="1" value="${weapProfIdx(w)}" onclick="event.stopPropagation()" onchange="setWeaponProfile(${mi},${wi},+this.value)"><span class="prof-stop on">${esc(profStopTag(profOpt))}</span></div>` : ''}
       </div>
       <div class="weap-body">
-        ${descBox('w-'+mi+'-'+wi, '', descDisp, L('ph_weapdesc'), "S.mounts["+mi+"].weapons["+wi+"].desc=this.value;save()", false)}
+        ${descBox('w-'+mi+'-'+wi, '', descProf, L('ph_weapdesc'), "S.mounts["+mi+"].weapons["+wi+"].desc=this.value;save()", false)}
       </div>
     </div>`;
     }).join('');
@@ -5290,6 +5296,7 @@ const WEAPON_PROFILES = {
     opts: [
       {tag:'Обычные', tagEn:'Normal', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 1', rr:'Угроза 1'},
       {tag:'Повреждённые', tagEn:'Damaged', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 2', rr:'Угроза 2'},
+      {tag:'Разрушенные', tagEn:'Ruined', d:'4d6+6 Energy', dr:'4d6+6 энергетический', r:'Threat 2', rr:'Угроза 2'},
     ],
     def: 0,
   },
@@ -5298,6 +5305,18 @@ function weapProfDef(w){ return WEAPON_PROFILES[w.name] || null; }
 function weapProfIdx(w){ const d = weapProfDef(w); if (!d) return -1; return (typeof w.prof === 'number') ? Math.min(Math.max(w.prof, 0), d.opts.length - 1) : d.def; }
 function weapProfOpt(w){ const d = weapProfDef(w); if (!d) return null; return d.opts[weapProfIdx(w)]; }
 function profStopTag(o){ return (lang()==='en' && o.tagEn) ? o.tagEn : o.tag; }
+// v315: описание пушки с профилями показывает только текущий профиль.
+// Описание в базе — один текст с секциями «Profile — ...» по порядку профилей;
+// если секций нет (ZF4 — один чистый текст) или индекс вне диапазона — весь текст.
+function profDescSection(desc, idx){
+  if (!desc) return desc;
+  const parts = desc.split('Profile — ');
+  if (parts.length <= 1) return desc;
+  const n = parts.length - 1;
+  const i = Math.min(Math.max(idx, 0), n - 1);
+  const head = parts[0].trim() ? parts[0] : '';
+  return (head ? head : '') + 'Profile — ' + parts[i + 1];
+}
 function setWeaponProfile(mi, wi, idx){ const w = S.mounts[mi].weapons[wi]; const d = weapProfDef(w); if (!d) return; w.prof = Math.min(Math.max(idx, 0), d.opts.length - 1); save(); renderLists(); }
 function weapTags(w){ if (Array.isArray(w.tg) && w.tg.length) return w.tg; const d = findWeapon(w.name); return d ? (d.tg||[]) : []; }
 function sysTags(s){ if (Array.isArray(s.tg) && s.tg.length) return s.tg; const d = findSystem(s.name); return d ? (d.tg||[]) : []; }
