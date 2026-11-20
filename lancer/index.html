@@ -996,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v317</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v318</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3391,8 +3391,8 @@ const ACTIONS_REF = {
      tx_ru:'Свободное действие: 1/раунд, когда вы перезаряжаете любое оружие, из этого оружия можно выстрелить свободным действием.',
      tx_en:'Free Action: 1/round, when you reload any weapon, this weapon can be fired as a free action.'},
     {key:'flayerbuttstrike', name:'Butt Strike', ru:'Удар прикладом', grant:{weapon:'HHS-075 “Flayer” Shotgun'},
-     tx_ru:'При атаке: После любой атаки этим оружием вы можете ударить соседнего персонажа прикладом, нанеся 1 кинетического урона и отбросив его на 1 клетку.',
-     tx_en:'On attack: After any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space.'},
+     tx_ru:'Свободное действие: При атаке, после любой атаки этим оружием, вы можете ударить соседнего персонажа прикладом, нанеся 1 кинетического урона и отбросив его на 1 клетку.',
+     tx_en:'Free Action: On attack, after any attack with this weapon, you may smack an adjacent character with the butt end, dealing 1 Kinetic Damage and knocking them back 1 space.'},
     {key:'blackthumbdismount', name:'Black Thumb Dismount', ru:'Спешивание «Чёрного пальца»', grant:{talent:'Black Thumb',rank:1},
      tx_ru:'Спешьтесь как при обычном действии спешивания. Когда вы спешиваетесь, ваш пилот получает личный щит. В следующий раз, когда ваш пилот получил бы урон, уменьшите этот урон до 0, после чего щит рассеивается. В противном случае он рассеивается в конце сцены. У вас может быть только один личный щит одновременно, и любые созданные щиты заменяют последний.',
      tx_en:'Dismount as per the normal Dismount action. When you DISMOUNT, your pilot gains a personal shield. The next time your pilot would take damage, reduce that damage to 0, then the shield disperses. Otherwise, it disperses at the end of the scene. You can only have one personal shield at once, and any shields created replace the last one.'},
@@ -3571,11 +3571,10 @@ function renderMyActions(){
   const myQkAll = (ACTIONS_REF.quick||[]).filter(a=>actionGranted(a));
   const myFr = myQkAll.filter(a=>isFreeAction(a)); // v312: свободные — отдельная категория, не быстрые
   const myFu = myQkAll.filter(a=>isFullAction(a)); // v314: полные — отдельная категория, не быстрые
-  const myOa = myQkAll.filter(a=>isOnAttack(a)); // v313: «при атаке» — отдельная категория, не действие
-  const myQk = myQkAll.filter(a=>!isFreeAction(a) && !isFullAction(a) && !isOnAttack(a));
+  const myQk = myQkAll.filter(a=>!isFreeAction(a) && !isFullAction(a));
   const myRe = ACTIONS_REF.reactions.filter(a=>!a.def && actionGranted(a));
   const myPr = ACTIONS_REF.protocols.filter(a=>actionGranted(a));
-  if(!myQk.length && !myFr.length && !myFu.length && !myOa.length && !myRe.length && !myPr.length){
+  if(!myQk.length && !myFr.length && !myFu.length && !myRe.length && !myPr.length){
     box.innerHTML = '<p class="hint">' + esc(L('u232')) + '</p>';
     return;
   }
@@ -3592,10 +3591,6 @@ function renderMyActions(){
   if(myFu.length){
     h += '<h3>' + esc(L('u267')) + '</h3>';
     for(const a of myFu) h += chip(a);
-  }
-  if(myOa.length){
-    h += '<h3>' + esc(L('u266')) + '</h3>';
-    for(const a of myOa) h += chip(a);
   }
   if(myRe.length){
     h += '<h3>' + esc(L('u230')) + '</h3>';
@@ -4841,11 +4836,6 @@ function labWithUnique(lab, isU){
 function isFreeAction(a){
   return /^free action/i.test(a.tx_en||'') || /^свободное действие/i.test(a.tx_ru||'');
 }
-// v313: эффект «при атаке» (райдер на атаку, не действие) — текст начинается
-// с On attack / «При атаке». Тоже лежит в quick, отделяется своей категорией.
-function isOnAttack(a){
-  return /^on attack/i.test(a.tx_en||'') || /^при атаке/i.test(a.tx_ru||'');
-}
 // v314: полное действие / полная техника — текст начинается с Full Action /
 // Full Tech / «Полное действие» / «Полная техника». Лежат в quick, отделяются
 // своей категорией «Полные действия» в «Твоих действиях».
@@ -4864,14 +4854,12 @@ function actionTypeLabel(a){
     reaction: ru ? 'Реакция' : 'Reaction',
     protocol: ru ? 'Протокол' : 'Protocol',
     free: ru ? 'Свободное действие' : 'Free action',
-    onattack: ru ? 'При атаке' : 'On attack',
     full: ru ? 'Полное действие' : 'Full action',
     fulltech: ru ? 'Полная техника' : 'Full Tech'
   };
   if ((ACTIONS_REF.reactions||[]).some(x=>x.key===a.key)) return LBL.reaction;
   if ((ACTIONS_REF.protocols||[]).some(x=>x.key===a.key)) return LBL.protocol;
   if (isFreeAction(a)) return LBL.free;
-  if (isOnAttack(a)) return LBL.onattack;
   if (isFullAction(a)) return isFullTech(a) ? LBL.fulltech : LBL.full;
   return LBL.quick;
 }
