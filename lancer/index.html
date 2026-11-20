@@ -1002,7 +1002,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v333</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v334</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1724,6 +1724,17 @@ const PRESETS = [
     systems:['Viral Logic Suite','Aggressive System Sync','Mesmer Charges','Metafold Carver','Servant-Class NHP','Pattern-A Smoke Charges'],
     mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
     gear:['Light Hardsuit','Dataplating','Handheld Printer','Personal Drone'] },
+  { id:'caliban',
+    ll:2, frame:'Caliban', license:{name:'Caliban', rank:2},
+    role:{ru:'Штурмовик', en:'Striker'},
+    roleDesc:{ru:'Кроха с огромным дробовиком', en:'Tiny mech, huge shotgun'},
+    mech:'Грохот', pilot:{name:'Ваня Тихонов', callsign:'Псих', background:'Бывший сапёр'},
+    hase:{hull:2, agility:2, systems:0, engineering:0},
+    talents:[{name:'Brutal',rank:2},{name:'Skirmisher',rank:2},{name:'Vanguard',rank:1}],
+    triggers:[{name:'Take Someone Out',bonus:2},{name:'Threaten',bonus:2},{name:'Survive',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Read a Situation',bonus:2},{name:'Spot',bonus:2}],
+    systems:['Hardpoint Reinforcement','Spike Charges','Type-3 Projected Shield'],
+    mounts:[{type:'Heavy',weapons:['Hammer U-RPL']}],
+    gear:['Heavy Hardsuit','Medium A/C','Frag Grenades','Stims'] },
   { id:'metalmark',
     ll:2, frame:'Metalmark', license:{name:'Metalmark', rank:2},
     role:{ru:'Ассасин', en:'Assassin'},
