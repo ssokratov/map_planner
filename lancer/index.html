@@ -466,7 +466,7 @@
   .weap-head-sub { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:6px; padding-left:20px; }
   /* v309: слайдер профиля встроенной пушки — круглая янтарная ручка, подписи остановок */
   .prof-row { gap:10px; }
-  .prof-slider { flex:1 1 auto; min-width:110px; -webkit-appearance:none; appearance:none; background:transparent; height:32px; cursor:pointer; }
+  .prof-slider { flex:1 1 auto; min-width:110px; -webkit-appearance:none; appearance:none; background:transparent; height:32px; cursor:pointer; touch-action:pan-y; }
   .prof-slider::-webkit-slider-runnable-track { height:4px; background:var(--line); border-radius:2px; }
   .prof-slider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); margin-top:-9px; }
   .prof-slider::-moz-range-track { height:4px; background:var(--line); border-radius:2px; }
@@ -996,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v309</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v310</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -2508,18 +2508,25 @@ function swipeTab(dir){
   const n = order.indexOf(curTab) + dir;
   if (n >= 0 && n < order.length) showTab(order[n]);
 }
+// v310: элементы, которые сами ведут горизонтальный жест (слайдеры профиля),
+// — свайп вкладок с них не стартует, иначе перетаскивание слайдера
+// переключает вкладку.
+function swipeOwnsHorizontal(el){
+  return !!(el && el.closest && el.closest('input[type=range]'));
+}
 (function(){
   const m = document.querySelector('main');
   if (!m || !m.addEventListener) return;
-  let sx = 0, sy = 0;
+  let sx = 0, sy = 0, swipeOk = true;
   m.addEventListener('touchstart', function(e){
     const t = e.changedTouches && e.changedTouches[0];
     if (!t) return;
+    swipeOk = !swipeOwnsHorizontal(e.target);
     sx = t.clientX; sy = t.clientY;
   }, {passive:true});
   m.addEventListener('touchend', function(e){
     const t = e.changedTouches && e.changedTouches[0];
-    if (!t) return;
+    if (!t || !swipeOk) return;
     const dx = t.clientX - sx, dy = t.clientY - sy;
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) swipeTab(dx < 0 ? 1 : -1);
   }, {passive:true});
