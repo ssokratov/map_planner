@@ -991,7 +991,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v294</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v295</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1418,8 +1418,10 @@ Object.assign(STR, {
   "start_sub": {"ru": "Готовый мех — и сразу в бой. Или пустой лист, если хочешь собрать всё сам.", "en": "A ready-made mech — straight into battle. Or a blank sheet if you want to build it yourself."},
   "start_blank": {"ru": "Пустой лист", "en": "Blank sheet"},
   "start_blank_desc": {"ru": "Голый Эверест LL0 — ничего не выбрано", "en": "A bare LL0 Everest — nothing picked yet"},
-  "start_replace": {"ru": "Заменить текущего пилота «{N}» на «{M}»? Его данные будут стёрты.", "en": "Replace the current pilot «{N}» with «{M}»? Their data will be erased."},
-  "start_replace_blank": {"ru": "Заменить текущего пилота «{N}» пустым листом? Его данные будут стёрты.", "en": "Replace the current pilot «{N}» with a blank sheet? Their data will be erased."},
+  "start_replace": {"ru": "Заменить текущего пилота «{N}» на «{M}»? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with «{M}»? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
+  "start_replace_blank": {"ru": "Заменить текущего пилота «{N}» пустым листом? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with a blank sheet? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
+  "start_replace_drive": {"ru": "Заменить текущего пилота «{N}» на «{M}»? «{N}» останется в списке профилей (Google Drive) — его можно будет вернуть кнопкой «Активировать».", "en": "Replace the current pilot «{N}» with «{M}»? «{N}» will stay in the profile list (Google Drive) — you can bring them back with «Activate»."},
+  "start_replace_blank_drive": {"ru": "Заменить текущего пилота «{N}» пустым листом? «{N}» останется в списке профилей (Google Drive) — его можно будет вернуть кнопкой «Активировать».", "en": "Replace the current pilot «{N}» with a blank sheet? «{N}» will stay in the profile list (Google Drive) — you can bring them back with «Activate»."},
   "ready_title": {"ru": "Готовность пилота", "en": "Pilot readiness"},
   "ready_done": {"ru": "Пилот готов ✓", "en": "Pilot ready ✓"},
   "ready_missing": {"ru": "Осталось собрать:", "en": "Still to pick:"},
@@ -5971,9 +5973,14 @@ function startConfirmReplace(name){
   // Первый запуск — терять нечего, без подтверждения.
   if (isFreshPilot()) return true;
   const cur = S.pilot.name || S.pilot.callsign || S.mech.name || '';
-  const msg = name
-    ? L('start_replace').replace('{N}', cur).replace('{M}', name)
-    : L('start_replace_blank').replace('{N}', cur);
+  // v295: пилот в Drive сохраняется отдельным профилем — сообщение об этом, а не о стирании;
+  // локального замена стирает, поэтому подсказываем Экспорт JSON.
+  const prof = (typeof activeProfile === 'function') ? activeProfile() : null;
+  const onDrive = !!(prof && prof.driveFileId);
+  const key = name
+    ? (onDrive ? 'start_replace_drive' : 'start_replace')
+    : (onDrive ? 'start_replace_blank_drive' : 'start_replace_blank');
+  const msg = L(key).replace(/\{N\}/g, cur).replace('{M}', name || '');
   return confirm(msg);
 }
 function applyPreset(id){
