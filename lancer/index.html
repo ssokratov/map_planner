@@ -167,6 +167,7 @@
      глиф не раздувал строку; все чипы в ряду тегов одной высоты. */
   .tag.load-on, .tag.load-off { display:inline-flex; align-items:center; gap:4px; }
   .tag .load-ico { line-height:1; font-size:11px; }
+  .tag .act-ico { line-height:1; font-size:11px; }
   dialog { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:16px 18px; max-width:450px; width:calc(100% - 40px); }
   dialog::backdrop { background:rgba(0,0,0,.6); }
   dialog h3 { margin:0 0 8px; font-size:16px; }
@@ -996,7 +997,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v318</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v319</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -4769,7 +4770,13 @@ function refChip(kind, key, label, stop, extraCls){
   // stop — для чипов внутри сворачиваемой шапки карточки: тап не должен
   // сворачивать/разворачивать карточку (toggleSysCard).
   const pre = stop ? 'event.stopPropagation();' : '';
-  return `<span class="tag${extraCls ? ' ' + extraCls : ''}" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${esc(label)}</span>`;
+  // v319: у чипов действий — иконка типа (○ ◐ ● ◈ ◆ ↩ ≡) перед названием
+  let ico = '';
+  if (kind === 'action'){
+    const a = [...(ACTIONS_REF.reactions||[]), ...(ACTIONS_REF.protocols||[]), ...(ACTIONS_REF.quick||[])].find(x=>x.key===key);
+    if (a) ico = '<span class="act-ico">' + actionTypeIcon(a) + '</span> ';
+  }
+  return `<span class="tag${extraCls ? ' ' + extraCls : ''}" onclick="${pre}showRef('${esc(kind)}','${esc(key)}')">${ico}${esc(label)}</span>`;
 }
 function grantLabel(g){
   if (!g) return '';
@@ -4844,6 +4851,22 @@ function isFullAction(a){
 }
 function isFullTech(a){
   return /^full tech/i.test(a.tx_en||'') || /^полная техника/i.test(a.tx_ru||'');
+}
+// v319: быстрая техника — текст начинается с Quick Tech / «Быстрая техника».
+function isQuickTech(a){
+  return /^quick tech/i.test(a.tx_en||'') || /^быстрая техника/i.test(a.tx_ru||'');
+}
+// v319: иконка типа действия для синих чипов. Текстовая, как ✓/✕ в чипе
+// перезарядки, высота чипа не ломается. Форма = техника или нет,
+// заливка = стоимость: ○ свободное, ◐ быстрое, ● полное; ромб = техника
+// (◈ быстрая, ◆ полная); ↩ реакция, ≡ протокол.
+function actionTypeIcon(a){
+  if ((ACTIONS_REF.reactions||[]).some(x=>x.key===a.key)) return '↩';
+  if ((ACTIONS_REF.protocols||[]).some(x=>x.key===a.key)) return '≡';
+  if (isFreeAction(a)) return '○';
+  if (isFullAction(a)) return isFullTech(a) ? '◆' : '●';
+  if (isQuickTech(a)) return '◈';
+  return '◐';
 }
 // v288: тип действия по списку ACTIONS_REF (у записей типа нет);
 // действия в quick на деле свободные — их текст начинается с Free Action.
