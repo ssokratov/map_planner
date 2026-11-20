@@ -148,7 +148,7 @@
   /* v288: чипы действий/предметов, которые что-то даёт (Даёт:) — синие,
      чтобы отличаться от обычных янтарных чипов тегов. */
   .lic-view { line-height:1.6; }
-  .lic-chip { color:#ffa26b; cursor:pointer; }
+  .lic-chip { color:#c9c13b; cursor:pointer; }
   .tag.grant { border-color:var(--accent2); color:var(--accent2); display:inline-flex; align-items:center; }
   .tag.grant:hover { border-color:var(--accent2); }
   .tag.grant.weapon { border-color:var(--dim); color:var(--dim); }
@@ -823,7 +823,7 @@
         <button class="btn add" id="addLicenseBtn" style="margin-top:0" onclick="addLicense()" data-i18n="u236">+ КАСТОМ</button>
         <button class="btn" onclick="openSearch('license')" data-i18n="u237">🔍ПОИСК</button>
       </div>
-      <p class="hint" style="padding:8px 0 0" data-i18n="u093">License Level (LL) пилота: <span id="licenseLL"></span>, Grit: <span id="licenseGrit"></span> (½ LL)</p>
+      <p class="hint" style="padding:2px 0 0" data-i18n="u093">License Level (LL) пилота: <span id="licenseLL"></span>, Grit: <span id="licenseGrit"></span> (½ LL)</p>
       <p class="hint" style="padding:4px 0 0" id="licensesNote"></p>
     </div>
     <div class="card">
@@ -1002,7 +1002,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v334</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v335</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1342,10 +1342,11 @@ function refDlgClosed(){
   if (refDlgHist){ refDlgHist = false; if (!dlgPopClosing){ suppressNextPopstate = true; histBack(); } }
 }
 function dlgEnsureBase(from){
-  // Вид открывается свежим: база стека — поиск (из поиска) или пусто (из Правил
-  // и с главной, где «Назад» с единственного вида закрывает вид, как раньше).
+  // Вид открывается свежим: база стека — поиск (из поиска) или пусто (из Правил,
+  // с главной и с вкладки Пилота, где «Назад» с единственного вида закрывает вид,
+  // как раньше).
   if (searchViewOpen()) return;
-  searchDlgStack = (from === 'rules' || from === 'mech') ? [] : [{v:'search'}];
+  searchDlgStack = (from === 'rules' || from === 'mech' || from === 'pilot') ? [] : [{v:'search'}];
 }
 function renderSearchResults(q){
   frameDetailKey = null;
@@ -3989,12 +3990,13 @@ function renderLists(){
       ${[1,2,3].map(r=>`<option value="${r}" ${l.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')}</select>
     <button class="btn x" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>`).join('');
     } else {
-      // v332: в просмотре — корпорация + имя + ранг, жёлтым, через запятую; клик открывает карточку лицензии
+      // v332: в просмотре — корпорация + имя + ранг, желчным, через запятую; клик открывает карточку лицензии
+      // v335: происхождение 'pilot' — «Назад» из карточки закрывает вид, а не показывает поиск
       licEl.innerHTML = `<div class="lic-view">${S.pilot.licenses.map(l=>{
         const f = DB.frames[frameKey(l.name)];
         const corp = f && f.src ? f.src + ': ' : '';
         const rn = ['I','II','III'][l.rank-1] ? ' ' + ['I','II','III'][l.rank-1] : '';
-        return `<span class="lic-chip" role="button" onclick="showLicenseDetail('${esc(l.name)}','search')">${esc(corp + fd(l.name).n + rn)}</span>`;
+        return `<span class="lic-chip" role="button" onclick="showLicenseDetail('${esc(l.name)}','pilot')">${esc(corp + fd(l.name).n + rn)}</span>`;
       }).join(', ')}</div>`;
     }
   }
