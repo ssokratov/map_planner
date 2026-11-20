@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v299</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v300</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1664,9 +1664,9 @@ const PRESETS = [
     gear:['Light Hardsuit','Light A/C','Dataplating','Handheld Printer'] },
   { id:'blackbeard',
     ll:2, frame:'Blackbeard', license:{name:'Blackbeard', rank:2},
-    role:{ru:'Мясник', en:'Butcher'},
+    role:{ru:'Головорез', en:'Cutthroat'},
     roleDesc:{ru:'Ближний бой, захваты и разрывы', en:'Melee, grapples and tearing'},
-    mech:'Мясник', pilot:{name:'Гриша Волков', callsign:'Громила', background:'Бывший докер'},
+    mech:'Мясник', pilot:{name:'Гриша Медведев', callsign:'Громила', background:'Бывший докер'},
     hase:{hull:2, agility:2, systems:0, engineering:0},
     talents:[{name:'Brutal',rank:2},{name:'Skirmisher',rank:2},{name:'Vanguard',rank:1}],
     triggers:[{name:'Get a Hold of Something',bonus:2},{name:'Assault',bonus:2},{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Apply Fists to Faces',bonus:2},{name:'Get Somewhere Quickly',bonus:2}],
@@ -1675,7 +1675,7 @@ const PRESETS = [
     gear:['Assault Hardsuit','Medium A/C','Frag Grenades','Stims'] },
   { id:'tokugawa',
     ll:2, frame:'Tokugawa', license:{name:'Tokugawa', rank:2},
-    role:{ru:'Ронин', en:'Ronin'},
+    role:{ru:'Дуэлянт', en:'Duelist'},
     roleDesc:{ru:'Жаркий ближний бой на пределе', en:'Hot melee at the limit'},
     mech:'Ронин', pilot:{name:'Рю Танака', callsign:'Катана', background:'Бывший дуэлянт'},
     hase:{hull:0, agility:2, systems:0, engineering:2},
@@ -1686,9 +1686,9 @@ const PRESETS = [
     gear:['Light Hardsuit','Medium A/C','Stims','Thermite Charge'] },
   { id:'minotaur',
     ll:2, frame:'Minotaur', license:{name:'Minotaur', rank:2},
-    role:{ru:'Лабиринт', en:'Labyrinth'},
+    role:{ru:'Контролёр', en:'Controller'},
     roleDesc:{ru:'Хакер и контроль поля боя', en:'Hacker and battlefield control'},
-    mech:'Лабиринт', pilot:{name:'Маша Соколова', callsign:'Архитектор', background:'Бывший архитектор'},
+    mech:'Лабиринт', pilot:{name:'Маша Воронова', callsign:'Архитектор', background:'Бывший архитектор'},
     hase:{hull:2, agility:0, systems:2, engineering:0},
     talents:[{name:'Hacker',rank:2},{name:'Technophile',rank:2},{name:'Black Thumb',rank:1}],
     triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2}],
@@ -1697,9 +1697,9 @@ const PRESETS = [
     gear:['Light Hardsuit','Dataplating','Handheld Printer','Personal Drone'] },
   { id:'mourningcloak',
     ll:2, frame:'Mourning Cloak', license:{name:'Mourning Cloak', rank:2},
-    role:{ru:'Тень', en:'Shadow'},
+    role:{ru:'Ассасин', en:'Assassin'},
     roleDesc:{ru:'Скрытность и точные удары', en:'Stealth and precise strikes'},
-    mech:'Тень', pilot:{name:'Ника Волкова', callsign:'Шёпот', background:'Бывший разведчик'},
+    mech:'Тень', pilot:{name:'Ника Зайцева', callsign:'Шёпот', background:'Бывший разведчик'},
     hase:{hull:2, agility:2, systems:0, engineering:0},
     talents:[{name:'Hunter',rank:2},{name:'Spotter',rank:2},{name:'Gunslinger',rank:1}],
     triggers:[{name:'Take Someone Out',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2},{name:'Get Somewhere Quickly',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2}],
@@ -1708,9 +1708,9 @@ const PRESETS = [
     gear:['Stealth Hardsuit','Light A/C','Camo Cloth','Antiphoton Visor'] },
   { id:'napoleon',
     ll:2, frame:'Napoleon', license:{name:'Napoleon', rank:2},
-    role:{ru:'Бастион', en:'Bastion'},
+    role:{ru:'Цитадель', en:'Citadel'},
     roleDesc:{ru:'Непробиваемая оборона', en:'Impenetrable defense'},
-    mech:'Бастион', pilot:{name:'Дмитрий Орлов', callsign:'Титан', background:'Бывший охранник'},
+    mech:'Бастион', pilot:{name:'Алёша Попович', callsign:'Титан', background:'Бывший охранник'},
     hase:{hull:2, agility:0, systems:0, engineering:2},
     talents:[{name:'Juggernaut',rank:2},{name:'Vanguard',rank:2},{name:'House Guard',rank:1}],
     triggers:[{name:'Survive',bonus:2},{name:'Threaten',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Patch',bonus:2},{name:'Take Someone Out',bonus:2},{name:'Read a Situation',bonus:2}],
@@ -1719,9 +1719,9 @@ const PRESETS = [
     gear:['Heavy Hardsuit','Medium A/C','Patch','Stims'] },
   { id:'lancaster',
     ll:2, frame:'Lancaster', license:{name:'Lancaster', rank:2},
-    role:{ru:'Обоз', en:'Supply Train'},
+    role:{ru:'Тыловик', en:'Quartermaster'},
     roleDesc:{ru:'Поддержка и ремонт', en:'Support and repair'},
-    mech:'Обоз', pilot:{name:'Анна Ковалёва', callsign:'Запас', background:'Бывший инженер'},
+    mech:'Обоз', pilot:{name:'Анна Морозова', callsign:'Запас', background:'Бывший инженер'},
     hase:{hull:2, agility:0, systems:0, engineering:2},
     talents:[{name:'Engineer',rank:2},{name:'Vanguard',rank:2},{name:'House Guard',rank:1}],
     triggers:[{name:'Patch',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Survive',bonus:2},{name:'Hack or Fix',bonus:2},{name:'Invent or Create',bonus:2},{name:'Read a Situation',bonus:2}],
