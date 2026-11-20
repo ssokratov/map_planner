@@ -1002,7 +1002,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v332</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v333</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1711,6 +1711,17 @@ const PRESETS = [
     talents:[{name:'Hacker',rank:2},{name:'Technophile',rank:2},{name:'Black Thumb',rank:1}],
     triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2}],
     systems:['Viral Logic Suite','Aggressive System Sync','Mesmer Charges','Metafold Carver','Servant-Class NHP'],
+    mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
+    gear:['Light Hardsuit','Dataplating','Handheld Printer','Personal Drone'] },
+  { id:'calendula',
+    ll:2, frame:'Calendula', license:{name:'Minotaur', rank:2},
+    role:{ru:'Контролёр', en:'Controller'},
+    roleDesc:{ru:'Проклятия и неосязаемость', en:'Curses and intangibility'},
+    mech:'Проклятие', pilot:{name:'Ольга Смирнова', callsign:'Ведьма', background:'Бывший архивариус'},
+    hase:{hull:2, agility:0, systems:2, engineering:0},
+    talents:[{name:'Hacker',rank:2},{name:'Technophile',rank:2},{name:'Black Thumb',rank:1}],
+    triggers:[{name:'Hack or Fix',bonus:2},{name:'Investigate',bonus:2},{name:'Read a Situation',bonus:2},{name:'Invent or Create',bonus:2},{name:'Spot',bonus:2},{name:'Act Unseen or Unheard',bonus:2}],
+    systems:['Viral Logic Suite','Aggressive System Sync','Mesmer Charges','Metafold Carver','Servant-Class NHP','Pattern-A Smoke Charges'],
     mounts:[{type:'Main/Aux',weapons:['Assault Rifle','Thermal Pistol']}],
     gear:['Light Hardsuit','Dataplating','Handheld Printer','Personal Drone'] },
   { id:'metalmark',
@@ -3002,7 +3013,10 @@ const ACTIONS_REF = {
      tx_en:'End the immobilization effect of the Ferrofluid Lance on both you and your target to knock them back 4 spaces in any direction.'},
     {key:'brutussshield', name:'Brutus’s Shield', ru:'Щит Брута', grant:{weapon:'Brutus’s Shield'},
      tx_ru:'Как протокол, вы можете поднять этот щит, чтобы получить сверхщит в размере 4 + Стойкость до начала вашего следующего хода, после чего вы теряете весь сверхщит. Пока у вас есть этот сверхщит, вы замедлены.\nВы не можете использовать этот протокол два хода подряд.',
-     tx_en:'As a protocol, you may raise this Shield to gain 4+Grit Overshield until the start of your next turn, at which point you lose all Overshield. You are Slowed while you have this Overshield.\nYou may not use this Protocol two turns in a row.'}
+     tx_en:'As a protocol, you may raise this Shield to gain 4+Grit Overshield until the start of your next turn, at which point you lose all Overshield. You are Slowed while you have this Overshield.\nYou may not use this Protocol two turns in a row.'},
+    {key:'grammatonmantle', name:'Grammaton Mantle', ru:'Мантия грамматона', grant:{frame:'Calendula'},
+     tx_ru:'Протокол: «Календула» может стать неосязаемой до начала своего следующего хода.',
+     tx_en:'Protocol: The Calendula can become INTANGIBLE until the start of its next turn.'}
   ],
   quick: [
     {key:'activaterestockdrone', name:'Activate Restock Drone', ru:'Активировать дрон снабжения', grant:{system:'Restock Drone'},
@@ -3532,7 +3546,13 @@ const ACTIONS_REF = {
      tx_en:'Free Action: 1/round, when you plant a Mine (even using the Assault Launcher trait), plant up to two other Mines in free spaces adjacent to yourself as a free action.'},
     {key:'kidddeploy', name:'Kidd Rapid Deployment', ru:'Быстрое развёртывание «Кидда»', grant:{frame:'Kidd'},
      tx_ru:'Свободное действие: В первый ход любой боевой сцены разверните или активируйте любую одну систему с тегом дрона или развёртываемого устройства как свободное действие.',
-     tx_en:'Free Action: On its first turn in any combat scene, deploy or activate any one system with the drone or deployable tag as a free action.'}
+     tx_en:'Free Action: On its first turn in any combat scene, deploy or activate any one system with the drone or deployable tag as a free action.'},
+    {key:'weighinghearts', name:'Weighing of Inequitable Hearts', ru:'Взвешивание несправедливых сердец', grant:{frame:'Calendula'},
+     tx_ru:'Быстрое действие: Один враждебный персонаж и один союзный персонаж, оба в дальности 5 и линии видимости от вас или пустой оболочки, становятся неосязаемыми до конца вашего следующего хода. Для срабатывания этого эффекта необходимо выбрать двух персонажей. Эта способность эффективна и возвращает 1 ядро в конце любой сцены, в которой эта способность была использована.',
+     tx_en:'Quick Action: One hostile character and one allied character both within Range 5 and line of sight to you or a void husk, become INTANGIBLE until the end of your next turn. Two characters must be chosen for this effect to occur. This ability is Efficient and will refund 1 Core Point at the end of any scene in which this ability was used.'},
+    {key:'execrate', name:'Execrate', ru:'Проклясть', grant:{frame:'Calendula'}, per:'1/round',
+     tx_ru:'Быстрая техника: 1/раунд вы можете нацелиться на другого персонажа в линии видимости в дальности 3 от пустой оболочки, изгоняя его в промежуточное пространство. Союзные персонажи могут сами решать, будут ли они затронуты, а враждебные персонажи могут избежать воздействия, преуспев в спасброске систем. Изгнанные персонажи существуют в сумрачном сером царстве, становясь неосязаемыми. Этот эффект длится, пока изгнанный персонаж не переместится вплотную к пустой оболочке или не начнёт свой ход вплотную к пустой оболочке, что возвращает его в физическое пространство и снимает неосязаемость.',
+     tx_en:'Quick Tech: 1/round You may target another character in line of sight within Range 3 of a void husk, banishing them to an interstitial space. Allied characters can choose whether or not to be affected, and hostile characters can avoid being affected by succeeding on a SYSTEMS save. Banished characters exist in a shadowy gray realm, making them INTANGIBLE. This effect lasts until the banished character moves adjacent or starts their turn adjacent to a void husk, either of which returns them to physical space and clears INTANGIBLE.'}
   ]
 };
 // Проверка, есть ли у игрока фича, дающая действие (талант с нужным рангом или система).
