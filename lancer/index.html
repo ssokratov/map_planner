@@ -1003,7 +1003,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v327</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v328</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1427,7 +1427,7 @@ Object.assign(STR, {
   "new_pilot": {"ru": "Новый пилот", "en": "New pilot"},
   "start_title": {"ru": "Выбери своего меха", "en": "Choose your mech"},
   "start_blank": {"ru": "Пустой лист", "en": "Blank sheet"},
-  "start_blank_desc": {"ru": "Голый Эверест LL0 — ничего не выбрано", "en": "A bare LL0 Everest — nothing picked yet"},
+  "start_blank_desc": {"ru": "Голый Эверест LL0", "en": "A bare LL0 Everest"},
   "start_replace": {"ru": "Заменить текущего пилота «{N}» на «{M}»? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with «{M}»? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
   "start_replace_blank": {"ru": "Заменить текущего пилота «{N}» пустым листом? Данные «{N}» будут потеряны. Чтобы сохранить его, сначала сделай «Экспорт JSON» в меню.", "en": "Replace the current pilot «{N}» with a blank sheet? Their data will be lost. To keep them, use «Export JSON» in the menu first."},
   "start_replace_drive": {"ru": "Заменить текущего пилота «{N}» на «{M}»? «{N}» останется в списке профилей (Google Drive) — его можно будет вернуть кнопкой «Активировать».", "en": "Replace the current pilot «{N}» with «{M}»? «{N}» will stay in the profile list (Google Drive) — you can bring them back with «Activate»."},
@@ -1442,6 +1442,7 @@ Object.assign(STR, {
   "msg_core": {"ru": "Core бонусы: выбрано {H} из {N}", "en": "Core Bonuses: {H} of {N} chosen"},
   "msg_hase": {"ru": "HASE: распределено {H} из {N}", "en": "HASE: {H} of {N} assigned"},
   "msg_ready": {"ru": "готово ✓", "en": "complete ✓"},
+  "msg_nothing": {"ru": "ничего не выбрано", "en": "nothing selected"},
   "msg_missing": {"ru": "не хватает {D}", "en": "missing {D}"},
   "msg_no_weapon": {"ru": "оружие не выбрано", "en": "no weapon selected"},
   "msg_over": {"ru": "перерасход {D}", "en": "overspent by {D}"}
@@ -1616,7 +1617,7 @@ STR.pilot_gear_search = {ru:'Найти снаряжение: название �
 STR.pilot_gear_title = {ru:'Снаряжение из базы', en:'Pilot equipment database'};
 
 const DEFAULTS = {
-  pilot: { name:'', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{}, compconSource:null, compconSelectedMechId:'' },
+  pilot: { name:'Алёша Попович', callsign:'', grit:0, background:'', hp:6, hpMax:6, hull:0, agility:0, systems:0, engineering:0, licenses:[], licensesNote:'', coreBonuses:[], loadouts:[], activeLoadout:0, specialEquipment:{}, compconSource:null, compconSelectedMechId:'' },
   mech: { name:'', frame:'Everest', size:1, speed:4, hp:10, hpMax:10, structure:4, structureMax:4, stress:4, stressMax:4, heat:0, heatMax:6, repairs:5, repairsMax:5, overcharge:0, coreUsed:0, armor:0, evasion:8, edef:8, sensors:10, attack:0, saveTarget:10, tech:0, sp:6, coreSystem:'Hyperspec Fuel Injector', coreDesc:'Active — Power Up (Protocol, Encounter): For the rest of this scene, you gain +1 Accuracy on all attacks, checks, and saves; additionally, 1/turn, you can Boost as a free action.', traits:'Initiative: 1/scene the Everest may take any quick action as a free action.\n\nReplaceable Parts: While resting, the Everest can be repaired at a rate of 1 Repair per 1 structure damage, instead of 2 Repairs.', notes:'' },
   triggers: [],
   talents: [],
@@ -1625,7 +1626,7 @@ const DEFAULTS = {
     {type:'Flex', weapons:[]},
     {type:'Heavy', weapons:[]}
   ],
-  systems: [{name:'Pattern-B HEX Charges',sp:2,desc:'Frag Grenade (Quick): Throw a Frag Grenade within Range 5. All characters within a Blast 1 area must pass an Agility save or take 1d6 Explosive damage. On a success, they take half damage.\n\nExplosive Mine (Mine, Quick, Burst 1): All characters within a Burst 1 area must pass an Agility save or take 2d6 Explosive damage. On a success, they take half damage.'},{name:'Rapid Burst Jump Jet System',sp:2,desc:'You can fly when you Boost; however, you must end the movement on the ground or another solid surface, or else immediately begin falling.'},{name:'Type-3 Projected Shield',sp:2,desc:'Project Shield (Protocol): Nominate a character within line of sight: all ranged or melee attacks that they make against you or that you make against them gain +2 Difficulty until the start of your next turn.\n\nThe GMS Type-3 Projected Shield traps and denies incoming projectiles by projecting an aggressive, superpositional anti-ballistic barrier.'}],
+  systems: [], // v328: чистый лист — честно ничего не выбрано (были 3 стартовые GMS-системы на 6 SP)
   statuses: [],
   // v240: редактирование по умолчанию ВЫКЛЮЧЕНО везде (новый персонаж /
   // сброс — чистый вид без кнопок правки; включается тоглом-гаечным ключом).
@@ -1650,7 +1651,7 @@ const PRESETS = [
     ll:0, frame:'Sagarmatha',
     role:{ru:'Танк', en:'Tank'},
     roleDesc:{ru:'Держит удар и прикрывает', en:'Takes hits and covers allies'},
-    mech:'Стена', pilot:{name:'Борис Волков', callsign:'Крепость', background:'Бывший телохранитель'},
+    mech:'Стена', pilot:{name:'Добрыня Никитич', callsign:'Крепость', background:'Бывший телохранитель'},
     hase:{hull:2, agility:0, systems:0, engineering:0},
     talents:[{name:'Juggernaut',rank:1},{name:'Vanguard',rank:1},{name:'House Guard',rank:1}],
     triggers:[{name:'Survive',bonus:2},{name:'Lead or Inspire',bonus:2},{name:'Threaten',bonus:2},{name:'Patch',bonus:2}],
@@ -5314,11 +5315,18 @@ function updateSpCounter(){
   const used = S.systems.reduce((a,s)=>a+sysSp(s),0) + S.mounts.reduce((a,m)=>a+m.weapons.reduce((b,w)=>b+weapSp(w),0),0); // v255: + SP всех пушек на всех маунтах (включая Integrated и встроенное оружие)
   const total = +get('mech.sp')||0;
   const free = total - used;
-  spEl.textContent = L('sp_used') + used + L('sp_of') + total + ' — ' + (free >= 0 ? L('msg_ready') : L('msg_over').replace('{D}', -free));
-  spEl.style.color = free < 0 ? '#ff6b6b' : '#51cf66';
-  // v294: как сообщения готовности — зелёное только в редакторе систем, перерасход виден всегда
+  // v328: 0 SP — ничего не выбрано, это НЕ «готово» (янтарь, а не зелень);
+  // строка видна и без редактирования, иначе не видно, что системы надо выбрать
+  let msg, color;
+  if (free < 0){ msg = L('msg_over').replace('{D}', -free); color = '#ff6b6b'; }
+  else if (used === 0){ msg = L('msg_nothing'); color = '#ffa26b'; }
+  else { msg = L('msg_ready'); color = '#51cf66'; }
+  spEl.textContent = L('sp_used') + used + L('sp_of') + total + ' — ' + msg;
+  spEl.style.color = color;
+  // v294: как сообщения готовности — зелёное только в редакторе систем, перерасход виден всегда;
+  // v328: «ничего не выбрано» тоже видно всегда
   const row = document.getElementById('spCounterRow');
-  if (row) row.style.display = (free >= 0 && !editOn('systems')) ? 'none' : '';
+  if (row) row.style.display = (free >= 0 && used > 0 && !editOn('systems')) ? 'none' : '';
 }
 // Бонус к Limited от Engineering (корбук, HASE): +1 к максимуму использований любого лимитного снаряжения за каждые 2 очка.
 function limBonus(){ return Math.floor((+get('pilot.engineering')||0) / 2); }
@@ -6320,9 +6328,11 @@ function resetAll(){
 // больше не открывается сам при первом запуске (его кнопка осталась в футере);
 // «Сбросить всё» переименовано в «Новый пилот» и открывает этот же экран.
 function isFreshPilot(){
-  return !S.pilot.name && !S.pilot.callsign && !S.pilot.background
+  // v328: имя по умолчанию — Алёша Попович (чистый лист), оно тоже считается «свежим»;
+  // систем в чистом листе нет, так что пустые системы — тоже признак свежего пилота
+  return (!S.pilot.name || S.pilot.name === DEFAULTS.pilot.name) && !S.pilot.callsign && !S.pilot.background
     && S.pilot.licenses.length === 0 && S.talents.length === 0 && S.triggers.length === 0
-    && !S.mech.name;
+    && (S.systems||[]).length === 0 && !S.mech.name;
 }
 function maybeOpenStart(){
   // Автопоказ только для совсем нового персонажа и пока выбор не сделан.
@@ -6345,8 +6355,14 @@ function renderStart(){
   if (!box) return;
   const en = lang() === 'en';
   const cards = [];
+  // v328: чистый лист — как карточка пресета: имя пилота по умолчанию, статус, корп+фрейм, голый Эверест
+  const blankFr = fd('Everest');
+  const blankF = DB.frames[frameKey('Everest')];
+  const blankCorpFrame = (blankF && blankF.src ? blankF.src + ' · ' : '') + blankFr.n;
   cards.push(`<button class="preset-card" onclick="applyBlank()">`
-    + `<b>${esc(L('start_blank'))}</b><br>`
+    + `<b>${esc(L('start_blank'))} · LL0</b><br>`
+    + `<span class="dim">${esc(DEFAULTS.pilot.name)} — ${esc(L('msg_nothing'))}</span><br>`
+    + `<span class="dim">${esc(blankCorpFrame)}</span><br>`
     + `<span class="dim">${esc(L('start_blank_desc'))}</span></button>`);
   PRESETS.forEach(p=>{
     const role = en ? p.role.en : p.role.ru;
