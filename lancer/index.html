@@ -996,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v310</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v311</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1932,6 +1932,17 @@ function migrate(d){
   // v52: пустые таланты/триггеры больше не создаются; убрать их и из старых сейвов
   if (Array.isArray(d.talents)) d.talents = d.talents.filter(t => (t.name||'').trim() !== '');
   if (Array.isArray(d.triggers)) d.triggers = d.triggers.filter(t => (t.name||'').trim() !== '');
+  // v310: ZF4 SOLIDCORE — описание переписано в v309 (был один и тот же текст
+  // 4 раза подряд, по блоку на профиль). У старых сейвов сохранённое desc —
+  // старый текст, и dispVal принимает его за правку пользователя (не совпадает
+  // с новым текстом базы), поэтому карточка показывает «чумачечий» текст.
+  // Сбрасываем его к базе; настоящая правка пользователя «Profile —» не содержит.
+  if (Array.isArray(d.mounts)) for (const m of d.mounts) for (const w of (m.weapons||[])) {
+    if (w && w.name === 'ZF4 SOLIDCORE' && typeof w.desc === 'string' && (w.desc.includes('Profile —') || w.desc.includes('Профиль —'))) {
+      const dbw = (typeof DB !== 'undefined' && DB.weapons) ? DB.weapons.find(x=>x.n==='ZF4 SOLIDCORE') : null;
+      if (dbw) w.desc = dbw.x;
+    }
+  }
 }
 function load(){
   try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); migrate(d); return d; } } catch(e){}
