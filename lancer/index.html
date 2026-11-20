@@ -1002,7 +1002,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v325</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v326</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3720,7 +3720,9 @@ function openCustomWeaponDlg(mi){
 function addCustomWeapon(){
   const name = (document.getElementById('cwName').value||'').trim();
   if (!name) { alert(L('custom_name_needed')); return; }
-  S.mounts[customWeaponMount].weapons.push({name, dmg:(document.getElementById('cwDmg').value||'').trim(), range:(document.getElementById('cwRange').value||'').trim(), desc:(document.getElementById('cwDesc').value||'').trim()});
+  const m = S.mounts[customWeaponMount];
+  if (!m || m.type==='Integrated') return; // v326: во встроенный маунт оружие не добавляется — его потом нельзя удалить
+  m.weapons.push({name, dmg:(document.getElementById('cwDmg').value||'').trim(), range:(document.getElementById('cwRange').value||'').trim(), desc:(document.getElementById('cwDesc').value||'').trim()});
   document.getElementById('customWeaponDlg').close();
   save(); renderLists();
 }
@@ -3912,7 +3914,7 @@ function renderLists(){
       ${em ? `<div class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</div>` : ''}
       ${rows}
       ${mt.weapons.length === 0 ? `<div class="mount-empty">${esc(L('msg_no_weapon'))}</div>` : ''}
-      ${em ? `<div class="row" style="margin-top: 10px;"><button class="btn" onclick="openCustomWeaponDlg(${mi})">${esc(L('u236'))}</button>
+      ${em && !isInt ? `<div class="row" style="margin-top: 10px;"><button class="btn" onclick="openCustomWeaponDlg(${mi})">${esc(L('u236'))}</button>
         <button class="btn" onclick="openSearch('weapon', ${mi})">${esc(L('u237'))}</button></div>` : ''}
     </div>`;
   }).join('');
@@ -4013,6 +4015,8 @@ function showWeaponResults(mi, q, box){
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
 }
 function addWeaponByIndex(mi, i){
+  const m = S.mounts[mi];
+  if (!m || m.type==='Integrated') return; // v326: во встроенный маунт оружие не добавляется — его потом нельзя удалить
   const w = DB.weapons[i];
   const row = {name:w.n, dmg:w.d, range:w.r, desc:w.x};
   const lim = weapLim(row);
