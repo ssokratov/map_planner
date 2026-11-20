@@ -467,7 +467,7 @@
   /* v309: слайдер профиля встроенной пушки — круглая янтарная ручка, подписи остановок */
   /* v313: названия профиля — в той же строке, что и слайдер (у 2 профилей — по бокам от него), чтобы слайдер не был таким длинным */
   .prof-row { gap:10px; flex-wrap:nowrap; }
-  .prof-slider { flex:1 1 auto; min-width:80px; -webkit-appearance:none; appearance:none; background:transparent; height:32px; cursor:pointer; touch-action:pan-y; }
+  .prof-slider { flex:1 1 auto; min-width:80px; max-width:120px; -webkit-appearance:none; appearance:none; background:transparent; height:32px; cursor:pointer; touch-action:pan-y; }
   .prof-slider::-webkit-slider-runnable-track { height:4px; background:var(--line); border-radius:2px; }
   .prof-slider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--accent); border:2px solid var(--panel); margin-top:-9px; }
   .prof-slider::-moz-range-track { height:4px; background:var(--line); border-radius:2px; }
@@ -996,7 +996,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v316</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v317</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3870,12 +3870,13 @@ function renderLists(){
     const wlim = weapLim(w);
     const wlimU = weapLimUnknown(w);
     const wleft = weapLeft(w);
-    const wtg = weapTags(w);
-    const wtgVis = noUnique(wtg); // v288: «Уникальное» — не чип, а текст в lab перед SP
     const dbw = findWeapon(w.name);
     const wDisp = dbw ? wd(dbw).n : w.name;
     const profDef = weapProfDef(w); // v309: живой профиль встроенной пушки
     const profOpt = profDef ? profDef.opts[weapProfIdx(w)] : null;
+    // v317: теги профиля (если заданы) вместо тегов из базы — профиль может их менять
+    const wtg = (profOpt && profOpt.tags) ? profOpt.tags : weapTags(w);
+    const wtgVis = noUnique(wtg); // v288: «Уникальное» — не чип, а текст в lab перед SP
     const dmgDisp = profOpt ? (lang()==='en' ? profOpt.d : profOpt.dr) : (dbw ? dispVal(w.dmg, dbw.d, dbw.dr) : w.dmg);
     const rngDisp = profOpt ? (lang()==='en' ? profOpt.r : profOpt.rr) : (dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range);
     const descDisp = dbw ? dispVal(w.desc, dbw.x, dbw.xr) : w.desc;
@@ -5337,17 +5338,17 @@ const WEAPON_PROFILES = {
   'HHS-075 “Flayer” Shotgun': {
     label: {ru:'Профиль', en:'Profile'},
     opts: [
-      {tag:'Стандарт', tagEn:'Standard', d:'1d6+1 Kinetic', dr:'1d6+1 кинетический', r:'Range 3, Threat 3', rr:'Дальность 3, Угроза 3'},
-      {tag:'Авто-чок', tagEn:'Autochoke', d:'1d6+2 Kinetic', dr:'1d6+2 кинетический', r:'Cone 3, Threat 3', rr:'Конус 3, Угроза 3'},
+      {tag:'Стандарт', tagEn:'Standard', d:'1d6+1 Kinetic', dr:'1d6+1 кинетический', r:'Range 3, Threat 3', rr:'Дальность 3, Угроза 3', tags:[['tg_inaccurate',null],['tg_knockback',2]]},
+      {tag:'Авто-чок', tagEn:'Autochoke', d:'1d6+2 Kinetic', dr:'1d6+2 кинетический', r:'Cone 3, Threat 3', rr:'Конус 3, Угроза 3', tags:[['tg_accurate',null],['tg_knockback',5]]},
     ],
     def: 0,
   },
   'Shock Claws': {
     label: {ru:'Профиль', en:'Profile'},
     opts: [
-      {tag:'Обычные', tagEn:'Normal', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 1', rr:'Угроза 1'},
-      {tag:'Повреждённые', tagEn:'Damaged', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 2', rr:'Угроза 2'},
-      {tag:'Разрушенные', tagEn:'Ruined', d:'4d6+6 Energy', dr:'4d6+6 энергетический', r:'Threat 2', rr:'Угроза 2'},
+      {tag:'Обычные', tagEn:'Normal', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 1', rr:'Угроза 1', tags:[['tg_ap',null],['tg_accurate',null],['tg_overkill',1]]},
+      {tag:'Повреждённые', tagEn:'Damaged', d:'3d6+6 Energy', dr:'3d6+6 энергетический', r:'Threat 2', rr:'Угроза 2', tags:[['tg_ap',null],['tg_accurate',null],['tg_overkill',1]]},
+      {tag:'Разрушенные', tagEn:'Ruined', d:'4d6+6 Energy', dr:'4d6+6 энергетический', r:'Threat 2', rr:'Угроза 2', tags:[['tg_ap',null],['tg_accurate',null],['tg_overkill',1]]},
     ],
     def: 0,
   },
