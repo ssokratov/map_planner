@@ -1003,7 +1003,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v328</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v329</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1443,6 +1443,7 @@ Object.assign(STR, {
   "msg_hase": {"ru": "HASE: распределено {H} из {N}", "en": "HASE: {H} of {N} assigned"},
   "msg_ready": {"ru": "готово ✓", "en": "complete ✓"},
   "msg_nothing": {"ru": "ничего не выбрано", "en": "nothing selected"},
+  "msg_free": {"ru": "свободно {D}", "en": "free {D}"},
   "msg_missing": {"ru": "не хватает {D}", "en": "missing {D}"},
   "msg_no_weapon": {"ru": "оружие не выбрано", "en": "no weapon selected"},
   "msg_over": {"ru": "перерасход {D}", "en": "overspent by {D}"}
@@ -5316,17 +5317,19 @@ function updateSpCounter(){
   const total = +get('mech.sp')||0;
   const free = total - used;
   // v328: 0 SP — ничего не выбрано, это НЕ «готово» (янтарь, а не зелень);
-  // строка видна и без редактирования, иначе не видно, что системы надо выбрать
+  // v329: SP трекается до конца, как остальные счётчики — при частичном использовании
+  // показывается, сколько свободно; прячется только полностью использованный («готово»)
   let msg, color;
   if (free < 0){ msg = L('msg_over').replace('{D}', -free); color = '#ff6b6b'; }
   else if (used === 0){ msg = L('msg_nothing'); color = '#ffa26b'; }
+  else if (free > 0){ msg = L('msg_free').replace('{D}', free); color = '#ffa26b'; }
   else { msg = L('msg_ready'); color = '#51cf66'; }
   spEl.textContent = L('sp_used') + used + L('sp_of') + total + ' — ' + msg;
   spEl.style.color = color;
   // v294: как сообщения готовности — зелёное только в редакторе систем, перерасход виден всегда;
-  // v328: «ничего не выбрано» тоже видно всегда
+  // v328: «ничего не выбрано» тоже видно всегда; v329: свободные SP тоже видны всегда
   const row = document.getElementById('spCounterRow');
-  if (row) row.style.display = (free >= 0 && used > 0 && !editOn('systems')) ? 'none' : '';
+  if (row) row.style.display = (free === 0 && used > 0 && !editOn('systems')) ? 'none' : '';
 }
 // Бонус к Limited от Engineering (корбук, HASE): +1 к максимуму использований любого лимитного снаряжения за каждые 2 очка.
 function limBonus(){ return Math.floor((+get('pilot.engineering')||0) / 2); }
@@ -6355,15 +6358,15 @@ function renderStart(){
   if (!box) return;
   const en = lang() === 'en';
   const cards = [];
-  // v328: чистый лист — как карточка пресета: имя пилота по умолчанию, статус, корп+фрейм, голый Эверест
+  // v328: чистый лист — как карточка пресета: имя пилота по умолчанию, статус, корп+фрейм
+  // (v329: строка «Голый Эверест LL0» убрана — не нужна)
   const blankFr = fd('Everest');
   const blankF = DB.frames[frameKey('Everest')];
   const blankCorpFrame = (blankF && blankF.src ? blankF.src + ' · ' : '') + blankFr.n;
   cards.push(`<button class="preset-card" onclick="applyBlank()">`
     + `<b>${esc(L('start_blank'))} · LL0</b><br>`
     + `<span class="dim">${esc(DEFAULTS.pilot.name)} — ${esc(L('msg_nothing'))}</span><br>`
-    + `<span class="dim">${esc(blankCorpFrame)}</span><br>`
-    + `<span class="dim">${esc(L('start_blank_desc'))}</span></button>`);
+    + `<span class="dim">${esc(blankCorpFrame)}</span></button>`);
   PRESETS.forEach(p=>{
     const role = en ? p.role.en : p.role.ru;
     const desc = en ? p.roleDesc.en : p.roleDesc.ru;
