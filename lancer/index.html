@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v304</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v305</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3740,7 +3740,8 @@ function renderLists(){
     const dmgDisp = dbw ? dispVal(w.dmg, dbw.d, dbw.dr) : w.dmg;
     const rngDisp = dbw ? dispVal(w.range, dbw.r, dbw.rr) : w.range;
     const descDisp = dbw ? dispVal(w.desc, dbw.x, dbw.xr) : w.desc;
-    const meta = [dmgDisp, rngDisp].filter(x=>x).join(' · ');
+    const typeDisp = dbw ? wd(dbw).t : '';
+    const meta = [typeDisp, dmgDisp, rngDisp].filter(x=>x).join(' · ');
     const wsp = weapSp(w); // v255: SP пушки — в строке lab, чтобы счётчик был проверяем
     const lab = [dbw ? wd(dbw).lab : L('u149'), isUniqueTags(wtg) ? tagd('tg_unique').n : '', wsp ? wsp + ' SP' : ''].filter(x=>x).join(' · ');
     const wGrants = grantsChipsHtml('weapon', w.name, 0, true); // v288: действия от оружия — как у систем
@@ -3842,7 +3843,7 @@ function initDb(){
 }
 function weaponLabel(w){
   const d = wd(w);
-  return [d.d, d.r, d.g, d.lab].filter(x=>x).join(' · ');
+  return [d.t, d.d, d.r, d.g, d.lab].filter(x=>x).join(' · ');
 }
 function weaponMatches(w, q){
   const toks = (q||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -3863,7 +3864,7 @@ function showWeaponResults(mi, q, box){
     const d = wd(w);
     return `
     <div class="dbrow">
-      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.d, d.r].filter(x=>x).join(' · '))}</span><span class="dim">${esc([d.g, d.lab, (w.sp ? w.sp + ' SP' : '')].filter(x=>x).join(' · '))}</span></div>
+      <div class="dbinfo"><b>${esc(d.n)}</b><span>${esc([d.t, d.d, d.r].filter(x=>x).join(' · '))}</span><span class="dim">${esc([d.g, d.lab, (w.sp ? w.sp + ' SP' : '')].filter(x=>x).join(' · '))}</span></div>
       <button class="btn search-add" style="flex:0 0 auto" onclick="addWeaponByIndex(${mi},${i});closeSearchDlg()">＋</button>
     </div>`;
   }).join('') + (matches.length === 0 ? `<div class="dbmore">${L('not_found')}</div>` : '');
@@ -4772,7 +4773,7 @@ function showRef(kind, key){
   } else if (kind === 'weapon'){
     const w = findWeapon(key); if (!w) return;
     const d = wd(w); name = d.n;
-    const wlab = [d.lab, isUniqueTags(w.tg) ? tagd('tg_unique').n : '', (w.sp ? w.sp + ' SP' : '')].filter(Boolean).join(' · '); // v255: SP пушки — в строке lab
+    const wlab = [d.t, d.lab, isUniqueTags(w.tg) ? tagd('tg_unique').n : '', (w.sp ? w.sp + ' SP' : '')].filter(Boolean).join(' · '); // v255: SP пушки — в строке lab
     body = [wlab, [d.d, d.r].filter(Boolean).join(', '), d.x].filter(Boolean).join('\n\n');
   } else if (kind === 'talent'){
     const t = DB.talents.find(x=>x.n === key); if (!t) return;
