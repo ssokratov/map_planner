@@ -51,7 +51,7 @@ jobs:
       - name: Copy Lancer tracker into the site
         run: cp -r lancer build/web/lancer
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: build/web
       - name: Deploy to GitHub Pages
