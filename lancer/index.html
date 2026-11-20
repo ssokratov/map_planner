@@ -986,7 +986,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v307</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v308</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -3725,10 +3725,11 @@ function renderLists(){
       ${tg ? `<div class="tags" style="margin-top:2px">${tg}</div>` : ''}
     </div>`;
   }).join('');
-  document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>{
+  document.getElementById('mounts').innerHTML = S.mounts.map((mt,mi)=>({mt,mi})).sort((a,b)=> (a.mt.type==='Integrated'?0:1)-(b.mt.type==='Integrated'?0:1)).map(({mt,mi})=>{
     const allowed = MOUNT_ALLOWED[mt.type] || MOUNT_ALLOWED['Main'];
     const ms = MOUNT_STYLE[mt.type] || MOUNT_STYLE['Main'];
     const em = editOn('mounts');
+    const isInt = mt.type==='Integrated'; // v308: встроенный маунт фрейма — всегда первый, его и его оружие нельзя удалить и нельзя сменить его тип
     const rows = mt.weapons.map((w,wi)=>{
     const wlim = weapLim(w);
     const wlimU = weapLimUnknown(w);
@@ -3750,7 +3751,7 @@ function renderLists(){
     return `
     <div class="wcard${wOpen ? ' open' : ''}${w.destroyed ? ' destroyed' : ''}" data-weap="${esc(wKey)}">
       <div class="weap-head" onclick="toggleWeapCard(this)">
-        <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${em ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
+        <div class="weap-head-row"><span class="weap-arrow">▶</span><span class="weap-name">${esc(wDisp)}</span>${em && !isInt ? `<button class="btn x" style="flex:0 0 auto" onclick="event.stopPropagation();delWeapon(${mi},${wi})">✕</button>` : ''}</div>
         ${meta ? `<div class="wmeta">${esc(meta).replace(/(\d+d\d+(?:\+\d+)?|\d+)/g, '<span class="wnum">$1</span>')}</div>` : ''}
         <div class="wmeta">${esc(lab)}</div>
         ${(wtgVis.length || w.destroyed || weapLoading(w)) ? `<div class="weap-head-sub">${w.destroyed ? `<button class="tag warn" style="flex:0 0 auto" onclick="event.stopPropagation();showDestroyedRepair('weapon',${mi},${wi})">${esc(L('pilot_equip_destroyed'))}</button>` : ''}${weapLoading(w) ? `<button class="tag ${weapLoaded(w) ? 'load-on' : 'load-off'}" style="flex:0 0 auto" onclick="event.stopPropagation();toggleWeapLoaded(${mi},${wi})">${weapLoaded(w) ? `<span class="load-ico" aria-hidden="true">✓</span>${esc(L('u254'))}` : `<span class="load-ico" aria-hidden="true">✕</span>${esc(L('u255'))}`}</button>` : ''}${wtgVis.length ? `<span class="tags" style="display:inline-flex">${tagChips(wtgVis)}</span>` : ''}</div>` : ''}
@@ -3763,9 +3764,9 @@ function renderLists(){
     </div>`;
     }).join('');
     return `<div class="mount">
-      <div class="mount-head"><span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span>${em ? '' : `<span class="mb-name">${esc(mt.type)}</span>`}</span>${em ? `<select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
+      <div class="mount-head"><span class="mount-badge" title="${esc(mt.type)}" style="border-color:${ms.color};color:${ms.color};background:${ms.color}22"><span class="mb-ico">${ms.icon}</span>${em && !isInt ? '' : `<span class="mb-name">${esc(mt.type)}</span>`}</span>${em && !isInt ? `<select onchange="S.mounts[${mi}].type=this.value;save();renderLists()">
         ${MOUNT_TYPES.map(t=>`<option ${mt.type===t?'selected':''}>${t}</option>`).join('')}</select>` : ''}
-        ${em ? `<button class="btn danger" style="flex:0 0 auto" onclick="delMount(${mi})">✕</button>` : ''}</div>
+        ${em && !isInt ? `<button class="btn danger" style="flex:0 0 auto" onclick="delMount(${mi})">✕</button>` : ''}</div>
       ${em ? `<div class="mount-cap" style="color:${ms.color}">${mountCap(mt.type)}</div>` : ''}
       ${rows}
       ${mt.weapons.length === 0 ? `<div class="mount-empty">${esc(L('msg_no_weapon'))}</div>` : ''}
@@ -3909,7 +3910,7 @@ function syncNuclearCavalier(){
   if (weapLoading(row)) row.loaded = true;
   const m = (S.mounts||[]).find(m=>m.src==='nuc-cav');
   if (m) m.weapons.push(row);
-  else S.mounts.push({type:'Integrated', weapons:[row], src:'nuc-cav'});
+  else S.mounts.unshift({type:'Integrated', weapons:[row], src:'nuc-cav'});
 }
 function setTalentRank(i, v){
   if (!S.talents[i]) return;
@@ -3918,8 +3919,8 @@ function setTalentRank(i, v){
   save(); renderLists();
 }
 function addMount(){ S.mounts.push({type:'Flex', weapons:[]}); save(); renderLists(); }
-function delMount(mi){ const m = S.mounts[mi]; if (!m) return; if (!confirm(L('del_mount_confirm').replace('{M}', m.type))) return; S.mounts.splice(mi,1); save(); renderLists(); }
-function delWeapon(mi,wi){ S.mounts[mi].weapons.splice(wi,1); save(); renderLists(); }
+function delMount(mi){ const m = S.mounts[mi]; if (!m) return; if (m.type==='Integrated') return; if (!confirm(L('del_mount_confirm').replace('{M}', m.type))) return; S.mounts.splice(mi,1); save(); renderLists(); }
+function delWeapon(mi,wi){ const m = S.mounts[mi]; if (!m) return; if (m.type==='Integrated') return; m.weapons.splice(wi,1); save(); renderLists(); }
 function normFrame(s){ return (s||'').toLowerCase().replace(/[’‘`]/g, "'").trim(); }
 let pilotGearPickerType='Gear';
 function findPilotGear(item,data=item?.data||item){
@@ -5041,7 +5042,7 @@ function applyFrame(name){
     const w = DB.weapons.find(x=>x.n===nm);
     if (!w) return;
     let im = S.mounts.find(m=>m.type==='Integrated');
-    if (!im) { im = {type:'Integrated', weapons:[]}; S.mounts.push(im); }
+    if (!im) { im = {type:'Integrated', weapons:[]}; S.mounts.unshift(im); }
     im.weapons.push({name:w.n, dmg:w.d, range:w.r, desc:w.x});
   });
   set('mech.coreSystem', F.c);
@@ -6134,7 +6135,7 @@ function applyPreset(id){
     const w = DB.weapons.find(x=>x.n===nm);
     if (!w) return;
     let im = st.mounts.find(m=>m.type==='Integrated');
-    if (!im) { im = {type:'Integrated', weapons:[]}; st.mounts.push(im); }
+    if (!im) { im = {type:'Integrated', weapons:[]}; st.mounts.unshift(im); }
     im.weapons.push({name:w.n, dmg:w.d, range:w.r, desc:w.x});
   });
   // v296: снаряжение пилота из пресета (в описании карточки не показывается).
