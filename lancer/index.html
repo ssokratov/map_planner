@@ -574,7 +574,7 @@
      заменяет основной экран целиком (как отдельный таб), фон не скроллится,
      инпут — обычное видимое поле. Нижний отступ — под панель «Закрыть»,
      как у main под навбар. */
-  #searchView, #cbView, #pilotGearView, #startView { display:none; max-width:450px; margin:0 auto; padding:16px 16px 72px; }
+  #searchView, #cbView, #pilotGearView, #startView, #luView { display:none; max-width:450px; margin:0 auto; padding:16px 16px 72px; }
   .search-dlg { max-width:450px; margin:0 auto; }
   .btn.icon { padding:8px 12px; font-size:18px; line-height:1; }
   /* Плюс в кнопках добавления внутри поисков (v172): жёлтый, шрифт крупнее, а размер кнопки тот же,
@@ -582,18 +582,12 @@
   .btn.search-add { color:var(--hud-amber); font-size:22px; line-height:1; padding:8px 10px; border-color:var(--hud-amber-dim); }
   .btn.search-add:hover { border-color:var(--hud-amber); }
   .sub-h { margin:18px 0 8px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--hud-amber); }
-  #wizardOverlay, #luOverlay{ position:fixed; inset:0; z-index:60; display:none; align-items:flex-start; justify-content:center; background:rgba(0,0,0,.65); padding:16px; overflow-y:auto; }
   .wizard-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; width:min(100%,450px); min-width:0; max-width:450px; margin:24px auto; padding:16px; }
   .wizard-head{ display:flex; align-items:center; gap:8px; min-width:0; margin-bottom:12px; }
   .wizard-head h3{ flex:1 1 auto; min-width:0; margin:0; font-size:17px; line-height:1.25; overflow-wrap:anywhere; }
   .wizard-progress{ flex:0 0 auto; color:var(--dim); font-size:13px; white-space:nowrap; }
   .wizard-head > .btn{ flex:0 0 40px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0; }
   .wizard-body{ min-width:0; min-height:180px; }
-  .wizard-hase-hint{ margin:0 0 12px; padding:0 0 12px; border-bottom:1px solid var(--line); line-height:1.4; }
-  .wizard-hase-hint ul{ margin:8px 0 0; padding-left:20px; }
-  .wizard-hase-row{ display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; width:100%; min-width:0; }
-  .wizard-hase-row > span{ min-width:0; overflow-wrap:anywhere; }
-  .wizard-hase-row .counter.small{ flex:0 0 auto; min-width:0; }
   .wizard-foot{ display:flex; justify-content:space-between; gap:8px; margin-top:16px; }
   dialog#profilesDlg { width:calc(100% - 24px); max-width:450px; max-height:85vh; border:1px solid var(--line); border-top:2px solid var(--hud-amber); background:var(--panel); color:var(--text); padding:16px; }
   dialog#profilesDlg::backdrop { background:rgba(0,0,0,.7); }
@@ -980,7 +974,6 @@
     <div class="global-action-grid">
       <button class="btn" onclick="openStart()" data-i18n="new_pilot">Новый пилот</button>
       <button class="btn" onclick="openLevelUp()" data-i18n="u213">Левел ап</button>
-      <button class="btn primary" onclick="openWizard()" data-i18n="u186">Мастер сборки</button>
       <div class="export-dropdown" id="exportDropdown">
         <button class="btn" type="button" onclick="toggleExportMenu(event)" aria-haspopup="true" aria-expanded="false"><span data-i18n="u141">Экспорт JSON</span> <span aria-hidden="true">▴</span></button>
         <div class="export-dropdown-menu" role="menu">
@@ -1002,7 +995,7 @@
     <div class="footer-links">
       <a href="https://ssokratov.github.io/map_planner/lancer/privacy.html">Privacy Policy</a><span class="sep" aria-hidden="true">·</span>
       <a href="https://ssokratov.github.io/map_planner/lancer/terms.html">Terms of Service</a>
-      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v338</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
+      <span class="sep" aria-hidden="true">·</span><span class="dim global-version" style="color: var(--dim);">v339</span><span class="sep" aria-hidden="true">·</span><button type="button" class="toggle" id="langToggle" onclick="toggleLang()" aria-label="Language / Язык"><span class="lang-opt" data-lang="ru">RUS</span><span class="lang-opt" data-lang="en">ENG</span><span class="knob"></span></button>
     </div>
   </div>
 </main>
@@ -1128,21 +1121,7 @@
   <p class="profile-status">Профили Drive хранятся в папке «Lancer Tracker» в вашем Google Drive. Активный профиль также сохраняется локально. <a class="profiles-google-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Управление доступом Google</a></p>
 </dialog>
 
-<div id="wizardOverlay">
-  <div class="wizard-card">
-    <div class="wizard-head">
-      <h3 id="wizardTitle">Мастер сборки персонажа</h3>
-      <span class="wizard-progress" id="wizardProgress">1 / 10</span>
-      <button class="btn danger" style="flex:0 0 auto" onclick="closeWizard()">✕</button>
-    </div>
-    <div class="wizard-body" id="wizardBody"></div>
-    <div class="wizard-foot">
-      <button class="btn" id="wizardBack" onclick="wizardBack()">← Назад</button>
-      <button class="btn primary" id="wizardNext" onclick="wizardNext()">Далее →</button>
-    </div>
-  </div>
-</div>
-<div id="luOverlay">
+<div id="luView">
   <div class="wizard-card">
     <div class="wizard-head">
       <h3 id="luTitle">Левел ап</h3>
@@ -1195,6 +1174,7 @@ let searchDlgHist = false;  // pushState сделан для текущей се
 let cbHist = false;  // то же для вида кор-бонусов (v260)
 let pilotGearHist = false;  // то же для вида снаряжения пилота (v260)
 let startHist = false;  // то же для экрана «Начало» (v291)
+let luHist = false;  // то же для вида левел апа (v339)
 let refDlgHist = false;     // то же для refDialog
 // v219: история вкладок — Назад с не-главной вкладки возвращает на главную (Мех).
 let tabHist = false;  // pushState сделан для текущего ухода с главной вкладки
@@ -1224,6 +1204,9 @@ function onDlgPopstate(){
   if (cbViewOpen()){ cbHist = false; fullscreenViewHide('cbView'); return; }
   if (pilotGearViewOpen()){ pilotGearHist = false; fullscreenViewHide('pilotGearView'); return; }
   if (startViewOpen()){ startHist = false; fullscreenViewHide('startView'); return; }
+  // v339: левел ап — тоже полноэкранный вид; Назад закрывает его без histBack
+  // (запись уже снята самим нажатием Назад — как у остальных видов выше).
+  if (luViewOpen()){ luHist = false; luOpen = false; luBase = null; fullscreenViewHide('luView'); renderLists(); renderCounters(); return; }
   // v219: диалогов нет — Назад с не-главной вкладки ведёт на главную (Мех).
   // Запись уже снята самим нажатием Назад: tabHist сбрасываем ДО showTab,
   // иначе showTab снял бы ещё одну запись истории. На главной — ничего
@@ -1266,6 +1249,14 @@ function fullscreenViewShow(viewId){
 function fullscreenViewHide(viewId){
   const v = document.getElementById(viewId);
   if (v) v.style.display = 'none';
+  // v339: если другой полноэкранный вид ещё открыт (поиск поверх левел апа,
+  // левел ап поверх главной) — главную не показываем, иначе закрытие поиска
+  // выбрасывало бы из левел апа на главную вместо возврата в него.
+  const anyViewOpen = ['searchView','cbView','pilotGearView','startView','luView'].some(function(id){
+    const el = document.getElementById(id);
+    return !!(el && el.style.display && el.style.display !== 'none');
+  });
+  if (anyViewOpen) return;
   const m = document.getElementById('mainContent');
   if (m) m.style.display = '';
   const n = document.getElementById('mainNav');
@@ -2030,7 +2021,7 @@ function openProfiles(){
   else if(driveRemembered) setDriveStatus('Подключение запомнено. Нажмите «Возобновить подключение», чтобы продолжить.');
 }
 function maybeShowDriveResumePrompt(){
-  if(!driveRemembered||driveAccessToken||driveResumePromptShown||((typeof wizardOpen!=='undefined')&&wizardOpen)) return;
+  if(!driveRemembered||driveAccessToken||driveResumePromptShown) return;
   const dlg=document.getElementById('driveResumeDlg'); if(!dlg||dlg.open) return;
   driveResumePromptShown=true; dlg.showModal();
 }
@@ -4107,7 +4098,6 @@ function renderLists(){
   updateLicenseSummary();
   renderDescBoxes();
   syncEditToggles();
-  if (typeof wizardOpen !== 'undefined' && wizardOpen) wizardRenderStep();
   if (typeof luOpen !== 'undefined' && luOpen) luRenderStep();
   renderPilotEquipment();
   const licNote = S.settings.licenseFilter ? L('lic_filter_on') : '';
@@ -6678,166 +6668,6 @@ function applyRest(){
   save(); renderCounters(); renderLists();
 }
 
-// ---------- Мастер создания персонажа (v57) ----------
-// Пошаговый сбор меха и пилота для нового персонажа. Пишет напрямую в S
-// (то же состояние, что и вкладки); шаги переиспользуют существующие
-// поисковики (openSearch / openCoreBonusPicker) — при добавлении
-// renderLists() перерисовывает текущий шаг мастера (см. хук выше).
-var wizardOpen = false;
-var wizardStepId = 'pilot';
-const WIZARD_STEPS = [
-  { id:'pilot',    title:'u188', render: wizPilot },
-  { id:'licenses', title:'u189', render: wizLicenses },
-  { id:'talents',  title:'u190', render: wizTalents },
-  { id:'triggers', title:'u191', render: wizTriggers },
-  { id:'hase',     title:'u192', render: wizHase },
-  { id:'frame',    title:'u193', render: wizFrame },
-  { id:'mech',     title:'u194', render: wizMech },
-  { id:'core',     title:'u196', render: wizCore, skip: function(){ return calcLL() < 3; } },
-  { id:'done',     title:'u197', render: wizDone },
-];
-function wizardVisibleSteps(){ return WIZARD_STEPS.filter(function(s){ return !s.skip || !s.skip(); }); }
-function wizardCurrentIndex(){
-  const steps = wizardVisibleSteps();
-  const i = steps.findIndex(function(s){ return s.id === wizardStepId; });
-  return i < 0 ? 0 : i;
-}
-function openWizard(){
-  wizardOpen = true;
-  wizardStepId = 'pilot';
-  const ov = document.getElementById('wizardOverlay');
-  if (ov) ov.style.display = 'flex';
-  wizardRenderStep();
-}
-function closeWizard(){
-  wizardOpen = false;
-  const ov = document.getElementById('wizardOverlay');
-  if (ov) ov.style.display = 'none';
-  S.settings.wizardDismissed = true; save();
-  renderLists(); renderCounters();
-  maybeShowDriveResumePrompt();
-}
-function wizardRenderStep(){
-  const steps = wizardVisibleSteps();
-  let idx = wizardCurrentIndex();
-  if (idx >= steps.length) idx = steps.length - 1;
-  wizardStepId = steps[idx].id;
-  const st = steps[idx];
-  const titleEl = document.getElementById('wizardTitle');
-  if (titleEl) titleEl.textContent = L(st.title);
-  const progEl = document.getElementById('wizardProgress');
-  if (progEl) progEl.textContent = (idx + 1) + ' / ' + steps.length;
-  const body = document.getElementById('wizardBody');
-  if (body) body.innerHTML = st.render();
-  const backBtn = document.getElementById('wizardBack');
-  if (backBtn){ backBtn.textContent = '← ' + L('u198'); backBtn.style.visibility = idx === 0 ? 'hidden' : 'visible'; }
-  const nextBtn = document.getElementById('wizardNext');
-  if (nextBtn) nextBtn.textContent = (idx === steps.length - 1) ? L('u200') : L('u199') + ' →';
-}
-function wizardNext(){
-  const steps = wizardVisibleSteps();
-  const idx = wizardCurrentIndex();
-  if (idx >= steps.length - 1){ closeWizard(); return; }
-  wizardStepId = steps[idx + 1].id;
-  wizardRenderStep();
-}
-function wizardBack(){
-  const steps = wizardVisibleSteps();
-  const idx = wizardCurrentIndex();
-  if (idx > 0){ wizardStepId = steps[idx - 1].id; wizardRenderStep(); }
-}
-function maybeOpenWizard(){
-  // Автопоказ только для совсем нового персонажа (ничего не заполнено)
-  // и только пока мастер не закрывали.
-  if (S.settings.wizardDismissed) return;
-  const fresh = !S.pilot.name && !S.pilot.callsign && !S.pilot.background
-    && S.pilot.licenses.length === 0 && S.talents.length === 0 && S.triggers.length === 0
-    && !S.mech.name;
-  if (fresh) openWizard();
-}
-function wizPilot(){
-  return `<p class="hint">${esc(L('u202'))}</p>`
-  + `<div style="margin-bottom:10px"><label>${esc(L('u082'))}</label><input type="text" value="${esc(S.pilot.name||'')}" onchange="S.pilot.name=this.value;save()"></div>`
-  + `<div style="margin-bottom:10px"><label>${esc(L('u083'))}</label><input type="text" value="${esc(S.pilot.callsign||'')}" onchange="S.pilot.callsign=this.value;save()"></div>`
-  + `<div><label>Background</label><input type="text" value="${esc(S.pilot.background||'')}" onchange="S.pilot.background=this.value;save()"></div>`;
-}
-function wizLicenses(){
-  const rows = S.pilot.licenses.map((l,i)=>{
-    const d = fd(l.name);
-    return `<div class="row"><b style="flex:1 1 auto">${esc(d.n)}</b>`
-    + `<select class="lic-rank" onchange="S.pilot.licenses[${i}].rank=+this.value;save();renderLists()">`
-    + [1,2,3].map(r=>`<option value="${r}" ${l.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')
-    + `</select><button class="btn x" style="flex:0 0 auto" onclick="delLicense(${i})">✕</button></div>`;
-  }).join('');
-  return `<p class="hint">${esc(L('u203'))}</p><p><b>LL: ${calcLL()}</b> · Grit: ${Math.ceil(calcLL()/2)}</p>${rows}`
-  + `<button class="btn primary" onclick="openSearch('license')">＋ ${esc(L('u189'))}</button>`;
-}
-function wizTalents(){
-  const rows = S.talents.map((t,i)=>{
-    const dtn = findTalent(t.name);
-    const tDisp = dtn ? td(dtn).n : t.name;
-    const roman = ['I','II','III'][t.rank-1] || '';
-    return `<div class="row"><b style="flex:1 1 auto">${esc(tDisp)} ${roman}</b>`
-    + `<select class="narrow" onchange="setTalentRank(${i},this.value)">`
-    + [1,2,3].map(r=>`<option value="${r}" ${t.rank===r?'selected':''}>${['I','II','III'][r-1]}</option>`).join('')
-    + `</select><button class="btn x" style="flex:0 0 auto" onclick="delRow('talents',${i})">✕</button></div>`;
-  }).join('');
-  return `<p class="hint">${esc(L('u204'))}</p>${rows}`
-  + `<button class="btn primary" onclick="openSearch('talent')">＋ ${esc(L('u190'))}</button>`;
-}
-function wizTriggers(){
-  const rows = S.triggers.map((t,i)=>{
-    return `<div class="row"><b style="flex:1 1 auto">${esc(trigDisp(t.name))}</b><span class="dim val">${t.bonus>=0?'+':''}${t.bonus}</span>`
-    + `<button class="btn x" style="flex:0 0 auto" onclick="delRow('triggers',${i})">✕</button></div>`;
-  }).join('');
-  return `<p class="hint">${esc(L('u205'))}</p>${rows}`
-  + `<button class="btn primary" onclick="openSearch('trigger')">＋ ${esc(L('u191'))}</button>`;
-}
-function wizStepHase(k, d){
-  const v = Math.max(0, Math.min(6, (S.pilot[k]||0) + d));
-  S.pilot[k] = v; save(); recalcDerived(); renderCounters(); renderLists();
-}
-function wizHase(){
-  const hase = [['hull','Hull'], ['agility','Agility'], ['systems','Systems'], ['engineering','Engineering']];
-  const rows = hase.map(([k,lab])=>{
-    const v = S.pilot[k]||0;
-    return `<div class="row wizard-hase-row"><span>${lab}</span>`
-    + `<div class="counter small" style="flex:0 0 auto"><button onclick="wizStepHase('${k}',-1)">−</button><div class="val">${v}</div><button onclick="wizStepHase('${k}',1)">+</button></div></div>`;
-  }).join('');
-  return `<div class="hint wizard-hase-hint">${L('u061')}</div>${rows}`;
-}
-function wizFrame(){
-  const f = fd(S.mech.frame);
-  const F = DB.frames[frameKey(S.mech.frame)];
-  return `<p class="hint">${esc(L('u207'))}</p>`
-  + `<p><b>${esc(f.n)}</b>${F ? ` <span class="dim">${esc(frameLabel(F))}</span>` : ''}</p>`
-  + `<button class="btn primary" onclick="openSearch('frame')">＋ ${esc(L('u193'))}</button>`;
-}
-function wizMech(){
-  const f = fd(S.mech.frame);
-  return `<p class="hint">${esc(L('u212'))}</p>`
-  + `<div style="margin-bottom:10px"><label>${esc(L('u006'))}</label><input type="text" value="${esc(S.mech.name||'')}" onchange="S.mech.name=this.value;save()"></div>`
-  + `<p class="dim">${esc(f.n)} · Size ${S.mech.size} · Speed ${S.mech.speed}</p>`;
-}
-function wizCore(){
-  const rows = S.pilot.coreBonuses.map((name,i)=>{
-    const cb = findCoreBonus(name);
-    const disp = cb ? (isRu() ? (cb.ru||cb.n) : cb.n) : name;
-    return `<div class="row"><b style="flex:1 1 auto">${esc(disp)}</b><button class="btn x" style="flex:0 0 auto" onclick="removeCoreBonus(${i})">✕</button></div>`;
-  }).join('');
-  return `<p class="hint">${esc(L('u209'))}</p><p><b>${esc(L('u196'))}: ${S.pilot.coreBonuses.length} / ${coreBonusSlots()}</b></p>${rows}`
-  + `<button class="btn primary" onclick="openCoreBonusPicker()">＋ ${esc(L('u196'))}</button>`;
-}
-function wizDone(){
-  const f = fd(S.mech.frame);
-  return `<p class="hint">${esc(L('u210'))}</p>`
-  + `<div class="card" style="background:var(--panel2)"><div><b>${esc(S.pilot.name||'—')}</b>${S.pilot.callsign ? ' ('+esc(S.pilot.callsign)+')' : ''}</div>`
-  + `<div class="dim">LL ${calcLL()} · Grit ${Math.ceil(calcLL()/2)}</div>`
-  + `<div class="dim">${esc(f.n)} — ${esc(S.mech.name||'—')}</div>`
-  + `<div class="dim">${esc(L('u189'))}: ${S.pilot.licenses.length} · ${esc(L('u190'))}: ${S.talents.length} · ${esc(L('u191'))}: ${S.triggers.length} · ${esc(L('u195'))}: ${S.systems.length}</div></div>`;
-}
-
-
 // ---------- Мастер левел апа (v59) ----------
 // Пошаговый левел ап, переписан по отзыву пользователя (v58 был «позорно»):
 // вместо голых <select> — знакомый UI: текущие таланты/лицензии/триггеры
@@ -6887,17 +6717,19 @@ function openLevelUp(){
   luPicked = { trigger: null, hase: null, talent: null, license: null };
   luOpen = true;
   luStepId = 'overview';
-  const ov = document.getElementById('luOverlay');
-  if (ov) ov.style.display = 'flex';
+  bindDlgHistory();
+  if (!luHist){ histPush(); luHist = true; }
+  fullscreenViewShow('luView');
   luRenderStep();
 }
 function closeLevelUp(){
   luOpen = false;
-  const ov = document.getElementById('luOverlay');
-  if (ov) ov.style.display = 'none';
+  fullscreenViewHide('luView');
   luBase = null;
+  if (luHist){ luHist = false; suppressNextPopstate = true; histBack(); }
   renderLists(); renderCounters();
 }
+function luViewOpen(){ return fullscreenViewOpen('luView'); }
 function luRenderStep(){
   const steps = luVisibleSteps();
   let idx = luCurrentIndex();
